@@ -91,7 +91,7 @@ namespace SimpleIdentityServer.Eid
                 throw new ConnectionException(Constants.ErrorCodes.ConnectionExists);
             }
 
-            _connection = _context.Connect(readerName, SCardShare.Exclusive, SCardProtocols.T0);
+            _connection = _context.Connect(readerName, SCardShare.Shared, SCardProtocols.T0);
             return _connection;
         }
 
@@ -127,6 +127,16 @@ namespace SimpleIdentityServer.Eid
         public byte[] GetPhoto()
         {
             return ReadFile(FileType.Photo);
+        }
+
+        public byte[] GetAddress()
+        {
+            return ReadFile(FileType.Address);
+        }
+
+        public byte[] GetIdentity()
+        {
+            return ReadFile(FileType.Identity);
         }
 
         #endregion
