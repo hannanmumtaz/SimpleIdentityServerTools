@@ -1,0 +1,2 @@
+2018-01-22 11:38:01.195 +01:00 [Information] null was not authenticated. Failure message: "an error occured ??"
+2018-01-22 11:38:19.561 +01:00 [Information] null was not authenticated. Failure message: "an error occured ??"

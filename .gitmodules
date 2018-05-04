@@ -1,0 +1,3 @@
+[submodule "IdServer"]
+	path = IdServer
+	url = https://github.com/thabart/SimpleIdentityServer.git
