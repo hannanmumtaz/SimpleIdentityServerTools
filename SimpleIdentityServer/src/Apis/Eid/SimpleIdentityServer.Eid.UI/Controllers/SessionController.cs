@@ -4,7 +4,6 @@ using Newtonsoft.Json.Linq;
 using PcscDotNet;
 using SimpleIdentityServer.Eid.Common.Serializers;
 using SimpleIdentityServer.Eid.Ehealth.Builders;
-using SimpleIdentityServer.Eid.Ehealth.Clients.SamlToken;
 using SimpleIdentityServer.Eid.Exceptions;
 using SimpleIdentityServer.Eid.Sign;
 using SimpleIdentityServer.Eid.UI.Extensions;
@@ -21,7 +20,6 @@ namespace SimpleIdentityServer.Eid.UI.Controllers
         private readonly IConfiguration _configuration;
         private readonly IEhealthSamlTokenRequestBuilder _ehealthSamlTokenRequestBuilder;
         private readonly ISoapMessageSerializer _soapMessageSerializer;
-        private readonly ISamlTokenClient _samlTokenClient;
 
         public SessionController(ISessionStore sessionStore, IConfiguration configuration)
         {
@@ -29,7 +27,6 @@ namespace SimpleIdentityServer.Eid.UI.Controllers
             _configuration = configuration;
             _ehealthSamlTokenRequestBuilder = new EhealthSamlTokenRequestBuilder();
             _soapMessageSerializer = new SoapMessageSerializer();
-            _samlTokenClient = new SamlTokenClient();
         }
 
         [HttpGet]
@@ -140,16 +137,8 @@ namespace SimpleIdentityServer.Eid.UI.Controllers
                 }
                 finally
                 {
-                    beIdCardConnector.Disconnect();
-                    if (context != null)
-                    {
-                        context.Release();
-                    }
-
-                    if (connect != null)
-                    {
-                        connect.Disconnect();
-                    }
+                    context.Release();
+                    context.Dispose();
                 }
             }
 
