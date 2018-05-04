@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="4.4.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PcscDotNet\PcscDotNet.csproj" />
+    <ProjectReference Include="..\SimpleIdentityServer.Eid.Common\SimpleIdentityServer.Eid.Common.csproj" />
+  </ItemGroup>
+</Project>
