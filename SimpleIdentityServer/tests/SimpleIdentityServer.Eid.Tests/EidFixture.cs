@@ -50,6 +50,20 @@ namespace SimpleIdentityServer.Eid.Tests
             var context = beIdCardConnector.EstablishContext();
             var readers = beIdCardConnector.GetReaders();
             var connect = beIdCardConnector.Connect(readers.First());
+
+            // 1. Get the identity.
+            var identity = beIdCardConnector.GetIdentity();
+            // 2. Get the address.
+            var addr = beIdCardConnector.GetAddress();
+            // 3. Get the auth certificate.
+            var authCertificate = beIdCardConnector.GetAuthenticateCertificate();
+
+            context.Release();
+            context.Dispose();
+            string s = "";
+
+            /*
+
             var certificate = beIdCardConnector.GetAuthenticateCertificate();
             var ehealthSamlTokenRequestBuilder = new EhealthSamlTokenRequestBuilder(); // 1. Construct SAML token.
             soapEnvelope = ehealthSamlTokenRequestBuilder.New(certificate).Build();
@@ -106,6 +120,7 @@ namespace SimpleIdentityServer.Eid.Tests
             var publicKey = x509Certificate.GetRSAPublicKey();
             var isSignatureCorrect = publicKey.VerifyHash(hashResult, signature, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
             Assert.IsTrue(isSignatureCorrect);
+            */
         }
     }
 }

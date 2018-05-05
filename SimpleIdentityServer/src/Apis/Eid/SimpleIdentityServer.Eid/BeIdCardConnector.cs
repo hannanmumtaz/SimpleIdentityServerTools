@@ -293,7 +293,8 @@ namespace SimpleIdentityServer.Eid
             int num = 0;
             while (true)
             {
-                var apduResult = SendCommand(BeIDCommandAPDU.READ_BINARY, num >> 8, num & byte.MaxValue, byte.MaxValue);
+                var length = fileType.EstimatedMaxSize > byte.MaxValue ? byte.MaxValue : fileType.EstimatedMaxSize;
+                var apduResult = SendCommand(BeIDCommandAPDU.READ_BINARY, num >> 8, num & byte.MaxValue, length);
                 int sw = apduResult.GetSw();
                 var data = apduResult.GetData();
                 result.AddRange(data);
