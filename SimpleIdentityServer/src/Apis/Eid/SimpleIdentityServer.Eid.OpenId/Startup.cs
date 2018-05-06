@@ -24,6 +24,7 @@ using SimpleIdentityServer.Core;
 using SimpleIdentityServer.EF;
 using SimpleIdentityServer.EF.Extensions;
 using SimpleIdentityServer.EF.InMemory;
+using SimpleIdentityServer.Eid.OpenId.Core;
 using SimpleIdentityServer.EventStore.Handler;
 using SimpleIdentityServer.EventStore.InMemory;
 using SimpleIdentityServer.Host;
@@ -82,6 +83,7 @@ namespace SimpleIdentityServer.Eid.OpenId
                 });
             // 5. Configure MVC
             services.AddAuthenticationWebsite(_env, _options);
+            services.AddEidOpenidCore();
         }
 
         private void ConfigureEventStoreSqlServerBus(IServiceCollection services)

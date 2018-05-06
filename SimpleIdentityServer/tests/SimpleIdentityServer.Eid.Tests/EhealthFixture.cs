@@ -4,6 +4,7 @@ using SimpleIdentityServer.Eid.Ehealth.Builders;
 using SimpleIdentityServer.Eid.Ehealth.Tlv;
 using SimpleIdentityServer.Eid.Sign;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -48,25 +49,6 @@ namespace SimpleIdentityServer.Eid.Tests
             
             beIdCardConnector.Dispose();
 
-            var schemaSet = new XmlSchemaSet(); // 4. Check XML against XSD.
-            schemaSet.Add("urn:oasis:names:tc:SAML:1.0:protocol", "oasis-sstc-saml-schema-protocol-1.1.xsd");
-            schemaSet.Add("urn:oasis:names:tc:SAML:1.0:assertion", "oasis-sstc-saml-schema-assertion-1.1.xsd");
-            schemaSet.Add("http://www.w3.org/2000/09/xmldsig#", "xmldsig-core-schema.xsd");
-            var compiledSchemas = schemaSet.Schemas();
-            var settings = new XmlReaderSettings();
-            int nbErrors = 0;
-            settings.ValidationEventHandler += new ValidationEventHandler((o, e) =>
-            {
-                nbErrors++;
-            });
-            settings.ValidationType = ValidationType.Schema;
-            using (var strReader = new StringReader(outerXml))
-            {
-                var vreader = XmlReader.Create(strReader, settings);
-                while (vreader.Read()) { }
-            }
-
-            Assert.True(nbErrors == 0);
             var nsmgr = new XmlNamespaceManager(xmlDocument.NameTable);
             nsmgr.AddNamespace(Common.Constants.XmlPrefixes.Ds, Common.Constants.XmlNamespaces.Ds);
             nsmgr.AddNamespace(Common.Constants.XmlPrefixes.Wsse, Common.Constants.XmlNamespaces.Wsse);

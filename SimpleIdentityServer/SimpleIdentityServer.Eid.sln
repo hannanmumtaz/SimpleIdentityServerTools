@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02. OpenId Layer", "02. Ope
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Eid.OpenId", "src\Apis\Eid\SimpleIdentityServer.Eid.OpenId\SimpleIdentityServer.Eid.OpenId.csproj", "{944386F6-B87C-4F5A-94AC-74AF87A6BF81}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Eid.OpenId.Core", "src\Apis\Eid\SimpleIdentityServer.Eid.OpenId.Core\SimpleIdentityServer.Eid.OpenId.Core.csproj", "{4BE57B51-CC08-45D7-8CF0-B3DF062D749D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{944386F6-B87C-4F5A-94AC-74AF87A6BF81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{944386F6-B87C-4F5A-94AC-74AF87A6BF81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{944386F6-B87C-4F5A-94AC-74AF87A6BF81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BE57B51-CC08-45D7-8CF0-B3DF062D749D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BE57B51-CC08-45D7-8CF0-B3DF062D749D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BE57B51-CC08-45D7-8CF0-B3DF062D749D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BE57B51-CC08-45D7-8CF0-B3DF062D749D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +82,7 @@ Global
 		{14AB2FB1-0391-4EC1-A30E-ED3CEFA79D46} = {2CE3A303-2D72-4136-8462-B48AE744574A}
 		{80F948D3-6F52-4DF1-9D3E-B38C36879E37} = {A0321FBA-DF9D-4FCC-AADE-C2A7978A1F59}
 		{944386F6-B87C-4F5A-94AC-74AF87A6BF81} = {9A497463-C557-4F14-9060-78A5FE27E200}
+		{4BE57B51-CC08-45D7-8CF0-B3DF062D749D} = {9A497463-C557-4F14-9060-78A5FE27E200}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FFB2834E-13F7-40B1-A7D9-561DA8F91949}

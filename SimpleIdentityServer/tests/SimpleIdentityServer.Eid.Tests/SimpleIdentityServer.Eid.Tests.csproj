@@ -11,29 +11,18 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid.Common\SimpleIdentityServer.Eid.Common.csproj" />
     <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid.Ehealth\SimpleIdentityServer.Eid.Ehealth.csproj" />
+    <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid.OpenId.Core\SimpleIdentityServer.Eid.OpenId.Core.csproj" />
     <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid.Sign\SimpleIdentityServer.Eid.Sign.csproj" />
     <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid\SimpleIdentityServer.Eid.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="belgiumrca2.crt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="belgiumrs2.crt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="foreigner201402.crt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="oasis-sstc-saml-schema-assertion-1.1.xsd">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="oasis-sstc-saml-schema-protocol-1.1.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SimpleIdServer.pfx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="xmldsig-core-schema.xsd">
+    <None Update="SamlRequest.XML">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -20,5 +20,11 @@ namespace SimpleIdentityServer.Eid.OpenId
     {
         public const string CookieName = "SimpleIdServer-Startup";
         public const string ExternalCookieName = "External-SimpleIdServer";
+
+        public static class LoginViewModelNames
+        {
+            public const string Xml = "xml";
+            public const string IdProviders = "id_providers";
+        }
     }
 }
