@@ -1,6 +1,7 @@
 ﻿using SimpleIdentityServer.Eid.Common.SamlMessages;
 using SimpleIdentityServer.Eid.Common.SoapMessages;
 using SimpleIdentityServer.Eid.Ehealth.Exceptions;
+using SimpleIdentityServer.Eid.Ehealth.Tlv;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,6 +85,32 @@ namespace SimpleIdentityServer.Eid.Ehealth.Builders
             }
 
             _samlAttributeDesignators.Add(new SamlAttributeDesignator(name, namespaceValue));
+            return this;
+        }
+
+        public EhealthSamlTokenRequestBuilder SetIdentity(Identity identity)
+        {
+            if (identity == null)
+            {
+                throw new ArgumentNullException(nameof(identity));
+            }
+
+            _samlAttributes.Add(new SamlAttribute(Constants.EhealthStsNames.NameAttributeName, Constants.EhealthStsNames.SsinAttributeNamespace, identity.Name));
+            _samlAttributes.Add(new SamlAttribute(Constants.EhealthStsNames.FirstNameAttributeName, Constants.EhealthStsNames.SsinAttributeNamespace, identity.FirstName));
+            _samlAttributes.Add(new SamlAttribute(Constants.EhealthStsNames.MiddleNameAttributeName, Constants.EhealthStsNames.SsinAttributeNamespace, identity.MiddleName));
+            _samlAttributes.Add(new SamlAttribute(Constants.EhealthStsNames.GenderAttributeName, Constants.EhealthStsNames.SsinAttributeNamespace, identity.Gender));
+            return this;
+        }
+
+        public EhealthSamlTokenRequestBuilder SetAddress(Address address)
+        {
+            if (address == null)
+            {
+                throw new ArgumentException(nameof(address));
+            }
+            _samlAttributes.Add(new SamlAttribute(Constants.EhealthStsNames.StreetAndNumberAttributeName, Constants.EhealthStsNames.SsinAttributeNamespace, address.StreetAndNumber));
+            _samlAttributes.Add(new SamlAttribute(Constants.EhealthStsNames.MunicipalityAttributeName, Constants.EhealthStsNames.SsinAttributeNamespace, address.Municipality));
+            _samlAttributes.Add(new SamlAttribute(Constants.EhealthStsNames.ZipAttributeName, Constants.EhealthStsNames.SsinAttributeNamespace, address.Zip));
             return this;
         }
 

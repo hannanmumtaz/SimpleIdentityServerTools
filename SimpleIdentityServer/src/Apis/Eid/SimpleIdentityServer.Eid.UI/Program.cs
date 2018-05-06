@@ -15,7 +15,6 @@ namespace SimpleIdentityServer.Eid.UI
         {
             return WebHost.CreateDefaultBuilder(args)
                 .UseElectron(args)
-                .UseUrls("http://localhost:8001")
                 .UseStartup<Startup>()
                 .Build();
         }

@@ -14,9 +14,9 @@ module.exports = {
         });
     },
     /* Create session */
-    createSession: function (code, type) {
+    createSession: function (code) {
         return new Promise(function (resolve, reject) {
-                var data = JSON.stringify({ pin_code: code, type: type });
+                var data = JSON.stringify({ pin_code: code });
                 $.ajax('/Session', {
                     type: 'POST',
                     contentType: 'application/json',

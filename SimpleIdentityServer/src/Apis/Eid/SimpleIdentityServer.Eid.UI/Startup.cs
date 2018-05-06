@@ -63,10 +63,10 @@ namespace SimpleIdentityServer.Eid.UI
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<SessionHub>("sessionHub");
+                routes.MapHub<SessionHub>("/sessionHub");
             });
             app.UseStaticFiles();
-
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -76,7 +76,6 @@ namespace SimpleIdentityServer.Eid.UI
                     name: "spa-fallback",
                     defaults: new { controller = "Home", action = "Index" });
             });
-
 
             if (HybridSupport.IsElectronActive)
             {

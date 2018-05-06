@@ -18,14 +18,9 @@ class EidSession extends BaseComponent {
             expirationDate: null,
             expirationTime: null,
             pin: null,
-            type: 'patient',
             isModalDisplayed: false,
             isLoading: false,
-            errorMessage: null,
-            types: [
-                { id: 'patient', displayName: 'patient' },
-                { id: 'doctor', displayName: 'doctor' }
-            ]
+            errorMessage: null
         };
     }
 
@@ -107,7 +102,7 @@ class EidSession extends BaseComponent {
             isLoading: true
         });
         // TH : Check the code is well formatted.        
-        SessionService.createSession(code, this.state.type).then(function () {
+        SessionService.createSession(code).then(function () {
             self.getSession();
         }).catch(function (e) {
             self.setState({
@@ -143,12 +138,6 @@ class EidSession extends BaseComponent {
 
     render() {
         var options = [];
-        if (this.state.types) {
-            this.state.types.forEach(function (type) {
-                options.push((<option value={type.id}>{type.displayName}</option>));
-            });
-        }
-
         return (<div>
             { this.state.isLoading && (
                 <div>
@@ -166,12 +155,6 @@ class EidSession extends BaseComponent {
             )}
             {this.state.isModalDisplayed && (<Modal title='Authentifier' ref={c => this.myModal = c} handleHideModal={this.hideModal} onConfirmHandle={this.connect}  confirmTxt="Se connecter" >
                 <form onSubmit={this.connect}>
-                    <div className="form-group">
-                        <label>Votre role</label>
-                        <select className="form-control" onChange={this.handleInputChange} name="type">
-                            {options}
-                        </select>
-                    </div>
                     <div className="form-group">
                         <label>Code PIN</label>
                         <input type="password" pattern="[0-9]{4}" className="form-control" name="pin" onChange={this.handleInputChange} />

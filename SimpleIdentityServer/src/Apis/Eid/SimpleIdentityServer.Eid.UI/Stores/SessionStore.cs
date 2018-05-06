@@ -9,13 +9,12 @@ namespace SimpleIdentityServer.Eid.UI.Stores
         bool IsValid();
         Session GetSession();
         void StoreSession(Session session);
-        void StoreSession(XmlDocument session, string role);
+        void StoreSession(XmlDocument session);
     }
     
     public class Session
     {
         public XmlDocument Xml { get; set; }
-        public string Role { get; set; }
     }
 
     internal sealed class SessionStore : ISessionStore
@@ -60,9 +59,9 @@ namespace SimpleIdentityServer.Eid.UI.Stores
             _session = session;
         }
 
-        public void StoreSession(XmlDocument session, string role)
+        public void StoreSession(XmlDocument session)
         {
-            _session = new Session { Role = role, Xml = session };
+            _session = new Session { Xml = session };
         }
     }
 }

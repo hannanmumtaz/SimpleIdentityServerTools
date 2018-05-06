@@ -115,6 +115,14 @@
             public const string SsinCertHolderAttributeName = "urn:be:fgov:ehealth:1.0:certificateholder:person:ssin";
             public const string SsinAttributeNamespace = "urn:be:fgov:identification-namespace";
             public const string SsinAttributeName = "urn:be:fgov:person:ssin";
+            public const string NameAttributeName = "urn:be:fgov:person:name";
+            public const string FirstNameAttributeName = "urn:be:fgov:person:firstName";
+            public const string MiddleNameAttributeName = "urn:be:fgov:person:middleName";
+            public const string NationalityAttributeName = "urn:be:fgov:person:nationality";
+            public const string GenderAttributeName = "urn:be:fgov:person:gender";
+            public const string StreetAndNumberAttributeName = "urn:be:fgov:address:streetAndNumber";
+            public const string ZipAttributeName = "urn:be:fgov:address:zip";
+            public const string MunicipalityAttributeName = "urn:be:fgov:address:municipality";
             public const string CertifiedAttributeNamespace = "urn:be:fgov:certified-namespace:ehealth";
         }
 

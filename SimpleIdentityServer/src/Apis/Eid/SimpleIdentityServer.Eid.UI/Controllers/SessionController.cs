@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using PcscDotNet;
 using SimpleIdentityServer.Eid.Common.Serializers;
 using SimpleIdentityServer.Eid.Ehealth.Builders;
+using SimpleIdentityServer.Eid.Ehealth.Tlv;
 using SimpleIdentityServer.Eid.Exceptions;
 using SimpleIdentityServer.Eid.Sign;
 using SimpleIdentityServer.Eid.UI.Extensions;
@@ -20,6 +21,7 @@ namespace SimpleIdentityServer.Eid.UI.Controllers
         private readonly IConfiguration _configuration;
         private readonly IEhealthSamlTokenRequestBuilder _ehealthSamlTokenRequestBuilder;
         private readonly ISoapMessageSerializer _soapMessageSerializer;
+        private readonly ITlvParser _tlvParser;
 
         public SessionController(ISessionStore sessionStore, IConfiguration configuration)
         {
@@ -27,6 +29,7 @@ namespace SimpleIdentityServer.Eid.UI.Controllers
             _configuration = configuration;
             _ehealthSamlTokenRequestBuilder = new EhealthSamlTokenRequestBuilder();
             _soapMessageSerializer = new SoapMessageSerializer();
+            _tlvParser = new TlvParser();
         }
 
         [HttpGet]
@@ -41,7 +44,7 @@ namespace SimpleIdentityServer.Eid.UI.Controllers
             var timeStamp = _soapMessageSerializer.ExtractSoapTimestamp(session.Xml);
             if (timeStamp == null)
             {
-                _sessionStore.StoreSession(null);
+                _sessionStore.StoreSession((Session)null);
                 return this.BuildError(Constants.ErrorCodes.Server, Constants.ErrorMessages.InvalidSession);
             }
 
@@ -51,7 +54,7 @@ namespace SimpleIdentityServer.Eid.UI.Controllers
         [HttpDelete]
         public IActionResult Remove()
         {
-            _sessionStore.StoreSession(null);
+            _sessionStore.StoreSession((Session)null);
             return new OkResult();
         }
 
@@ -74,14 +77,7 @@ namespace SimpleIdentityServer.Eid.UI.Controllers
             {
                 return this.BuildError(Constants.ErrorCodes.Request, Constants.ErrorMessages.NoPinCode);
             }
-
-            JToken jTokenType;
-            if (!json.TryGetValue(Constants.DtoPropertyNames.Type, out jTokenType))
-            {
-                return this.BuildError(Constants.ErrorCodes.Request, Constants.ErrorMessages.NoType);
-            }
-
-            string type = jTokenType.ToString();
+            
             if (ConfigurationHelper.IsFakeEidEnabled()) // For testing purpose we generate a fake session.
             {
                 /*
@@ -109,23 +105,18 @@ namespace SimpleIdentityServer.Eid.UI.Controllers
 
                     connect = beIdCardConnector.Connect(readers.First()); // 2. Construct SAML token.
                     var certificate = beIdCardConnector.GetAuthenticateCertificate();
+                    var identityPayload = beIdCardConnector.GetIdentity();
+                    var addressPayload = beIdCardConnector.GetAddress();
+                    var identity = _tlvParser.Parse<Identity>(identityPayload);
+                    var address = _tlvParser.Parse<Address>(addressPayload);
+
                     var builder = _ehealthSamlTokenRequestBuilder.New(certificate);
-                    if (Common.Constants.MappingRoleToNihiiNamespace.ContainsKey(type))
-                    {
-                        builder.AddAttributeDesignator(Common.Constants.MappingRoleToNihiiNamespace[type], Ehealth.Constants.EhealthStsNames.CertifiedAttributeNamespace);
-                    }
-
-                    if (Common.Constants.MappingRoleToPracticionnerNamespace.ContainsKey(type))
-                    {
-                        builder.AddAttributeDesignator(Common.Constants.MappingRoleToPracticionnerNamespace[type], Ehealth.Constants.EhealthStsNames.CertifiedAttributeNamespace);
-                    }
-
-                    var soapEnvelope = builder.Build();
+                    var soapEnvelope = builder.SetIdentity(identity).SetAddress(address).Build();
                     var signSamlToken = new SignSamlToken();
                     var signatureNode = signSamlToken.BuildSignatureWithEid(soapEnvelope, jTokenPinCode.ToString(), beIdCardConnector); // 3. Build signature.
                     soapEnvelope.Header.Security.Signature = signatureNode;
                     var xmlDocument = _soapMessageSerializer.Serialize(soapEnvelope);
-                    _sessionStore.StoreSession(xmlDocument, type);
+                    _sessionStore.StoreSession(xmlDocument);
                 }
                 catch (BeIdCardException ex)
                 {
@@ -137,8 +128,7 @@ namespace SimpleIdentityServer.Eid.UI.Controllers
                 }
                 finally
                 {
-                    context.Release();
-                    context.Dispose();
+                    beIdCardConnector.Dispose();
                 }
             }
 

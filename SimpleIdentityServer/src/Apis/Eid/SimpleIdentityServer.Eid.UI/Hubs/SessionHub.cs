@@ -26,7 +26,7 @@ namespace SimpleIdentityServer.Eid.UI.Hubs
                 return;
             }
             
-            Clients.All.InvokeAsync("Session", new { xml = session.Xml.OuterXml, role = session.Role }); // Returns the SAML token to the client.
+            Clients.All.SendAsync("Session", new { xml = session.Xml.OuterXml }); // Returns the SAML token to the client.
         }
     }
 }
