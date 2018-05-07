@@ -1,8 +1,8 @@
-﻿using SimpleIdentityServer.Eid.OpenId.Core.Parameters;
-using SimpleIdentityServer.Eid.OpenId.ViewModels;
+﻿using SimpleIdentityServer.Authenticate.Eid.Core.Parameters;
+using SimpleIdentityServer.Authenticate.Eid.ViewModels;
 using System;
 
-namespace SimpleIdentityServer.Eid.OpenId.Extensions
+namespace SimpleIdentityServer.Authenticate.Eid.Extensions
 {
     internal static class MappingExtensions
     {

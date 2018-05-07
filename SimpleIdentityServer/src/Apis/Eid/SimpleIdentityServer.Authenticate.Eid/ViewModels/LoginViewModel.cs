@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace SimpleIdentityServer.Eid.OpenId.ViewModels
+namespace SimpleIdentityServer.Authenticate.Eid.ViewModels
 {
     [DataContract]
     public class LoginViewModel
@@ -11,5 +11,7 @@ namespace SimpleIdentityServer.Eid.OpenId.ViewModels
         public IEnumerable<IdProviderViewModel> IdProviders { get; set; }
         [DataMember(Name = Constants.LoginViewModelNames.Xml)]
         public string Xml { get; set; }
+        [DataMember(Name = Constants.LoginViewModelNames.EidUrl)]
+        public string EidUrl { get; set; }
     }
 }

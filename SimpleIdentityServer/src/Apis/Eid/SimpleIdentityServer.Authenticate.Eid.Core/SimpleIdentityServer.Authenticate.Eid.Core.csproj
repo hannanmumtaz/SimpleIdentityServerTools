@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>SimpleIdentityServer.Eid.OpenId.Core Class Library</Description>
+    <Description>SimpleIdentityServer.Authenticate.Eid.Core Class Library</Description>
     <Authors>thierry habart</Authors>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
-    <AssemblyName>SimpleIdentityServer.Eid.OpenId.Core</AssemblyName>
-    <PackageId>SimpleIdentityServer.Eid.OpenId.Core</PackageId>
+    <AssemblyName>SimpleIdentityServer.Authenticate.Eid.Core</AssemblyName>
+    <PackageId>SimpleIdentityServer.Authenticate.Eid.Core</PackageId>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>

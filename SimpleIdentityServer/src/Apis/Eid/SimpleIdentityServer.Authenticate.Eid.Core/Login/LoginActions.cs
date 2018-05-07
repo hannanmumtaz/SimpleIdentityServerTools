@@ -1,11 +1,11 @@
 ﻿using SimpleIdentityServer.Core.Common.Models;
 using SimpleIdentityServer.Core.Parameters;
 using SimpleIdentityServer.Core.WebSite.Authenticate.Actions;
-using SimpleIdentityServer.Eid.OpenId.Core.Login.Actions;
-using SimpleIdentityServer.Eid.OpenId.Core.Parameters;
+using SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions;
+using SimpleIdentityServer.Authenticate.Eid.Core.Parameters;
 using System.Threading.Tasks;
 
-namespace SimpleIdentityServer.Eid.OpenId.Core.Login
+namespace SimpleIdentityServer.Authenticate.Eid.Core.Login
 {
     public interface ILoginActions
     {

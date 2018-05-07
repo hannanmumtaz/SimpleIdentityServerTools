@@ -21,6 +21,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using SimpleBus.Core;
+using SimpleIdentityServer.Authenticate.Eid.Core.Login;
+using SimpleIdentityServer.Authenticate.Eid.Extensions;
+using SimpleIdentityServer.Authenticate.Eid.ViewModels;
 using SimpleIdentityServer.Core;
 using SimpleIdentityServer.Core.Common.DTOs;
 using SimpleIdentityServer.Core.Exceptions;
@@ -30,9 +33,6 @@ using SimpleIdentityServer.Core.Services;
 using SimpleIdentityServer.Core.Translation;
 using SimpleIdentityServer.Core.WebSite.Authenticate;
 using SimpleIdentityServer.Core.WebSite.User;
-using SimpleIdentityServer.Eid.OpenId.Core.Login;
-using SimpleIdentityServer.Eid.OpenId.Extensions;
-using SimpleIdentityServer.Eid.OpenId.ViewModels;
 using SimpleIdentityServer.EventStore.Core.Models;
 using SimpleIdentityServer.EventStore.Core.Repositories;
 using SimpleIdentityServer.Handler.Events;
@@ -48,9 +48,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace SimpleIdentityServer.Eid.OpenId.Controllers
+namespace SimpleIdentityServer.Authenticate.Eid.Controllers
 {
-    public class LoginController : BaseController
+    [Area("EidAuthentication")]
+    public class AuthenticateController : BaseController
     {
         private const string ExternalAuthenticateCookieName = "SimpleIdentityServer-{0}";        
         private const string DefaultLanguage = "en";        
@@ -66,8 +67,9 @@ namespace SimpleIdentityServer.Eid.OpenId.Controllers
         private readonly IPayloadSerializer _payloadSerializer;
         private readonly IConfigurationService _configurationService;
         private readonly ILoginActions _loginActions;
+        private readonly EidAuthenticateOptions _eidAuthenticateOptions;
 
-        public LoginController(
+        public AuthenticateController(
             IAuthenticateActions authenticateActions,
             IDataProtectionProvider dataProtectionProvider,
             IEncoder encoder,
@@ -83,7 +85,8 @@ namespace SimpleIdentityServer.Eid.OpenId.Controllers
             IPayloadSerializer payloadSerializer,
             AuthenticateOptions authenticateOptions,
             IConfigurationService configurationService,
-            ILoginActions loginActions) : base(authenticationService, userActions, authenticateOptions)
+            ILoginActions loginActions,
+            EidAuthenticateOptions eidAuthenticateOptions) : base(authenticationService, userActions, authenticateOptions)
         {
             _authenticateActions = authenticateActions;
             _dataProtector = dataProtectionProvider.CreateProtector("Request");
@@ -97,6 +100,7 @@ namespace SimpleIdentityServer.Eid.OpenId.Controllers
             _authenticationSchemeProvider = authenticationSchemeProvider;
             _configurationService = configurationService;
             _loginActions = loginActions;
+            _eidAuthenticateOptions = eidAuthenticateOptions;
         }
         
         #region Public methods
@@ -493,6 +497,7 @@ namespace SimpleIdentityServer.Eid.OpenId.Controllers
                 });
             }
 
+            loginViewModel.EidUrl = _eidAuthenticateOptions.EidUrl;
             loginViewModel.IdProviders = idProviders;
         }
 
@@ -509,6 +514,7 @@ namespace SimpleIdentityServer.Eid.OpenId.Controllers
                 });
             }
 
+            authorizeViewModel.EidUrl = _eidAuthenticateOptions.EidUrl;
             authorizeViewModel.IdProviders = idProviders;
         }
 

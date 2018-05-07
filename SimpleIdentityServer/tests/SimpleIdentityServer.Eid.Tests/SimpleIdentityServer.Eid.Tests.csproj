@@ -15,7 +15,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid.Common\SimpleIdentityServer.Eid.Common.csproj" />
     <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid.Ehealth\SimpleIdentityServer.Eid.Ehealth.csproj" />
-    <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid.OpenId.Core\SimpleIdentityServer.Eid.OpenId.Core.csproj" />
     <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid.Sign\SimpleIdentityServer.Eid.Sign.csproj" />
     <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid\SimpleIdentityServer.Eid.csproj" />
   </ItemGroup>

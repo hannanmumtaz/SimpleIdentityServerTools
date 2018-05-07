@@ -20,16 +20,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleBus.InMemory;
+using SimpleIdentityServer.Authenticate.Eid;
 using SimpleIdentityServer.Core;
 using SimpleIdentityServer.EF;
-using SimpleIdentityServer.EF.Extensions;
 using SimpleIdentityServer.EF.InMemory;
-using SimpleIdentityServer.Eid.OpenId.Core;
 using SimpleIdentityServer.Eid.OpenId.Extensions;
 using SimpleIdentityServer.EventStore.Handler;
 using SimpleIdentityServer.EventStore.InMemory;
 using SimpleIdentityServer.Host;
-using SimpleIdentityServer.Host.Controllers.Website;
 
 namespace SimpleIdentityServer.Eid.OpenId
 {
@@ -83,8 +81,12 @@ namespace SimpleIdentityServer.Eid.OpenId
                     opts.LoginPath = "/Authenticate";
                 });
             // 5. Configure MVC
-            services.AddAuthenticationWebsite(_env, _options);
-            services.AddEidOpenidCore();
+            var mvcBuilder = services.AddMvc();
+            services.AddAuthenticationWebsite(mvcBuilder, _env);
+            services.AddEidAuthentication(mvcBuilder, _env, new EidAuthenticateOptions
+            {
+                EidUrl = "http://localhost:8003"
+            });
         }
 
         private void ConfigureEventStoreSqlServerBus(IServiceCollection services)
@@ -145,9 +147,7 @@ namespace SimpleIdentityServer.Eid.OpenId
                         controller = "Error",
                         action = "Get500"
                     });
-                routes.MapRoute("Authenticate",
-                    "Authenticate/{action}/{id?}",
-                    new { controller = "Login", action = "Index" });
+                routes.UseEidAuthentication();
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");

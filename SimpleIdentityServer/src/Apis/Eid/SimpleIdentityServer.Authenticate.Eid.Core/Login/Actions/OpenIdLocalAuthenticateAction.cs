@@ -3,7 +3,7 @@ using SimpleIdentityServer.Core.Extensions;
 using SimpleIdentityServer.Core.Parameters;
 using SimpleIdentityServer.Core.WebSite.Authenticate.Actions;
 using SimpleIdentityServer.Core.WebSite.Authenticate.Common;
-using SimpleIdentityServer.Eid.OpenId.Core.Parameters;
+using SimpleIdentityServer.Authenticate.Eid.Core.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace SimpleIdentityServer.Eid.OpenId.Core.Login.Actions
+namespace SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions
 {
     public interface IOpenIdLocalAuthenticateAction
     {

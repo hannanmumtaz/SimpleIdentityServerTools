@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using SimpleIdentityServer.Core.Common.Models;
 using SimpleIdentityServer.Core.Common.Repositories;
-using SimpleIdentityServer.Eid.OpenId.Core.Parameters;
+using SimpleIdentityServer.Authenticate.Eid.Core.Parameters;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace SimpleIdentityServer.Eid.OpenId.Core.Login.Actions
+namespace SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions
 {
     public interface ILocalAuthenticateAction
     {
@@ -78,8 +78,8 @@ namespace SimpleIdentityServer.Eid.OpenId.Core.Login.Actions
             }
 
             var nsmgr = new XmlNamespaceManager(xmlDocument.NameTable);
-            nsmgr.AddNamespace(Common.Constants.XmlPrefixes.Ds, Common.Constants.XmlNamespaces.Ds);
-            nsmgr.AddNamespace(Common.Constants.XmlPrefixes.Wsse, Common.Constants.XmlNamespaces.Wsse);
+            nsmgr.AddNamespace(SimpleIdentityServer.Eid.Common.Constants.XmlPrefixes.Ds, SimpleIdentityServer.Eid.Common.Constants.XmlNamespaces.Ds);
+            nsmgr.AddNamespace(SimpleIdentityServer.Eid.Common.Constants.XmlPrefixes.Wsse, SimpleIdentityServer.Eid.Common.Constants.XmlNamespaces.Wsse);
             var signatureNode = xmlDocument.SelectSingleNode("//ds:SignatureValue", nsmgr);
             if (signatureNode == null)
             {
@@ -141,9 +141,9 @@ namespace SimpleIdentityServer.Eid.OpenId.Core.Login.Actions
             }
             
             var nsmgr = new XmlNamespaceManager(xmlDocument.NameTable);
-            nsmgr.AddNamespace(Common.Constants.XmlPrefixes.Saml, Common.Constants.XmlNamespaces.Saml);
-            nsmgr.AddNamespace(Common.Constants.XmlPrefixes.Ds, Common.Constants.XmlNamespaces.Ds);
-            nsmgr.AddNamespace(Common.Constants.XmlPrefixes.Wsse, Common.Constants.XmlNamespaces.Wsse);
+            nsmgr.AddNamespace(SimpleIdentityServer.Eid.Common.Constants.XmlPrefixes.Saml, SimpleIdentityServer.Eid.Common.Constants.XmlNamespaces.Saml);
+            nsmgr.AddNamespace(SimpleIdentityServer.Eid.Common.Constants.XmlPrefixes.Ds, SimpleIdentityServer.Eid.Common.Constants.XmlNamespaces.Ds);
+            nsmgr.AddNamespace(SimpleIdentityServer.Eid.Common.Constants.XmlPrefixes.Wsse, SimpleIdentityServer.Eid.Common.Constants.XmlNamespaces.Wsse);
             var nodes = xmlDocument.SelectNodes("//saml:Attribute/saml:AttributeValue", nsmgr);
             var claims = new List<Claim>();
             var adr = new JObject();

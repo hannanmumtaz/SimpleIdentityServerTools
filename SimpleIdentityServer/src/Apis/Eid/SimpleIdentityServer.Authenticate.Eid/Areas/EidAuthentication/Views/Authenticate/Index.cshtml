@@ -6,7 +6,7 @@
     var passwordState = ViewData.ModelState["Password"];
 }
 
-@model SimpleIdentityServer.Eid.OpenId.ViewModels.LoginViewModel
+@model SimpleIdentityServer.Authenticate.Eid.ViewModels.LoginViewModel
 
 @section PageTitle
     {
@@ -20,8 +20,9 @@
         $(document).ready(function () {
             var connection = null;
             var connectWithEid = $("#eidLogin");
+            var url = '@Model.EidUrl';
             var launchSignalr = function () {
-                connection = new signalR.HubConnection("http://localhost:8001/sessionHub", { logger: signalR.LogLevel.Information });
+                connection = new signalR.HubConnection(url + "/sessionHub", { logger: signalR.LogLevel.Information });
                 connection.start().catch(err => console.error);
                 connection.on("Session", (response, session) => {
                     $("#submitXml").find("input[name='xml']").val(response.xml);

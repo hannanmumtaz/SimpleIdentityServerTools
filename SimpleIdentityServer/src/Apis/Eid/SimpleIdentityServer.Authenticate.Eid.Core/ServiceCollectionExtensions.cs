@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SimpleIdentityServer.Eid.OpenId.Core.Login;
-using SimpleIdentityServer.Eid.OpenId.Core.Login.Actions;
+using SimpleIdentityServer.Authenticate.Eid.Core.Login;
+using SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions;
 using System;
 
-namespace SimpleIdentityServer.Eid.OpenId.Core
+namespace SimpleIdentityServer.Authenticate.Eid.Core
 {
     public static class ServiceCollectionExtensions
     {
