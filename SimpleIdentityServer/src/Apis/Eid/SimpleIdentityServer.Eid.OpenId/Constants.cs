@@ -26,5 +26,12 @@ namespace SimpleIdentityServer.Eid.OpenId
             public const string Xml = "xml";
             public const string IdProviders = "id_providers";
         }
+
+        public static class EidAuthorizeViewModelNames
+        {
+            public const string Code = "code";
+            public const string Xml = "xml";
+            public const string IdProviders = "id_providers";
+        }
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.Eid.OpenId.Controllers
 {
+    [Area("EidWebsite")]
     public class ErrorController : BaseController
     {
         public ErrorController(IAuthenticationService authenticationService, IUserActions userActions, AuthenticateOptions authenticateOptions)

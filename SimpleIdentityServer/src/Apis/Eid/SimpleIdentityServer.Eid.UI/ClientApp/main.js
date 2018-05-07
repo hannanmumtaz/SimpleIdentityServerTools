@@ -11,7 +11,7 @@ class Main extends React.Component {
         return (<div className="container body">
             <nav className="navbar">
                 <div className="container">
-                    <label className="navbar-brand">Medikit</label>
+                    <label className="navbar-brand">EID application</label>
                 </div>
             </nav>
             <EidSession />

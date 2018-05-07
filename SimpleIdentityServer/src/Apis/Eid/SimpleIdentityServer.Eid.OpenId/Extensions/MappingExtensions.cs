@@ -18,5 +18,18 @@ namespace SimpleIdentityServer.Eid.OpenId.Extensions
                 Xml = viewModel.Xml
             };
         }
+
+        public static LocalAuthenticateParameter ToParameter(this EidAuthorizeViewModel viewModel)
+        {
+            if (viewModel == null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            return new LocalAuthenticateParameter
+            {
+                Xml = viewModel.Xml
+            };
+        }
     }
 }

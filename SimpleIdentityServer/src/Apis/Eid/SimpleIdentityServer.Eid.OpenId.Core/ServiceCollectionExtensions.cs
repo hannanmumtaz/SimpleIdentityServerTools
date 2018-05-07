@@ -16,6 +16,7 @@ namespace SimpleIdentityServer.Eid.OpenId.Core
 
             serviceCollection.AddTransient<ILoginActions, LoginActions>();
             serviceCollection.AddTransient<ILocalAuthenticateAction, LocalAuthenticateAction>();
+            serviceCollection.AddTransient<IOpenIdLocalAuthenticateAction, OpenIdLocalAuthenticateAction>();
             return serviceCollection;
         }
     }

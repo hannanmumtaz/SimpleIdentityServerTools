@@ -20,7 +20,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.FileProviders;
 using SimpleBus.Core;
 using SimpleIdentityServer.Core;
 using SimpleIdentityServer.Core.Common.DTOs;
@@ -152,7 +151,7 @@ namespace SimpleIdentityServer.Eid.OpenId.Controllers
 
             try
             {
-                var resourceOwner = _loginActions.LocalAuthenticate(loginViewModel.ToParameter());
+                var resourceOwner = await _loginActions.LocalAuthenticate(loginViewModel.ToParameter());
                 var claims = resourceOwner.Claims;
                 claims.Add(new Claim(ClaimTypes.AuthenticationInstant,
                     DateTimeOffset.UtcNow.ConvertToUnixTimestamp().ToString(CultureInfo.InvariantCulture),
@@ -236,7 +235,7 @@ namespace SimpleIdentityServer.Eid.OpenId.Controllers
             }
 
             await TranslateView(request.UiLocales);
-            var viewModel = new AuthorizeOpenIdViewModel
+            var viewModel = new EidAuthorizeViewModel
             {
                 Code = code
             };
@@ -246,7 +245,7 @@ namespace SimpleIdentityServer.Eid.OpenId.Controllers
         }
         
         [HttpPost]
-        public async Task<ActionResult> LocalLoginOpenId(AuthorizeOpenIdViewModel authorizeOpenId)
+        public async Task<ActionResult> LocalLoginOpenId(EidAuthorizeViewModel authorizeOpenId)
         {
             if (authorizeOpenId == null)
             {
@@ -277,7 +276,7 @@ namespace SimpleIdentityServer.Eid.OpenId.Controllers
                 }
 
                 // 4. Local authentication
-                var actionResult = await _authenticateActions.LocalOpenIdUserAuthentication(authorizeOpenId.ToParameter(),
+                var actionResult = await _loginActions.OpenIdLocalAuthenticate(authorizeOpenId.ToParameter(),
                     request.ToParameter(),
                     authorizeOpenId.Code);
                 var subject = actionResult.Claims.First(c => c.Type == SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.Subject).Value;
@@ -497,7 +496,7 @@ namespace SimpleIdentityServer.Eid.OpenId.Controllers
             loginViewModel.IdProviders = idProviders;
         }
 
-        private async Task SetIdProviders(AuthorizeOpenIdViewModel authorizeViewModel)
+        private async Task SetIdProviders(EidAuthorizeViewModel authorizeViewModel)
         {
             var schemes = (await _authenticationSchemeProvider.GetAllSchemesAsync()).Where(p => !string.IsNullOrWhiteSpace(p.DisplayName));
             var idProviders = new List<IdProviderViewModel>();

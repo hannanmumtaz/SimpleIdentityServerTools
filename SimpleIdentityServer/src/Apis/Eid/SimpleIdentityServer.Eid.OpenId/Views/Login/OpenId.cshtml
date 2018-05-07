@@ -1,18 +1,42 @@
 @using SimpleIdentityServer.Host
-
 @{
     ViewBag.Title = "Authenticate";
     var userNameState = ViewData.ModelState["UserName"];
     var passwordState = ViewData.ModelState["Password"];
 }
 
-@model SimpleIdentityServer.Host.ViewModels.AuthorizeOpenIdViewModel
-
+@model SimpleIdentityServer.Eid.OpenId.ViewModels.EidAuthorizeViewModel
 @section PageTitle
-{
+    {
     <h1>
         @ViewBag.Translations[SimpleIdentityServer.Core.Constants.StandardTranslationCodes.LoginCode]
     </h1>
+}
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var connection = null;
+            var connectWithEid = $("#eidLogin");
+            var launchSignalr = function () {
+                connection = new signalR.HubConnection("http://localhost:8001/sessionHub", { logger: signalR.LogLevel.Information });
+                connection.start().catch(err => console.error);
+                connection.on("Session", (response, session) => {
+                    $("#submitXml").find("input[name='xml']").val(response.xml);
+                    $("#submitXml").submit();
+                });
+            };
+
+            connectWithEid.click(function () {
+                if (!connection) {
+                    return;
+                }
+
+                connection.invoke("GetSession");
+            });
+            launchSignalr();
+        });
+    </script>
 }
 
 <div class="row">
@@ -30,12 +54,12 @@
             else
             {
                 using (Html.BeginForm("ExternalLoginOpenId", "Authenticate", new { code = Model.Code }))
-                 {
-                     foreach (var loginProvider in Model.IdProviders)
-                     {
-                         <button type="submit" class="btn btn-default" id="@loginProvider.AuthenticationScheme" name="provider" value="@loginProvider.AuthenticationScheme" title="Log in using your @loginProvider.DisplayName account">@loginProvider.DisplayName</button>
-                     }
-                 }
+                {
+                    foreach (var loginProvider in Model.IdProviders)
+                    {
+                        <button type="submit" class="btn btn-default" id="@loginProvider.AuthenticationScheme" name="provider" value="@loginProvider.AuthenticationScheme" title="Log in using your @loginProvider.DisplayName account">@loginProvider.DisplayName</button>
+                    }
+                }
             }
         </div>
     </div>
@@ -47,52 +71,11 @@
         </div>
         <div>
             @Html.ValidationMessage("invalid_credentials")
-            <form name="form" method="POST" action="@Url.Action("LocalLoginOpenId")">
-                <fieldset>
-                    <input type="hidden" value="@Model.Code" name="Code" />
-                    @if (userNameState != null && userNameState.Errors.Any())
-                    {
-                        <div class="form-group has-error">
-                            <label class="control-label">@ViewBag.Translations[SimpleIdentityServer.Core.Constants.StandardTranslationCodes.UserNameCode]</label>
-                            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="right" title="@string.Join(",", userNameState.Errors.Select(e => e.ErrorMessage))"></span>
-                            <input maxlength="100" class="form-control" value="@Model.UserName" name="UserName" type="text" />
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="form-group">
-                            <label>@ViewBag.Translations[SimpleIdentityServer.Core.Constants.StandardTranslationCodes.UserNameCode]</label>
-                            <input maxlength="100" class="form-control" value="@Model.UserName" name="UserName" type="text" />
-                        </div>
-                    }
-
-                    @if (passwordState != null && passwordState.Errors.Any())
-                    {
-                        <div class="form-group has-error">
-                            <label class="control-label">@ViewBag.Translations[SimpleIdentityServer.Core.Constants.StandardTranslationCodes.PasswordCode]</label>
-                            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="right" title="@string.Join(",", passwordState.Errors.Select(e => e.ErrorMessage))"></span>
-                            <input maxlength="100" class="form-control" value="@Model.Password" name="Password" type="password" />
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="form-group">
-                            <label>@ViewBag.Translations[SimpleIdentityServer.Core.Constants.StandardTranslationCodes.PasswordCode]</label>
-                            <input maxlength="100" class="form-control" value="@Model.Password" name="Password" type="password" />
-                        </div>
-                    }
-
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" value="@Model.IsChecked" name="IsChecked" />
-                            <strong>@ViewBag.Translations[SimpleIdentityServer.Core.Constants.StandardTranslationCodes.RememberMyLoginCode]</strong>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary">@ViewBag.Translations[SimpleIdentityServer.Core.Constants.StandardTranslationCodes.LoginCode]</button>
-                    </div>
-                </fieldset>
+            <form id="submitXml" method="post" action="@Url.Action("LocalLoginOpenId")">
+                <input type="hidden" value="@Model.Code" name="code" />
+                <input type="hidden" name="xml" />
             </form>
+            <button type="button" class="btn btn-primary" id="eidLogin">Connect with EID</button>
         </div>
     </div>
 </div>

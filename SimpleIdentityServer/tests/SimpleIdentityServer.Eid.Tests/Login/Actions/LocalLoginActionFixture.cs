@@ -1,32 +1,36 @@
-﻿using SimpleIdentityServer.Eid.OpenId.Core.Login.Actions;
+﻿using Moq;
+using SimpleIdentityServer.Core.Repositories;
+using SimpleIdentityServer.Eid.OpenId.Core.Login.Actions;
 using SimpleIdentityServer.Eid.OpenId.Core.Parameters;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace SimpleIdentityServer.Eid.Tests.Login.Actions
 {
     public class LocalLoginActionFixture
     {
+        private Mock<IResourceOwnerRepository> _resourceOwnerRepositoryStub;
         private ILocalAuthenticateAction _localAuthenticateAction;
 
         [Fact]
-        public void WhenPassingNullParameterThenExceptionsAreThrown()
+        public async Task WhenPassingNullParameterThenExceptionsAreThrown()
         {
             InitializeFakeObjects();
-            Assert.Throws<ArgumentNullException>(() => _localAuthenticateAction.Execute(null));
-            Assert.Throws<ArgumentNullException>(() => _localAuthenticateAction.Execute(new LocalAuthenticateParameter()));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _localAuthenticateAction.Execute(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _localAuthenticateAction.Execute(new LocalAuthenticateParameter()));
         }
 
         [Fact]
-        public void WhenAuthenticateUserThenResourceOwnerIsReturned()
+        public async Task WhenAuthenticateUserThenResourceOwnerIsReturned()
         {
             // ARRANGE
             InitializeFakeObjects();
             var xml = File.ReadAllText("SamlRequest.XML");
 
             // ACT
-            var resourceOwner = _localAuthenticateAction.Execute(new LocalAuthenticateParameter
+            var resourceOwner = await _localAuthenticateAction.Execute(new LocalAuthenticateParameter
             {
                 Xml = xml
             });
@@ -38,7 +42,8 @@ namespace SimpleIdentityServer.Eid.Tests.Login.Actions
 
         private void InitializeFakeObjects()
         {
-            _localAuthenticateAction = new LocalAuthenticateAction();
+            _resourceOwnerRepositoryStub = new Mock<IResourceOwnerRepository>();
+            _localAuthenticateAction = new LocalAuthenticateAction(_resourceOwnerRepositoryStub.Object);
         }
     }
 }

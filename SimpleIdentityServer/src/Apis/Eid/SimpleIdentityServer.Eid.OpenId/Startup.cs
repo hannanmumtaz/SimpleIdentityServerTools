@@ -25,6 +25,7 @@ using SimpleIdentityServer.EF;
 using SimpleIdentityServer.EF.Extensions;
 using SimpleIdentityServer.EF.InMemory;
 using SimpleIdentityServer.Eid.OpenId.Core;
+using SimpleIdentityServer.Eid.OpenId.Extensions;
 using SimpleIdentityServer.EventStore.Handler;
 using SimpleIdentityServer.EventStore.InMemory;
 using SimpleIdentityServer.Host;
@@ -90,7 +91,7 @@ namespace SimpleIdentityServer.Eid.OpenId
         {
             services.AddEventStoreInMemoryEF();
             services.AddSimpleBusInMemory();
-            services.AddEventStoreBusHandler();
+            services.AddEventStoreBusHandler(new EventStoreHandlerOptions(ServerTypes.OPENID));
         }
 
         private void ConfigureOauthRepositorySqlServer(IServiceCollection services)

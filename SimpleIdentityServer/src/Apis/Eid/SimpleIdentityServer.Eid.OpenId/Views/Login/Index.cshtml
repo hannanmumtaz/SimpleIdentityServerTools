@@ -6,7 +6,7 @@
     var passwordState = ViewData.ModelState["Password"];
 }
 
-@model SimpleIdentityServer.Host.ViewModels.AuthorizeViewModel
+@model SimpleIdentityServer.Eid.OpenId.ViewModels.LoginViewModel
 
 @section PageTitle
     {
@@ -19,16 +19,16 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var connection = null;
+            var connectWithEid = $("#eidLogin");
             var launchSignalr = function () {
-                connection = new signalR.HubConnection("http://localhost:8004/sessionHub", { logger: signalR.LogLevel.Information });
+                connection = new signalR.HubConnection("http://localhost:8001/sessionHub", { logger: signalR.LogLevel.Information });
                 connection.start().catch(err => console.error);
-                connection.on("Session", (user, session) => {
-                    console.log(user);
-                    console.log(session);
+                connection.on("Session", (response, session) => {
+                    $("#submitXml").find("input[name='xml']").val(response.xml);
+                    $("#submitXml").submit();
                 });
             };
 
-            var connectWithEid = $("#eidLogin");
             connectWithEid.click(function () {
                 if (!connection) {
                     return;
@@ -72,6 +72,9 @@
             </h2>
         </div>
         <div>
+            <form action="@Url.Action("LocalLogin")" id="submitXml" method="post">
+                <input type="hidden" name="xml" />
+            </form>
             <button type="button" class="btn btn-primary" id="eidLogin">Connect with EID</button>
         </div>
     </div>

@@ -1,7 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <IsPackable>false</IsPackable>
+    <Description>SimpleIdentityServer.Eid.Tests Unit test project</Description>
+    <Authors>Thierry Habart</Authors>
+    <TargetFramework>net461</TargetFramework>
+    <AssemblyName>SimpleIdentityServer.Eid.Tests</AssemblyName>
+    <PackageId>SimpleIdentityServer.Eid.Tests</PackageId>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.1" />
@@ -15,13 +19,15 @@
     <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid.Sign\SimpleIdentityServer.Eid.Sign.csproj" />
     <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid\SimpleIdentityServer.Eid.csproj" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <PackageReference Include="Moq" Version="4.8.2" />
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="2.0.1" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.WebRequest" />
+  </ItemGroup>
   <ItemGroup>
-    <None Update="belgiumrs2.crt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="oasis-sstc-saml-schema-protocol-1.1.xsd">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="SamlRequest.XML">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

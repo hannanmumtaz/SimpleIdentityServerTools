@@ -24,10 +24,12 @@
 
   <ItemGroup>
     <PackageReference Include="System.Security.Cryptography.Xml" Version="4.4.1" />
-    <PackageReference Include="SimpleIdentityServer.Core" Version="3.0.0-rc4" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Core.Common\SimpleIdentityServer.Core.Common.csproj" />
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Core\SimpleIdentityServer.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.EF\SimpleIdentityServer.EF.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Eid.Common\SimpleIdentityServer.Eid.Common.csproj" />
   </ItemGroup>
 </Project>
