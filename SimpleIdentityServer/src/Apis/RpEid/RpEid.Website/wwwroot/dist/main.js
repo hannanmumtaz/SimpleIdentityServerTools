@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "22ffa16508025a24d6c6"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "f7f95da3124ff7cf8a6d"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -18169,7 +18169,7 @@ module.exports = function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(process) {
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -18181,7 +18181,21 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactI18next = __webpack_require__(132);
+
+var _materialUi = __webpack_require__(206);
+
+var _Form = __webpack_require__(184);
+
+var _Input = __webpack_require__(61);
+
+var _Input2 = _interopRequireDefault(_Input);
+
+var _styles = __webpack_require__(89);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -18189,26 +18203,158 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var styles = function styles(theme) {
+    return {
+        margin: {
+            margin: theme.spacing.unit
+        }
+    };
+};
+
 var Home = function (_Component) {
     _inherits(Home, _Component);
 
-    function Home() {
+    function Home(props) {
         _classCallCheck(this, Home);
 
-        return _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, props));
+
+        _this.refresh = _this.refresh.bind(_this);
+        _this.requestAccess = _this.requestAccess.bind(_this);
+        _this.handleChange = _this.handleChange.bind(_this);
+        _this.state = {
+            isAccountEnabled: false,
+            isAccessRequested: false,
+            isLoading: false
+        };
+        return _this;
     }
 
     _createClass(Home, [{
-        key: "render",
-        value: function render() {
-            return _react2.default.createElement("div", null);
+        key: 'refresh',
+        value: function refresh() {}
+    }, {
+        key: 'requestAccess',
+        value: function requestAccess() {}
+    }, {
+        key: 'handleChange',
+        value: function handleChange(e) {
+            var self = this;
+            self.setState(_defineProperty({}, e.target.name, e.target.value));
         }
+    }, {
+        key: 'render',
+        value: function render() {
+            var self = this;
+            var _self$props = self.props,
+                t = _self$props.t,
+                classes = _self$props.classes;
+
+            return _react2.default.createElement(
+                'div',
+                { className: 'block' },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'block-header' },
+                    _react2.default.createElement(
+                        _materialUi.Grid,
+                        { container: true },
+                        _react2.default.createElement(
+                            _materialUi.Grid,
+                            { item: true, md: 5, sm: 12 },
+                            _react2.default.createElement(
+                                'h4',
+                                null,
+                                t('homeTitle')
+                            ),
+                            _react2.default.createElement(
+                                'i',
+                                null,
+                                t('homeDescription')
+                            )
+                        ),
+                        _react2.default.createElement(
+                            _materialUi.Grid,
+                            { item: true, md: 7, sm: 12 },
+                            _react2.default.createElement(
+                                'ul',
+                                { className: 'breadcrumb float-md-right' },
+                                _react2.default.createElement(
+                                    'li',
+                                    { className: 'breadcrumb-item' },
+                                    t('websiteTitle')
+                                ),
+                                _react2.default.createElement(
+                                    'li',
+                                    { className: 'breadcrumb-item' },
+                                    t('home')
+                                )
+                            )
+                        )
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'card' },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'header' },
+                        _react2.default.createElement(
+                            'h4',
+                            { style: { display: "inline-block" } },
+                            t('home')
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'body' },
+                        self.state.isLoading ? _react2.default.createElement(_materialUi.CircularProgress, null) : _react2.default.createElement(
+                            'div',
+                            null,
+                            self.state.isAccountEnabled === false && self.state.isAccessRequested === false && _react2.default.createElement(
+                                'div',
+                                null,
+                                _react2.default.createElement(
+                                    _Form.FormControl,
+                                    { fullWidth: true, className: classes.margin },
+                                    _react2.default.createElement(
+                                        _Input.InputLabel,
+                                        null,
+                                        t('emailAddress')
+                                    ),
+                                    _react2.default.createElement(_Input2.default, { name: 'email', onChange: self.handleChange, value: self.state.email })
+                                ),
+                                _react2.default.createElement(
+                                    _materialUi.Button,
+                                    { variant: 'raised', color: 'primary', onClick: this.requestAccess },
+                                    t('requestAccess')
+                                )
+                            ),
+                            self.state.isAccountEnabled === false && self.state.isAccessRequested === true && _react2.default.createElement(
+                                _materialUi.Typography,
+                                { variant: 'caption' },
+                                t('accessHasBeenRequested')
+                            ),
+                            self.state.isAccountEnabled === true && _react2.default.createElement(
+                                _materialUi.Typography,
+                                { variant: 'caption' },
+                                t('yourAccountIsEnabled')
+                            )
+                        )
+                    )
+                )
+            );
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {}
     }]);
 
     return Home;
 }(_react.Component);
 
-exports.default = Home;
+exports.default = (0, _reactI18next.translate)('common', { wait: process && !process.release })((0, _styles.withStyles)(styles)(Home));
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(128)))
 
 /***/ }),
 /* 238 */
@@ -18225,10 +18371,15 @@ var _login = __webpack_require__(239);
 
 var _login2 = _interopRequireDefault(_login);
 
+var _users = __webpack_require__(621);
+
+var _users2 = _interopRequireDefault(_users);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.Home = _home2.default;
 exports.Login = _login2.default;
+exports.Users = _users2.default;
 
 /***/ }),
 /* 239 */
@@ -18831,6 +18982,17 @@ var Layout = function (_Component) {
                                 t('homeMenuItem')
                             )
                         ),
+                        _react2.default.createElement(
+                            _List.ListItem,
+                            { button: true, onClick: function onClick() {
+                                    return self.navigate('/users');
+                                } },
+                            _react2.default.createElement(
+                                _List.ListItemText,
+                                null,
+                                t('usersMenuItem')
+                            )
+                        ),
                         this.state.isLoggedIn ? _react2.default.createElement(
                             _List.ListItem,
                             { button: true, onClick: function onClick() {
@@ -18964,7 +19126,9 @@ var routes = exports.routes = _react2.default.createElement(
     null,
     _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _components.Home }),
     _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/home', component: _components.Home }),
-    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/login', component: _components.Login })
+    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/login', component: _components.Login }),
+    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/users', component: _components.Users }),
+    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/profile', component: _components.Profile })
 );
 
 /***/ }),
@@ -74952,6 +75116,294 @@ module.exports = function(module) {
 __webpack_require__(227);
 module.exports = __webpack_require__(226);
 
+
+/***/ }),
+/* 621 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactI18next = __webpack_require__(132);
+
+var _Table = __webpack_require__(499);
+
+var _Table2 = _interopRequireDefault(_Table);
+
+var _materialUi = __webpack_require__(206);
+
+var _Done = __webpack_require__(623);
+
+var _Done2 = _interopRequireDefault(_Done);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Users = function (_Component) {
+    _inherits(Users, _Component);
+
+    function Users(props) {
+        _classCallCheck(this, Users);
+
+        var _this = _possibleConstructorReturn(this, (Users.__proto__ || Object.getPrototypeOf(Users)).call(this, props));
+
+        _this.enableAccounts = _this.enableAccounts.bind(_this);
+        _this.refresh = _this.refresh.bind(_this);
+        _this.handleRowClick = _this.handleRowClick.bind(_this);
+        _this.handleAllSelections = _this.handleAllSelections.bind(_this);
+        _this.state = {
+            users: [],
+            isConfirmedDispayed: false,
+            isLoading: false
+        };
+        return _this;
+    }
+
+    _createClass(Users, [{
+        key: 'enableAccounts',
+        value: function enableAccounts() {}
+    }, {
+        key: 'refresh',
+        value: function refresh() {
+            var self = this;
+            self.setState({
+                isLoading: true
+            });
+            self.setState({
+                users: [{ subject: '01', name: 'thabart', isChecked: false }]
+            });
+            self.setState({
+                isLoading: false
+            });
+        }
+    }, {
+        key: 'handleRowClick',
+        value: function handleRowClick(e, user) {
+            user.isChecked = e.target.checked;
+            var users = this.state.users;
+            var nbSelectedRecords = users.filter(function (r) {
+                return r.isChecked;
+            }).length;
+            this.setState({
+                users: users,
+                isConfirmedDispayed: nbSelectedRecords > 0
+            });
+        }
+    }, {
+        key: 'handleAllSelections',
+        value: function handleAllSelections(e) {
+            var checked = e.target.checked;
+            var users = this.state.users;
+            users.forEach(function (r) {
+                r.isChecked = checked;
+            });
+            this.setState({
+                users: users,
+                isConfirmedDispayed: checked
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var t = this.props.t;
+
+            var self = this;
+            var rows = [];
+            if (self.state.users) {
+                self.state.users.forEach(function (user) {
+                    rows.push(_react2.default.createElement(
+                        _Table.TableRow,
+                        { key: user.subject },
+                        _react2.default.createElement(
+                            _Table.TableCell,
+                            null,
+                            _react2.default.createElement(_materialUi.Checkbox, { color: 'primary', checked: user.isChecked, onChange: function onChange(e) {
+                                    return self.handleRowClick(e, user);
+                                } })
+                        ),
+                        _react2.default.createElement(
+                            _Table.TableCell,
+                            null,
+                            user.subject
+                        ),
+                        _react2.default.createElement(
+                            _Table.TableCell,
+                            null,
+                            user.name
+                        )
+                    ));
+                });
+            }
+
+            return _react2.default.createElement(
+                'div',
+                { className: 'block' },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'block-header' },
+                    _react2.default.createElement(
+                        _materialUi.Grid,
+                        { container: true },
+                        _react2.default.createElement(
+                            _materialUi.Grid,
+                            { item: true, md: 5, sm: 12 },
+                            _react2.default.createElement(
+                                'h4',
+                                null,
+                                t('usersTitle')
+                            ),
+                            _react2.default.createElement(
+                                'i',
+                                null,
+                                t('usersDescription')
+                            )
+                        ),
+                        _react2.default.createElement(
+                            _materialUi.Grid,
+                            { item: true, md: 7, sm: 12 },
+                            _react2.default.createElement(
+                                'ul',
+                                { className: 'breadcrumb float-md-right' },
+                                _react2.default.createElement(
+                                    'li',
+                                    { className: 'breadcrumb-item' },
+                                    t('websiteTitle')
+                                ),
+                                _react2.default.createElement(
+                                    'li',
+                                    { className: 'breadcrumb-item' },
+                                    t('users')
+                                )
+                            )
+                        )
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'card' },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'header' },
+                        _react2.default.createElement(
+                            'h4',
+                            { style: { display: "inline-block" } },
+                            t('listOfUsers')
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { style: { float: "right" } },
+                            self.state.isConfirmedDispayed && _react2.default.createElement(
+                                _materialUi.IconButton,
+                                { onClick: self.enableAccounts },
+                                _react2.default.createElement(_Done2.default, null)
+                            )
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'body' },
+                        self.state.isLoading ? _react2.default.createElement(_materialUi.CircularProgress, null) : _react2.default.createElement(
+                            'div',
+                            null,
+                            _react2.default.createElement(
+                                _Table2.default,
+                                null,
+                                _react2.default.createElement(
+                                    _Table.TableHead,
+                                    null,
+                                    _react2.default.createElement(
+                                        _Table.TableRow,
+                                        null,
+                                        _react2.default.createElement(_Table.TableCell, null),
+                                        _react2.default.createElement(
+                                            _Table.TableCell,
+                                            null,
+                                            t('subject')
+                                        ),
+                                        _react2.default.createElement(
+                                            _Table.TableCell,
+                                            null,
+                                            t('name')
+                                        )
+                                    )
+                                ),
+                                _react2.default.createElement(
+                                    _Table.TableBody,
+                                    null,
+                                    _react2.default.createElement(
+                                        _Table.TableRow,
+                                        null,
+                                        _react2.default.createElement(
+                                            _Table.TableCell,
+                                            null,
+                                            _react2.default.createElement(_materialUi.Checkbox, { color: 'primary', onChange: self.handleAllSelections })
+                                        ),
+                                        _react2.default.createElement(_Table.TableCell, null),
+                                        _react2.default.createElement(_Table.TableCell, null)
+                                    ),
+                                    rows
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.refresh();
+        }
+    }]);
+
+    return Users;
+}(_react.Component);
+
+exports.default = (0, _reactI18next.translate)('common', { wait: process && !process.release })(Users);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(128)))
+
+/***/ }),
+/* 622 */,
+/* 623 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _createSvgIcon = __webpack_require__(36);
+
+var _createSvgIcon2 = _interopRequireDefault(_createSvgIcon);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = (0, _createSvgIcon2.default)(_react2.default.createElement(
+  'g',
+  null,
+  _react2.default.createElement('path', { d: 'M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z' })
+), 'Done');
 
 /***/ })
 /******/ ]);

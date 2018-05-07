@@ -240,6 +240,10 @@ class Layout extends Component {
                     <ListItem button onClick={() => self.navigate('/home')}>
                         <ListItemText>{t('homeMenuItem')}</ListItemText>
                     </ListItem>
+                    {/* Users menu item */}
+                    <ListItem button onClick={() => self.navigate('/users')}>
+                        <ListItemText>{t('usersMenuItem')}</ListItemText>
+                    </ListItem>
                     {/* Connect or disconnect */}
                     {(this.state.isLoggedIn ? (
                         <ListItem button onClick={() => self.disconnect()}>
