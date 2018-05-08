@@ -26,6 +26,7 @@ namespace SimpleIdentityServer.Manager.Client
             public const string ScopesEndpoint = "scopes_endpoint";
             public const string ResourceOwnersEndpoint = "resourceowners_endpoint";
             public const string ManageEndpoint = "manage_endpoint";
+            public const string ClaimsEndpoint = "claims_endpoint";
         }
 
         public static class GetClientsResponseNames

@@ -11,7 +11,7 @@ namespace SimpleIdentityServer.Manager.Core.Api.Claims
         Task<bool> Add(AddClaimParameter request);
         Task<bool> Delete(string claimCode);
         Task<ClaimAggregate> Get(string claimCode);
-        Task<SearchClaimsResult> Execute(SearchClaimsParameter parameter);
+        Task<SearchClaimsResult> Search(SearchClaimsParameter parameter);
     }
 
     internal sealed class ClaimActions : IClaimActions
@@ -45,7 +45,7 @@ namespace SimpleIdentityServer.Manager.Core.Api.Claims
             return _getClaimAction.Execute(claimCode);
         }
 
-        public Task<SearchClaimsResult> Execute(SearchClaimsParameter parameter)
+        public Task<SearchClaimsResult> Search(SearchClaimsParameter parameter)
         {
             return _searchClaimsAction.Execute(parameter);
         }

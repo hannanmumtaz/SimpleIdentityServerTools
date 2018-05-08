@@ -52,5 +52,7 @@ namespace SimpleIdentityServer.Manager.Core.Errors
         public const string TheFileIsNotWellFormed = "the file is not well formed";
         public const string ClaimExists = "a claim already exists with the same name";
         public const string ClaimDoesntExist = "the claim doesn't exist";
+        public const string CannotInsertClaimIdentifier = "cannot insert claim identifier";
+        public const string CannotRemoveClaimIdentifier = "cannot remove claim identifier";
     }
 }

@@ -5,7 +5,7 @@ import { SessionService } from './services';
 import Layout from './layout';
 import { Login, About, Logs, Resources, ViewAggregate, ViewLog,
  OAuthClients, OpenidClients, OAuthScopes, OpenidScopes, ResourceOwners, ViewResource, ViewClient, ViewScope,
- AddScope, Dashboard, ViewUser } from './components';
+ AddScope, Dashboard, ViewUser, Claims } from './components';
 
 export const routes = (<Layout>
     <Route exact path='/' component={About} />
@@ -18,6 +18,7 @@ export const routes = (<Layout>
     { !process.env.IS_MANAGE_DISABLED && (<Route exact path='/authscopes' component={OAuthScopes} />) }
     { !process.env.IS_MANAGE_DISABLED && (<Route exact path='/openidscopes' component={OpenidScopes} />) }
     { !process.env.IS_MANAGE_DISABLED && (<Route exact path='/resourceowners' component={ResourceOwners} />) }
+    { !process.env.IS_MANAGE_DISABLED && (<Route exact path='/claims' component={Claims} />) }
     { !process.env.IS_MANAGE_DISABLED && (<Route exact path='/viewClient/:type/:id/:action?' component={ViewClient} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route exact path='/viewScope/:type/:id' component={ViewScope} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route exact path='/addScope/:type' component={AddScope} />)}

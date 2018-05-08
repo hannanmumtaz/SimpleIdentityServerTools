@@ -33,6 +33,11 @@ namespace SimpleIdentityServer.Manager.Core.Api.Claims.Actions
                 throw new IdentityServerManagerException(ErrorCodes.InvalidRequestCode, ErrorDescriptions.ClaimDoesntExist);
             }
 
+            if (claim.IsIdentifier)
+            {
+                throw new IdentityServerManagerException(ErrorCodes.InvalidRequestCode, ErrorDescriptions.CannotRemoveClaimIdentifier);
+            }
+
             return await _claimRepository.Delete(claimCode);
         }
     }

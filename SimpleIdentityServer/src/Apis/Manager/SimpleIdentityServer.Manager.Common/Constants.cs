@@ -36,6 +36,11 @@
             public const string ScopeTypes = "types";
         }
 
+        public static class SearchClaimNames
+        {
+            public const string Codes = "codes";
+        }
+
         public static class ClientSecretNames
         {
             public const string Type = "type";

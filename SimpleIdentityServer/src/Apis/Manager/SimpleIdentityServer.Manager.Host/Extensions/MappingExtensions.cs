@@ -34,6 +34,36 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
     {
         #region To parameters
 
+        public static AddClaimParameter ToParameter(this ClaimResponse request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            return new AddClaimParameter
+            {
+                Code = request.Code,
+                IsIdentifier = request.IsIdentifier
+            };
+        }
+
+        public static SearchClaimsParameter ToParameter(this SearchClaimsRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            return new SearchClaimsParameter
+            {
+                Count = request.NbResults,
+                ClaimKeys = request.Codes,
+                StartIndex = request.StartIndex,
+                Order = request.Order == null ? null : request.Order.ToParameter()
+            };
+        }
+
         public static SearchScopesParameter ToSearchScopesParameter(this SearchScopesRequest parameter)
         {
             if (parameter == null)
@@ -424,6 +454,22 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
 
         #region To DTOs
 
+        public static ClaimResponse ToDto(this ClaimAggregate claim)
+        {
+            if (claim == null)
+            {
+                throw new ArgumentNullException(nameof(claim));
+            }
+
+            return new ClaimResponse
+            {
+                Code = claim.Code,
+                CreateDateTime = claim.CreateDateTime,
+                IsIdentifier = claim.IsIdentifier,
+                UpdateDateTime = claim.UpdateDateTime
+            };
+        }
+
         public static SearchScopesResponse ToDto(this SearchScopeResult parameter)
         {
             if (parameter == null)
@@ -466,6 +512,21 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
                 StartIndex = parameter.StartIndex,
                 TotalResults = parameter.TotalResults,
                 Content = parameter.Content == null ? new List<ClientResponse>() : parameter.Content.Select(c => ToDto(c))
+            };
+        }
+
+        public static SearchClaimsResponse ToDto(this SearchClaimsResult parameter)
+        {
+            if (parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
+
+            return new SearchClaimsResponse
+            {
+                StartIndex = parameter.StartIndex,
+                TotalResults = parameter.TotalResults,
+                Content = parameter.Content == null ? new List<ClaimResponse>() : parameter.Content.Select(c => ToDto(c))
             };
         }
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.Client;
 using SimpleIdentityServer.Configuration.Client;
+using SimpleIdentityServer.ResourceManager.Core.Api.Claims;
+using SimpleIdentityServer.ResourceManager.Core.Api.Claims.Actions;
 using SimpleIdentityServer.ResourceManager.Core.Api.Clients;
 using SimpleIdentityServer.ResourceManager.Core.Api.Clients.Actions;
 using SimpleIdentityServer.ResourceManager.Core.Api.Profile;
@@ -57,6 +59,11 @@ namespace SimpleIdentityServer.ResourceManager.Core
             services.AddTransient<IGetResourceOwnerAction, GetResourceOwnerAction>();
             services.AddTransient<ISearchResourceOwnersAction, SearchResourceOwnersAction>();
             services.AddTransient<IUpdateResourceOwnerAction, UpdateResourceOwnerAction>();
+            services.AddTransient<IClaimActions, ClaimActions>();
+            services.AddTransient<IAddClaimAction, AddClaimAction>();
+            services.AddTransient<IDeleteClaimAction, DeleteClaimAction>();
+            services.AddTransient<IGetClaimAction, GetClaimAction>();
+            services.AddTransient<ISearchClaimsAction, SearchClaimsAction>();
             return services;
         }
 

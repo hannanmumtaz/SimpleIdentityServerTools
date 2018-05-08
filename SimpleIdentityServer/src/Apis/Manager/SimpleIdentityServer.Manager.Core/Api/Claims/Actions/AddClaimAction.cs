@@ -33,6 +33,11 @@ namespace SimpleIdentityServer.Manager.Core.Api.Claims.Actions
                 throw new ArgumentNullException(nameof(request.Code));
             }
 
+            if (request.IsIdentifier)
+            {
+                throw new IdentityServerManagerException(ErrorCodes.InvalidRequestCode, ErrorDescriptions.CannotInsertClaimIdentifier);
+            }
+
             var claim = await _claimRepository.GetAsync(request.Code);
             if (claim != null)
             {

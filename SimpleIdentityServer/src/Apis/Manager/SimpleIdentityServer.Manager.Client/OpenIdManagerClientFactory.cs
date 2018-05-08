@@ -21,6 +21,7 @@ using SimpleIdentityServer.Manager.Client.Clients;
 using SimpleIdentityServer.Manager.Client.Factories;
 using SimpleIdentityServer.Manager.Client.Scopes;
 using SimpleIdentityServer.Manager.Client.ResourceOwners;
+using SimpleIdentityServer.Manager.Client.Claims;
 
 namespace SimpleIdentityServer.Manager.Client
 {
@@ -30,6 +31,7 @@ namespace SimpleIdentityServer.Manager.Client
         IOpenIdClients GetOpenIdsClient();
         IScopeClient GetScopesClient();
         IResourceOwnerClient GetResourceOwnerClient();
+        IClaimsClient GetClaimsClient();
     }
 
     internal sealed class OpenIdManagerClientFactory : IOpenIdManagerClientFactory
@@ -67,6 +69,12 @@ namespace SimpleIdentityServer.Manager.Client
             return scopesClient;
         }
 
+        public IClaimsClient GetClaimsClient()
+        {
+            var claimsClient = (IClaimsClient)_serviceProvider.GetService(typeof(IClaimsClient));
+            return claimsClient;
+        }
+
         private static void RegisterDependencies(IServiceCollection serviceCollection)
         {
             // Register clients
@@ -74,7 +82,8 @@ namespace SimpleIdentityServer.Manager.Client
             serviceCollection.AddTransient<IConfigurationClient, ConfigurationClient>();
             serviceCollection.AddTransient<IScopeClient, ScopeClient>();
             serviceCollection.AddTransient<IResourceOwnerClient, ResourceOwnerClient>();
-            
+            serviceCollection.AddTransient<IClaimsClient, ClaimsClient>();
+
             // Regsiter factories
             serviceCollection.AddTransient<IHttpClientFactory, HttpClientFactory>();
 
@@ -98,6 +107,10 @@ namespace SimpleIdentityServer.Manager.Client
             serviceCollection.AddTransient<IUpdateResourceOwnerOperation, UpdateResourceOwnerOperation>();
             serviceCollection.AddTransient<ISearchScopesOperation, SearchScopesOperation>();
             serviceCollection.AddTransient<ISearchResourceOwnersOperation, SearchResourceOwnersOperation>();
+            serviceCollection.AddTransient<IAddClaimOperation, AddClaimOperation>();
+            serviceCollection.AddTransient<IDeleteClaimOperation, DeleteClaimOperation>();
+            serviceCollection.AddTransient<IGetClaimOperation, GetClaimOperation>();
+            serviceCollection.AddTransient<ISearchClaimsOperation, SearchClaimsOperation>();
         }
     }
 }

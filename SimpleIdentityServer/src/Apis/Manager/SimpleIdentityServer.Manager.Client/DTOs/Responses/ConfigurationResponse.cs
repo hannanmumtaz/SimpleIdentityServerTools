@@ -8,5 +8,6 @@
         public string ScopesEndpoint { get; set; }
         public string ResourceOwnersEndpoint { get; set; }
         public string ManageEndpoint { get; set; }
+        public string ClaimsEndpoint { get; set; }
     }
 }

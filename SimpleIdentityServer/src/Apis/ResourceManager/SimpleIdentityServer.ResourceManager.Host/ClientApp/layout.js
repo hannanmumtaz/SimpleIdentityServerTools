@@ -17,6 +17,7 @@ import Face from '@material-ui/icons/Face';
 import Language from '@material-ui/icons/Language';
 import Label from '@material-ui/icons/Label';
 import Lock from '@material-ui/icons/Lock';
+import Assignment from '@material-ui/icons/Assignment';
 import Collapse from 'material-ui/transitions/Collapse';
 
 const drawerWidth = 300;
@@ -418,6 +419,10 @@ class Layout extends Component {
                     {(self.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
                         <Collapse in={this.state.isManageOpenidServerOpened}>
                             <List>
+                                <ListItem className={classes.nested} button onClick={() => self.navigate('/claims')}>
+                                    <ListItemIcon><Assignment /></ListItemIcon>
+                                    <ListItemText>{t('claims')}</ListItemText>
+                                </ListItem>
                                 <ListItem className={classes.nested} button onClick={() => self.navigate('/resourceowners')}>
                                     <ListItemIcon><Face /></ListItemIcon>
                                     <ListItemText>{t('resourceOwners')}</ListItemText>

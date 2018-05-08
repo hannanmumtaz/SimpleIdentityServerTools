@@ -46,6 +46,7 @@ namespace SimpleIdentityServer.Manager.Client.Configuration
                 ManageEndpoint = jObj.GetValue(Constants.ConfigurationResponseNames.ManageEndpoint).ToString(),
                 ResourceOwnersEndpoint = jObj.GetValue(Constants.ConfigurationResponseNames.ResourceOwnersEndpoint).ToString(),
                 ScopesEndpoint = jObj.GetValue(Constants.ConfigurationResponseNames.ScopesEndpoint).ToString(),
+                ClaimsEndpoint = jObj.GetValue(Constants.ConfigurationResponseNames.ClaimsEndpoint).ToString()
             };
         }
     }

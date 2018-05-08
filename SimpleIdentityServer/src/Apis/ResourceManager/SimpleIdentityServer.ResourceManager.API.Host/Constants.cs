@@ -16,6 +16,7 @@
             public const string ResourceOwnersController = "resourceowners";
             public const string ResourcesController = "resources";
             public const string ProfileController = "profile";
+            public const string ClaimsController = "claims";
         }
 
         public static class ProfileResponseNames

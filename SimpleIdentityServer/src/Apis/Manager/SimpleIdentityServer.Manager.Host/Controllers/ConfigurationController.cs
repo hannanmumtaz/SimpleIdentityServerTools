@@ -18,7 +18,7 @@ namespace SimpleIdentityServer.Manager.Host.Controllers
             jObj.Add(Constants.ConfigurationNames.ManageEndpoint, issuer + Constants.EndPoints.Manage);
             jObj.Add(Constants.ConfigurationNames.ResourceOwnersEndpoint, issuer + Constants.EndPoints.ResourceOwners);
             jObj.Add(Constants.ConfigurationNames.ScopesEndpoint, issuer + Constants.EndPoints.Scopes);
-            jObj.Add(Constants.ConfigurationNames.ClaimsEndpoint, issuer + Constants.EndPoints.Scopes);
+            jObj.Add(Constants.ConfigurationNames.ClaimsEndpoint, issuer + Constants.EndPoints.Claims);
             return new OkObjectResult(jObj);
         }
     }

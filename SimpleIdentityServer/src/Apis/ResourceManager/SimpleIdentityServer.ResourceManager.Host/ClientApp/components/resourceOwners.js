@@ -75,7 +75,7 @@ class ResourceOwners extends Component {
             isLoading: true
         });
 
-        var request = { start_index: 1, count: self.state.pageSize, order: { target: 'update_datetime', type: (self.state.order === 'desc' ? 1 : 0) } };
+        var request = { start_index: startIndex, count: self.state.pageSize, order: { target: 'update_datetime', type: (self.state.order === 'desc' ? 1 : 0) } };
         if (self.state.selectedSubject && self.state.selectedSubject !== '') {
             request['subjects'] = [ self.state.selectedSubject ];
         }

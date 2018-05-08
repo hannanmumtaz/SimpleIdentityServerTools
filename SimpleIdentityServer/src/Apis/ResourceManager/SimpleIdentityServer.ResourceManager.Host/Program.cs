@@ -25,14 +25,10 @@ namespace SimpleIdentityServer.ResourceManager.Host
         public static void Main(string[] args)
         {
             // To launch the application : dotnet run --server.urls=http://*:5000
-            var configuration = new ConfigurationBuilder()
-                .AddEnvironmentVariables(prefix: "ASPNETCORE_")
-                .Build();
             var host = new WebHostBuilder()
                 .UseKestrel()
-                .UseUrls(args)
+                .UseUrls("http://*:64950")
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseConfiguration(configuration)
                 .UseStartup<Startup>()
                 .Build();
             host.Run();
