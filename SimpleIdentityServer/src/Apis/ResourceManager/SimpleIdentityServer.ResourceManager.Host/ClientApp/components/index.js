@@ -16,6 +16,7 @@ import ViewScope  from './viewScope';
 import AddScope from './addScope';
 import ViewUser from './viewUser';
 import Claims from './claims';
+import ViewClaim from './viewClaim';
 
 exports.Dashboard = Dashboard;
 exports.About = About;
@@ -35,3 +36,4 @@ exports.ViewScope = ViewScope;
 exports.AddScope = AddScope;
 exports.ViewUser = ViewUser;
 exports.Claims = Claims;
+exports.ViewClaim = ViewClaim;
