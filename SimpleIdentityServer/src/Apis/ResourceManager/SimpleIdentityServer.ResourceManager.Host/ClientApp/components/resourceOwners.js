@@ -5,11 +5,16 @@ import { NavLink, withRouter } from "react-router-dom";
 import moment from 'moment';
 
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
-import { Popover, IconButton, Menu, MenuItem, Checkbox, TextField, Select, Avatar , CircularProgress, Grid } from 'material-ui';
+import { Popover, IconButton, Menu, MenuItem, Checkbox, TextField, Select, Avatar , CircularProgress, Grid, Button } from 'material-ui';
+import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
+import Input, { InputLabel } from 'material-ui/Input';
+import { FormControl, FormHelperText } from 'material-ui/Form';
 import MoreVert from '@material-ui/icons/MoreVert';
 import Delete from '@material-ui/icons/Delete';
 import Search from '@material-ui/icons/Search';
 import Visibility from '@material-ui/icons/Visibility'; 
+import AppDispatcher from '../appDispatcher';
+import Constants from '../constants';
 
 class ResourceOwners extends Component {
     constructor(props) {
@@ -24,6 +29,10 @@ class ResourceOwners extends Component {
         this.handleAllSelections = this.handleAllSelections.bind(this);
         this.handleRemoveUsers = this.handleRemoveUsers.bind(this);
         this.handleSort = this.handleSort.bind(this);
+        this.handleCloseModal = this.handleCloseModal.bind(this);
+        this.handleOpenModal = this.handleOpenModal.bind(this);
+        this.handleAddUser = this.handleAddUser.bind(this);
+        this.handleChangeNewUser = this.handleChangeNewUser.bind(this);
         this.state = {
             data: [],
             isLoading: false,
@@ -33,7 +42,10 @@ class ResourceOwners extends Component {
             anchorEl: null,
             isRemoveDisplayed: false,
             selectedSubject: '',
-            order: 'desc'
+            order: 'desc',
+            isModalOpened: false,
+            isAddUserLoading: false,
+            newUser: {}
         };
     }
 
@@ -188,6 +200,66 @@ class ResourceOwners extends Component {
         });
     }
 
+    /**
+    * Close the modal.
+    */
+    handleCloseModal() {
+        this.setState({
+            isModalOpened: false
+        });
+    }
+
+    /**
+    * Open the modal.
+    */
+    handleOpenModal() {
+        this.setState({
+            isModalOpened: true
+        });
+    }
+
+    /**
+    * Add a user.
+    */
+    handleAddUser() {
+        var self = this;
+        self.setState({
+            isAddUserLoading: true
+        });
+        const { t } = self.props;
+        ResourceOwnerService.add(self.state.newUser).then(function() {
+            self.setState({
+                isAddUserLoading: false,
+                isModalOpened: false,
+                newUser: {}
+            });
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('userIsAdded')
+            });
+            self.refreshData();
+        }).catch(function(e) {
+            self.setState({
+                isAddUserLoading: false
+            });
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('userCannotBeAdded')
+            });
+        });
+    }
+
+    /**
+    * Change thbe user information.
+    */
+    handleChangeNewUser(e) {
+        var newUser = this.state.newUser;
+        newUser[e.target.name] = e.target.value;
+        this.setState({
+            newUser: newUser
+        });
+    }
+
     render() {
         var self = this;
         const { t } = this.props;
@@ -211,6 +283,30 @@ class ResourceOwners extends Component {
         }
 
         return (<div className="block">
+            <Dialog open={self.state.isModalOpened} onClose={this.handleCloseModal}>
+                <DialogTitle>{t('addUser')}</DialogTitle>
+                {self.state.isAddUserLoading ? (<CircularProgress />) : (
+                    <form onSubmit={(e) => { e.preventDefault(); self.handleAddUser(); }}>
+                        <DialogContent>
+                            {/* Login */}
+                            <FormControl fullWidth={true}>
+                                <InputLabel>{t('userLogin')}</InputLabel>
+                                <Input value={self.state.newUser.sub} name="sub" onChange={self.handleChangeNewUser}  />
+                                <FormHelperText>{t('userLoginShortDescription')}</FormHelperText>
+                            </FormControl>
+                            {/* Password */}
+                            <FormControl fullWidth={true}>
+                                <InputLabel>{t('userPassword')}</InputLabel>
+                                <Input type="password" value={self.state.newUser.password} name="password" onChange={self.handleChangeNewUser}  />
+                                <FormHelperText>{t('userPasswordShortDescription')}</FormHelperText>
+                            </FormControl>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button  variant="raised" color="primary" onClick={self.handleAddUser}>{t('addUser')}</Button>
+                        </DialogActions>
+                    </form>
+                )}
+            </Dialog>
             <div className="block-header">
                 <Grid container>
                     <Grid item md={5} sm={12}>
@@ -239,7 +335,7 @@ class ResourceOwners extends Component {
                             <MoreVert />
                         </IconButton>
                         <Menu anchorEl={self.state.anchorEl} open={Boolean(self.state.anchorEl)} onClose={self.handleClose}>
-                            <MenuItem>{t('addUser')}</MenuItem>
+                            <MenuItem onClick={self.handleOpenModal}>{t('addUser')}</MenuItem>
                         </Menu>
                     </div>
                 </div>

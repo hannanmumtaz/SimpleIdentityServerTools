@@ -71,7 +71,7 @@ module.exports = {
             var data = JSON.stringify(request);
             var session = SessionService.getSession();
             $.ajax({
-				url: Constants.apiUrl + '/resourceowners/' + id,
+				url: Constants.apiUrl + '/resourceowners',
                 method: "POST",
                 data: data,
                 contentType: 'application/json',
