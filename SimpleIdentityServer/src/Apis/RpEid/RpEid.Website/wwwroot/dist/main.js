@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "33a689381007ac2edef8"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "52be86b7a2f2b292c8ab"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -5847,7 +5847,7 @@ exports = module.exports = __webpack_require__(163)(false);
 
 
 // module
-exports.push([module.i, "body.blue {\n    background-color: #f4f6f9;\n    font-size: 15px;\n}\n\n.blue .navbar {\n    background: #01d8da;\n    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.15);\n}\n\n.blue .block::before {\n    background-color: #01d8da;\n}\n\n.blue .block-header {\n    color: white;\n}\n\n.blue .block-header .breadcrumb {\n    background: rgba(255,255,255,0.3);\n}\n\n.blue .block-header .breadcrumb a {\n    color: white;\n}\n\n.blue .card {\n    background: #fff;\n    margin-bottom: 30px;\n    border-radius: .1875rem;\n    box-shadow: none;\n    border: 0;\n}\n\n.blue .nav-tabs {\n    border-bottom: 0;\n}\n\n.blue .nav-tabs .nav-link {\n    color: #888;\n}\n\n.blue .nav-tabs .nav-link:hover,\n.blue .nav-tabs .nav-link:active {\n    border: 1px solid #00cfd1 !important;\n}\n\n.blue .card .header h4 {\n    color: #757575\n}\n\n.blue .card .header h4::before {\n    background: #00cfd1;\n}", ""]);
+exports.push([module.i, "body.blue {\n    background-color: #f4f6f9;\n    font-size: 15px;\n}\n\n.blue .navbar {\n    background: #01d8da;\n    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.15);\n}\n\n.blue .block::before {\n    background-color: #01d8da;\n}\n\n.blue .block-header {\n    color: white;\n}\n\n.blue .block-header .breadcrumb {\n    background: rgba(255,255,255,0.3);\n}\n\n.blue .block-header .breadcrumb a {\n    color: white;\n}\n\n.blue .card {\n    background: #fff;\n    margin-bottom: 30px;\n    border-radius: .1875rem;\n    box-shadow: none;\n    border: 0;\n}\n\n.blue .nav-tabs {\n    border-bottom: 0;\n}\n\n.blue .nav-tabs .nav-link {\n    color: #888;\n}\n\n.blue .nav-tabs .nav-link:hover,\n.blue .nav-tabs .nav-link:active {\n    border: 1px solid #00cfd1 !important;\n}\n\n.blue .card .header h4 {\n    color: #757575\n}\n\n.blue .card .header h4::before {\n    background: #00cfd1;\n}\n\nbody.inami {\n    background-color: #f4f6f9;\n    font-size: 15px;\n}\n\n.inami .navbar {\n    background: linear-gradient(white, rgb(209, 232, 240));\n    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.15);\n}\n\n.inami .block::before {\n    background-color: rgb(209, 232, 240);\n}\n\n.inami .block-header {\n    color: #777;\n}\n\n.inami .block-header .breadcrumb {\n    background: rgba(255,255,255,0.3);\n}\n\n.inami .block-header .breadcrumb a {\n    color: #777;\n}\n\n.inami .card {\n    background: #fff;\n    margin-bottom: 30px;\n    border-radius: .1875rem;\n    box-shadow: none;\n    border: 0;\n}\n\n.inami .nav-tabs {\n    border-bottom: 0;\n}\n\n.inami .nav-tabs .nav-link {\n    color: #888;\n}\n\n.inami .nav-tabs .nav-link:hover,\n.inami .nav-tabs .nav-link:active {\n    border: 1px solid #00cfd1 !important;\n}\n\n.inami .card .header h4 {\n    color: #757575\n}\n\n.inami .card .header h4::before {\n    background: rgb(0, 157, 181);\n}", ""]);
 
 // exports
 
@@ -28922,12 +28922,12 @@ var Home = function (_Component) {
                             ),
                             self.state.isAccountEnabled === false && self.state.isAccessRequested === true && _react2.default.createElement(
                                 _materialUi.Typography,
-                                { variant: 'caption' },
+                                null,
                                 t('accessHasBeenRequested')
                             ),
                             self.state.isAccountEnabled === true && _react2.default.createElement(
                                 _materialUi.Typography,
-                                { variant: 'caption' },
+                                null,
                                 t('yourAccountIsEnabled')
                             )
                         )
@@ -30201,9 +30201,9 @@ var Layout = function (_Component) {
                         _react2.default.createElement(
                             "a",
                             { className: "navbar-brand", href: "#", id: "uma-title" },
+                            _react2.default.createElement("img", { src: "/img/logo.png", width: "100" }),
                             t('websiteTitle')
-                        ),
-                        _react2.default.createElement("ul", { className: "navbar-nav mr-auto" })
+                        )
                     ),
                     _react2.default.createElement(
                         "section",

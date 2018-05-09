@@ -266,9 +266,10 @@ class Layout extends Component {
             <section className={classes.body}>
                 { /* Navigation */ }
                 <nav className="navbar navbar-toggleable-md">
-                    <a className="navbar-brand" href="#" id="uma-title">{t('websiteTitle')}</a>
-                    <ul className="navbar-nav mr-auto">
-                    </ul>
+                        <a className="navbar-brand" href="#" id="uma-title">
+                            <img src="/img/logo.png" width="100" />
+                        {t('websiteTitle')}
+                    </a>
                 </nav>
                 { /* Display component */}
                 <section id="body">

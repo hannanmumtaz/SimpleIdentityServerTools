@@ -117,10 +117,10 @@ class Home extends Component {
                                 </div>
                             )}
                             {self.state.isAccountEnabled === false && self.state.isAccessRequested === true && (
-                                <Typography variant="caption">{t('accessHasBeenRequested')}</Typography>
+                                <Typography>{t('accessHasBeenRequested')}</Typography>
                             )}
                             {self.state.isAccountEnabled === true && (
-                                <Typography variant="caption">{t('yourAccountIsEnabled')}</Typography>
+                                <Typography>{t('yourAccountIsEnabled')}</Typography>
                             )}
                         </div>
                     )}
