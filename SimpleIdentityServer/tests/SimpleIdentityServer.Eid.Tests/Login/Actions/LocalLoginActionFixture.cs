@@ -18,8 +18,8 @@ namespace SimpleIdentityServer.Eid.Tests.Login.Actions
         public async Task WhenPassingNullParameterThenExceptionsAreThrown()
         {
             InitializeFakeObjects();
-            await Assert.ThrowsAsync<ArgumentNullException>(() => _localAuthenticateAction.Execute(null));
-            await Assert.ThrowsAsync<ArgumentNullException>(() => _localAuthenticateAction.Execute(new LocalAuthenticateParameter()));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _localAuthenticateAction.Execute(null, null, null));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _localAuthenticateAction.Execute(new LocalAuthenticateParameter(), null, null));
         }
 
         [Fact]
@@ -33,7 +33,7 @@ namespace SimpleIdentityServer.Eid.Tests.Login.Actions
             var resourceOwner = await _localAuthenticateAction.Execute(new LocalAuthenticateParameter
             {
                 Xml = xml
-            });
+            }, null, null);
 
             // ASSERT
             Assert.NotNull(resourceOwner);
