@@ -119,6 +119,7 @@
             public const string FirstNameAttributeName = "urn:be:fgov:person:firstName";
             public const string MiddleNameAttributeName = "urn:be:fgov:person:middleName";
             public const string NationalityAttributeName = "urn:be:fgov:person:nationality";
+            public const string PictureAttributeName = "urn:be:fgov:person:picture";
             public const string GenderAttributeName = "urn:be:fgov:person:gender";
             public const string StreetAndNumberAttributeName = "urn:be:fgov:address:streetAndNumber";
             public const string ZipAttributeName = "urn:be:fgov:address:zip";

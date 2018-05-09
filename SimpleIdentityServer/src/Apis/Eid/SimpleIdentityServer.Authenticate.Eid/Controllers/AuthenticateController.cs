@@ -155,7 +155,7 @@ namespace SimpleIdentityServer.Authenticate.Eid.Controllers
 
             try
             {
-                var resourceOwner = await _loginActions.LocalAuthenticate(loginViewModel.ToParameter());
+                var resourceOwner = await _loginActions.LocalAuthenticate(loginViewModel.ToParameter(), _eidAuthenticateOptions.ImagePath, Request.GetAbsoluteUriWithVirtualPath());
                 var claims = resourceOwner.Claims;
                 claims.Add(new Claim(ClaimTypes.AuthenticationInstant,
                     DateTimeOffset.UtcNow.ConvertToUnixTimestamp().ToString(CultureInfo.InvariantCulture),
@@ -282,7 +282,9 @@ namespace SimpleIdentityServer.Authenticate.Eid.Controllers
                 // 4. Local authentication
                 var actionResult = await _loginActions.OpenIdLocalAuthenticate(authorizeOpenId.ToParameter(),
                     request.ToParameter(),
-                    authorizeOpenId.Code);
+                    authorizeOpenId.Code,
+                    _eidAuthenticateOptions.ImagePath, 
+                    Request.GetAbsoluteUriWithVirtualPath());
                 var subject = actionResult.Claims.First(c => c.Type == SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.Subject).Value;
 
                 // 5. Authenticate the user by adding a cookie

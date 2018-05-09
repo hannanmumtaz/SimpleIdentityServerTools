@@ -9,8 +9,9 @@ namespace SimpleIdentityServer.Authenticate.Eid.Core.Login
 {
     public interface ILoginActions
     {
-        Task<ResourceOwner> LocalAuthenticate(LocalAuthenticateParameter parameter);
-        Task<LocalOpenIdAuthenticationResult> OpenIdLocalAuthenticate(LocalAuthenticateParameter localAuthenticateParameter, AuthorizationParameter authorizationParameter, string code);
+        Task<ResourceOwner> LocalAuthenticate(LocalAuthenticateParameter parameter, string imagePath, string hostUrl);
+        Task<LocalOpenIdAuthenticationResult> OpenIdLocalAuthenticate(LocalAuthenticateParameter localAuthenticateParameter, AuthorizationParameter authorizationParameter, string code,
+            string imagePath, string hostUrl);
     }
 
     internal sealed class LoginActions : ILoginActions
@@ -24,14 +25,15 @@ namespace SimpleIdentityServer.Authenticate.Eid.Core.Login
             _openIdLocalAuthenticateAction = openIdLocalAuthenticateAction;
         }
 
-        public Task<ResourceOwner> LocalAuthenticate(LocalAuthenticateParameter parameter)
+        public Task<ResourceOwner> LocalAuthenticate(LocalAuthenticateParameter parameter, string imagePath, string hostUrl)
         {
-            return _localAuthenticateAction.Execute(parameter);
+            return _localAuthenticateAction.Execute(parameter, imagePath, hostUrl);
         }
 
-        public Task<LocalOpenIdAuthenticationResult> OpenIdLocalAuthenticate(LocalAuthenticateParameter localAuthenticateParameter, AuthorizationParameter authorizationParameter, string code)
+        public Task<LocalOpenIdAuthenticationResult> OpenIdLocalAuthenticate(LocalAuthenticateParameter localAuthenticateParameter, AuthorizationParameter authorizationParameter, 
+            string code, string imagePath, string hostUrl)
         {
-            return _openIdLocalAuthenticateAction.Execute(localAuthenticateParameter, authorizationParameter, code);
+            return _openIdLocalAuthenticateAction.Execute(localAuthenticateParameter, authorizationParameter, code, imagePath, hostUrl);
         }
     }
 }

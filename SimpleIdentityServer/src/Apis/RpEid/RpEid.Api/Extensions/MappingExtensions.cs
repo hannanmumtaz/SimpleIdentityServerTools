@@ -18,29 +18,10 @@ namespace RpEid.Api.Extensions
             return new SearchAccountsParameter
             {
                 Count = request.Count,
-                IsConfirmed = request.IsConfirmed,
                 IsPagingEnabled = true,
                 Order = (Orders)request.Order,
                 StartIndex = request.StartIndex,
                 Subjects = request.Subjects
-            };
-        }
-
-        public static AccountAggregate ToParameter(this AccountResponse account)
-        {
-            if (account == null)
-            {
-                throw new ArgumentNullException(nameof(account));
-            }
-
-            return new AccountAggregate
-            {
-                CreateDateTime = account.CreateDateTime,
-                Email = account.Email,
-                IsConfirmed = account.IsConfirmed,
-                Name = account.Name,
-                Subject = account.Subject,
-                UpdateDateTime = account.UpdateDateTime
             };
         }
 
@@ -53,12 +34,15 @@ namespace RpEid.Api.Extensions
 
             return new AccountResponse
             {
-                CreateDateTime = account.CreateDateTime,
-                Email = account.Email,
-                IsConfirmed = account.IsConfirmed,
-                Name = account.Name,
                 Subject = account.Subject,
-                UpdateDateTime = account.UpdateDateTime
+                Name = account.Name,
+                Email = account.Email,
+                IsGranted = account.IsGranted,
+                IsConfirmed = account.IsConfirmed,
+                CreateDateTime = account.CreateDateTime,
+                UpdateDateTime = account.UpdateDateTime,
+                GrantDateTime = account.GrantDateTime,
+                ConfirmationDateTime = account.ConfirmationDateTime
             };
         }
     }

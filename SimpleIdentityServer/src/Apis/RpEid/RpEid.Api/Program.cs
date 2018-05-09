@@ -24,12 +24,8 @@ namespace RpEid.Api
         public static void Main(string[] args)
         {
             // To launch the application : dotnet run --server.urls=http://*:5000
-            var configuration = new ConfigurationBuilder()
-                .AddEnvironmentVariables(prefix: "ASPNETCORE_")
-                .Build();
             var host = new WebHostBuilder()
                 .UseKestrel()
-                .UseConfiguration(configuration)
                 .UseUrls("http://*:60001")
                 .UseStartup<Startup>()
                 .Build();

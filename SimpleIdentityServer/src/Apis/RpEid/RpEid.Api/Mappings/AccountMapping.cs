@@ -14,7 +14,8 @@ namespace RpEid.Api.Mappings
             }
 
             modelBuilder.Entity<Account>()
-                .ToTable("accounts");
+                .ToTable("accounts")
+                .HasKey(a => a.Subject);
             return modelBuilder;
         }
     }

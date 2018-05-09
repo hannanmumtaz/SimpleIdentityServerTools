@@ -15,7 +15,8 @@ namespace SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions
 {
     public interface IOpenIdLocalAuthenticateAction
     {
-        Task<LocalOpenIdAuthenticationResult> Execute(LocalAuthenticateParameter localAuthenticateParameter, AuthorizationParameter authorizationParameter, string code);
+        Task<LocalOpenIdAuthenticationResult> Execute(LocalAuthenticateParameter localAuthenticateParameter, AuthorizationParameter authorizationParameter, string code,
+            string imagePath, string hostUrl);
     }
 
     internal sealed class OpenIdLocalAuthenticateAction : IOpenIdLocalAuthenticateAction
@@ -29,7 +30,8 @@ namespace SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions
             _authenticateHelper = authenticateHelper;
         }
 
-        public async Task<LocalOpenIdAuthenticationResult> Execute(LocalAuthenticateParameter localAuthenticateParameter, AuthorizationParameter authorizationParameter, string code)
+        public async Task<LocalOpenIdAuthenticationResult> Execute(LocalAuthenticateParameter localAuthenticateParameter, AuthorizationParameter authorizationParameter, string code,
+            string imagePath, string hostUrl)
         {
             if (localAuthenticateParameter == null)
             {
@@ -41,7 +43,7 @@ namespace SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions
                 throw new ArgumentNullException(nameof(authorizationParameter));
             }
 
-            var resourceOwner = await _localAuthenticateAction.Execute(localAuthenticateParameter);
+            var resourceOwner = await _localAuthenticateAction.Execute(localAuthenticateParameter, imagePath, hostUrl);
             if (resourceOwner == null)
             {
                 throw new IdentityServerAuthenticationException("the resource owner credentials are not correct");

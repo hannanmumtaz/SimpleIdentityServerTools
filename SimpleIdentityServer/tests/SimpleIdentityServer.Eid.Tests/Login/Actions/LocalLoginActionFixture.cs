@@ -1,7 +1,7 @@
 ﻿using Moq;
-using SimpleIdentityServer.Core.Repositories;
-using SimpleIdentityServer.Eid.OpenId.Core.Login.Actions;
-using SimpleIdentityServer.Eid.OpenId.Core.Parameters;
+using SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions;
+using SimpleIdentityServer.Authenticate.Eid.Core.Parameters;
+using SimpleIdentityServer.Core.Common.Repositories;
 using System;
 using System.IO;
 using System.Threading.Tasks;

@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 using SimpleBus.InMemory;
 using SimpleIdentityServer.Authenticate.Eid;
 using SimpleIdentityServer.Core;
@@ -28,6 +30,7 @@ using SimpleIdentityServer.Eid.OpenId.Extensions;
 using SimpleIdentityServer.EventStore.Handler;
 using SimpleIdentityServer.EventStore.InMemory;
 using SimpleIdentityServer.Host;
+using System;
 
 namespace SimpleIdentityServer.Eid.OpenId
 {
@@ -85,7 +88,7 @@ namespace SimpleIdentityServer.Eid.OpenId
             services.AddAuthenticationWebsite(mvcBuilder, _env);
             services.AddEidAuthentication(mvcBuilder, _env, new EidAuthenticateOptions
             {
-                EidUrl = "http://localhost:8003"
+                EidUrl = "http://localhost:8001"
             });
         }
 
@@ -108,7 +111,25 @@ namespace SimpleIdentityServer.Eid.OpenId
 
         private void ConfigureLogging(IServiceCollection services)
         {
+            Func<LogEvent, bool> serilogFilter = (e) =>
+            {
+                var ctx = e.Properties["SourceContext"];
+                var contextValue = ctx.ToString()
+                    .TrimStart('"')
+                    .TrimEnd('"');
+                return contextValue.StartsWith("SimpleIdentityServer") ||
+                    e.Level == LogEventLevel.Error ||
+                    e.Level == LogEventLevel.Fatal;
+            };
+            var logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .Enrich.FromLogContext()
+                .WriteTo.ColoredConsole();
+            var log = logger.Filter.ByIncludingOnly(serilogFilter)
+                .CreateLogger();
+            Log.Logger = log;
             services.AddLogging();
+            services.AddSingleton<Serilog.ILogger>(log);
         }
 
         public void Configure(IApplicationBuilder app,
@@ -163,7 +184,7 @@ namespace SimpleIdentityServer.Eid.OpenId
 
         private void UseSerilogLogging(ILoggerFactory logger)
         {
-
+            logger.AddSerilog();
         }
     }
 }

@@ -10,6 +10,6 @@ namespace RpEid.Api.Parameters
         public int Count { get; set; }
         public Orders Order { get; set; }
         public IEnumerable<string> Subjects { get; set; }
-        public bool IsConfirmed { get; set; }
+        public IEnumerable<string> ConfirmationCodes { get; set; }
     }
 }

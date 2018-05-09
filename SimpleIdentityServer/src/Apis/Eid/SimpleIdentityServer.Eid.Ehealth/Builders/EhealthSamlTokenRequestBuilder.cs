@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SimpleIdentityServer.Eid.Ehealth.Builders
@@ -108,9 +109,21 @@ namespace SimpleIdentityServer.Eid.Ehealth.Builders
             {
                 throw new ArgumentException(nameof(address));
             }
+
             _samlAttributes.Add(new SamlAttribute(Constants.EhealthStsNames.StreetAndNumberAttributeName, Constants.EhealthStsNames.SsinAttributeNamespace, address.StreetAndNumber));
             _samlAttributes.Add(new SamlAttribute(Constants.EhealthStsNames.MunicipalityAttributeName, Constants.EhealthStsNames.SsinAttributeNamespace, address.Municipality));
             _samlAttributes.Add(new SamlAttribute(Constants.EhealthStsNames.ZipAttributeName, Constants.EhealthStsNames.SsinAttributeNamespace, address.Zip));
+            return this;
+        }
+
+        public EhealthSamlTokenRequestBuilder SetImage(IEnumerable<byte> payload)
+        {
+            if (payload == null)
+            {
+                throw new ArgumentException(nameof(payload));
+            }
+
+            _samlAttributes.Add(new SamlAttribute(Constants.EhealthStsNames.PictureAttributeName, Constants.EhealthStsNames.SsinAttributeNamespace, ByteArrayToString(payload)));
             return this;
         }
 
@@ -201,6 +214,17 @@ namespace SimpleIdentityServer.Eid.Ehealth.Builders
         public static string GenerateId(string prefix)
         {
             return $"{prefix}-{Guid.NewGuid().ToString()}".ToLower();
+        }
+
+        private static string ByteArrayToString(IEnumerable<byte> ba)
+        {
+            var hex = new StringBuilder(ba.Count() * 2);
+            foreach (byte b in ba)
+            {
+                hex.AppendFormat("{0:x2}", b);
+            }
+
+            return hex.ToString();
         }
     }
 }

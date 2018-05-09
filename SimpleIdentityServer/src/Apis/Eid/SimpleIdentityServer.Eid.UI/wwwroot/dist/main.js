@@ -32096,7 +32096,7 @@ var Main = function (_React$Component) {
                         _react2.default.createElement(
                             'label',
                             { className: 'navbar-brand' },
-                            'Medikit'
+                            'EID application'
                         )
                     )
                 ),

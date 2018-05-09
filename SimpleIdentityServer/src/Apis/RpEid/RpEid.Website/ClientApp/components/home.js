@@ -4,6 +4,9 @@ import { Grid, Button, Typography, CircularProgress } from 'material-ui';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
 import { withStyles } from 'material-ui/styles';
+import { AccountService } from '../services';
+import AppDispatcher from '../appDispatcher';
+import Constants from '../constants';
 
 const styles = theme => ({
     margin: {
@@ -21,16 +24,55 @@ class Home extends Component {
         this.state = {
             isAccountEnabled: false,
             isAccessRequested: false,
-            isLoading: false
+            isLoading: false,
+            email: ''
         };
     }
 
     refresh() {
-
+        var self = this;
+        self.setState({
+            isLoading: true
+        });
+        AccountService.getMine().then(function (r) {
+            self.setState({
+                isLoading: false,
+                isAccountEnabled: r['is_confirmed'],
+                isAccessRequested: true
+            });
+        }).catch(function () {
+            self.setState({
+                isLoading: false,
+                isAccountEnabled: false,
+                isAccessRequested: false
+            });
+        });
     }
 
     requestAccess() {
-
+        var self = this;
+        const { t } = self.props;
+        self.setState({
+            isLoading: true
+        });
+        AccountService.add({ email: self.state.email }).then(function () {
+            self.setState({
+                isLoading: false
+            });
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('accessRequested')
+            });
+            self.refresh();
+        }).catch(function () {
+            self.setState({
+                isLoading: false
+            });
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('accessCannotBeRequested')
+            });
+        });
     }
 
     handleChange(e) {
@@ -88,7 +130,7 @@ class Home extends Component {
     }
 
     componentDidMount() {
-
+        this.refresh();
     }
 }
 

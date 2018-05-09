@@ -18,16 +18,18 @@ namespace SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions
 {
     public interface ILocalAuthenticateAction
     {
-        Task<ResourceOwner> Execute(LocalAuthenticateParameter parameter);
+        Task<ResourceOwner> Execute(LocalAuthenticateParameter parameter, string imagePath, string hostUrl);
     }
 
     internal sealed class LocalAuthenticateAction : ILocalAuthenticateAction
     {
         private const string _idName = "urn:be:fgov:person:ssin";
+        private const string _personName = "urn:be:fgov:person:name";
+        private const string _pictureName = "urn:be:fgov:person:picture";
         private static readonly Dictionary<string, string> _mappingEidClaimsToOpenIdClaims = new Dictionary<string, string>
         {
             { _idName, SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.Subject },
-            { "urn:be:fgov:person:name", SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.Name },
+            { _personName, SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.Name },
             { "urn:be:fgov:person:middleName", SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.MiddleName },
             { "urn:be:fgov:person:gender", SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.Gender }
         };
@@ -45,7 +47,7 @@ namespace SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions
             _resourceOwnerRepository = resourceOwnerRepository;
         }
 
-        public async Task<ResourceOwner> Execute(LocalAuthenticateParameter parameter)
+        public async Task<ResourceOwner> Execute(LocalAuthenticateParameter parameter, string imagePath, string hostUrl)
         {
             if (parameter == null)
             {
@@ -60,7 +62,7 @@ namespace SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions
             var xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(parameter.Xml);
             CheckXmlWellFormed(xmlDocument);
-            var resourceOwner = ExtractResourceOwner(xmlDocument);
+            var resourceOwner = ExtractResourceOwner(xmlDocument, imagePath, hostUrl);
             var existingResourceowner = await _resourceOwnerRepository.GetAsync(resourceOwner.Id);
             if (existingResourceowner == null)
             {
@@ -133,7 +135,7 @@ namespace SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions
             }
         }
 
-        private static ResourceOwner ExtractResourceOwner(XmlDocument xmlDocument)
+        private static ResourceOwner ExtractResourceOwner(XmlDocument xmlDocument, string imagePath, string hostUrl)
         {
             if (xmlDocument == null)
             {
@@ -147,6 +149,7 @@ namespace SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions
             var nodes = xmlDocument.SelectNodes("//saml:Attribute/saml:AttributeValue", nsmgr);
             var claims = new List<Claim>();
             var adr = new JObject();
+            var picturePayload = string.Empty;
             foreach (XmlElement node in nodes)
             {
                 var attributes = node.ParentNode.Attributes;
@@ -173,10 +176,33 @@ namespace SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions
                 {
                     adr.Add(_mappingEidAddressClaimsToOpenIdAddressClaims[attributeName.Value], node.InnerText);
                 }
+
+                if (attributeName.Value == _personName)
+                {
+                    claims.Add(new Claim(SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.GivenName, node.InnerText));
+                }
+
+                if (attributeName.Value == _pictureName && !string.IsNullOrWhiteSpace(imagePath) && !string.IsNullOrWhiteSpace(node.InnerText))
+                {
+                    picturePayload = node.InnerText;
+                }
             }
 
             var idClaim = claims.First(c => c.Type == SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.Subject);
             claims.Add(new Claim(SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.Address, adr.ToString()));
+            if (!string.IsNullOrWhiteSpace(picturePayload))
+            {
+                var currentDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                currentDirectory = Path.Combine(currentDirectory, imagePath);
+                if (Directory.Exists(currentDirectory))
+                {
+                    var picture = StringToByteArray(picturePayload);
+                    var picturePath = Path.Combine(currentDirectory, $"{idClaim.Value}.png");
+                    File.WriteAllBytes(picturePath, picture);
+                    claims.Add(new Claim(SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.Picture, $"{hostUrl}/{imagePath}/{idClaim.Value}.png"));
+                }
+            }
+
             return new ResourceOwner
             {
                 Id = idClaim.Value,
@@ -184,6 +210,14 @@ namespace SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions
                 TwoFactorAuthentication = TwoFactorAuthentications.NONE,
                 Claims = claims
             };
+        }
+
+        private static byte[] StringToByteArray(string hex)
+        {
+            return Enumerable.Range(0, hex.Length)
+                             .Where(x => x % 2 == 0)
+                             .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
+                             .ToArray();
         }
     }
 }

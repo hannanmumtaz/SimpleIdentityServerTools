@@ -1,21 +1,30 @@
 ﻿import React, { Component } from "react";
 import AppDispatcher from '../appDispatcher';
 import Constants from '../constants';
-import { SessionService } from '../services';
+import { SessionService, WebsiteService } from '../services';
 import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
+import { withStyles } from 'material-ui/styles';
+import { FormControl, FormHelperText } from 'material-ui/Form';
+import Input, { InputLabel } from 'material-ui/Input';
 
-import { TextField , Button } from 'material-ui';
+import { TextField, Button, CircularProgress, Divider } from 'material-ui';
+
+const styles = theme => ({
+    margin: {
+        margin: theme.spacing.unit,
+    },
+});
 
 class Login extends Component {
     constructor(props) {
         super(props);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.localAuthenticate = this.localAuthenticate.bind(this);
         this.externalAuthenticate = this.externalAuthenticate.bind(this);
         this.state = {
-            login           : null,
-            password        : null,
-            errorMessage    : null,
+            login           : '',
+            password        : '',
             isLoading       : false
         };
     }
@@ -32,6 +41,49 @@ class Login extends Component {
         var base64Url = token.split('.')[1];
         var base64 = base64Url.replace('-', '+').replace('_', '/');
         return JSON.parse(window.atob(base64));
+    }
+
+    /**
+     * Local authentication.
+     */
+    localAuthenticate() {
+        const { t } = this.props;
+        var self = this;
+        self.setState({
+            isLoading: true
+        });
+        WebsiteService.authenticate(self.state.login, self.state.password).then(function (result) {
+            self.setState({
+                isLoading: false
+            });
+
+            if (result['access_token'] === '' || result['access_token'] === null) {
+                AppDispatcher.dispatch({
+                    actionName: Constants.events.DISPLAY_MESSAGE,
+                    data: t('credentialsAreNotCorrect')
+                });
+                return;
+            }
+
+            var session = {
+                token: result['access_token'],
+                id_token: result['id_token']
+            };
+            SessionService.setSession(session);
+            AppDispatcher.dispatch({
+                actionName: Constants.events.USER_LOGGED_IN
+            });
+            self.props.history.push('/');
+        }).catch(function (e) {
+            console.log(e);
+            self.setState({
+                isLoading: false
+            });
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('credentialsAreNotCorrect')
+            });
+        });
     }
 
     /**
@@ -90,7 +142,8 @@ class Login extends Component {
     }
 
     render() {
-        const { t } = this.props;
+        const { t, classes } = this.props;
+        var self = this;
         return (<div className="block">
             <div className="block-header">
                 <h4>{t('loginTitle')}</h4>
@@ -99,20 +152,37 @@ class Login extends Component {
                 <div className="row">
                     <div className="col-md-12">
                         <div className="card">
+                            <div className="header">
+                                <h4 style={{ display: "inline-block" }}>{t('authenticate')}</h4>
+                            </div>
                             <div className="body">
-                                <Button variant="raised" color="primary" onClick={this.externalAuthenticate}>{t('connect')}</Button>
-                                {(this.state.errorMessage !== null && (
-                                    <div className="alert alert-danger alert-dismissable" style={{ marginTop: '5px' }}>
-                                        <strong>Danger !</strong> {this.state.errorMessage}
+                                { self.state.isLoading ? (<CircularProgress />) : (
+                                    <div>
+                                        <form style={{margin: "0px 0px 10px 0px"}} onSubmit={(e) => { e.preventDefault(); self.localAuthenticate(); }}>
+                                            {/* Login */}
+                                            <FormControl fullWidth={true} className={classes.margin}>
+                                                <InputLabel>{t('login')}</InputLabel>
+                                                <Input name="login" onChange={self.handleInputChange} value={self.state.login} />
+                                            </FormControl>
+                                            {/* Password */}
+                                            <FormControl fullWidth={true} className={classes.margin}>
+                                                <InputLabel>{t('password')}</InputLabel>
+                                                <Input type="password" name="password" onChange={self.handleInputChange} value={self.state.password} />
+                                            </FormControl>
+                                            <Button variant="raised" color="primary" onClick={this.localAuthenticate}>{t('authenticate')}</Button>
+                                        </form>
+                                        <Divider />
+                                        <Button style={{ margin: "10px 0px 0px 0px" }} variant="raised" color="primary" onClick={this.externalAuthenticate}>{t('eidConnect')}</Button>
                                     </div>
-                                ))}
+                                 )}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>);
+        </div>
+    );
     }
 }
 
-export default translate('common', { wait: process && !process.release })(withRouter(Login));
+export default translate('common', { wait: process && !process.release })(withRouter(withStyles(styles)(Login)));

@@ -84,20 +84,8 @@ class Layout extends Component {
      * @param {any} e
      */
     disconnect() {
-        // TODO : Resolve this url.
-        var url = Constants.openIdUrl + "/end_session?post_logout_redirect_uri=" + Constants.baseUrl + "/end_session&id_token_hint="+ SessionService.getSession().id_token;
-        var w = window.open(url, 'targetWindow', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=400,height=400');
-        var interval = setInterval(function() {
-            if (w.closed) {
-                clearInterval(interval);
-                return;
-            }
-
-            var href = w.location.href;
-            if (href === Constants.baseUrl + "/end_session") {                
-                clearInterval(interval);
-                w.close();
-            }
+        AppDispatcher.dispatch({
+            actionName: Constants.events.USER_LOGGED_OUT
         });
     }
 
@@ -112,7 +100,7 @@ class Layout extends Component {
     }
 
     /**
-    * Refresh the settings menu.
+    * Refresh the user information.
     */
     refresh() {
         var self = this;
@@ -122,6 +110,7 @@ class Layout extends Component {
         });
         var image = "/img/unknown.png";
         var givenName = t("unknown");
+        var role = '';
         var session = SessionService.getSession();
         if (session && session.id_token) {
             var idToken = session.id_token;
@@ -134,12 +123,17 @@ class Layout extends Component {
             if (claims.given_name) {
                 givenName = claims.given_name;
             }
+
+            if (claims.role) {
+                role = claims.role;
+            }
         }
 
         self.setState({
             user: {
                 name: givenName,
-                picture: image
+                picture: image,
+                role: role
             }
         });
     }
@@ -150,6 +144,11 @@ class Layout extends Component {
     startCheckSession() {
         var self = this;
         if (self._checkSessionInterval) {
+            return;
+        }
+
+        var session = SessionService.getSession();
+        if (!session || !session.sessionState) {
             return;
         }
 
@@ -237,13 +236,21 @@ class Layout extends Component {
                         <Divider />
                     ))}
                     {/* About menu item */}
-                    <ListItem button onClick={() => self.navigate('/home')}>
-                        <ListItemText>{t('homeMenuItem')}</ListItemText>
+                    <ListItem button onClick={() => self.navigate('/')}>
+                        <ListItemText>{t('aboutMenuItem')}</ListItemText>
                     </ListItem>
+                    {/* Home menu item */}
+                    {(self.state.isLoggedIn && self.state.user && self.state.user.role !== 'administrator' && (
+                        <ListItem button onClick={() => self.navigate('/home')}>
+                            <ListItemText>{t('homeMenuItem')}</ListItemText>
+                        </ListItem>
+                    ))}
                     {/* Users menu item */}
-                    <ListItem button onClick={() => self.navigate('/users')}>
-                        <ListItemText>{t('usersMenuItem')}</ListItemText>
-                    </ListItem>
+                    {(self.state.isLoggedIn && self.state.user && self.state.user.role === 'administrator' && (
+                        <ListItem button onClick={() => self.navigate('/users')}>
+                            <ListItemText>{t('usersMenuItem')}</ListItemText>
+                        </ListItem>
+                    ))}
                     {/* Connect or disconnect */}
                     {(this.state.isLoggedIn ? (
                         <ListItem button onClick={() => self.disconnect()}>
@@ -268,10 +275,6 @@ class Layout extends Component {
                     {this.props.children}
                 </section>
             </section>
-            { this.state.isLoggedIn && (<div>
-                    <iframe ref={(elt) => { self._sessionFrame = elt; self.startCheckSession(); }} id="session-frame" src={Constants.openIdUrl + "/check_session"} style={{display: "none"}} /> 
-                </div>
-            )}
             <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} open={self.state.isSnackbarOpened} onClose={self.handleSnackbarClose} message={<span>{self.state.snackbarMessage}</span>} />
         </div>);
     }
@@ -284,13 +287,14 @@ class Layout extends Component {
                     self.setState({
                         isLoggedIn: true
                     });
-                    // self.refresh();
+                    self.refresh();
                     break;
                 case Constants.events.USER_LOGGED_OUT:
                     self.setState({
                         isLoggedIn: false
                     });
                     SessionService.remove();
+                    self.props.history.push('/login');
                     break;
                 case Constants.events.DISPLAY_MESSAGE:
                     self.displayMessage(payload.data);

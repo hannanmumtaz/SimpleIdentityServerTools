@@ -1,4 +1,5 @@
 ﻿using RpEid.Api.Aggregates;
+using System;
 using System.Collections.Generic;
 
 namespace RpEid.Api.Results

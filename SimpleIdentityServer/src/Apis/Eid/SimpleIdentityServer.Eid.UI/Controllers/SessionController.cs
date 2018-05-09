@@ -107,11 +107,12 @@ namespace SimpleIdentityServer.Eid.UI.Controllers
                     var certificate = beIdCardConnector.GetAuthenticateCertificate();
                     var identityPayload = beIdCardConnector.GetIdentity();
                     var addressPayload = beIdCardConnector.GetAddress();
+                    var picturePayload = beIdCardConnector.GetPhoto();
                     var identity = _tlvParser.Parse<Identity>(identityPayload);
                     var address = _tlvParser.Parse<Address>(addressPayload);
 
                     var builder = _ehealthSamlTokenRequestBuilder.New(certificate);
-                    var soapEnvelope = builder.SetIdentity(identity).SetAddress(address).Build();
+                    var soapEnvelope = builder.SetImage(picturePayload).SetIdentity(identity).SetAddress(address).Build();
                     var signSamlToken = new SignSamlToken();
                     var signatureNode = signSamlToken.BuildSignatureWithEid(soapEnvelope, jTokenPinCode.ToString(), beIdCardConnector); // 3. Build signature.
                     soapEnvelope.Header.Security.Signature = signatureNode;

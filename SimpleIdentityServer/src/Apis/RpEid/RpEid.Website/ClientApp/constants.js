@@ -1,7 +1,7 @@
 ﻿module.exports = {
-    baseUrl: 'http://localhost:60005',
-    apiUrl: '',
     openIdUrl: 'http://localhost:60000',
+    apiUrl: 'http://localhost:60001',
+    baseUrl: 'http://localhost:60005',
     clientId: 'RpEidWebsite',
     events: {
         USER_LOGGED_IN: 'USER_LOGGED_IN',

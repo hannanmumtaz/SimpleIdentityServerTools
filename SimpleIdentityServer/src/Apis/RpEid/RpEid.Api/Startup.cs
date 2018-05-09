@@ -14,6 +14,8 @@
 // limitations under the License.
 #endregion
 
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +24,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RpEid.Api.Repositories;
+using SimpleIdentityServer.UserInfoIntrospection;
+using System.Linq;
 
 namespace RpEid.Api
 {
@@ -44,6 +48,19 @@ namespace RpEid.Api
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
+            services.AddAuthentication(UserInfoIntrospectionOptions.AuthenticationScheme)
+                .AddUserInfoIntrospection(opts =>
+                {
+                    opts.WellKnownConfigurationUrl = Configuration["OpenId:WellKnownConfiguration"];
+                });
+            services.AddAuthorization(opts =>
+            {
+                opts.AddPolicy("IsConnected", policy => policy.RequireAuthenticatedUser());
+                opts.AddPolicy("IsAdministrator", policy => policy.RequireAssertion((ctx) => {
+                    return ctx.User.Identity != null && ctx.User.Claims.Any(c => c.Type == "role" && c.Value == "administrator");
+                }));
+            });
+
             services.AddMvc();
             RegisterServices(services);
         }
@@ -60,18 +77,6 @@ namespace RpEid.Api
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-			/*
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                var resourceManagerContext = serviceScope.ServiceProvider.GetService<ResourceManagerDbContext>();
-                try
-                {
-                    resourceManagerContext.Database.EnsureCreated();
-                }
-                catch (Exception) { }
-                resourceManagerContext.EnsureSeedData();
-            }
-			*/
         }
 
         private void RegisterServices(IServiceCollection serviceCollection)

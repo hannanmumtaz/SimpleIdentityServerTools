@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SimpleIdentityServer.Client;
 
 namespace RpEid.Website
 {
@@ -58,6 +59,7 @@ namespace RpEid.Website
         private void RegisterServices(IServiceCollection services)
         {
             services.AddSingleton(Configuration);
+            services.AddIdServerClient();
         }
     }
 }
