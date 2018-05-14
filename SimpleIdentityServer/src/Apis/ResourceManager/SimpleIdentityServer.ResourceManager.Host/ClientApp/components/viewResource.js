@@ -26,16 +26,28 @@ const styles = theme => ({
   }
 });
 
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
+
 class ViewResource extends Component {
     constructor(props) {
         super(props);
         this.handleOpenAuthPolicyRuleModal = this.handleOpenAuthPolicyRuleModal.bind(this);
         this.handleCloseAuthPolicyRuleModal = this.handleCloseAuthPolicyRuleModal.bind(this);
+        this.handleAddAuthorizationPolicy = this.handleAddAuthorizationPolicy.bind(this);
         this.handleAddAuthRulePolicy = this.handleAddAuthRulePolicy.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
+        this.handleChangeProvider = this.handleChangeProvider.bind(this);
         this.handleProperty = this.handleProperty.bind(this);
         this.handleAllSelections = this.handleAllSelections.bind(this);
+        this.handleEditAuthPolicyRule = this.handleEditAuthPolicyRule.bind(this);
         this.handleRemoveAuthPolicyRule = this.handleRemoveAuthPolicyRule.bind(this);
         this.handleRemoveAuthPolicies = this.handleRemoveAuthPolicies.bind(this);
         this.handleSave = this.handleSave.bind(this);
@@ -49,6 +61,7 @@ class ViewResource extends Component {
             isLoading: false,
             isRemoveDisplayed: false,
             isAuthPolicyModalOpened: false,
+            resourceId: '',
             resourceName: '',
             resourceType: '',
             resourceScopes: [],
@@ -57,6 +70,7 @@ class ViewResource extends Component {
             resourceAuthPolicies: [],
             currentAuthPolicy: null,
             currentAuthRulePolicy: {
+                provider: '',
                 clients: [],
                 scopes: [],
                 claims: []
@@ -87,7 +101,23 @@ class ViewResource extends Component {
     }
 
     /**
-    * Add the authorization policy.
+    * Add an authorization policy.
+    */
+    handleAddAuthorizationPolicy() {
+        var resourceAuthPolicies = this.state.resourceAuthPolicies;
+        resourceAuthPolicies.push({
+            id: guid(),
+            rules: [],
+            isChecked: false,
+            isNew: true
+        });
+        this.setState({
+            resourceAuthPolicies: resourceAuthPolicies
+        });
+    }
+
+    /**
+    * Add the authorization policy rule.
     */
     handleAddAuthRulePolicy() {
         var self = this;
@@ -96,10 +126,12 @@ class ViewResource extends Component {
         var currentAuthRulePolicy = self.state.currentAuthRulePolicy;
         var currentAuthPolicy = self.state.currentAuthPolicy;
         currentAuthRulePolicy['consent_needed'] = false;
+        currentAuthRulePolicy['id'] = guid();
         currentAuthPolicy.rules.push(currentAuthRulePolicy);
         self.setState({
             resourceAuthPolicies: resourceAuthPolicies,
             currentAuthRulePolicy: {
+                provider: '',
                 clients: [],
                 scopes: [],
                 claims: []
@@ -114,6 +146,17 @@ class ViewResource extends Component {
         this.setState({
             anchorEl: e.currentTarget
         });
+    }
+
+    /**
+    * Edit the authorization policy rule.
+    */
+    handleEditAuthPolicyRule(a, b) {
+        this.setState({
+            isAuthPolicyModalOpened: true,
+            currentAuthPolicy: a,
+            currentAuthRulePolicy: b
+        });        
     }
 
     /**
@@ -162,6 +205,18 @@ class ViewResource extends Component {
         });
     }
 
+
+    /**
+    * Change the provider.
+    */
+    handleChangeProvider(e) {
+        var currentAuthRulePolicy = this.state.currentAuthRulePolicy;
+        currentAuthRulePolicy['provider'] = e.target.value;
+        this.setState({
+            currentAuthRulePolicy: currentAuthRulePolicy
+        });
+    }
+
     /**
     * Handle property change.
     */
@@ -187,14 +242,42 @@ class ViewResource extends Component {
     * Remove the selected authorization policies.
     */
     handleRemoveAuthPolicies() {
-
+        var resourceAuthPolicies = this.state.resourceAuthPolicies.filter(function(auth) { return !auth.isChecked; }); 
+        this.setState({
+            resourceAuthPolicies: resourceAuthPolicies
+        });
     }
 
     /**
     * Save the changes.
     */
     handleSave() {
+        var self = this;
+        var resourceId = self.state.resourceId;
+        var resourceName = self.state.resourceName;
+        var resourceType = self.state.resourceType;
+        var resourceScopes = self.state.resourceScopes;        
+        var resourceAuthPolicies = self.state.resourceAuthPolicies;
+        var rules = [];
+        var resourceRequest = {
+            _id: resourceId,
+            name: resourceName,
+            scopes : resourceScopes,
+            type: resourceType
+        };
+        var insertAuthPolicyRequest = [],
+            updateAuthPolicyRequest = [];
+        resourceAuthPolicies.forEach(function(resourceAuthPolicy) {
+            if (resourceAuthPolicy.isNew) {
+                resourceAuthPolicy['resource_set_ids'] =  [ resourceId ];
+                insertAuthPolicyRequest.push(resourceAuthPolicy);
+            } else {
+                updateAuthPolicyRequest.push(resourceAuthPolicy);
+            }
+        });
 
+        console.log(insertAuthPolicyRequest);
+        console.log(updateAuthPolicyRequest);
     }
 
     /**
@@ -240,12 +323,14 @@ class ViewResource extends Component {
                         id: policy.id,
                         rules: policy.rules,
                         isChecked: false,
-                        isDeployed: false
+                        isDeployed: false,
+                        isNew: false
                     });
                 });
             }
 
             self.setState({
+                resourceId: resource._id,
                 resourceName: resource.name,
                 resourceScopes: resource.scopes,
                 resourceAuthPolicies: p,
@@ -311,7 +396,11 @@ class ViewResource extends Component {
                                 <TableCell>{rule.clients.join(',')}</TableCell>
                                 <TableCell>{rule.claims.map(function(r) { return r.type + ":" + r.value }).join(',')}</TableCell>
                                 <TableCell>{rule.scopes.join(',')}</TableCell>
+                                <TableCell>{rule.provider}</TableCell>
                                 <TableCell>
+                                    <IconButton onClick={() => { self.handleEditAuthPolicyRule(authPolicy, rule); }}>
+                                        <Edit />
+                                    </IconButton>
                                     <IconButton onClick={() => { self.handleRemoveAuthPolicyRule(authPolicy, rule); }}>
                                         <Delete />
                                     </IconButton>
@@ -338,6 +427,7 @@ class ViewResource extends Component {
                                             <TableCell>{t('allowedClients')}</TableCell>
                                             <TableCell>{t('allowedClaims')}</TableCell>
                                             <TableCell>{t('scopes')}</TableCell>
+                                            <TableCell>{t('authProvider')}</TableCell>
                                             <TableCell></TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -370,6 +460,11 @@ class ViewResource extends Component {
                 {self.state.isAddUserLoading ? (<CircularProgress />) : (
                     <div>
                         <DialogContent>
+                            {/* Provider */}
+                            <FormControl fullWidth={true}>
+                                <InputLabel htmlFor="provider">{t('provider')}</InputLabel>
+                                <Input id="provider" value={self.state.currentAuthRulePolicy.provider} name="provider" onChange={self.handleChangeProvider}  />
+                            </FormControl>
                             {/* AllowedClients */}
                             <FormControl fullWidth={true}>
                                 <ChipsSelector label={t('allowedClients')} properties={self.state.currentAuthRulePolicy.clients} />
@@ -422,6 +517,9 @@ class ViewResource extends Component {
                         <div className="header">
                             <h4 style={{display: "inline-block"}}>{t('resourceInformation')}</h4>
                             <div style={{float: "right"}}>
+                                <IconButton onClick={self.handleAddAuthorizationPolicy}>
+                                    <Add />
+                                </IconButton>
                                 {self.state.isRemoveDisplayed && (
                                     <IconButton onClick={self.handleRemoveAuthPolicies}>
                                         <Delete />
@@ -435,6 +533,11 @@ class ViewResource extends Component {
                         <div className="body">
                             <Grid container spacing={40}>
                                 <Grid item sm={12} md={4}>
+                                    {/* Id */}
+                                    <FormControl className={classes.margin} fullWidth={true}>
+                                        <InputLabel>{t('resourceId')}</InputLabel>
+                                        <Input value={self.state.resourceId}  disabled={true}  />
+                                    </FormControl>
                                     {/* Name */}
                                     <FormControl className={classes.margin} fullWidth={true}>
                                         <InputLabel htmlFor="resourceName">{t('resourceName')}</InputLabel>
