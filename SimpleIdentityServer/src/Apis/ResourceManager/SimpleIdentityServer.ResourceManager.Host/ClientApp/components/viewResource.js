@@ -7,13 +7,18 @@ import { withStyles } from 'material-ui/styles';
 import Input, { InputLabel } from 'material-ui/Input';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter } from 'material-ui/Table';
-import { CircularProgress, IconButton, Menu, MenuItem, Grid, Chip, Checkbox, Paper, Button } from 'material-ui';
+import { CircularProgress, IconButton, Menu, MenuItem, Grid, Chip, Checkbox, Paper, Button, Select } from 'material-ui';
+import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import MoreVert from '@material-ui/icons/MoreVert';
 import Delete from '@material-ui/icons/Delete';
 import Save from '@material-ui/icons/Save';
 import Collapse from 'material-ui/transitions/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import Edit from '@material-ui/icons/Edit';
+import Add from '@material-ui/icons/Add';
+import $ from 'jquery';
+import { SessionStore } from '../stores';
 
 const styles = theme => ({
   margin: {
@@ -24,25 +29,82 @@ const styles = theme => ({
 class ViewResource extends Component {
     constructor(props) {
         super(props);
+        this.handleOpenAuthPolicyRuleModal = this.handleOpenAuthPolicyRuleModal.bind(this);
+        this.handleCloseAuthPolicyRuleModal = this.handleCloseAuthPolicyRuleModal.bind(this);
+        this.handleAddAuthRulePolicy = this.handleAddAuthRulePolicy.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleProperty = this.handleProperty.bind(this);
         this.handleAllSelections = this.handleAllSelections.bind(this);
+        this.handleRemoveAuthPolicyRule = this.handleRemoveAuthPolicyRule.bind(this);
         this.handleRemoveAuthPolicies = this.handleRemoveAuthPolicies.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.handleDisplayAuthPolicy = this.handleDisplayAuthPolicy.bind(this);
         this.handleRowClick = this.handleRowClick.bind(this);
+        this.handleAddClaim = this.handleAddClaim.bind(this);
         this.refreshData = this.refreshData.bind(this);
+        this.refreshClaims = this.refreshClaims.bind(this);
         this.state = {
             id: null,
+            isLoading: false,
+            isRemoveDisplayed: false,
+            isAuthPolicyModalOpened: false,
             resourceName: '',
             resourceType: '',
             resourceScopes: [],
-            isLoading: false,
             isRemoveDisplayed: false,
             scopeName: '',
-            resourceAuthPolicies: []
+            resourceAuthPolicies: [],
+            currentAuthPolicy: null,
+            currentAuthRulePolicy: {
+                clients: [],
+                scopes: [],
+                claims: []
+            },
+            claimType: null,
+            claimValue: null,
+            supportedClaims: []
         };
+    }
+
+    /**
+    * Open the modal.
+    */
+    handleOpenAuthPolicyRuleModal(e) {
+        this.setState({
+            isAuthPolicyModalOpened: true,
+            currentAuthPolicy: e
+        });
+    }
+
+    /**
+    * Close the modal.
+    */
+    handleCloseAuthPolicyRuleModal() {
+        this.setState({
+            isAuthPolicyModalOpened: false
+        });
+    }
+
+    /**
+    * Add the authorization policy.
+    */
+    handleAddAuthRulePolicy() {
+        var self = this;
+        self.handleCloseAuthPolicyRuleModal();
+        var resourceAuthPolicies = self.state.resourceAuthPolicies;
+        var currentAuthRulePolicy = self.state.currentAuthRulePolicy;
+        var currentAuthPolicy = self.state.currentAuthPolicy;
+        currentAuthRulePolicy['consent_needed'] = false;
+        currentAuthPolicy.rules.push(currentAuthRulePolicy);
+        self.setState({
+            resourceAuthPolicies: resourceAuthPolicies,
+            currentAuthRulePolicy: {
+                clients: [],
+                scopes: [],
+                claims: []
+            }
+        });
     }
 
     /**
@@ -51,6 +113,43 @@ class ViewResource extends Component {
     handleClick(e) {
         this.setState({
             anchorEl: e.currentTarget
+        });
+    }
+
+    /**
+    * Remove the selected authorization policy rule.
+    */
+    handleRemoveAuthPolicyRule(authPolicy, resourceAuthRulePolicy) {
+        const resourceAuthPolicies = this.state.resourceAuthPolicies;
+        const resourceAuthPolicyIndex = resourceAuthPolicies.indexOf(authPolicy);
+        var resourceAuthPolicy = resourceAuthPolicies[resourceAuthPolicyIndex];
+        const resourceAuthRulePolicyIndex = resourceAuthPolicy.rules.indexOf(resourceAuthRulePolicy);
+        resourceAuthPolicy.rules.splice(resourceAuthRulePolicyIndex, 1);
+        this.setState({
+            resourceAuthPolicies: resourceAuthPolicies
+        });
+    }
+
+    /**
+    * Add a claim.
+    */
+    handleAddClaim() {
+        var self = this;
+        var claimType = self.state.claimType;
+        var claimValue = self.state.claimValue;
+        var currentAuthRulePolicy = self.state.currentAuthRulePolicy;
+        var currentAuthPolicyClaimTypes = currentAuthRulePolicy.claims.map(function(c) { return c.type; });
+        if (currentAuthPolicyClaimTypes.indexOf(claimType) !== -1 || !claimType || claimType === '' || !claimValue || claimValue === '') {
+            return;
+        }
+
+        currentAuthRulePolicy.claims.push({
+            type: claimType,
+            value: claimValue
+        });
+        self.setState({
+            claimValue: '',
+            currentAuthRulePolicy: currentAuthRulePolicy
         });
     }
 
@@ -160,10 +259,48 @@ class ViewResource extends Component {
         });
     }
 
+    /**
+    * Refresh the claims.
+    */
+    refreshClaims() {
+        var self = this;
+        var profile = SessionStore.getSession();
+        if (!profile.openid_url) {
+            return;
+        }
+
+        $.get(profile.openid_url).then(function(r) {
+            var claimsSupported = r['claims_supported'];
+            self.setState({
+                supportedClaims: claimsSupported,
+                claimType: claimsSupported[0]
+            });
+        }).fail(function() {
+            self.setState({
+                supportedClaims: [ ]
+            });
+        });
+    }
+
+    /**
+    * Remove the claim.
+    */
+    handleRemoveClaim(claim) {
+        const currentAuthRulePolicy = this.state.currentAuthRulePolicy;
+        const claims = currentAuthRulePolicy.claims;
+        const claimIndex = claims.indexOf(claim);
+        claims.splice(claimIndex, 1);        
+        this.setState({
+            currentAuthRulePolicy: currentAuthRulePolicy
+        });
+    }
+
     render() {
         var self = this;
         const { t, classes } = self.props;
-        var rows = [];
+        var rows = [],
+            claims = [],
+            chips = [];
         if (self.state.resourceAuthPolicies) {
             self.state.resourceAuthPolicies.forEach(function(authPolicy) {
                 var authPolicies = [];
@@ -174,6 +311,11 @@ class ViewResource extends Component {
                                 <TableCell>{rule.clients.join(',')}</TableCell>
                                 <TableCell>{rule.claims.map(function(r) { return r.type + ":" + r.value }).join(',')}</TableCell>
                                 <TableCell>{rule.scopes.join(',')}</TableCell>
+                                <TableCell>
+                                    <IconButton onClick={() => { self.handleRemoveAuthPolicyRule(authPolicy, rule); }}>
+                                        <Delete />
+                                    </IconButton>
+                                </TableCell>
                             </TableRow>
                         );
                     });
@@ -185,6 +327,9 @@ class ViewResource extends Component {
                         <TableCell><Checkbox color="primary" checked={authPolicy.isChecked} onChange={(e) => self.handleRowClick(e, authPolicy)} /></TableCell>
                         <TableCell>
                             {t('authorizationPolicy') +": " + authPolicy.id}
+                            <IconButton onClick={() => self.handleOpenAuthPolicyRuleModal(authPolicy)}>
+                                <Add />
+                            </IconButton>
                             { authPolicy.isDeployed ? (<IconButton onClick={() => self.handleDisplayAuthPolicy(authPolicy, false)}><ExpandLess /> </IconButton>) : (<IconButton onClick={() => self.handleDisplayAuthPolicy(authPolicy, true)}><ExpandMore /></IconButton>) }                            
                             <Collapse in={authPolicy.isDeployed}>
                                 <Table>
@@ -193,6 +338,7 @@ class ViewResource extends Component {
                                             <TableCell>{t('allowedClients')}</TableCell>
                                             <TableCell>{t('allowedClaims')}</TableCell>
                                             <TableCell>{t('scopes')}</TableCell>
+                                            <TableCell></TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -206,8 +352,55 @@ class ViewResource extends Component {
             });
         }
 
-        console.log(classes);
+        if (self.state.supportedClaims) {
+            self.state.supportedClaims.forEach(function(claim) {
+                claims.push((<MenuItem key={claim} value={claim}>{t(claim)}</MenuItem>));
+            });
+        }
+
+        if (self.state.currentAuthRulePolicy.claims) {
+            self.state.currentAuthRulePolicy.claims.forEach(function(claim) {
+                chips.push((<Chip label={claim.type + " : " + claim.value} key={claim.type} className={classes.margin} onDelete={() => self.handleRemoveClaim(claim)} />));
+            });
+        }
+
         return (<div className="block">
+            <Dialog open={self.state.isAuthPolicyModalOpened} onClose={this.handleCloseAuthPolicyRuleModal}>
+                <DialogTitle>{t('addAuthRulePolicy')}</DialogTitle>
+                {self.state.isAddUserLoading ? (<CircularProgress />) : (
+                    <div>
+                        <DialogContent>
+                            {/* AllowedClients */}
+                            <FormControl fullWidth={true}>
+                                <ChipsSelector label={t('allowedClients')} properties={self.state.currentAuthRulePolicy.clients} />
+                            </FormControl>
+                            {/* Allowed claims */}
+                            <FormControl fullWidth={true}>
+                                <form onSubmit={(e) => { e.preventDefault(); self.handleAddClaim(); }}>
+                                    <Select value={self.state.claimType} onChange={self.handleProperty} name="claimType">
+                                        {claims}
+                                    </Select>                                    
+                                    <FormControl className={classes.margin}>
+                                        <InputLabel>{t('claimValue')}</InputLabel>
+                                        <Input value={self.state.claimValue} name="claimValue" onChange={self.handleProperty}  />
+                                    </FormControl>
+                                    <Button variant="raised" color="primary" onClick={this.handleAddClaim}>{t('add')}</Button>
+                                </form>
+                                <Paper>                                    
+                                    {chips}
+                                </Paper>
+                            </FormControl>
+                            {/* Allowed scopes */}
+                            <FormControl fullWidth={true}>
+                                <ChipsSelector label={t('allowedScopes')} properties={self.state.currentAuthRulePolicy.scopes} />
+                            </FormControl>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button  variant="raised" color="primary" onClick={self.handleAddAuthRulePolicy}>{t('save')}</Button>
+                        </DialogActions>
+                    </div>
+                )}
+            </Dialog>
             <div className="block-header">
                 <Grid container>
                     <Grid item md={5} sm={12}>
@@ -229,20 +422,14 @@ class ViewResource extends Component {
                         <div className="header">
                             <h4 style={{display: "inline-block"}}>{t('resourceInformation')}</h4>
                             <div style={{float: "right"}}>
-                                <IconButton onClick={self.handleSave}>
-                                    <Save />
-                                </IconButton>
                                 {self.state.isRemoveDisplayed && (
                                     <IconButton onClick={self.handleRemoveAuthPolicies}>
                                         <Delete />
                                     </IconButton>
                                 )}
-                                <IconButton onClick={this.handleClick}>
-                                    <MoreVert />
+                                <IconButton onClick={self.handleSave}>
+                                    <Save />
                                 </IconButton>
-                                <Menu anchorEl={self.state.anchorEl} open={Boolean(self.state.anchorEl)} onClose={self.handleClose}>
-                                    <MenuItem>{t('addAuthPolicy')}</MenuItem>
-                                </Menu>
                             </div>
                         </div>
                         <div className="body">
@@ -289,7 +476,11 @@ class ViewResource extends Component {
         self.setState({
             id:  self.props.match.params.id
         }, () => {
+            SessionStore.addChangeListener(function() {
+                self.refreshClaims();
+            });
             self.refreshData();
+            self.refreshClaims();
         });
     }
 }
