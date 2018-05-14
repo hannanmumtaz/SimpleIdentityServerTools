@@ -60,6 +60,7 @@ class ViewResource extends Component {
             id: null,
             isLoading: false,
             isRemoveDisplayed: false,
+            addAuthRulePolicy: false,
             isAuthPolicyModalOpened: false,
             resourceId: '',
             resourceName: '',
@@ -87,7 +88,8 @@ class ViewResource extends Component {
     handleOpenAuthPolicyRuleModal(e) {
         this.setState({
             isAuthPolicyModalOpened: true,
-            currentAuthPolicy: e
+            currentAuthPolicy: e,
+            addAuthRulePolicy: true
         });
     }
 
@@ -125,9 +127,18 @@ class ViewResource extends Component {
         var resourceAuthPolicies = self.state.resourceAuthPolicies;
         var currentAuthRulePolicy = self.state.currentAuthRulePolicy;
         var currentAuthPolicy = self.state.currentAuthPolicy;
-        currentAuthRulePolicy['consent_needed'] = false;
-        currentAuthRulePolicy['id'] = guid();
-        currentAuthPolicy.rules.push(currentAuthRulePolicy);
+        if (self.state.addAuthRulePolicy) {
+            currentAuthRulePolicy['consent_needed'] = false;
+            currentAuthRulePolicy['id'] = guid();
+            currentAuthPolicy.rules.push(currentAuthRulePolicy);  
+        } else {
+            var authRulePolicy = currentAuthPolicy.rules.filter(function(rule) { return rule.id === currentAuthRulePolicy['id']; })[0];
+            authRulePolicy.clients = currentAuthRulePolicy.clients;
+            authRulePolicy.scopes = currentAuthRulePolicy.scopes;
+            authRulePolicy.claims = currentAuthRulePolicy.claims;
+            authRulePolicy.provider = currentAuthRulePolicy.provider;
+        }
+
         self.setState({
             resourceAuthPolicies: resourceAuthPolicies,
             currentAuthRulePolicy: {
@@ -152,10 +163,12 @@ class ViewResource extends Component {
     * Edit the authorization policy rule.
     */
     handleEditAuthPolicyRule(a, b) {
+        b = $.extend({}, b);
         this.setState({
             isAuthPolicyModalOpened: true,
             currentAuthPolicy: a,
-            currentAuthRulePolicy: b
+            currentAuthRulePolicy: b,
+            addAuthRulePolicy: false
         });        
     }
 
@@ -464,6 +477,7 @@ class ViewResource extends Component {
                             <FormControl fullWidth={true}>
                                 <InputLabel htmlFor="provider">{t('provider')}</InputLabel>
                                 <Input id="provider" value={self.state.currentAuthRulePolicy.provider} name="provider" onChange={self.handleChangeProvider}  />
+                                <FormHelperText>{t('providerDescription')}</FormHelperText>
                             </FormControl>
                             {/* AllowedClients */}
                             <FormControl fullWidth={true}>
@@ -537,16 +551,19 @@ class ViewResource extends Component {
                                     <FormControl className={classes.margin} fullWidth={true}>
                                         <InputLabel>{t('resourceId')}</InputLabel>
                                         <Input value={self.state.resourceId}  disabled={true}  />
+                                        <FormHelperText>{t('resourceIdDescription')}</FormHelperText>
                                     </FormControl>
                                     {/* Name */}
                                     <FormControl className={classes.margin} fullWidth={true}>
                                         <InputLabel htmlFor="resourceName">{t('resourceName')}</InputLabel>
                                         <Input id="resourceName" value={self.state.resourceName} name="resourceName" onChange={self.handleProperty}  />
+                                        <FormHelperText>{t('resourceNameDescription')}</FormHelperText>
                                     </FormControl>
                                     {/* Type */}
                                     <FormControl className={classes.margin} fullWidth={true}>
                                         <InputLabel htmlFor="resourceType">{t('resourceType')}</InputLabel>
                                         <Input id="resourceType" value={self.state.resourceType} name="resourceType" onChange={self.handleProperty}  />
+                                        <FormHelperText>{t('resourceTypeDescription')}</FormHelperText>
                                     </FormControl>
                                     {/* Scopes */}
                                     <div className={classes.margin}>
