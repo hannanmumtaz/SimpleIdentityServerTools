@@ -4,7 +4,7 @@ import SessionService from './sessionService';
 
 module.exports = {
 	/**
-	* Search the users.
+	* Search the resource owners.
 	*/
 	search: function(request, type) {
         return new Promise(function (resolve, reject) {
@@ -26,7 +26,7 @@ module.exports = {
 		});
 	},
 	/**
-	* Get the user.
+	* Get the resource owner.
 	*/
 	get: function(id) {
 		return new Promise(function(resolve, reject) {
@@ -64,7 +64,7 @@ module.exports = {
 		});
 	},
     /**
-    * Add a client.
+    * Add a resource owner.
     */
     add: function(request) {
         return new Promise(function (resolve, reject) {
@@ -85,4 +85,26 @@ module.exports = {
             });
         });
     },
+    /**
+    * Update a resource owner.
+    */
+    update: function(request) {
+        return new Promise(function (resolve, reject) {
+            var data = JSON.stringify(request);
+            var session = SessionService.getSession();
+            $.ajax({
+                url: Constants.apiUrl + '/resourceowners',
+                method: "PUT",
+                data: data,
+                contentType: 'application/json',
+                headers: {
+                    "Authorization": "Bearer "+ session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });
+    }
 };

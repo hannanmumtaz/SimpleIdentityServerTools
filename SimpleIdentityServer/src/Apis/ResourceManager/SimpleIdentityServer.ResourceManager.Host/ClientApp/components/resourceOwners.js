@@ -184,7 +184,35 @@ class ResourceOwners extends Component {
     * Remove the selected users.
     */
     handleRemoveUsers() {      
-        
+        var self = this;
+        const {t} = self.props;
+        var users = self.state.data.filter(function(user) { return user.isSelected; }).map(function(user) { return user.login; });
+        if (users.length === 0) {
+            return;
+        }
+
+        self.setState({
+            isLoading: true
+        });
+        var ops = [];
+        users.forEach(function(user) {
+            ops.push(ResourceOwnerService.delete(user));
+        });
+        Promise.all(ops).then(function() {
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('usersAreRemoved')
+            });
+            self.refreshData();
+        }).catch(function() {
+            self.setState({
+                isLoading: false
+            });
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('usersCannotBeRemoved')
+            });
+        });
     }
 
     /**
