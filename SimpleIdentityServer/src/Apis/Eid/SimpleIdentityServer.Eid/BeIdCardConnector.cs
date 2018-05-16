@@ -188,8 +188,8 @@ namespace SimpleIdentityServer.Eid
                 data.AddRange(digestValue);
                 var resultCommand = SendCommand(BeIDCommandAPDU.COMPUTE_DIGITAL_SIGNATURE, data.ToArray()); // Compute the signature.
                 result = resultCommand.GetApdu();
-                var length = result.Last();
-                var getResponse = GetResponse(length);
+                // var length = result.Last();
+                var getResponse = GetResponse(128);
                 result = getResponse.GetData();
             }
             finally
