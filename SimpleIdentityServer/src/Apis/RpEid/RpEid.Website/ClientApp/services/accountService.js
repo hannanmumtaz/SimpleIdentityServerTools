@@ -79,24 +79,6 @@ module.exports = {
         });
     },
     /**
-    * Resend confirmation code.
-    */
-    resend: function (id) {
-        return new Promise(function (resolve, reject) {
-            var session = SessionService.getSession();
-            $.ajax(Constants.apiUrl + '/accounts/.grant/resend/' + id, {
-                type: 'GET',
-                headers: {
-                    "Authorization": "Bearer " + session.token
-                }
-            }).then(function (data) {
-                resolve(data);
-            }).fail(function (e) {
-                reject(e);
-            });
-        });
-    },
-    /**
     * Add the account.
     */
     add: function (request) {

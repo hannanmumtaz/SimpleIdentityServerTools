@@ -70,9 +70,9 @@ class ConfirmCode extends Component {
                 <div className="body">
                     {self.state.isLoading ? (<CircularProgress />) : (
                         <div>
-                            {/* Login */}
+                            {/* Confirmation code */}
                             <FormControl fullWidth={true} className={classes.margin}>
-                                <InputLabel>{t('login')}</InputLabel>
+                                <InputLabel>{t('confirmationCode')}</InputLabel>
                                 <Input name="login" value={self.state.confirmationCode} disabled={true} />
                             </FormControl>
                             <Button variant="raised" color="primary" onClick={this.handleConfirmCode}>{t('confirm')}</Button>

@@ -35,9 +35,10 @@ class Home extends Component {
             isLoading: true
         });
         AccountService.getMine().then(function (r) {
+            console.log(r);
             self.setState({
                 isLoading: false,
-                isAccountEnabled: r['is_confirmed'],
+                isAccountEnabled: r['is_granted'],
                 isAccessRequested: true
             });
         }).catch(function () {

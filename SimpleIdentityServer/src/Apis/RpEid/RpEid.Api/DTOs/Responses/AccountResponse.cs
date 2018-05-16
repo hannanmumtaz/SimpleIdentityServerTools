@@ -14,15 +14,11 @@ namespace RpEid.Api.DTOs.Responses
         public string Email { get; set; }
         [DataMember(Name = Constants.AccountNames.IsGranted)]
         public bool IsGranted { get; set; }
-        [DataMember(Name = Constants.AccountNames.IsConfirmed)]
-        public bool IsConfirmed { get; set; }
         [DataMember(Name = Constants.AccountNames.CreateDateTime)]
         public DateTime CreateDateTime { get; set; }
         [DataMember(Name = Constants.AccountNames.UpdateDateTime)]
         public DateTime UpdateDateTime { get; set; }
         [DataMember(Name = Constants.AccountNames.GrantDateTime)]
         public DateTime? GrantDateTime { get; set; }
-        [DataMember(Name = Constants.AccountNames.ConfirmationDateTime)]
-        public DateTime? ConfirmationDateTime { get; set; }
     }
 }

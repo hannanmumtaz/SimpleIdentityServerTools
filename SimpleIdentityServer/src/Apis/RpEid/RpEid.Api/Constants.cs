@@ -8,11 +8,9 @@
             public const string Name = "name";
             public const string Email = "email";
             public const string IsGranted = "is_granted";
-            public const string IsConfirmed = "is_confirmed";
             public const string CreateDateTime = "create_datetime";
             public const string UpdateDateTime = "update_datetime";
             public const string GrantDateTime = "grant_datetime";
-            public const string ConfirmationDateTime = "confirmation_datetime";
         }
 
         public static class ErrorResponseNames

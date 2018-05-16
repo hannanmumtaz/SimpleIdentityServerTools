@@ -12,7 +12,6 @@ class Users extends Component {
     constructor(props) {
         super(props);
         this.enableAccounts = this.enableAccounts.bind(this);
-        this.resendAccounts = this.resendAccounts.bind(this);
         this.refresh = this.refresh.bind(this);
         this.handleRowClick = this.handleRowClick.bind(this);
         this.handleAllSelections = this.handleAllSelections.bind(this);
@@ -20,7 +19,6 @@ class Users extends Component {
         this.handleChangeRowsPage = this.handleChangeRowsPage.bind(this);
         this.state = {
             users: [],
-            isGrantedDispayed: false,
             isResendDisplayed: false,
             isLoading: false,
             page: 0,
@@ -65,41 +63,6 @@ class Users extends Component {
         });
     }
 
-    resendAccounts() {
-        var self = this;
-        const { t } = self.props;
-        var users = self.state.users.filter(function (user) { return user.isChecked && user.isGranted && !user.isConfirmed; });
-        if (users.length === 0) {
-            return;
-        }
-
-        self.setState({
-            isLoading: true
-        });
-        var ops = [];
-        users.forEach(function (user) {
-            ops.push(AccountService.resend(user.subject));
-        });
-        Promise.all(ops).then(function () {
-            self.setState({
-                isLoading: false
-            });
-            AppDispatcher.dispatch({
-                actionName: Constants.events.DISPLAY_MESSAGE,
-                data: t('confirmationCodesSent')
-            });
-            self.refresh();
-        }).catch(function (e) {
-            AppDispatcher.dispatch({
-                actionName: Constants.events.DISPLAY_MESSAGE,
-                data: t('confirmationCodesCannotBeSend')
-            });
-            self.setState({
-                isLoading: false
-            });
-        });
-    }
-
     refresh() {
         var self = this;
         const { t } = self.props;
@@ -117,7 +80,6 @@ class Users extends Component {
                         email: c.email,
                         name: c.name,
                         isGranted: c.isGranted,
-                        isConfirmed: c.isConfirmed,
                         isChecked: false
                     });
                 });
@@ -143,11 +105,9 @@ class Users extends Component {
         user.isChecked = e.target.checked;
         var users = this.state.users;
         var nbSelectedRecords = users.filter(function (r) { return r.isChecked && !r.isGranted; }).length;
-        var nbResendRecords = users.filter(function (user) { return user.isChecked && user.isGranted && !user.isConfirmed; }).length;
         this.setState({
             users: users,
-            isGrantedDispayed: nbSelectedRecords > 0,
-            isResendDisplayed: nbResendRecords > 0
+            isGrantedDispayed: nbSelectedRecords > 0
         });
     }
 
@@ -156,11 +116,9 @@ class Users extends Component {
         var users = this.state.users;
         users.forEach(function (r) { r.isChecked = checked; });
         var nbSelectedRecords = users.filter(function (r) { return r.isChecked && !r.isGranted; }).length;
-        var nbResendRecords = users.filter(function (user) { return user.isChecked && user.isGranted && !user.isConfirmed; }).length;
         this.setState({
             users: users,
-            isGrantedDispayed: nbSelectedRecords > 0,
-            isResendDisplayed: nbResendRecords > 0
+            isGrantedDispayed: nbSelectedRecords > 0
         });
     }
 
@@ -201,7 +159,6 @@ class Users extends Component {
                         <TableCell>{user.name}</TableCell>
                         <TableCell>{user.email}</TableCell>
                         <TableCell><Checkbox color="primary" checked={user.isGranted} disabled={true} /></TableCell>
-                        <TableCell><Checkbox color="primary" checked={user.isConfirmed} disabled={true} /></TableCell>
                     </TableRow>
                 );
             });
@@ -231,11 +188,6 @@ class Users extends Component {
                                 <Done />
                             </IconButton>
                         )}
-                        {self.state.isResendDisplayed && (
-                            <IconButton onClick={self.resendAccounts}>
-                                <Send />
-                            </IconButton>
-                        )}
                     </div>
                 </div>
                 <div className="body">
@@ -249,13 +201,11 @@ class Users extends Component {
                                         <TableCell>{t('name')}</TableCell>
                                         <TableCell>{t('email')}</TableCell>
                                         <TableCell>{t('isGranted')}</TableCell>
-                                        <TableCell>{t('isConfirmed')}</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     <TableRow>
                                         <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
-                                        <TableCell></TableCell>
                                         <TableCell></TableCell>
                                         <TableCell></TableCell>
                                         <TableCell></TableCell>

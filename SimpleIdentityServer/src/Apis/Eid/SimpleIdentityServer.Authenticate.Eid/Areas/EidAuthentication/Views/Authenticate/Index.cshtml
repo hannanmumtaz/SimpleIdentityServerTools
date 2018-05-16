@@ -18,24 +18,31 @@
 @section Scripts {
     <script type="text/javascript">
         $(document).ready(function () {
-            var connection = null;
+            var hubConnection = null;
             var connectWithEid = $("#eidLogin");
             var url = '@Model.EidUrl';
             var launchSignalr = function () {
-                connection = new signalR.HubConnection(url + "/sessionHub", { logger: signalR.LogLevel.Information });
-                connection.start().catch(err => console.error);
-                connection.on("Session", (response, session) => {
+                hubConnection = new signalR.HubConnection(url + "/sessionHub", { logger: signalR.LogLevel.Information });
+                hubConnection.start().catch(err => console.error);
+                hubConnection.on("Session", (response, session) => {
                     $("#submitXml").find("input[name='xml']").val(response.xml);
                     $("#submitXml").submit();
                 });
+                setInterval(function () {
+                    if (hubConnection.connection.connectionState !== 1) {
+                        connectWithEid.prop('disabled', true);
+                    } else {
+                        connectWithEid.prop('disabled', false);
+                    }
+                }, 3000);
             };
 
             connectWithEid.click(function () {
-                if (!connection) {
+                if (!hubConnection) {
                     return;
                 }
 
-                connection.invoke("GetSession");
+                hubConnection.invoke("GetSession");
             });
             launchSignalr();
         });
@@ -76,7 +83,7 @@
             <form action="@Url.Action("LocalLogin")" id="submitXml" method="post">
                 <input type="hidden" name="xml" />
             </form>
-            <button type="button" class="btn btn-primary" id="eidLogin">Connect with EID</button>
+            <button type="button" class="btn btn-primary" id="eidLogin" disabled>Connect with EID</button>
         </div>
     </div>
 </div>

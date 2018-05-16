@@ -38,11 +38,9 @@ namespace RpEid.Api.Extensions
                 Name = account.Name,
                 Email = account.Email,
                 IsGranted = account.IsGranted,
-                IsConfirmed = account.IsConfirmed,
                 CreateDateTime = account.CreateDateTime,
                 UpdateDateTime = account.UpdateDateTime,
-                GrantDateTime = account.GrantDateTime,
-                ConfirmationDateTime = account.ConfirmationDateTime
+                GrantDateTime = account.GrantDateTime
             };
         }
     }

@@ -54,10 +54,10 @@ namespace SimpleIdentityServer.Eid.Ehealth.Tlv
                     continue;
                 }
 
-                var tlvValue = Copy(file, i, length);
                 var field = tlvFields.FirstOrDefault(t => t.Key == tag);
                 if (!field.Equals(default(KeyValuePair<int, PropertyInfo>)))
                 {
+                    var tlvValue = Copy(file, i, length);
                     var tlvField = field.Value;
                     var propertyType = tlvField.PropertyType;
                     object fieldValue = null;

@@ -44,11 +44,6 @@ namespace RpEid.Api.Repositories
                         accounts = accounts.Where(a => parameter.Subjects.Contains(a.Subject));
                     }
 
-                    if (parameter.ConfirmationCodes != null)
-                    {
-                        accounts = accounts.Where(a => parameter.ConfirmationCodes.Contains(a.ConfirmationCode));
-                    }
-
                     switch (parameter.Order)
                     {
                         case Orders.Asc:
@@ -112,10 +107,7 @@ namespace RpEid.Api.Repositories
                     {
                         CreateDateTime = DateTime.UtcNow,
                         UpdateDateTime = DateTime.UtcNow,
-                        ConfirmationDateTime = null,
                         GrantDateTime = null,
-                        ConfirmationCode = null,
-                        IsConfirmed = false,
                         IsGranted = false,
                         Name = account.Name,
                         Subject = account.Subject,
@@ -149,11 +141,8 @@ namespace RpEid.Api.Repositories
                     record.Name = account.Name;
                     record.Email = account.Email;
                     record.IsGranted = account.IsGranted;
-                    record.IsConfirmed = account.IsConfirmed;
-                    record.ConfirmationCode = account.ConfirmationCode;
                     record.UpdateDateTime = DateTime.UtcNow;
                     record.GrantDateTime = account.GrantDateTime;
-                    record.ConfirmationDateTime = account.ConfirmationDateTime;
                     await context.SaveChangesAsync().ConfigureAwait(false);
                     return true;
                 }
@@ -164,15 +153,12 @@ namespace RpEid.Api.Repositories
         {
             return new AccountAggregate
             {
-                IsConfirmed = account.IsConfirmed,
                 Name = account.Name,
                 Subject = account.Subject,
                 Email = account.Email,
                 UpdateDateTime = account.UpdateDateTime,
                 CreateDateTime = account.CreateDateTime,
                 IsGranted = account.IsGranted,
-                ConfirmationCode = account.ConfirmationCode,
-                ConfirmationDateTime = account.ConfirmationDateTime,
                 GrantDateTime = account.GrantDateTime
             };
         }

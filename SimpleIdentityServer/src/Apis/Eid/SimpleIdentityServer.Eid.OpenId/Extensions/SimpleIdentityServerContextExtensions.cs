@@ -464,19 +464,19 @@ namespace SimpleIdentityServer.Eid.OpenId.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 ClaimCode =  SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.Address,
-                                Value = "{ country : 'france' }"
+                                Value = "{ country : 'belgique' }"
                             },
                             new ResourceOwnerClaim
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 ClaimCode =  SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.BirthDate,
-                                Value = "1989-10-07"
+                                Value = "1900-01-01"
                             },
                             new ResourceOwnerClaim
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 ClaimCode =  SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.Email,
-                                Value = "habarthierry@hotmail.fr"
+                                Value = "administrator@hotmail.fr"
                             },
                             new ResourceOwnerClaim
                             {
@@ -488,7 +488,7 @@ namespace SimpleIdentityServer.Eid.OpenId.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 ClaimCode = SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.FamilyName,
-                                Value = "habart"
+                                Value = "administrator"
                             },
                             new ResourceOwnerClaim
                             {
@@ -500,7 +500,7 @@ namespace SimpleIdentityServer.Eid.OpenId.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 ClaimCode =  SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.GivenName,
-                                Value = "Habart Thierry"
+                                Value = "Administrator"
                             },
                             new ResourceOwnerClaim
                             {
@@ -512,19 +512,19 @@ namespace SimpleIdentityServer.Eid.OpenId.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 ClaimCode =  SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.MiddleName,
-                                Value = "Thierry"
+                                Value = "Administrator"
                             },
                             new ResourceOwnerClaim
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 ClaimCode =  SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.NickName,
-                                Value = "Titi"
+                                Value = "Admin"
                             },
                             new ResourceOwnerClaim
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 ClaimCode =  SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.PhoneNumber,
-                                Value = "+32485350536"
+                                Value = "+32444444444"
                             },
                             new ResourceOwnerClaim
                             {
@@ -536,13 +536,13 @@ namespace SimpleIdentityServer.Eid.OpenId.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 ClaimCode =  SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.Picture,
-                                Value = "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Shiba_inu_taiki.jpg/220px-Shiba_inu_taiki.jpg"
+                                Value = "http://localhost:60000/img/Unknown.png"
                             },
                             new ResourceOwnerClaim
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 ClaimCode =  SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.PreferredUserName,
-                                Value = "Thierry"
+                                Value = "Administrator"
                             },
                             new ResourceOwnerClaim
                             {

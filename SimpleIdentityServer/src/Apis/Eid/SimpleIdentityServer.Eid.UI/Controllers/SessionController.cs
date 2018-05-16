@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using PcscDotNet;
@@ -9,6 +10,7 @@ using SimpleIdentityServer.Eid.Exceptions;
 using SimpleIdentityServer.Eid.Sign;
 using SimpleIdentityServer.Eid.UI.Extensions;
 using SimpleIdentityServer.Eid.UI.Helpers;
+using SimpleIdentityServer.Eid.UI.Hubs;
 using SimpleIdentityServer.Eid.UI.Stores;
 using System;
 using System.Linq;
@@ -22,14 +24,16 @@ namespace SimpleIdentityServer.Eid.UI.Controllers
         private readonly IEhealthSamlTokenRequestBuilder _ehealthSamlTokenRequestBuilder;
         private readonly ISoapMessageSerializer _soapMessageSerializer;
         private readonly ITlvParser _tlvParser;
+        private readonly IHubContext<SessionHub> _sessionHubContext;
 
-        public SessionController(ISessionStore sessionStore, IConfiguration configuration)
+        public SessionController(ISessionStore sessionStore, IConfiguration configuration, IHubContext<SessionHub> sessionHubContext)
         {
             _sessionStore = sessionStore;
             _configuration = configuration;
             _ehealthSamlTokenRequestBuilder = new EhealthSamlTokenRequestBuilder();
             _soapMessageSerializer = new SoapMessageSerializer();
             _tlvParser = new TlvParser();
+            _sessionHubContext = sessionHubContext;
         }
 
         [HttpGet]
@@ -118,6 +122,7 @@ namespace SimpleIdentityServer.Eid.UI.Controllers
                     soapEnvelope.Header.Security.Signature = signatureNode;
                     var xmlDocument = _soapMessageSerializer.Serialize(soapEnvelope);
                     _sessionStore.StoreSession(xmlDocument);
+                    _sessionHubContext.Clients.All.SendAsync("Session", new { xml = xmlDocument.OuterXml });
                 }
                 catch (BeIdCardException ex)
                 {
