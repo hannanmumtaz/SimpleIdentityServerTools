@@ -1,6 +1,5 @@
 ﻿using SimpleIdentityServer.Eid.Common.Serializers;
 using SimpleIdentityServer.Eid.Common.SoapMessages;
-using SimpleIdentityServer.Eid;
 using System;
 using System.Collections.Generic;
 using System.IO;

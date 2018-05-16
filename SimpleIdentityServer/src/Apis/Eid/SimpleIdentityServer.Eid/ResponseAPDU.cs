@@ -61,8 +61,12 @@ namespace SimpleIdentityServer.Eid
 
         private static void Check(byte[] apdu)
         {
-            var status = apdu.Skip(apdu.Count() - 2).Take(2);
-            var rec = _mappingAdpuResponseToErrorNames.FirstOrDefault(kvp => kvp.Key.SequenceEqual(status));
+            if (apdu.Count() != 2)
+            {
+                return;
+            }
+
+            var rec = _mappingAdpuResponseToErrorNames.FirstOrDefault(kvp => kvp.Key.SequenceEqual(apdu));
             if (!rec.Equals(default(KeyValuePair<byte[], string>)) && !string.IsNullOrWhiteSpace(rec.Value))
             {
                 throw new TransmitException(rec.Value);
