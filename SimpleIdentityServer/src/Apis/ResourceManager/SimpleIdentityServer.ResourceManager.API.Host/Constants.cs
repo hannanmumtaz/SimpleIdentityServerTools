@@ -17,6 +17,7 @@
             public const string ResourcesController = "resources";
             public const string ProfileController = "profile";
             public const string ClaimsController = "claims";
+            public const string AuthPoliciesController = "authpolicies";
         }
 
         public static class ProfileResponseNames

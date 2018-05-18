@@ -7,6 +7,7 @@ import ResourceOwnerService from './resourceOwnerService';
 import ResourceService from './resourceService';
 import ProfileService from './profileService';
 import ClaimService from './claimService';
+import AuthPolicyService from './authPolicyService';
 
 exports.SessionService = SessionService;
 exports.WebsiteService = WebsiteService;
@@ -17,3 +18,4 @@ exports.ResourceOwnerService = ResourceOwnerService;
 exports.ResourceService = ResourceService;
 exports.ProfileService = ProfileService;
 exports.ClaimService = ClaimService;
+exports.AuthPolicyService = AuthPolicyService;

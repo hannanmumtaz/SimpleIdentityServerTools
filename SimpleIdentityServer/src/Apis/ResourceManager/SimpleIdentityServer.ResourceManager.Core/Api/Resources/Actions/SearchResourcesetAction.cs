@@ -3,13 +3,14 @@ using SimpleIdentityServer.ResourceManager.Core.Helpers;
 using SimpleIdentityServer.ResourceManager.Core.Models;
 using SimpleIdentityServer.ResourceManager.Core.Stores;
 using SimpleIdentityServer.Uma.Common.DTOs;
+using System;
 using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.ResourceManager.Core.Api.Resources.Actions
 {
     public interface ISearchResourcesetAction
     {
-        Task<SearchResourceSetResponse> Execute(string url, SearchResourceSet searchResourceSet);
+        Task<SearchResourceSetResponse> Execute(string subject, SearchResourceSet searchResourceSet);
     }
 
     internal class SearchResourcesetAction : ISearchResourcesetAction
@@ -26,9 +27,19 @@ namespace SimpleIdentityServer.ResourceManager.Core.Api.Resources.Actions
             _tokenStore = tokenStore;
         }
 
-        public async Task<SearchResourceSetResponse> Execute(string url, SearchResourceSet searchResourceSet)
+        public async Task<SearchResourceSetResponse> Execute(string subject, SearchResourceSet searchResourceSet)
         {
-            var endpoint = await _endpointHelper.GetEndpoint(url, EndpointTypes.AUTH);
+            if (string.IsNullOrWhiteSpace(subject))
+            {
+                throw new ArgumentNullException(nameof(subject));
+            }
+
+            if (searchResourceSet == null)
+            {
+                throw new ArgumentNullException(nameof(searchResourceSet));
+            }
+
+            var endpoint = await _endpointHelper.TryGetEndpointFromProfile(subject, EndpointTypes.AUTH);
             var grantedToken = await _tokenStore.GetToken(endpoint.Url, endpoint.ClientId, endpoint.ClientSecret, new[] { _scopeName });
             return await _identityServerUmaClientFactory.GetResourceSetClient().ResolveSearch(endpoint.Url, searchResourceSet, grantedToken.AccessToken);
         }

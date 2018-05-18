@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.Client;
 using SimpleIdentityServer.Configuration.Client;
+using SimpleIdentityServer.ResourceManager.Core.Api.AuthPolicies;
+using SimpleIdentityServer.ResourceManager.Core.Api.AuthPolicies.Actions;
 using SimpleIdentityServer.ResourceManager.Core.Api.Claims;
 using SimpleIdentityServer.ResourceManager.Core.Api.Claims.Actions;
 using SimpleIdentityServer.ResourceManager.Core.Api.Clients;
@@ -64,6 +66,13 @@ namespace SimpleIdentityServer.ResourceManager.Core
             services.AddTransient<IDeleteClaimAction, DeleteClaimAction>();
             services.AddTransient<IGetClaimAction, GetClaimAction>();
             services.AddTransient<ISearchClaimsAction, SearchClaimsAction>();
+            services.AddTransient<IUpdateResourceAction, UpdateResourceAction>();
+            services.AddTransient<IDeleteResourceAction, DeleteResourceAction>();
+            services.AddTransient<IAddResourceAction, AddResourceAction>();
+            services.AddTransient<IAddAuthorizationPolicyAction, AddAuthorizationPolicyAction>();
+            services.AddTransient<IDeleteAuthorizationPolicyAction, DeleteAuthorizationPolicyAction>();
+            services.AddTransient<IUpdateAuthorizationPolicyAction, UpdateAuthorizationPolicyAction>();
+            services.AddTransient<IAuthorizationPolicyActions, AuthorizationPolicyActions>();
             return services;
         }
 

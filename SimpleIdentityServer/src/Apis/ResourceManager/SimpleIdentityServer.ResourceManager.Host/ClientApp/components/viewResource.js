@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { translate } from 'react-i18next';
 import { ChipsSelector } from './common';
-import { ResourceService } from '../services';
+import { ResourceService, AuthPolicyService } from '../services';
 import { NavLink } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import Input, { InputLabel } from 'material-ui/Input';
@@ -19,6 +19,8 @@ import Edit from '@material-ui/icons/Edit';
 import Add from '@material-ui/icons/Add';
 import $ from 'jquery';
 import { SessionStore } from '../stores';
+import AppDispatcher from '../appDispatcher';
+import Constants from '../constants';
 
 const styles = theme => ({
   margin: {
@@ -38,6 +40,7 @@ function guid() {
 class ViewResource extends Component {
     constructor(props) {
         super(props);
+        this._initialAuthPolicyIds = [];
         this.handleOpenAuthPolicyRuleModal = this.handleOpenAuthPolicyRuleModal.bind(this);
         this.handleCloseAuthPolicyRuleModal = this.handleCloseAuthPolicyRuleModal.bind(this);
         this.handleAddAuthorizationPolicy = this.handleAddAuthorizationPolicy.bind(this);
@@ -266,6 +269,7 @@ class ViewResource extends Component {
     */
     handleSave() {
         var self = this;
+        const {t} = self.props;
         var resourceId = self.state.resourceId;
         var resourceName = self.state.resourceName;
         var resourceType = self.state.resourceType;
@@ -279,7 +283,8 @@ class ViewResource extends Component {
             type: resourceType
         };
         var insertAuthPolicyRequest = [],
-            updateAuthPolicyRequest = [];
+            updateAuthPolicyRequest = [],
+            authPolicyToRemoved     = [];
         resourceAuthPolicies.forEach(function(resourceAuthPolicy) {
             if (resourceAuthPolicy.isNew) {
                 resourceAuthPolicy['resource_set_ids'] =  [ resourceId ];
@@ -289,8 +294,40 @@ class ViewResource extends Component {
             }
         });
 
-        console.log(insertAuthPolicyRequest);
-        console.log(updateAuthPolicyRequest);
+        self._initialAuthPolicyIds.forEach(function(iap) {
+            if (resourceAuthPolicies.filter(function(rap) { return rap.id === iap; }).length === 0) {
+                authPolicyToRemoved.push(iap);
+            }
+        });
+
+        self.setState({
+            isLoading: true
+        });
+        var opts = [ ResourceService.update(resourceRequest) ];
+        insertAuthPolicyRequest.forEach(function(rec) {
+            opts.push(AuthPolicyService.add(rec));
+        });
+        updateAuthPolicyRequest.forEach(function(rec) {
+            opts.push(AuthPolicyService.update(rec));
+        });
+        authPolicyToRemoved.forEach(function(rec) {
+            opts.push(AuthPolicyService.delete(rec));
+        });
+        Promise.all(opts).then(function() {
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('resourceUpdated')
+            });
+            self.refreshData();
+        }).catch(function() {
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('resourceCannotBeUpdated')
+            });
+            self.setState({
+                isLoading: false
+            });
+        });
     }
 
     /**
@@ -342,6 +379,7 @@ class ViewResource extends Component {
                 });
             }
 
+            self._initialAuthPolicyIds = p.map(function(r) { return r.id; });
             self.setState({
                 resourceId: resource._id,
                 resourceName: resource.name,
@@ -349,8 +387,7 @@ class ViewResource extends Component {
                 resourceAuthPolicies: p,
                 isLoading: false,
             });
-        }).catch(function() {            
-            console.log(e);
+        }).catch(function() {         
             self.setState({
                 isLoading: false
             });
@@ -467,6 +504,14 @@ class ViewResource extends Component {
             });
         }
 
+        var values = self.state.resourceScopes.map(function(rs) {
+            return {
+                key: rs,
+                label: rs
+            };
+        });
+        var chipsOptions = { type: 'select', values: values };
+        console.log(chipsOptions);
         return (<div className="block">
             <Dialog open={self.state.isAuthPolicyModalOpened} onClose={this.handleCloseAuthPolicyRuleModal}>
                 <DialogTitle>{t('addAuthRulePolicy')}</DialogTitle>
@@ -501,7 +546,7 @@ class ViewResource extends Component {
                             </FormControl>
                             {/* Allowed scopes */}
                             <FormControl fullWidth={true}>
-                                <ChipsSelector label={t('allowedScopes')} properties={self.state.currentAuthRulePolicy.scopes} />
+                                <ChipsSelector label={t('allowedScopes')} properties={self.state.currentAuthRulePolicy.scopes} input={chipsOptions} />
                             </FormControl>
                         </DialogContent>
                         <DialogActions>

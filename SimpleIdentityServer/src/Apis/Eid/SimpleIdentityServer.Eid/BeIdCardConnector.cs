@@ -169,7 +169,7 @@ namespace SimpleIdentityServer.Eid
                 throw new ArgumentNullException(nameof(pin));
             }
 
-            var fileType = FileType.AuthentificationCertificate;
+            var fileType = FileType.NonRepudiationCertificate;
             byte[] result = null;
             BeginExclusive();
             try

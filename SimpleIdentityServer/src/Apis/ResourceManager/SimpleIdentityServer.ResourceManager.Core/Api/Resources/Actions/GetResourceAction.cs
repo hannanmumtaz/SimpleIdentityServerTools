@@ -27,14 +27,19 @@ namespace SimpleIdentityServer.ResourceManager.Core.Api.Resources.Actions
             _tokenStore = tokenStore;
         }
 
-        public async Task<ResourceSetResponse> Execute(string url, string resourceId)
+        public async Task<ResourceSetResponse> Execute(string subject, string resourceId)
         {
+            if (string.IsNullOrWhiteSpace(subject))
+            {
+                throw new ArgumentNullException(nameof(subject));
+            }
+
             if (string.IsNullOrWhiteSpace(resourceId))
             {
                 throw new ArgumentNullException(nameof(resourceId));
             }
 
-            var endpoint = await _endpointHelper.GetEndpoint(url, EndpointTypes.AUTH);
+            var endpoint = await _endpointHelper.TryGetEndpointFromProfile(subject, EndpointTypes.AUTH);
             var grantedToken = await _tokenStore.GetToken(endpoint.Url, endpoint.ClientId, endpoint.ClientSecret, new[] { _scopeName });
             return await _identityServerUmaClientFactory.GetResourceSetClient().GetByResolution(resourceId, endpoint.Url, grantedToken.AccessToken);
         }
