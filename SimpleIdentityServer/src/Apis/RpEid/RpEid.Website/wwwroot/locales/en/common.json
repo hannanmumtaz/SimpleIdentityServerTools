@@ -1,15 +1,15 @@
 ﻿{
-  "listOfUsers": "Liste des comptes",
+  "listOfUsers": "Les demandes d'accès",
   "subject": "Identifiant",
   "name": "Nom",
   "email": "Email",
   "isGranted": "Est accordé",
   "isConfirmed": "Est confirmé",
-  "usersMenuItem": "Comptes",
+  "usersMenuItem": "Demandes d'accès",
   "aboutMenuItem": "A propos",
   "disconnectMenuItem": "Se déconnecter",
-  "usersTitle": "Les comptes",
-  "usersDescription": "Gérer les comptes",
+  "usersTitle": "Les demandes d'accès",
+  "usersDescription": "Gérer les demandes d'accès",
   "aboutTitle": "A propos",
   "aboutDescription": "Site pour POC",
   "websiteTitle": "RIZIV - Gestion accès",
@@ -26,7 +26,7 @@
   "homeTitle": "Compte",
   "homeDescription": "Statut de votre compte",
   "yourAccountIsEnabled": "Votre compte est activé !",
-  "accessHasBeenRequested": "Une demande d'accès a été effectuée",
+  "accessHasBeenRequested": "Votre demande est enregistrée, vous serez notifié dès qu'elle sera traitée.",
   "emailAddress": "Votre adresse email",
   "requestAccess": "Demander accès"
 }

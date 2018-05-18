@@ -106,7 +106,7 @@ class Login extends Component {
         });
         // TODO : Resolve this url.
         var url = Constants.openIdUrl + "/authorization?scope=openid role profile&state=75BCNvRlEGHpQRCT&redirect_uri=" + Constants.baseUrl + "/callback&response_type=id_token token&client_id=" + Constants.clientId +"&nonce=nonce&response_mode=query";
-        var w = window.open(url, 'targetWindow', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=400,height=400');        
+        var w = window.open(url, '_blank');        
         var interval = setInterval(function () {
             if (w.closed) {
                 clearInterval(interval);

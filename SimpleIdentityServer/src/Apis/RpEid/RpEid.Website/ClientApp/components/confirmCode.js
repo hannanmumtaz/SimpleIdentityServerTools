@@ -21,7 +21,7 @@ class ConfirmCode extends Component {
         this.handleConfirmCode = this.handleConfirmCode.bind(this);
         this.state = {
             confirmationCode: '',
-            isLoading: false
+            isLoading: true
         };
     }
 
@@ -68,15 +68,7 @@ class ConfirmCode extends Component {
                     <h4 style={{ display: "inline-block" }}>{t('confirmCode')}</h4>
                 </div>
                 <div className="body">
-                    {self.state.isLoading ? (<CircularProgress />) : (
-                        <div>
-                            {/* Confirmation code */}
-                            <FormControl fullWidth={true} className={classes.margin}>
-                                <InputLabel>{t('confirmationCode')}</InputLabel>
-                                <Input name="login" value={self.state.confirmationCode} disabled={true} />
-                            </FormControl>
-                            <Button variant="raised" color="primary" onClick={this.handleConfirmCode}>{t('confirm')}</Button>
-                        </div>
+                    {self.state.isLoading ? (<CircularProgress />) : (<div></div>
                     )}
                 </div>
             </div>
@@ -87,6 +79,8 @@ class ConfirmCode extends Component {
         var self = this;
         self.setState({
             confirmationCode: self.props.match.params.id
+        }, function() {
+            self.handleConfirmCode();
         });
     }
 }

@@ -196,7 +196,7 @@ class Users extends Component {
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell></TableCell>
+                                        <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
                                         <TableCell>{t('subject')}</TableCell>
                                         <TableCell>{t('name')}</TableCell>
                                         <TableCell>{t('email')}</TableCell>
@@ -204,13 +204,6 @@ class Users extends Component {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    <TableRow>
-                                        <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
-                                    </TableRow>
                                     {rows}
                                 </TableBody>
                             </Table>
