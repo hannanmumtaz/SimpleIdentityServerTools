@@ -237,7 +237,7 @@ class Layout extends Component {
                     ))}
                     {/* Home menu item */}
                     {(self.state.isLoggedIn && self.state.user && self.state.user.role !== 'administrator' && (
-                        <ListItem button onClick={() => self.navigate('/home')}>
+                        <ListItem button onClick={() => self.navigate('/profile')}>
                             <ListItemText>{t('homeMenuItem')}</ListItemText>
                         </ListItem>
                     ))}

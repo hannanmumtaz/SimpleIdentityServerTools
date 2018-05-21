@@ -39,7 +39,7 @@ class ConfirmCode extends Component {
                 actionName: Constants.events.DISPLAY_MESSAGE,
                 data: t('accountIsConfirmed')
             });
-            self.props.history.push('/');
+            self.props.history.push('/profile');
         }).catch(function () {
             self.setState({
                 isLoading: false

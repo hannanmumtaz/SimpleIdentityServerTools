@@ -3,12 +3,32 @@ import { Route, Redirect } from 'react-router-dom';
 import { SessionService } from './services';
 
 import Layout from './layout';
-import { Login, Home, Users, Profile, ConfirmCode } from './components';
+import { Home, Login, Users, ConfirmCode, Profile } from './components';
+
+var isConnected = function() {
+    var session = SessionService.getSession();
+    return session && session.id_token;
+};
+
+var isAdministrator = function() {
+    var session = SessionService.getSession();
+    var role = "";
+    if (session && session.id_token) {
+        var idToken = session.id_token;
+        var splitted = idToken.split('.');
+        var claims = JSON.parse(window.atob(splitted[1]));
+        if (claims.role) {
+            role = claims.role;
+        }
+    }
+
+    return role === "administrator";
+};
 
 export const routes = (<Layout>
-    <Route exact path='/home' component={Home} />
-    <Route exact path='/login' component={Login} />
-    <Route exact path='/users' component={Users} />
-    <Route exact path='/profile' component={Profile} />
-    <Route exact path='/confirm/:id?' component={ConfirmCode} />
+    <Route exact path='/' component={Home} />
+    <Route exact path='/login' render={() => (!isConnected() ? (<Login />) : (<Redirect to="/"/>))}/>
+    <Route exact path='/users' render={() => (isConnected() && isAdministrator() ? (<Users />) : (<Redirect to="/"/>))}/>
+    <Route exact path='/profile' render={() => (isConnected() && !isAdministrator() ? (<Profile />) : (<Redirect to="/"/>))}/>
+    <Route exact path='/confirm/:id?' render={() => (isConnected() && !isAdministrator() ? (<ConfirmCode />) : (<Redirect to="/"/>))}/>
 </Layout>);
