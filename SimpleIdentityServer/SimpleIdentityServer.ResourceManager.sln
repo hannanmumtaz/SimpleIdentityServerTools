@@ -23,11 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04. Configuration", "04. Co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05. Manager", "05. Manager", "{873E2C97-23BC-40AF-91CA-09921391D3A0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06. UMA", "06. UMA", "{0EE61CD6-64BD-4CE1-84B8-15012D1A6393}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07. UMA", "07. UMA", "{0EE61CD6-64BD-4CE1-84B8-15012D1A6393}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04. Website Host", "04. Website Host", "{847E94ED-FF4A-43EE-9D0F-28A5219E3E01}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07. Other", "07. Other", "{0F3B4FB9-1CD1-405D-A849-3F20A62BC6E4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "08. Other", "08. Other", "{0F3B4FB9-1CD1-405D-A849-3F20A62BC6E4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiContrib.Core.Concurrency", "..\IdServer\SimpleIdentityServer\src\Lib\WebApiContrib\WebApiContrib.Core.Concurrency\WebApiContrib.Core.Concurrency.csproj", "{E6F14E2B-8045-4D36-BDDD-FEF36CA9632F}"
 EndProject
@@ -116,6 +116,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.OAuth2Introspection", "..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.OAuth2Introspection\SimpleIdentityServer.OAuth2Introspection.csproj", "{F7FBA8F7-BFC1-4125-9463-4CF71F2F71A3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Uma.Store.Redis", "..\IdServer\SimpleIdentityServer\src\Apis\Uma\SimpleIdentityServer.Uma.Store.Redis\SimpleIdentityServer.Uma.Store.Redis.csproj", "{2FE5D7D0-D20C-4966-A3B3-E855A44DE191}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06. SCIM", "06. SCIM", "{F1475C67-4B35-4454-827B-822B0358EDB6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Scim.Host", "..\IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Host\SimpleIdentityServer.Scim.Host.csproj", "{68598492-1EE3-403B-8E5F-3F5478C22159}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Scim.Client", "..\IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Client\SimpleIdentityServer.Scim.Client.csproj", "{1D7C1E84-5778-468D-A220-C5C2983CD50B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Scim.Common", "..\IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Common\SimpleIdentityServer.Scim.Common.csproj", "{4B00F296-947F-45CA-A79D-622B118B134E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -299,6 +307,18 @@ Global
 		{2FE5D7D0-D20C-4966-A3B3-E855A44DE191}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FE5D7D0-D20C-4966-A3B3-E855A44DE191}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FE5D7D0-D20C-4966-A3B3-E855A44DE191}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68598492-1EE3-403B-8E5F-3F5478C22159}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68598492-1EE3-403B-8E5F-3F5478C22159}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68598492-1EE3-403B-8E5F-3F5478C22159}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68598492-1EE3-403B-8E5F-3F5478C22159}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D7C1E84-5778-468D-A220-C5C2983CD50B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D7C1E84-5778-468D-A220-C5C2983CD50B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D7C1E84-5778-468D-A220-C5C2983CD50B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D7C1E84-5778-468D-A220-C5C2983CD50B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B00F296-947F-45CA-A79D-622B118B134E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B00F296-947F-45CA-A79D-622B118B134E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B00F296-947F-45CA-A79D-622B118B134E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B00F296-947F-45CA-A79D-622B118B134E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -356,6 +376,10 @@ Global
 		{1A01C4D2-6CCD-43DE-AFDD-AC31B27C0C70} = {454E693F-333D-471A-8B8B-A5DEC41749E2}
 		{F7FBA8F7-BFC1-4125-9463-4CF71F2F71A3} = {454E693F-333D-471A-8B8B-A5DEC41749E2}
 		{2FE5D7D0-D20C-4966-A3B3-E855A44DE191} = {0EE61CD6-64BD-4CE1-84B8-15012D1A6393}
+		{F1475C67-4B35-4454-827B-822B0358EDB6} = {4EC3C9B3-7417-4BF9-A9A0-3259BD6A0D5B}
+		{68598492-1EE3-403B-8E5F-3F5478C22159} = {F1475C67-4B35-4454-827B-822B0358EDB6}
+		{1D7C1E84-5778-468D-A220-C5C2983CD50B} = {F1475C67-4B35-4454-827B-822B0358EDB6}
+		{4B00F296-947F-45CA-A79D-622B118B134E} = {F1475C67-4B35-4454-827B-822B0358EDB6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E1AD5C7-B8BE-4890-9985-F2BDCAD9425F}

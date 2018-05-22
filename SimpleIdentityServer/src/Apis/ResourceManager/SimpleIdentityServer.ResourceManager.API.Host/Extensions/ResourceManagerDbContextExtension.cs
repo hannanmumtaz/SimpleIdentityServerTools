@@ -118,9 +118,16 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Extensions
                         CreateDateTime = DateTime.UtcNow,
                         Description = "scim server",
                         Name = "scimserver",
-                        Url = "http://localhost:60001/ServiceProviderConfig",
+                        Url = "http://localhost:60001",
                         Type = (int)EndpointTypes.SCIM,
-                        Order = 1
+                        Order = 1,
+                        Manager = new EndpointManager
+                        {
+                            AuthUrl = "http://localhost:60004/.well-known/uma2-configuration",
+                            ClientId = "ResourceServer",
+                            ClientSecret = "LW46am54neU/[=Su",
+                            ManagerUrl = "http://localhost:60004/.well-known/uma2-configuration"
+                        }
                     },
                     new Endpoint
                     {

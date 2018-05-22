@@ -13,10 +13,13 @@ using SimpleIdentityServer.ResourceManager.Core.Api.ResourceOwners;
 using SimpleIdentityServer.ResourceManager.Core.Api.ResourceOwners.Actions;
 using SimpleIdentityServer.ResourceManager.Core.Api.Resources;
 using SimpleIdentityServer.ResourceManager.Core.Api.Resources.Actions;
+using SimpleIdentityServer.ResourceManager.Core.Api.Scim;
+using SimpleIdentityServer.ResourceManager.Core.Api.Scim.Actions;
 using SimpleIdentityServer.ResourceManager.Core.Api.Scopes;
 using SimpleIdentityServer.ResourceManager.Core.Api.Scopes.Actions;
 using SimpleIdentityServer.ResourceManager.Core.Helpers;
 using SimpleIdentityServer.ResourceManager.Core.Stores;
+using SimpleIdentityServer.Scim.Client;
 using SimpleIdentityServer.Uma.Client;
 using System;
 
@@ -33,6 +36,7 @@ namespace SimpleIdentityServer.ResourceManager.Core
 
             services.AddIdServerClient();
             services.AddUmaClient();
+            services.AddScimClient();
             services.AddOpenIdManagerClient();
             services.AddTransient<IEndpointHelper, EndpointHelper>();
             services.AddTransient<ISearchResourcesetAction, SearchResourcesetAction>();
@@ -73,6 +77,8 @@ namespace SimpleIdentityServer.ResourceManager.Core
             services.AddTransient<IDeleteAuthorizationPolicyAction, DeleteAuthorizationPolicyAction>();
             services.AddTransient<IUpdateAuthorizationPolicyAction, UpdateAuthorizationPolicyAction>();
             services.AddTransient<IAuthorizationPolicyActions, AuthorizationPolicyActions>();
+            services.AddTransient<IScimActions, ScimActions>();
+            services.AddTransient<IGetSchemasAction, GetSchemasAction>();
             return services;
         }
 

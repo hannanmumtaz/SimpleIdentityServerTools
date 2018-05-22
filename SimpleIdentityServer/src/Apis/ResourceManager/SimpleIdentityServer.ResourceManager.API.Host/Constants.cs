@@ -18,6 +18,7 @@
             public const string ProfileController = "profile";
             public const string ClaimsController = "claims";
             public const string AuthPoliciesController = "authpolicies";
+            public const string ScimController = "scim";
         }
 
         public static class ProfileResponseNames

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { WebsiteService, SessionService } from '../services';
+import { WebsiteService, SessionService, ScimService } from '../services';
 import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
 import { NavLink, Link } from 'react-router-dom';
@@ -23,10 +23,11 @@ class ScimSchemas extends Component {
 
     refresh() {
         var self = this;
+        const {t} = self.props;
         self.setState({
             isLoading: true
         });
-        $.get('http://localhost:60001/Schemas').then(function(result) {
+        ScimService.getSchemas().then(function(result) {
             var schemas = [];
             if (result) {
                 result.forEach(function(record) {

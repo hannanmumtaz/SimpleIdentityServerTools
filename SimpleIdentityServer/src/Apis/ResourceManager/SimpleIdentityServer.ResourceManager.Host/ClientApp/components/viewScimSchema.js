@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { WebsiteService, SessionService } from '../services';
+import { WebsiteService, SessionService, ScimService } from '../services';
 import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import { translate } from 'react-i18next';
@@ -39,7 +39,7 @@ class ViewScimSchema extends Component {
             isLoading: true
         });
         const { t } = self.props;
-        $.get('http://localhost:60001/Schemas').then(function(result) {
+        ScimService.getSchemas().then(function(result) {
             var filteredSchemas = result.filter(function(record) { return record.name === self.state.id; });
             if (!filteredSchemas || filteredSchemas.length !== 1) {                
                 AppDispatcher.dispatch({

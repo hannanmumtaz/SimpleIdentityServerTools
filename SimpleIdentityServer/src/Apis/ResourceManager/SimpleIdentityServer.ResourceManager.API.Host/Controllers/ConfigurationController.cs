@@ -21,6 +21,7 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Controllers
             json.Add("claims_endpoint", Constants.RouteNames.ClaimsController);
             json.Add("resources_endpoint", Constants.RouteNames.ResourcesController);
             json.Add("authpolicies_endpoint", Constants.RouteNames.ResourcesController);
+            json.Add("scim_endpoint", Constants.RouteNames.ScimController);
             return new OkObjectResult(json);
         }
     }
