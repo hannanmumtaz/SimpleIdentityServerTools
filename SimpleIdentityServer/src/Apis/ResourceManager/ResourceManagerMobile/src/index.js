@@ -1,15 +1,17 @@
-import { AppRegistry, Text } from 'react-native';
+import { AppRegistry } from 'react-native';
 import React, { Component } from 'react';
 
-import App from './App/App';
+import App from './app';
 
 
-class Root extends Component {
-	render() {
-    	return (
-        	<App />
-        );
-   	}
- }
+export default function index() {
+    class Root extends Component {
+        render() {
+            return (
+                <App />
+            );
+        }
+    }
 
- export default Root;
+    AppRegistry.registerComponent('ResourceManagerMobile', () => Root);
+}
