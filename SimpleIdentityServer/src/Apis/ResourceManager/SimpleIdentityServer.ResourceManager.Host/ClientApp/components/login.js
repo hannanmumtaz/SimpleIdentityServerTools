@@ -54,7 +54,7 @@ class Login extends Component {
         });
         // TODO : Resolve this url.
         var url = "http://localhost:60000/authorization?scope=openid role profile&state=75BCNvRlEGHpQRCT&redirect_uri=http://localhost:64950/callback&response_type=id_token token&client_id=ResourceManagerClientId&nonce=nonce&response_mode=query";
-        var w = window.open(url, 'targetWindow', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=400,height=400');        
+        var w = window.open(url, '_blank');        
         var interval = setInterval(function () {
             if (w.closed) {
                 clearInterval(interval);

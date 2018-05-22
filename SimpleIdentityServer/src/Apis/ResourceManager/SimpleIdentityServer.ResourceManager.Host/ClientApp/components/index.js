@@ -17,6 +17,10 @@ import AddScope from './addScope';
 import ViewUser from './viewUser';
 import Claims from './claims';
 import ViewClaim from './viewClaim';
+import ScimSchemas from './scimSchemas';
+import ScimResources from './scimResources';
+import ViewScimSchema from './viewScimSchema';
+import ViewScimAttribute from './viewScimAttribute';
 
 exports.Dashboard = Dashboard;
 exports.About = About;
@@ -37,3 +41,7 @@ exports.AddScope = AddScope;
 exports.ViewUser = ViewUser;
 exports.Claims = Claims;
 exports.ViewClaim = ViewClaim;
+exports.ScimSchemas = ScimSchemas;
+exports.ScimResources = ScimResources;
+exports.ViewScimSchema = ViewScimSchema;
+exports.ViewScimAttribute = ViewScimAttribute;
