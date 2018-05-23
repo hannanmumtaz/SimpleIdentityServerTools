@@ -107,13 +107,10 @@ namespace SimpleIdentityServer.ResourceManager.EF.Repositories
                 using (var context = serviceScope.ServiceProvider.GetService<ResourceManagerDbContext>())
                 {
                     IQueryable<Asset> assets = context.Assets
-                        .Include(a => a.Parent)
-                        .Include(a => a.AuthPolicies)
-                        .Include(a => a.Children).ThenInclude(a => a.Children)
-                        .Include(a => a.Children).ThenInclude(a => a.AuthPolicies);
+                        .Include(a => a.AuthPolicies);
                     if (includeChildren)
                     {
-                        assets = assets.Where(a => pathLst.Any(p => p.Contains(a.Path)));
+                        assets = assets.Where(a => pathLst.Any(p => a.Path.StartsWith(p)));
                     }
                     else
                     {

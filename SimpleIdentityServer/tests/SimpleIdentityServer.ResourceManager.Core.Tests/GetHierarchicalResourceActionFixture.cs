@@ -5,6 +5,7 @@ using SimpleIdentityServer.ResourceManager.EF;
 using SimpleIdentityServer.ResourceManager.EF.InMemory;
 using SimpleIdentityServer.ResourceManager.EF.Models;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -88,7 +89,8 @@ namespace SimpleIdentityServer.ResourceManager.Core.Tests
             // ACT
             var result = await getHierarchicalResourceAction.Execute("Root", true);
 
-            string s = "";
+            // ASSERT
+            Assert.Equal(4, result.Count());
         }
     }
 }

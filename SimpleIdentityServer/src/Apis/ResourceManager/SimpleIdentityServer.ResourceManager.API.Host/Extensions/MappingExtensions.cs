@@ -6,6 +6,29 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Extensions
 {
     internal static class MappingExtensions
     {
+        public static Common.Responses.AssetResponse ToDto(this AssetAggregate asset)
+        {
+            if (asset == null)
+            {
+                throw new ArgumentNullException(nameof(asset));
+            }
+
+            return new Common.Responses.AssetResponse
+            {
+                CanRead = asset.CanRead,
+                CanWrite = asset.CanWrite,
+                CreatedAt = asset.CreatedAt,
+                Hash = asset.Hash,
+                IsDefaultWorkingDirectory = asset.IsDefaultWorkingDirectory,
+                IsLocked = asset.IsLocked,
+                MimeType = asset.MimeType,
+                Name = asset.Name,
+                Path = asset.Path,
+                ResourceId = asset.ResourceId,
+                ResourceParentHash = asset.ResourceParentHash
+            };
+        }
+
         public static ProfileResponse ToDto(this ProfileAggregate profile)
         {
             if (profile == null)

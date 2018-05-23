@@ -40,6 +40,7 @@
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Lib\WebApiContrib\WebApiContrib.Core.Storage.InMemory\WebApiContrib.Core.Storage.InMemory.csproj" />
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Lib\WebApiContrib\WebApiContrib.Core.Storage.Redis\WebApiContrib.Core.Storage.Redis.csproj" />
     <ProjectReference Include="..\..\Manager\SimpleIdentityServer.Manager.Client\SimpleIdentityServer.Manager.Client.csproj" />
+    <ProjectReference Include="..\SimpleIdentityServer.ResourceManager.Common\SimpleIdentityServer.ResourceManager.Common.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.ResourceManager.Core\SimpleIdentityServer.ResourceManager.Core.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.ResourceManager.EF.InMemory\SimpleIdentityServer.ResourceManager.EF.InMemory.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.ResourceManager.EF\SimpleIdentityServer.ResourceManager.EF.csproj" />
