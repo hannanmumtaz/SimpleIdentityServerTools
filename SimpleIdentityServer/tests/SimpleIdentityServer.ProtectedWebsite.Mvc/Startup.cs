@@ -6,6 +6,9 @@ using Microsoft.Extensions.Logging;
 using SimpleIdentityServer.Client;
 using SimpleIdentityServer.ProtectedWebsite.Mvc.Filters;
 using SimpleIdentityServer.Uma.Client;
+using WebApiContrib.Core.Concurrency;
+using WebApiContrib.Core.Storage.InMemory;
+using WebApiContrib.Core.Storage;
 
 namespace SimpleIdentityServer.ProtectedWebsite.Mvc
 {
@@ -25,22 +28,29 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc
 
         public void ConfigureServices(IServiceCollection services)
         {
+            ConfigureInMemoryStorage(services);
             services.AddLogging();
             services.AddMvc();
             services.AddIdServerClient().AddUmaClient();
-            var options = new UmaFilterOptions
+            services.AddAuthentication(Constants.CookieName)
+                .AddCookie(Constants.CookieName);
+            var options = new UmaFilterAuthorizationOptions
             {
                 AuthorizationWellKnownConfiguration = "http://localhost:60004/.well-known/uma2-configuration",
                 ClientId = "ResourceServer",
                 ClientSecret = "LW46am54neU/[=Su"
             };
-            services.AddSingleton(options);
+            services.AddSingleton(new UmaFilterOptions
+            {
+                Authorization = options
+            });
             services.AddTransient<UmaFilter>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
+            app.UseAuthentication();
             app.UseStatusCodePages();
             app.UseStaticFiles();
             app.UseMvc(routes =>
@@ -49,6 +59,11 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private void ConfigureInMemoryStorage(IServiceCollection services)
+        {
+            services.AddStorage(opt => opt.UseInMemory());
         }
     }
 }

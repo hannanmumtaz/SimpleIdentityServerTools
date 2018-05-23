@@ -2,8 +2,7 @@
 {
     public class UmaFilterOptions
     {
-        public string AuthorizationWellKnownConfiguration { get; set; }
-        public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
+        public UmaFilterAuthorizationOptions Authorization { get; set; }
+        public IIdentityTokenFetcher IdentityTokenFetcher { get; set; }
     }
 }

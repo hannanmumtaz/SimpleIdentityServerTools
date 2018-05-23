@@ -3,26 +3,45 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json.Linq;
 using SimpleIdentityServer.Client;
 using SimpleIdentityServer.Uma.Common.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using WebApiContrib.Core.Storage;
 
 namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Filters
 {
     public class UmaFilter : IAsyncActionFilter
     {
-        private const string _authorizationKey = "Authorization";
         private readonly IIdentityServerClientFactory _identityServerClientFactory;
         private readonly IIdentityServerUmaClientFactory _identityServerUmaClientFactory;
+        private readonly IStorage _storage;
         private readonly UmaFilterOptions _options;
 
-        // TODO : Inject IRepresentationManager
-        public UmaFilter(IIdentityServerClientFactory identityServerClientFactory, IIdentityServerUmaClientFactory identityServerUmaClientFactory, UmaFilterOptions options)
+        public UmaFilter(IIdentityServerClientFactory identityServerClientFactory, IIdentityServerUmaClientFactory identityServerUmaClientFactory,
+            IStorage storage, UmaFilterOptions options)
         {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            if (options.Authorization == null)
+            {
+                throw new ArgumentNullException(nameof(options.Authorization));
+            }
+
+            _options = options;
+            if (_options.IdentityTokenFetcher == null)
+            {
+                _options.IdentityTokenFetcher = new IdTokenCookieFetcher();
+            }
+
             _identityServerClientFactory = new IdentityServerClientFactory();
             _identityServerUmaClientFactory = new IdentityServerUmaClientFactory();
-            _options = options;
+            _storage = storage;
         }
         
         public string ResourceUrl { get; set; }
@@ -44,28 +63,35 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Filters
                 return;
             }
 
-            // TODO : TRY TO GET AN EXISTED ACCESS TOKEN FROM THE CACHE.
-            var request = context.HttpContext.Request;
-            if (!request.Headers.ContainsKey(_authorizationKey))
+            var identityToken = _options.IdentityTokenFetcher.GetIdentityToken(context);
+            if (identityToken == null)
             {
                 context.Result = GetError("authorization", "no_bearer", HttpStatusCode.Forbidden);
                 return;
             }
 
-            var authorization = request.Headers[_authorizationKey].First();
-            var splittedAuthorization = authorization.Split(' ');
-            if (splittedAuthorization.First() != "Bearer" || splittedAuthorization.Count() != 2)
+            var storageKey = $"{identityToken.Subject}";
+            var storageValue = await GetGrantedToken(storageKey);
+            var storedGrantedToken = storageValue == null ? null : storageValue.FirstOrDefault(s => s.ResourceId == resourceId);
+            if (storedGrantedToken != null)
             {
-                context.Result = GetError("authorization", "no_bearer", HttpStatusCode.Forbidden);
-                return;
+                var introspectionResult = await _identityServerClientFactory.CreateAuthSelector()
+                    .UseClientSecretPostAuth(_options.Authorization.ClientId, _options.Authorization.ClientSecret)
+                    .Introspect(storedGrantedToken.AccessToken, TokenType.AccessToken)
+                    .ResolveAsync(_options.Authorization.AuthorizationWellKnownConfiguration);
+                if (introspectionResult.Active)
+                {
+                    await next();
+                    return;
+                }
+
+                storageValue.Remove(storedGrantedToken);
             }
 
-            // TODO : TRY TO GET AN ACCESS TOKEN.
-            var identityToken = splittedAuthorization.Last();
             var grantedToken = await _identityServerClientFactory.CreateAuthSelector()
-                .UseClientSecretPostAuth(_options.ClientId, _options.ClientSecret)
+                .UseClientSecretPostAuth(_options.Authorization.ClientId, _options.Authorization.ClientSecret)
                 .UseClientCredentials("uma_protection")
-                .ResolveAsync(_options.AuthorizationWellKnownConfiguration);
+                .ResolveAsync(_options.Authorization.AuthorizationWellKnownConfiguration);
             if (grantedToken == null || string.IsNullOrWhiteSpace(grantedToken.AccessToken))
             {
                 context.Result = GetError("internal", "bad_configuration", HttpStatusCode.InternalServerError);
@@ -77,7 +103,7 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Filters
                 {
                     ResourceSetId = resourceId,
                     Scopes = Scopes
-                }, _options.AuthorizationWellKnownConfiguration, grantedToken.AccessToken);
+                }, _options.Authorization.AuthorizationWellKnownConfiguration, grantedToken.AccessToken);
             if (permissionResponse == null || string.IsNullOrWhiteSpace(permissionResponse.TicketId))
             {
                 context.Result = GetError("internal", "no_ticket", HttpStatusCode.InternalServerError);
@@ -85,15 +111,26 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Filters
             }
 
             var umaGrantedToken = await _identityServerClientFactory.CreateAuthSelector()
-                .UseClientSecretPostAuth(_options.ClientId, _options.ClientSecret)
-                .UseTicketId(permissionResponse.TicketId, identityToken)
-                .ResolveAsync(_options.AuthorizationWellKnownConfiguration);
+                .UseClientSecretPostAuth(_options.Authorization.ClientId, _options.Authorization.ClientSecret)
+                .UseTicketId(permissionResponse.TicketId, identityToken.IdToken)
+                .ResolveAsync(_options.Authorization.AuthorizationWellKnownConfiguration);
             if (umaGrantedToken == null || string.IsNullOrWhiteSpace(umaGrantedToken.AccessToken))
             {
                 context.Result = GetError("authorization", "no_access", HttpStatusCode.Forbidden);
                 return;
             }
 
+            if (storageValue == null)
+            {
+                storageValue = new List<EndUserGrantedToken>();
+            }
+
+            storageValue.Add(new EndUserGrantedToken
+            {
+                AccessToken = umaGrantedToken.AccessToken,
+                ResourceId = resourceId
+            });
+            await _storage.SetAsync(storageKey, storageValue);
             await next();
         }
 
@@ -118,6 +155,20 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Filters
             {
                 StatusCode = (int)httpStatusCode
             };
+        }
+
+        private async Task<ICollection<EndUserGrantedToken>> GetGrantedToken(string subject)
+        {
+            return await _storage.TryGetValueAsync<List<EndUserGrantedToken>>(subject).ConfigureAwait(false);
+        }
+
+        [DataContract]
+        internal class EndUserGrantedToken
+        {
+            [DataMember(Name = "token")]
+            public string AccessToken { get; set; }
+            [DataMember(Name = "resource_id")]
+            public string ResourceId { get; set; }
         }
     }
 }

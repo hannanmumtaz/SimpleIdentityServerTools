@@ -1,16 +1,24 @@
-﻿<!DOCTYPE html>
+﻿@{ 
+    var isAuthenticated = User.Identity.IsAuthenticated;
+}
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ResourceManager</title>
+    <title>ProtectedWebsite</title>
     <base href="~/" />
-    <link rel="stylesheet" href="~/dist/vendor.css">
-    <link rel="stylesheet" href="~/dist/elfinder.full.css">
-    <script src="~/dist/vendor.js"></script>
 </head>
 <body class="blue">
+    <ul>
+        <li>@Html.ActionLink("Home", "Index", "Home")</li>
+        <li>@Html.ActionLink("Authenticate", "Authenticate", "Home")</li>
+        <li>@Html.ActionLink("Administrator", "Index", "Administrator")</li>
+        @if (isAuthenticated)
+    {
+        <li>@Html.ActionLink("Disconnect", "Logout", "Home")</li>
+}
+    </ul>
     @RenderBody()
-    @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace SimpleIdentityServer.ProtectedWebsite.Mvc
 {
@@ -7,12 +7,9 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc
     {
         public static void Main(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
-                .AddEnvironmentVariables(prefix: "ASPNETCORE_")
-                .Build();
             var host = new WebHostBuilder()
                 .UseKestrel()
-                .UseConfiguration(configuration)
+                .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
                 .UseUrls("http://*:60006")
                 .Build();
