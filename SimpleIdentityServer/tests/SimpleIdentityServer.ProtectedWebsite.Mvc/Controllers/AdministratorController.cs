@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SimpleIdentityServer.ProtectedWebsite.Mvc.Filters;
+using SimpleIdentityServer.Uma.Authentication;
 
 namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Controllers
 {

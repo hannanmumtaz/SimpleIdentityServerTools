@@ -11,6 +11,7 @@ namespace SimpleIdentityServer.ResourceManager.Core.Repositories
         Task<IEnumerable<AssetAggregate>> GetAllParents(string hash);
         Task<IEnumerable<AssetAggregate>> GetAllChildren(string hash);
         Task<AssetAggregate> Get(string hash);
+        Task<IEnumerable<AssetAggregate>> Get(IEnumerable<string> pathLst, bool includeChildren);
         Task<bool> Add(IEnumerable<AssetAggregate> asset);
         Task<bool> Remove(IEnumerable<string> hashLst);
         Task<bool> Update(IEnumerable<AssetAggregate> assets);

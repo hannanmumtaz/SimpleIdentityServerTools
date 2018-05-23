@@ -11,7 +11,7 @@ using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using WebApiContrib.Core.Storage;
 
-namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Filters
+namespace SimpleIdentityServer.Uma.Authentication
 {
     public class UmaFilter : IAsyncActionFilter
     {

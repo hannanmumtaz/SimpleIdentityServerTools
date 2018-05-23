@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Filters
+namespace SimpleIdentityServer.Uma.Authentication
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public class UmaFilterAttribute : Attribute, IFilterFactory

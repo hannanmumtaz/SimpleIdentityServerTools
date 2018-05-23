@@ -95,6 +95,48 @@ namespace SimpleIdentityServer.ResourceManager.EF.Repositories
             }
         }
 
+        public async Task<IEnumerable<AssetAggregate>> Get(IEnumerable<string> pathLst, bool includeChildren)
+        {
+            if (pathLst == null)
+            {
+                throw new ArgumentNullException(nameof(pathLst));
+            }
+
+            using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<ResourceManagerDbContext>())
+                {
+                    IQueryable<Asset> assets = context.Assets
+                        .Include(a => a.Parent)
+                        .Include(a => a.AuthPolicies)
+                        .Include(a => a.Children).ThenInclude(a => a.Children)
+                        .Include(a => a.Children).ThenInclude(a => a.AuthPolicies);
+                    if (includeChildren)
+                    {
+                        assets = assets.Where(a => pathLst.Any(p => p.Contains(a.Path)));
+                    }
+                    else
+                    {
+                        assets = assets.Where(a => pathLst.Contains(a.Path));
+                    }
+
+                    var res = await assets.ToListAsync().ConfigureAwait(false);
+                    if (res == null)
+                    {
+                        return null;
+                    }
+
+                    var result = new List<AssetAggregate>();
+                    foreach(var asset in res)
+                    {
+                        result.Add(GetAsset(asset));
+                    }
+
+                    return result;
+                }
+            }
+        }
+
         public async Task<IEnumerable<AssetAggregate>> GetAllParents(string hash)
         {
             if (string.IsNullOrWhiteSpace(hash))

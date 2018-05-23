@@ -4,11 +4,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleIdentityServer.Client;
-using SimpleIdentityServer.ProtectedWebsite.Mvc.Filters;
+using SimpleIdentityServer.Uma.Authentication;
 using SimpleIdentityServer.Uma.Client;
-using WebApiContrib.Core.Concurrency;
-using WebApiContrib.Core.Storage.InMemory;
 using WebApiContrib.Core.Storage;
+using WebApiContrib.Core.Storage.InMemory;
 
 namespace SimpleIdentityServer.ProtectedWebsite.Mvc
 {
@@ -44,6 +43,7 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc
             {
                 Authorization = options
             });
+            var s = new ServiceCollection();
             services.AddTransient<UmaFilter>();
         }
 

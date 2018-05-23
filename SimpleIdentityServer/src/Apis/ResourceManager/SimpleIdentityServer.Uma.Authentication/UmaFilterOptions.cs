@@ -1,4 +1,4 @@
-﻿namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Filters
+﻿namespace SimpleIdentityServer.Uma.Authentication
 {
     public class UmaFilterOptions
     {

@@ -15,6 +15,7 @@
             public const string ScopesController = "scopes";
             public const string ResourceOwnersController = "resourceowners";
             public const string ResourcesController = "resources";
+            public const string HierarchicalResourcesController = "hierarchicalresources";
             public const string ProfileController = "profile";
             public const string ClaimsController = "claims";
             public const string AuthPoliciesController = "authpolicies";

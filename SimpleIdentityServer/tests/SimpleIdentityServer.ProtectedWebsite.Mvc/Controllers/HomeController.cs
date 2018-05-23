@@ -79,9 +79,9 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Controllers
             var cls = claims.ToList();
             var now = DateTime.UtcNow;
             var expires = now.AddSeconds(3600);
-            var identity = new ClaimsIdentity(cls, SimpleIdentityServer.ProtectedWebsite.Mvc.Constants.CookieName);
+            var identity = new ClaimsIdentity(cls, Constants.CookieName);
             var principal = new ClaimsPrincipal(identity);
-            await _authenticationService.SignInAsync(HttpContext, SimpleIdentityServer.ProtectedWebsite.Mvc.Constants.CookieName, principal, new Microsoft.AspNetCore.Authentication.AuthenticationProperties
+            await _authenticationService.SignInAsync(HttpContext, Constants.CookieName, principal, new AuthenticationProperties
             {
                 IssuedUtc = now,
                 ExpiresUtc = expires,

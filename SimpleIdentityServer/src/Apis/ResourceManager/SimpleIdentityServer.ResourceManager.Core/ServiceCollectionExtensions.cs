@@ -7,6 +7,8 @@ using SimpleIdentityServer.ResourceManager.Core.Api.Claims;
 using SimpleIdentityServer.ResourceManager.Core.Api.Claims.Actions;
 using SimpleIdentityServer.ResourceManager.Core.Api.Clients;
 using SimpleIdentityServer.ResourceManager.Core.Api.Clients.Actions;
+using SimpleIdentityServer.ResourceManager.Core.Api.HierarchicalResources;
+using SimpleIdentityServer.ResourceManager.Core.Api.HierarchicalResources.Actions;
 using SimpleIdentityServer.ResourceManager.Core.Api.Profile;
 using SimpleIdentityServer.ResourceManager.Core.Api.Profile.Actions;
 using SimpleIdentityServer.ResourceManager.Core.Api.ResourceOwners;
@@ -79,6 +81,11 @@ namespace SimpleIdentityServer.ResourceManager.Core
             services.AddTransient<IAuthorizationPolicyActions, AuthorizationPolicyActions>();
             services.AddTransient<IScimActions, ScimActions>();
             services.AddTransient<IGetSchemasAction, GetSchemasAction>();
+            services.AddTransient<IHierarchicalResourcesActions, HierarchicalResourcesActions>();
+            services.AddTransient<IAddHierarchicalResourcesAction, AddHierarchicalResourcesAction>();
+            services.AddTransient<IDeleteHierarchicalResourcesAction, DeleteHierarchicalResourcesAction>();
+            services.AddTransient<IGetHierarchicalResourceAction, GetHierarchicalResourceAction>();
+            services.AddTransient<ISearchHierarchicalResourcesAction, SearchHierarchicalResourcesAction>();
             return services;
         }
 

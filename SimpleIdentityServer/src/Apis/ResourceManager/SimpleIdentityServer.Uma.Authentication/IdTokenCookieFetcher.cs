@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 
-namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Filters
+namespace SimpleIdentityServer.Uma.Authentication
 {
     public interface IIdentityTokenFetcher
     {
