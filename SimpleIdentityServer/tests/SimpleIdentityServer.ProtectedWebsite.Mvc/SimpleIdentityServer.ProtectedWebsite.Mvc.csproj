@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\IdServer\SimpleIdentityServer\src\Lib\WebApiContrib\WebApiContrib.Core.Storage.InMemory\WebApiContrib.Core.Storage.InMemory.csproj" />
+    <ProjectReference Include="..\..\src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.Client\SimpleIdentityServer.ResourceManager.Client.csproj" />
     <ProjectReference Include="..\..\src\Apis\ResourceManager\SimpleIdentityServer.Uma.Authentication\SimpleIdentityServer.Uma.Authentication.csproj" />
   </ItemGroup>
   

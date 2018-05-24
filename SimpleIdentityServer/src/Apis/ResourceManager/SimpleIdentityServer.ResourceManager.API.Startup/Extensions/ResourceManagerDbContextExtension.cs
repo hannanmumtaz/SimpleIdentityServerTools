@@ -55,7 +55,7 @@ namespace SimpleIdentityServer.ResourceManager.API.Startup.Extensions
                    new Asset
                    {
                        Hash = HashHelper.GetHash("ProtectedWebsite/Home"),
-                       ResourceParentHash = HashHelper.GetHash("ProtectedWebsite/Home"),
+                       ResourceParentHash = HashHelper.GetHash("ProtectedWebsite"),
                        Name = "Home",
                        Path = "ProtectedWebsite/Home",
                        IsLocked = false,
@@ -67,7 +67,7 @@ namespace SimpleIdentityServer.ResourceManager.API.Startup.Extensions
                    new Asset
                    {
                        Hash = HashHelper.GetHash("ProtectedWebsite/About"),
-                       ResourceParentHash = HashHelper.GetHash("ProtectedWebsite/About"),
+                       ResourceParentHash = HashHelper.GetHash("ProtectedWebsite"),
                        Name = "About",
                        Path = "ProtectedWebsite/About",
                        IsLocked = false,
@@ -79,7 +79,7 @@ namespace SimpleIdentityServer.ResourceManager.API.Startup.Extensions
                    new Asset
                    {
                        Hash = HashHelper.GetHash("ProtectedWebsite/Administrator/Index"),
-                       ResourceParentHash = HashHelper.GetHash("ProtectedWebsite/Administrator/Index"),
+                       ResourceParentHash = HashHelper.GetHash("ProtectedWebsite/Administrator"),
                        Name = "aIndex",
                        Path = "ProtectedWebsite/Administrator/Index",
                        IsLocked = false,

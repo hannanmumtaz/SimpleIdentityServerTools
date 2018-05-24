@@ -4,10 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleIdentityServer.Client;
+using SimpleIdentityServer.ResourceManager.Client;
 using SimpleIdentityServer.Uma.Authentication;
 using SimpleIdentityServer.Uma.Client;
-using WebApiContrib.Core.Storage;
-using WebApiContrib.Core.Storage.InMemory;
 
 namespace SimpleIdentityServer.ProtectedWebsite.Mvc
 {
@@ -27,10 +26,9 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc
 
         public void ConfigureServices(IServiceCollection services)
         {
-            ConfigureInMemoryStorage(services);
             services.AddLogging();
             services.AddMvc();
-            services.AddIdServerClient().AddUmaClient();
+            services.AddUmaAuthenticationFilter();
             services.AddAuthentication(Constants.CookieName)
                 .AddCookie(Constants.CookieName);
             var options = new UmaFilterAuthorizationOptions
@@ -41,7 +39,13 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc
             };
             services.AddSingleton(new UmaFilterOptions
             {
-                Authorization = options
+                Authorization = options,
+                ResourceManager = new UmaFilterResourceManagerAuthorizationOptions
+                {
+                    ConfigurationUrl = "http://localhost:60005/configuration",
+                    ClientId = "tmp",
+                    ClientSecret = "tmp"
+                }
             });
             var s = new ServiceCollection();
             services.AddTransient<UmaFilter>();
@@ -59,11 +63,6 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-        }
-
-        private void ConfigureInMemoryStorage(IServiceCollection services)
-        {
-            services.AddStorage(opt => opt.UseInMemory());
         }
     }
 }

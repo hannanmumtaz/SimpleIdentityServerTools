@@ -27,7 +27,7 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Controllers
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var assets = await _hierarchicalResourcesActions.Get(id, includeChildren == null ? false : includeChildren.Value);
+            var assets = await _hierarchicalResourcesActions.Get(System.Web.HttpUtility.UrlDecode(id), includeChildren == null ? false : includeChildren.Value);
             var result = new List<AssetResponse>();
             if (assets != null && assets.Any())
             {

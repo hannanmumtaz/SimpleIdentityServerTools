@@ -3,7 +3,7 @@ using SimpleIdentityServer.Uma.Authentication;
 
 namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Controllers
 {
-    [UmaFilter("", "1", "read")]
+    [UmaFilter(ResourceUrl = "ProtectedWebsite/Administrator/Index", Scopes =  "read")]
     public class AdministratorController : Controller
     {
         [HttpGet]

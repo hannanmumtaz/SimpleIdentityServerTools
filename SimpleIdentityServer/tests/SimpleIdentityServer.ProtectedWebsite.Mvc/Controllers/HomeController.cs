@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using SimpleIdentityServer.Client;
 using SimpleIdentityServer.ProtectedWebsite.Mvc.ViewModels;
+using SimpleIdentityServer.ResourceManager.Client;
+using SimpleIdentityServer.ResourceManager.Common.Responses;
+using SimpleIdentityServer.Uma.Common.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,14 +18,16 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Controllers
     {
         private readonly IIdentityServerClientFactory _identityServerClientFactory;
         private readonly IAuthenticationService _authenticationService;
-        private readonly IStorage _storage;
+        private readonly IResourceManagerClientFactory _resourceManagerClientFactory;
+        private readonly IIdentityServerUmaClientFactory _identityServerUmaClientFactory;
 
         public HomeController(IIdentityServerClientFactory identityServerClientFactory, IAuthenticationService authenticationService,
-            IStorage storage)
+            IResourceManagerClientFactory resourceManagerClientFactory, IIdentityServerUmaClientFactory identityServerUmaClientFactory)
         {
             _identityServerClientFactory = identityServerClientFactory;
             _authenticationService = authenticationService;
-            _storage = storage;
+            _resourceManagerClientFactory = resourceManagerClientFactory;
+            _identityServerUmaClientFactory = identityServerUmaClientFactory;
         }
 
         [HttpGet]
@@ -41,8 +46,7 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var claim = ((ClaimsIdentity)User.Identity).Claims.First(c => c.Type == "sub");
-            await _storage.RemoveAsync(claim.Value);
+            HttpContext.Response.Cookies.Delete(Uma.Authentication.Constants.DEFAULT_COOKIE_NAME);
             await _authenticationService.SignOutAsync(HttpContext, Constants.CookieName, new Microsoft.AspNetCore.Authentication.AuthenticationProperties());
             return RedirectToAction("Index", "Home");
         }
@@ -71,6 +75,24 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Controllers
             claims.Add(new Claim("sub", userInfo["sub"].ToString()));
             claims.Add(new Claim("id_token", result.IdToken));
             await SetLocalCookie(claims);
+
+            // 1. Get the resources.
+            var getHierarchicalResource = await _resourceManagerClientFactory.GetHierarchicalResourceClient()
+                .Get(new Uri("http://localhost:60005/configuration"), "ProtectedWebsite", true);
+            var resources = getHierarchicalResource.Content.Where(r => !string.IsNullOrWhiteSpace(r.ResourceId));
+            var resourcePathLst = getHierarchicalResource.Content.Where(r => string.IsNullOrWhiteSpace(r.ResourceId)).Select(r => r.Path).ToList();
+            var grantedToken = await _identityServerClientFactory.CreateAuthSelector()
+                .UseClientSecretPostAuth("ProtectedWebsite", "ProtectedWebsite")
+                .UseClientCredentials("uma_protection")
+                .ResolveAsync("http://localhost:60004/.well-known/uma2-configuration");
+            List<Task<string>> tasks = new List<Task<string>>(); 
+            foreach(var resource in resources)
+            {
+                tasks.Add(ResolveUrl(resource, grantedToken.AccessToken, result.IdToken));
+            }
+
+            var grantedPathLst = (await Task.WhenAll(tasks)).Where(p => !string.IsNullOrWhiteSpace(p));
+            resourcePathLst.AddRange(grantedPathLst);
             return RedirectToAction("Index", "Home");
         }
 
@@ -88,6 +110,29 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Controllers
                 AllowRefresh = false,
                 IsPersistent = false
             });
+        }
+
+        private async Task<string> ResolveUrl(AssetResponse asset, string accessToken, string idToken)
+        {
+            var permissionResponse = await _identityServerUmaClientFactory.GetPermissionClient()
+                .AddByResolution(new PostPermission
+                {
+                    ResourceSetId = asset.ResourceId,
+                    Scopes = new[]
+                    {
+                        "read"
+                    },
+                }, "http://localhost:60004/.well-known/uma2-configuration", accessToken);
+            var umaGrantedToken = await _identityServerClientFactory.CreateAuthSelector()
+                .UseClientSecretPostAuth("ProtectedWebsite", "ProtectedWebsite")
+                .UseTicketId(permissionResponse.TicketId, idToken)
+                .ResolveAsync("http://localhost:60004/.well-known/uma2-configuration");
+            if (umaGrantedToken == null || string.IsNullOrWhiteSpace(umaGrantedToken.AccessToken))
+            {
+                return null;
+            }
+
+            return asset.Path;
         }
     }
 }

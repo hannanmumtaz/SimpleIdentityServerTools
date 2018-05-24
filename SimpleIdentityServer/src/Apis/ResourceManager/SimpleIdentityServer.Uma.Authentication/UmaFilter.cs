@@ -1,7 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SimpleIdentityServer.Client;
+using SimpleIdentityServer.Core.Jwt.Signature;
+using SimpleIdentityServer.ResourceManager.Client;
 using SimpleIdentityServer.Uma.Common.DTOs;
 using System;
 using System.Collections.Generic;
@@ -9,7 +14,6 @@ using System.Linq;
 using System.Net;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using WebApiContrib.Core.Storage;
 
 namespace SimpleIdentityServer.Uma.Authentication
 {
@@ -17,11 +21,13 @@ namespace SimpleIdentityServer.Uma.Authentication
     {
         private readonly IIdentityServerClientFactory _identityServerClientFactory;
         private readonly IIdentityServerUmaClientFactory _identityServerUmaClientFactory;
-        private readonly IStorage _storage;
+        private readonly IResourceManagerClientFactory _resourceManagerClientFactory;
         private readonly UmaFilterOptions _options;
+        private readonly IDataProtector _dataProtector;
+        private readonly IJwsParser _jwsParser;
 
         public UmaFilter(IIdentityServerClientFactory identityServerClientFactory, IIdentityServerUmaClientFactory identityServerUmaClientFactory,
-            IStorage storage, UmaFilterOptions options)
+            IDataProtectionProvider dataProtectionProvider, IResourceManagerClientFactory resourceManagerClientFactory, IJwsParser jwsParser, UmaFilterOptions options)
         {
             if (options == null)
             {
@@ -33,15 +39,17 @@ namespace SimpleIdentityServer.Uma.Authentication
                 throw new ArgumentNullException(nameof(options.Authorization));
             }
 
-            _options = options;
-            if (_options.IdentityTokenFetcher == null)
+            if (options.Cookie == null)
             {
-                _options.IdentityTokenFetcher = new IdTokenCookieFetcher();
+                throw new ArgumentNullException(nameof(options.Cookie));
             }
 
-            _identityServerClientFactory = new IdentityServerClientFactory();
-            _identityServerUmaClientFactory = new IdentityServerUmaClientFactory();
-            _storage = storage;
+            _options = options;
+            _identityServerClientFactory = identityServerClientFactory;
+            _identityServerUmaClientFactory = identityServerUmaClientFactory;
+            _resourceManagerClientFactory = resourceManagerClientFactory;
+            _dataProtector = dataProtectionProvider.CreateProtector("UmaFilter");
+            _jwsParser = jwsParser;
         }
         
         public string ResourceUrl { get; set; }
@@ -56,7 +64,17 @@ namespace SimpleIdentityServer.Uma.Authentication
                 return;
             }
 
-            var resourceId = await ResolveResourceId();
+            var resourceId = string.Empty;
+            try
+            {
+                resourceId = await ResolveResourceId();
+            }
+            catch(UmaAuthConfigurationException ex)
+            {
+                context.Result = GetError("internal", ex.Message, HttpStatusCode.InternalServerError);
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(resourceId))
             {
                 await next();
@@ -70,8 +88,7 @@ namespace SimpleIdentityServer.Uma.Authentication
                 return;
             }
 
-            var storageKey = $"{identityToken.Subject}";
-            var storageValue = await GetGrantedToken(storageKey);
+            var storageValue = GetGrantedToken(context);
             var storedGrantedToken = storageValue == null ? null : storageValue.FirstOrDefault(s => s.ResourceId == resourceId);
             if (storedGrantedToken != null)
             {
@@ -81,8 +98,12 @@ namespace SimpleIdentityServer.Uma.Authentication
                     .ResolveAsync(_options.Authorization.AuthorizationWellKnownConfiguration);
                 if (introspectionResult.Active)
                 {
-                    await next();
-                    return;
+                    var payload = _jwsParser.GetPayload(storedGrantedToken.AccessToken);
+                    if (CheckAccessToken(storedGrantedToken.AccessToken, resourceId))
+                    {
+                        await next();
+                        return;
+                    }
                 }
 
                 storageValue.Remove(storedGrantedToken);
@@ -94,7 +115,7 @@ namespace SimpleIdentityServer.Uma.Authentication
                 .ResolveAsync(_options.Authorization.AuthorizationWellKnownConfiguration);
             if (grantedToken == null || string.IsNullOrWhiteSpace(grantedToken.AccessToken))
             {
-                context.Result = GetError("internal", "bad_configuration", HttpStatusCode.InternalServerError);
+                context.Result = GetError("internal", "bad_client_configuration", HttpStatusCode.InternalServerError);
                 return;
             }
 
@@ -130,7 +151,7 @@ namespace SimpleIdentityServer.Uma.Authentication
                 AccessToken = umaGrantedToken.AccessToken,
                 ResourceId = resourceId
             });
-            await _storage.SetAsync(storageKey, storageValue);
+            StoreTokens(storageValue, context);
             await next();
         }
 
@@ -142,8 +163,22 @@ namespace SimpleIdentityServer.Uma.Authentication
                 return ResourceId;
             }
 
-            // TODO : Resolve the resource id.
-            return null;
+            if (_options.ResourceManager == null || string.IsNullOrWhiteSpace(_options.ResourceManager.ClientId)
+                || string.IsNullOrWhiteSpace(_options.ResourceManager.ClientSecret)
+                || string.IsNullOrWhiteSpace(_options.ResourceManager.ConfigurationUrl))
+            {
+                throw new UmaAuthConfigurationException("bad_resourcemanager_config");
+            }
+
+            var result = await _resourceManagerClientFactory.GetHierarchicalResourceClient().Get(new Uri(_options.ResourceManager.ConfigurationUrl),
+                System.Web.HttpUtility.UrlEncode(ResourceUrl),
+                false);
+            if (result == null || result.ContainsError || result.Content == null || !result.Content.Any())
+            {
+                return null;
+            }
+
+            return result.Content.First().ResourceId;
         }
 
         private static IActionResult GetError(string code, string description, HttpStatusCode httpStatusCode)
@@ -157,9 +192,54 @@ namespace SimpleIdentityServer.Uma.Authentication
             };
         }
 
-        private async Task<ICollection<EndUserGrantedToken>> GetGrantedToken(string subject)
+        private ICollection<EndUserGrantedToken> GetGrantedToken(ActionExecutingContext actionExecutingContext)
         {
-            return await _storage.TryGetValueAsync<List<EndUserGrantedToken>>(subject).ConfigureAwait(false);
+            if (!actionExecutingContext.HttpContext.Request.Cookies.ContainsKey(_options.Cookie.CookieName))
+            {
+                return null;
+            }
+
+            var cookieValue = actionExecutingContext.HttpContext.Request.Cookies[_options.Cookie.CookieName];
+            var unprotected = _dataProtector.Unprotect(cookieValue);
+            return JsonConvert.DeserializeObject<ICollection<EndUserGrantedToken>>(unprotected);
+        }
+
+        private void StoreTokens(ICollection<EndUserGrantedToken> tokens, ActionExecutingContext actionExecutingContext)
+        {
+            var now = DateTime.UtcNow;
+            var expires = now.AddSeconds(3600);
+            var json = JsonConvert.SerializeObject(tokens);
+            var protect = _dataProtector.Protect(json);
+            actionExecutingContext.HttpContext.Response.Cookies.Append(_options.Cookie.CookieName, protect, new CookieOptions
+            {
+                Expires = expires
+            });
+        }
+
+        private bool CheckAccessToken(string accessToken, string exceptedResourceId)
+        {
+            var payload = _jwsParser.GetPayload(accessToken);
+            if (!payload.ContainsKey("ticket"))
+            {
+                return false;
+            }
+
+            var tickets = JArray.Parse(payload["ticket"].ToString());
+            foreach(JObject ticket in tickets)
+            {
+                if (!ticket.ContainsKey("resource_id"))
+                {
+                    continue;
+                }
+
+                var resourceId = ticket["resource_id"];
+                if (exceptedResourceId == resourceId.ToString())
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         [DataContract]

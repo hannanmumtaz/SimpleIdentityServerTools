@@ -1,22 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using System;
-using System.Collections.Generic;
 
 namespace SimpleIdentityServer.Uma.Authentication
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public class UmaFilterAttribute : Attribute, IFilterFactory
     {
-        public UmaFilterAttribute(string resourceUrl, string resourceId, params string [] scopes)
+        public UmaFilterAttribute()
         {
-            ResourceUrl = resourceUrl;
-            ResourceId = resourceId;
-            Scopes = scopes;
         }
 
-        public string ResourceUrl { get; private set; }
-        public string ResourceId { get; private set; }
-        public IEnumerable<string> Scopes { get; private set; }
+        public string ResourceUrl { get; set; }
+        public string ResourceId { get; set; }
+        public string Scopes { get; set; }
 
         public bool IsReusable
         {
@@ -31,7 +27,7 @@ namespace SimpleIdentityServer.Uma.Authentication
             var filter = (UmaFilter)serviceProvider.GetService(typeof(UmaFilter));
             filter.ResourceId = ResourceId;
             filter.ResourceUrl = ResourceUrl;
-            filter.Scopes = Scopes;
+            filter.Scopes = Scopes.Split(' ');
             return filter;
         }
     }
