@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace SimpleIdentityServer.Uma.Authentication
+namespace SimpleIdentityServer.ResourceManager.Resolver
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddUmaFilter(this IServiceCollection services, UmaFilterOptions options)
+        public static IServiceCollection AddResourceManagerResolver(this IServiceCollection services, ResourceManagerResolverOptions options)
         {
             if (services == null)
             {
@@ -18,7 +18,7 @@ namespace SimpleIdentityServer.Uma.Authentication
             }
 
             services.AddSingleton(options);
-            services.AddTransient<UmaFilter>();
+            services.AddTransient<IResourceManagerResolver, ResourceManagerResolver>();
             return services;
         }
     }

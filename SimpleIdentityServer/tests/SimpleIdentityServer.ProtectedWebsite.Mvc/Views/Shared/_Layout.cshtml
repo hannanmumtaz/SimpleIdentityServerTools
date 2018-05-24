@@ -1,5 +1,7 @@
 ﻿@{ 
     var isAuthenticated = User.Identity.IsAuthenticated;
+    ICollection<string> accessibleResources = ViewBag.AccessibleResources;
+    string s = "";
 }
 <!DOCTYPE html>
 <html>
@@ -11,13 +13,22 @@
 </head>
 <body class="blue">
     <ul>
-        <li>@Html.ActionLink("Home", "Index", "Home")</li>
-        <li>@Html.ActionLink("Authenticate", "Authenticate", "Home")</li>
-        <li>@Html.ActionLink("Administrator", "Index", "Administrator")</li>
+        @if (accessibleResources.Contains("ProtectedWebsite/Home"))
+        {
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+        }
+        @if (accessibleResources.Contains("ProtectedWebsite/Home"))
+        {
+            <li>@Html.ActionLink("Authenticate", "Authenticate", "Home")</li>
+        }
+        @if (accessibleResources.Contains("ProtectedWebsite/Administrator/Index"))
+        {
+            <li>@Html.ActionLink("Administrator", "Index", "Administrator")</li>
+        }
         @if (isAuthenticated)
-    {
-        <li>@Html.ActionLink("Disconnect", "Logout", "Home")</li>
-}
+        {
+            <li>@Html.ActionLink("Disconnect", "Logout", "Home")</li>
+        }
     </ul>
     @RenderBody()
 </body>

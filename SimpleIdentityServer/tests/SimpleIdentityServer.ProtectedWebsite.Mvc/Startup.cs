@@ -4,7 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleIdentityServer.Client;
+using SimpleIdentityServer.Core.Jwt;
 using SimpleIdentityServer.ResourceManager.Client;
+using SimpleIdentityServer.ResourceManager.Resolver;
 using SimpleIdentityServer.Uma.Authentication;
 using SimpleIdentityServer.Uma.Client;
 
@@ -12,6 +14,8 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc
 {
     public class Startup
     {
+        private ResourceManagerResolverOptions _resourceManagerResolverOptions;
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -28,27 +32,41 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc
         {
             services.AddLogging();
             services.AddMvc();
-            services.AddUmaAuthenticationFilter();
-            services.AddAuthentication(Constants.CookieName)
-                .AddCookie(Constants.CookieName);
-            var options = new UmaFilterAuthorizationOptions
+            services.AddIdServerClient();
+            services.AddUmaClient();
+            services.AddResourceManagerClient();
+            services.AddDataProtection();
+            services.AddSimpleIdentityServerJwt();
+            _resourceManagerResolverOptions = new ResourceManagerResolverOptions
             {
-                AuthorizationWellKnownConfiguration = "http://localhost:60004/.well-known/uma2-configuration",
-                ClientId = "ProtectedWebsite",
-                ClientSecret = "ProtectedWebsite"
+                Authorization = new ResourceManagerResolverAuthorizationOptions
+                {
+                    AuthorizationWellKnownConfiguration = "http://localhost:60004/.well-known/uma2-configuration",
+                    ClientId = "ProtectedWebsite",
+                    ClientSecret = "ProtectedWebsite"
+                },
+                ResourceManagerUrl = "http://localhost:60005/configuration",
+                Url = "ProtectedWebsite"
             };
-            services.AddSingleton(new UmaFilterOptions
+            var umaFilterOptions = new UmaFilterOptions
             {
-                Authorization = options,
+                Authorization = new UmaFilterAuthorizationOptions
+                {
+                    AuthorizationWellKnownConfiguration = "http://localhost:60004/.well-known/uma2-configuration",
+                    ClientId = "ProtectedWebsite",
+                    ClientSecret = "ProtectedWebsite"
+                },
                 ResourceManager = new UmaFilterResourceManagerAuthorizationOptions
                 {
                     ConfigurationUrl = "http://localhost:60005/configuration",
                     ClientId = "tmp",
                     ClientSecret = "tmp"
                 }
-            });
-            var s = new ServiceCollection();
-            services.AddTransient<UmaFilter>();
+            };
+            services.AddResourceManagerResolver(_resourceManagerResolverOptions);
+            services.AddUmaFilter(umaFilterOptions);
+            services.AddAuthentication(Constants.CookieName)
+                .AddCookie(Constants.CookieName);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

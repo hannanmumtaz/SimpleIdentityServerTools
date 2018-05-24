@@ -207,7 +207,7 @@ namespace SimpleIdentityServer.Uma.Authentication
         private void StoreTokens(ICollection<EndUserGrantedToken> tokens, ActionExecutingContext actionExecutingContext)
         {
             var now = DateTime.UtcNow;
-            var expires = now.AddSeconds(3600);
+            var expires = now.AddSeconds(_options.Cookie.ExpiresIn);
             var json = JsonConvert.SerializeObject(tokens);
             var protect = _dataProtector.Protect(json);
             actionExecutingContext.HttpContext.Response.Cookies.Append(_options.Cookie.CookieName, protect, new CookieOptions
