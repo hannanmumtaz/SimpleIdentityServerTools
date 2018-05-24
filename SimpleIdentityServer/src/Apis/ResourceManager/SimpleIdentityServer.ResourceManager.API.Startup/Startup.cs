@@ -20,6 +20,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleIdentityServer.ResourceManager.API.Host.Extensions;
+using SimpleIdentityServer.ResourceManager.API.Startup.Extensions;
 using SimpleIdentityServer.ResourceManager.Core;
 using SimpleIdentityServer.ResourceManager.EF;
 using SimpleIdentityServer.ResourceManager.EF.InMemory;
@@ -27,11 +28,13 @@ using SimpleIdentityServer.UserInfoIntrospection;
 using System;
 using WebApiContrib.Core.Storage.InMemory;
 
-namespace SimpleIdentityServer.ResourceManager.API.Host
+namespace SimpleIdentityServer.ResourceManager.API.Startup
 {
 
     public class Startup
     {
+        private ResourceManagerHostOptions _options;
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -39,18 +42,26 @@ namespace SimpleIdentityServer.ResourceManager.API.Host
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
+            _options = new ResourceManagerHostOptions
+            {
+                AuthClientId = Configuration["Auth:ClientId"],
+                AuthClientSecret = Configuration["Auth:ClientSecret"],
+                AuthWellKnownConfiguration = Configuration["Auth:WellKnownConfiguration"]
+            };
         }
 
         public IConfigurationRoot Configuration { get; set; }
         
         public void ConfigureServices(IServiceCollection services)
         {
+            RegisterTokenStore(services);
+            RegisterCaching(services);
+            RegisterDatabase(services);
+            RegisterHost(services);
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
             services.AddMvc();
-            services.AddResourceManagerInMemoryEF();
-            RegisterServices(services);
             services.AddAuthentication(UserInfoIntrospectionOptions.AuthenticationScheme)
                 .AddUserInfoIntrospection(opts =>
                 {
@@ -87,12 +98,24 @@ namespace SimpleIdentityServer.ResourceManager.API.Host
             }
         }
 
-        private void RegisterServices(IServiceCollection serviceCollection)
+        private static void RegisterTokenStore(IServiceCollection serviceCollection)
         {
-            serviceCollection.AddResourceManager();
             serviceCollection.AddInMemoryTokenStore();
+        }
+
+        private static void RegisterCaching(IServiceCollection serviceCollection)
+        {
             WebApiContrib.Core.Storage.ServiceCollectionExtensions.AddStorage(serviceCollection, opts => opts.UseInMemory());
-            serviceCollection.AddSingleton<IConfiguration>(Configuration);
+        }
+
+        private void RegisterHost(IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddResourceManagerHost(_options);
+        }
+
+        private void RegisterDatabase(IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddResourceManagerInMemoryEF();
         }
     }
 }

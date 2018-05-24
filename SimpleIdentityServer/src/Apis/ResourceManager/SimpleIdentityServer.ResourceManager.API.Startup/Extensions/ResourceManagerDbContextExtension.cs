@@ -5,7 +5,7 @@ using SimpleIdentityServer.ResourceManager.EF.Models;
 using System;
 using System.Linq;
 
-namespace SimpleIdentityServer.ResourceManager.API.Host.Extensions
+namespace SimpleIdentityServer.ResourceManager.API.Startup.Extensions
 {
     internal static class ResourceManagerDbContextExtension
     {
@@ -38,7 +38,7 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Extensions
                        CanWrite = true,
                        CreateDateTime = DateTime.UtcNow,
                        IsDefaultWorkingDirectory = true,
-                       MimeType = Constants.MimeNames.Directory
+                       MimeType = "directory"
                    },
                    new Asset
                    {
@@ -50,7 +50,7 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Extensions
                        CanRead = true,
                        CanWrite = true,
                        CreateDateTime = DateTime.UtcNow,
-                       MimeType = Constants.MimeNames.Directory
+                       MimeType = "directory"
                    },
                    new Asset
                    {
@@ -62,7 +62,7 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Extensions
                        CanRead = true,
                        CanWrite = true,
                        CreateDateTime = DateTime.UtcNow,
-                       MimeType = Constants.MimeNames.Directory
+                       MimeType = "directory"
                    }
                 });
             }

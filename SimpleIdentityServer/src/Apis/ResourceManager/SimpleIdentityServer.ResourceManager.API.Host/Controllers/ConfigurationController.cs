@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using SimpleIdentityServer.ResourceManager.API.Host.Extensions;
+using SimpleIdentityServer.ResourceManager.Common.Responses;
 
 namespace SimpleIdentityServer.ResourceManager.API.Host.Controllers
 {
@@ -10,20 +10,22 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Controllers
         public ActionResult Get()
         {
             var issuer = Request.GetAbsoluteUriWithVirtualPath();
-            var json = new JObject();
-            json.Add("version", "2.1");
-            json.Add("endpoints_endpoint", Constants.RouteNames.EndpointsController);
-            json.Add("profile_endpoint", Constants.RouteNames.ProfileController);
-            json.Add("elfinder_endpoint", Constants.RouteNames.ElFinterController);
-            json.Add("clients_endpoint", Constants.RouteNames.ClientsController);
-            json.Add("scopes_endpoint", Constants.RouteNames.ScopesController);
-            json.Add("resourceowners_endpoint", Constants.RouteNames.ResourceOwnersController);
-            json.Add("claims_endpoint", Constants.RouteNames.ClaimsController);
-            json.Add("resources_endpoint", Constants.RouteNames.ResourcesController);
-            json.Add("authpolicies_endpoint", Constants.RouteNames.ResourcesController);
-            json.Add("scim_endpoint", Constants.RouteNames.ScimController);
-            json.Add("hierarchicalresources_endpoint", Constants.RouteNames.HierarchicalResourcesController);
-            return new OkObjectResult(json);
+            var configuration = new ConfigurationResponse
+            {
+                Version = "2.1",
+                EndpointsEdp = $"{issuer}/{Constants.RouteNames.EndpointsController}",
+                ProfileEdp = $"{issuer}/{Constants.RouteNames.ProfileController}",
+                ElfinderEdp = $"{issuer}/{Constants.RouteNames.ElFinterController}",
+                ClientsEdp = $"{issuer}/{Constants.RouteNames.ClientsController}",
+                ScopesEdp = $"{issuer}/{Constants.RouteNames.ScopesController}",
+                ResourceOwnersEdp = $"{issuer}/{Constants.RouteNames.ResourceOwnersController}",
+                ClaimsEdp = $"{issuer}/{Constants.RouteNames.ClaimsController}",
+                ResourcesEdp = $"{issuer}/{Constants.RouteNames.ResourcesController}",
+                AuthPoliciesEdp = $"{issuer}/{Constants.RouteNames.AuthPoliciesController}",
+                ScimEdp = $"{issuer}/{Constants.RouteNames.ScimController}",
+                HierarchicalresourcesEdp = $"{issuer}/{Constants.RouteNames.HierarchicalResourcesController}",
+            };
+            return new OkObjectResult(configuration);
         }
     }
 }

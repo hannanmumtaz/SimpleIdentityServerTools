@@ -5,6 +5,7 @@ using SimpleIdentityServer.Client;
 using SimpleIdentityServer.Client.DTOs.Response;
 using SimpleIdentityServer.Manager.Client;
 using SimpleIdentityServer.ResourceManager.API.Host.DTOs;
+using SimpleIdentityServer.ResourceManager.API.Host.Extensions;
 using SimpleIdentityServer.ResourceManager.API.Host.Helpers;
 using SimpleIdentityServer.ResourceManager.Core.Models;
 using SimpleIdentityServer.ResourceManager.Core.Parameters;
@@ -29,15 +30,14 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Controllers
         private readonly IIdentityServerUmaClientFactory _identityServerUmaClientFactory;
         private readonly IEndpointRepository _endpointRepository;
         private readonly IStorageHelper _storageHelper;
-        private const string _authKnownConfigurationName = "Auth:WellKnownConfiguration";
-        private const string _clientIdConfigurationName = "Auth:ClientId";
-        private const string _clientSecretConfigurationName = "Auth:ClientSecret";
+        private readonly ResourceManagerHostOptions _options;
         private const string _resourceManagerAccessToken = "resourceManagerAccessToken";
         private static IEnumerable<string> _scopes = new[] { "uma_protection" };
 
         public ElFinderController(IAssetRepository assetRepository, IConfiguration configuration, IStorageHelper storageHelper,
             IOpenIdManagerClientFactory openIdManagerClientFactory, IIdentityServerClientFactory identityServerClientFactory,
-            IIdentityServerUmaClientFactory identityServerUmaClientFactory, IEndpointRepository endpointRepository)
+            IIdentityServerUmaClientFactory identityServerUmaClientFactory, IEndpointRepository endpointRepository,
+            ResourceManagerHostOptions options)
         {
             _assetRepository = assetRepository;
             _configuration = configuration;
@@ -46,6 +46,7 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Controllers
             _identityServerClientFactory = identityServerClientFactory;
             _identityServerUmaClientFactory = identityServerUmaClientFactory;
             _endpointRepository = endpointRepository;
+            _options = options;
         }
 
         [HttpPost]
@@ -1153,18 +1154,18 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Controllers
 
         private string GetWellKnownAuthConfigurationUrl()
         {
-            return _configuration[_authKnownConfigurationName];
+            return _options.AuthWellKnownConfiguration;
         }
 
         private string GetClientId()
         {
-            return _configuration[_clientIdConfigurationName];
+            return _options.AuthClientId;
         }
 
         private string GetClientSecret()
         {
 
-            return _configuration[_clientSecretConfigurationName];
+            return _options.AuthClientSecret;
         }
     }
 }

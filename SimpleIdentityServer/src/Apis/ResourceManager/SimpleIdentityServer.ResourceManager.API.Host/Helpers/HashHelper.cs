@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 namespace SimpleIdentityServer.ResourceManager.API.Host.Helpers
 {
-    internal static class HashHelper
+    public static class HashHelper
     {
         public static string GetHash(string path)
         {
