@@ -62,7 +62,7 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Controllers
             }
 
             var result = await _identityServerClientFactory.CreateAuthSelector()
-                .UseClientSecretPostAuth("website", "website")
+                .UseClientSecretPostAuth("ProtectedWebsite", "ProtectedWebsite")
                 .UsePassword(viewModel.Login, viewModel.Password, "openid", "profile")
                 .ResolveAsync(SimpleIdentityServer.ProtectedWebsite.Mvc.Constants.OpenIdUrl);
             var userInfo = await _identityServerClientFactory.CreateUserInfoClient()

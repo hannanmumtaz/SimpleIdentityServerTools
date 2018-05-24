@@ -30,9 +30,9 @@ namespace SimpleIdentityServer.ResourceManager.API.Startup.Extensions
                 {
                    new Asset
                    {
-                       Hash = HashHelper.GetHash("Root"),
-                       Name = "Root",
-                       Path = "Root",
+                       Hash = HashHelper.GetHash("ProtectedWebsite"),
+                       Name = "ProtectedWebsite",
+                       Path = "ProtectedWebsite",
                        IsLocked = false,
                        CanRead = true,
                        CanWrite = true,
@@ -42,10 +42,10 @@ namespace SimpleIdentityServer.ResourceManager.API.Startup.Extensions
                    },
                    new Asset
                    {
-                       Hash = HashHelper.GetHash("Root/Sub"),
-                       ResourceParentHash = HashHelper.GetHash("Root"),
-                       Name = "Sub",
-                       Path = "Root/Sub",
+                       Hash = HashHelper.GetHash("ProtectedWebsite/Administrator"),
+                       ResourceParentHash = HashHelper.GetHash("ProtectedWebsite"),
+                       Name = "Administrator",
+                       Path = "ProtectedWebsite/Administrator",
                        IsLocked = false,
                        CanRead = true,
                        CanWrite = true,
@@ -54,15 +54,40 @@ namespace SimpleIdentityServer.ResourceManager.API.Startup.Extensions
                    },
                    new Asset
                    {
-                       Hash = HashHelper.GetHash("Root/another directory"),
-                       ResourceParentHash = HashHelper.GetHash("Root"),
-                       Name = "another directory",
-                       Path = "Root/another directory",
+                       Hash = HashHelper.GetHash("ProtectedWebsite/Home"),
+                       ResourceParentHash = HashHelper.GetHash("ProtectedWebsite/Home"),
+                       Name = "Home",
+                       Path = "ProtectedWebsite/Home",
                        IsLocked = false,
                        CanRead = true,
                        CanWrite = true,
                        CreateDateTime = DateTime.UtcNow,
                        MimeType = "directory"
+                   },
+                   new Asset
+                   {
+                       Hash = HashHelper.GetHash("ProtectedWebsite/About"),
+                       ResourceParentHash = HashHelper.GetHash("ProtectedWebsite/About"),
+                       Name = "About",
+                       Path = "ProtectedWebsite/About",
+                       IsLocked = false,
+                       CanRead = true,
+                       CanWrite = true,
+                       CreateDateTime = DateTime.UtcNow,
+                       MimeType = "directory"
+                   },
+                   new Asset
+                   {
+                       Hash = HashHelper.GetHash("ProtectedWebsite/Administrator/Index"),
+                       ResourceParentHash = HashHelper.GetHash("ProtectedWebsite/Administrator/Index"),
+                       Name = "aIndex",
+                       Path = "ProtectedWebsite/Administrator/Index",
+                       IsLocked = false,
+                       CanRead = true,
+                       CanWrite = true,
+                       CreateDateTime = DateTime.UtcNow,
+                       MimeType = "text/plain",
+                       ResourceId = "1"
                    }
                 });
             }

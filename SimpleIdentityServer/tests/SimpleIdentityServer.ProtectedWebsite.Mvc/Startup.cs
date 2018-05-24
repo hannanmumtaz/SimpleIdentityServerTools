@@ -36,8 +36,8 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc
             var options = new UmaFilterAuthorizationOptions
             {
                 AuthorizationWellKnownConfiguration = "http://localhost:60004/.well-known/uma2-configuration",
-                ClientId = "ResourceServer",
-                ClientSecret = "LW46am54neU/[=Su"
+                ClientId = "ProtectedWebsite",
+                ClientSecret = "ProtectedWebsite"
             };
             services.AddSingleton(new UmaFilterOptions
             {

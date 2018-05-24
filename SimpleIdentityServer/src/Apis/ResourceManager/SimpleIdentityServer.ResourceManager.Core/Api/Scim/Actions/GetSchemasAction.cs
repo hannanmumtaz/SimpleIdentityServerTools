@@ -31,8 +31,7 @@ namespace SimpleIdentityServer.ResourceManager.Core.Api.Scim.Actions
             }
 
             var edp = await _endpointHelper.TryGetEndpointFromProfile(subject, Models.EndpointTypes.SCIM);
-            // return await _scimClientFactory.GetConfigurationClient().GetSchemas(edp.Url);
-            return null;
+            return await _scimClientFactory.GetConfigurationClient().GetSchemas(edp.Url);
         }
     }
 }

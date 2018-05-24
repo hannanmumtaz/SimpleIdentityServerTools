@@ -242,7 +242,8 @@ class Layout extends Component {
             return;
         }
 
-        var evt = window.addEventListener("message", function(e) {
+        var evt = window.addEventListener("message", function (e) {
+            console.log(e);
             if (e.data !== 'unchanged') {
                 AppDispatcher.dispatch({
                     actionName: Constants.events.USER_LOGGED_OUT
