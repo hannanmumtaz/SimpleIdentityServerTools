@@ -24,5 +24,21 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Controllers
             var result = await _scimActions.GetSchemas(subject);
             return new OkObjectResult(result);
         }
+
+        [HttpPost("users/.search")]
+        [Authorize("connected")]
+        public async Task<IActionResult> SearchUsers()
+        {
+            var subject = User.GetSubject();
+            return null;
+        }
+
+        [HttpPost("groups/.search")]
+        [Authorize("connected")]
+        public async Task<IActionResult> SearchGroups()
+        {
+            var subject = User.GetSubject();
+            return null;
+        }
     }
 }

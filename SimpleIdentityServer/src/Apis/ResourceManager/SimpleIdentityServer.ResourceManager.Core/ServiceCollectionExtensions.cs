@@ -81,6 +81,8 @@ namespace SimpleIdentityServer.ResourceManager.Core
             services.AddTransient<IAuthorizationPolicyActions, AuthorizationPolicyActions>();
             services.AddTransient<IScimActions, ScimActions>();
             services.AddTransient<IGetSchemasAction, GetSchemasAction>();
+	        services.AddTransient<ISearchUsersAction, SearchUsersAction>();
+	        services.AddTransient<ISearchGroupsAction, SearchGroupsAction>();
             services.AddTransient<IHierarchicalResourcesActions, HierarchicalResourcesActions>();
             services.AddTransient<IAddHierarchicalResourcesAction, AddHierarchicalResourcesAction>();
             services.AddTransient<IDeleteHierarchicalResourcesAction, DeleteHierarchicalResourcesAction>();
