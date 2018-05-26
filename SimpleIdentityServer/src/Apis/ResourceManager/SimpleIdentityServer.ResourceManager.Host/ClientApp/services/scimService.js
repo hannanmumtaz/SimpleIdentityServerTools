@@ -21,5 +21,49 @@ module.exports = {
                 reject(e);
             });
         });        
+    },
+    /**
+    * Search the users.
+    */
+    searchUsers: function(request) {        
+        return new Promise(function (resolve, reject) {
+            var data = JSON.stringify(request);
+            var session = SessionService.getSession();
+            $.ajax({
+                url: Constants.apiUrl + '/scim/users/.search',
+                method: "POST",
+                data: data,
+                contentType: 'application/json',
+                headers: {
+                    "Authorization": "Bearer "+ session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });
+    },
+    /**
+    * Search the groups.
+    */
+    searchGroups: function(request) {        
+        return new Promise(function (resolve, reject) {
+            var data = JSON.stringify(request);
+            var session = SessionService.getSession();
+            $.ajax({
+                url: Constants.apiUrl + '/scim/groups/.search',
+                method: "POST",
+                data: data,
+                contentType: 'application/json',
+                headers: {
+                    "Authorization": "Bearer "+ session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });
     }
 };

@@ -570,28 +570,20 @@ class ViewResource extends Component {
                     </Grid>
                 </Grid>
             </div>
-            <div className="card">
-                { self.state.isLoading ? ( <CircularProgress /> ) : (
-                    <div>
-                        <div className="header">
-                            <h4 style={{display: "inline-block"}}>{t('resourceInformation')}</h4>
-                            <div style={{float: "right"}}>
-                                <IconButton onClick={self.handleAddAuthorizationPolicy}>
-                                    <Add />
-                                </IconButton>
-                                {self.state.isRemoveDisplayed && (
-                                    <IconButton onClick={self.handleRemoveAuthPolicies}>
-                                        <Delete />
-                                    </IconButton>
-                                )}
-                                <IconButton onClick={self.handleSave}>
-                                    <Save />
-                                </IconButton>
-                            </div>
-                        </div>
-                        <div className="body">
-                            <Grid container spacing={40}>
-                                <Grid item sm={12} md={4}>
+            <Grid container spacing={40}>
+                <Grid item md={12}>
+                    <div className="card">
+                        { self.state.isLoading ? ( <CircularProgress /> ) : (
+                            <div>
+                                <div className="header">
+                                    <h4 style={{display: "inline-block"}}>{t('resourceInformation')}</h4>
+                                    <div style={{float: "right"}}>
+                                        <IconButton onClick={self.handleSave}>
+                                            <Save />
+                                        </IconButton>
+                                    </div>
+                                </div>
+                                <div className="body">
                                     {/* Id */}
                                     <FormControl className={classes.margin} fullWidth={true}>
                                         <InputLabel>{t('resourceId')}</InputLabel>
@@ -614,8 +606,29 @@ class ViewResource extends Component {
                                     <div className={classes.margin}>
                                         <ChipsSelector label={t('resourceScopes')} properties={self.state.resourceScopes} />
                                     </div>
-                                </Grid>
-                                <Grid item sm={12} md={8}>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </Grid>
+                <Grid item md={12}>
+                    <div className="card">
+                        { self.state.isLoading ? ( <CircularProgress /> ) : (
+                            <div>
+                                <div className="header">
+                                    <h4 style={{display: "inline-block"}}>{t('authorizationPolicies')}</h4>
+                                    <div style={{float: "right"}}>
+                                        <IconButton onClick={self.handleAddAuthorizationPolicy}>
+                                            <Add />
+                                        </IconButton>
+                                        {self.state.isRemoveDisplayed && (
+                                            <IconButton onClick={self.handleRemoveAuthPolicies}>
+                                                <Delete />
+                                            </IconButton>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="body">
                                     <Table>
                                         <TableHead>
                                             <TableRow>
@@ -627,12 +640,12 @@ class ViewResource extends Component {
                                             {rows}
                                         </TableBody>
                                     </Table>
-                                </Grid>                                
-                            </Grid>
-                        </div>
+                                </div>
+                            </div>
+                        ) }
                     </div>
-                )}
-            </div>
+                </Grid>
+            </Grid>
         </div>);
     }
 

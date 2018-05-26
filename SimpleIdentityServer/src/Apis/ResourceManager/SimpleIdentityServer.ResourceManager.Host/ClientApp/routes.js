@@ -27,6 +27,7 @@ export const routes = (<Layout>
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/scimSchemas' exact path='/scimSchemas' component={ScimSchemas} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/scimSchemas/:id' exact path='/scimSchemas/:id' component={ViewScimSchema} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/scimSchemas/:id/:attr' exact path='/scimSchemas/:id/:attr' component={ViewScimAttribute} />)}    
+    { !process.env.IS_MANAGE_DISABLED && (<Route key='/scimResources' exact path='/scimResources' component={ScimResources} />)}
     { !process.env.IS_RESOURCES_DISABLED && (<Route exact path='/resources/:action?' component={Resources} />)}
     { !process.env.IS_RESOURCES_DISABLED && (<Route exact path='/resource/:id' component={ViewResource} />)}
     { !process.env.IS_LOG_DISABLED && (<Route exact path="/viewaggregate/:id" component={ViewAggregate} /> )}

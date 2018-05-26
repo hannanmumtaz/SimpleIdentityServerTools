@@ -243,7 +243,6 @@ class Layout extends Component {
         }
 
         var evt = window.addEventListener("message", function (e) {
-            console.log(e);
             if (e.data !== 'unchanged') {
                 AppDispatcher.dispatch({
                     actionName: Constants.events.USER_LOGGED_OUT
@@ -457,7 +456,7 @@ class Layout extends Component {
                                 <MenuItem key='/scimSchemas' selected={pathName.indexOf('/scimSchemas') !== -1} className={classes.nested} onClick={() => self.navigate('/scimSchemas')}>
                                     {t('scimSchemas')}
                                 </MenuItem>
-                                <MenuItem key='/scimResources' selected={pathName.indexOf('/scimResources') !== -1} className={classes.nested}>
+                                <MenuItem key='/scimResources' selected={pathName.indexOf('/scimResources') !== -1} className={classes.nested} onClick={() => self.navigate('/scimResources')}>
                                     {t('scimResources')}
                                 </MenuItem>
                             </List>

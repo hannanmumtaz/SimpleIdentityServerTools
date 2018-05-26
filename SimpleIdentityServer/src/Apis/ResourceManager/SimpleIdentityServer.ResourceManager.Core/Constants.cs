@@ -3,6 +3,8 @@
     public static class Constants
     {
         public const string MANAGER_SCOPE = "manager";
+        public const string MANAGE_SCIM_SCOPE = "scim_manage";
+        public const string READ_SCIM_SCOPE = "scim_read";
 
         public static class ErrorCodes
         {
