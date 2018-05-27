@@ -135,7 +135,7 @@ namespace SimpleIdentityServer.ResourceManager.API.Startup.Extensions
                             AuthUrl = "http://localhost:60004/.well-known/uma2-configuration",
                             ClientId = "ResourceServer",
                             ClientSecret = "LW46am54neU/[=Su",
-                            ManagerUrl = "http://localhost:60004/.well-known/uma2-configuration"
+                            ManagerUrl = "http://localhost:60007/.well-known/openidmanager-configuration"
                         }
                     },
                     new Endpoint
