@@ -45,6 +45,25 @@ module.exports = {
         });
     },
     /**
+    * Get the user.
+    */
+    getUser: function(resourceId) {
+        return new Promise(function (resolve, reject) {
+            var session = SessionService.getSession();
+            $.ajax({
+                url: Constants.apiUrl + '/scim/users/' + resourceId,
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer "+ session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });        
+    },
+    /**
     * Search the groups.
     */
     searchGroups: function(request) {        
@@ -65,5 +84,24 @@ module.exports = {
                 reject(e);
             });
         });
-    }
+    },
+    /**
+    * Get the group.
+    */
+    getGroup: function(resourceId) {
+        return new Promise(function (resolve, reject) {
+            var session = SessionService.getSession();
+            $.ajax({
+                url: Constants.apiUrl + '/scim/groups/' + resourceId,
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer "+ session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });        
+    },
 };

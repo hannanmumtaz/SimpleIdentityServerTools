@@ -55,7 +55,7 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Controllers
             return new OkObjectResult(result);
         }
 
-        [HttpPost("users/{id}")]
+        [HttpGet("users/{id}")]
         [Authorize("connected")]
         public async Task<IActionResult> GetUser(string id)
         {
@@ -69,7 +69,7 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Controllers
             return new OkObjectResult(result);
         }
 
-        [HttpPost("groups/{id}")]
+        [HttpGet("groups/{id}")]
         [Authorize("connected")]
         public async Task<IActionResult> GetGroup(string id)
         {

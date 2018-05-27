@@ -38,7 +38,7 @@ namespace SimpleIdentityServer.ResourceManager.Core.Api.Scim.Actions
 
             var edp = await _endpointHelper.TryGetEndpointFromProfile(subject, Models.EndpointTypes.SCIM);
             var grantedToken = await _tokenStore.GetToken(edp.AuthUrl, edp.ClientId, edp.ClientSecret, new[] { Constants.READ_SCIM_SCOPE });
-            return await _scimClientFactory.GetUserClient().SearchUsers(edp.Url, parameter, grantedToken.AccessToken);
+            return await _scimClientFactory.GetGroupClient().SearchGroups(edp.Url, parameter, grantedToken.AccessToken);
         }
     }
 }

@@ -5,7 +5,8 @@ import { SessionService } from './services';
 import Layout from './layout';
 import { Login, About, Logs, Resources, ViewAggregate, ViewLog,
  OAuthClients, OpenidClients, OAuthScopes, OpenidScopes, ResourceOwners, ViewResource, ViewClient, ViewScope,
- AddScope, Dashboard, ViewUser, Claims, ViewClaim, ScimSchemas, ScimResources, ViewScimSchema, ViewScimAttribute } from './components';
+ AddScope, Dashboard, ViewUser, Claims, ViewClaim, ScimSchemas, ScimResources, ViewScimSchema, ViewScimAttribute,
+ ViewScimResource } from './components';
 
 export const routes = (<Layout>
     <Route exact path='/' component={About} />
@@ -28,6 +29,7 @@ export const routes = (<Layout>
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/scimSchemas/:id' exact path='/scimSchemas/:id' component={ViewScimSchema} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/scimSchemas/:id/:attr' exact path='/scimSchemas/:id/:attr' component={ViewScimAttribute} />)}    
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/scimResources' exact path='/scimResources' component={ScimResources} />)}
+    { !process.env.IS_MANAGE_DISABLED && (<Route key='/scimResources/:type/:id' exact path='/scimResources/:type/:id' component={ViewScimResource} />)}
     { !process.env.IS_RESOURCES_DISABLED && (<Route exact path='/resources/:action?' component={Resources} />)}
     { !process.env.IS_RESOURCES_DISABLED && (<Route exact path='/resource/:id' component={ViewResource} />)}
     { !process.env.IS_LOG_DISABLED && (<Route exact path="/viewaggregate/:id" component={ViewAggregate} /> )}
