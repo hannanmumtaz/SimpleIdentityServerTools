@@ -1,5 +1,5 @@
-﻿using SimpleIdentityServer.Eid.Common.SamlMessages;
-using SimpleIdentityServer.Eid.Common.SoapMessages;
+﻿using SimpleIdentityServer.Common.Saml.SamlMessages;
+using SimpleIdentityServer.Common.Saml.SoapMessages;
 using SimpleIdentityServer.Eid.Ehealth.Exceptions;
 using SimpleIdentityServer.Eid.Ehealth.Tlv;
 using System;

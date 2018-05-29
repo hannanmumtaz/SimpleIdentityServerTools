@@ -1,10 +1,9 @@
-﻿using SimpleIdentityServer.Eid.Common.Serializers;
-using SimpleIdentityServer.Eid.Common.SoapMessages;
+﻿using SimpleIdentityServer.Common.Saml.Serializers;
+using SimpleIdentityServer.Common.Saml.SoapMessages;
 using SimpleIdentityServer.Eid.Ehealth.Builders;
 using SimpleIdentityServer.Eid.Ehealth.Tlv;
 using SimpleIdentityServer.Eid.Sign;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -12,7 +11,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Xml;
-using System.Xml.Schema;
 using Xunit;
 
 namespace SimpleIdentityServer.Eid.Tests
@@ -50,8 +48,8 @@ namespace SimpleIdentityServer.Eid.Tests
             beIdCardConnector.Dispose();
 
             var nsmgr = new XmlNamespaceManager(xmlDocument.NameTable);
-            nsmgr.AddNamespace(Common.Constants.XmlPrefixes.Ds, Common.Constants.XmlNamespaces.Ds);
-            nsmgr.AddNamespace(Common.Constants.XmlPrefixes.Wsse, Common.Constants.XmlNamespaces.Wsse);
+            nsmgr.AddNamespace(Common.Saml.Constants.XmlPrefixes.Ds, Common.Saml.Constants.XmlNamespaces.Ds);
+            nsmgr.AddNamespace(Common.Saml.Constants.XmlPrefixes.Wsse, Common.Saml.Constants.XmlNamespaces.Wsse);
             var signatureValue = xmlDocument.SelectSingleNode("//ds:SignatureValue", nsmgr).InnerText; // 5. Check signature value.
             var binarySecurityToken = xmlDocument.SelectSingleNode("//wsse:BinarySecurityToken", nsmgr).InnerText;
             var signedInfo = xmlDocument.SelectSingleNode("//ds:SignedInfo", nsmgr).OuterXml;

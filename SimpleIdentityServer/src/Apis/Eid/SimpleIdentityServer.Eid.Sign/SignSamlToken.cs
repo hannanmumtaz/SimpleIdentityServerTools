@@ -1,5 +1,5 @@
-﻿using SimpleIdentityServer.Eid.Common.Serializers;
-using SimpleIdentityServer.Eid.Common.SoapMessages;
+﻿using SimpleIdentityServer.Common.Saml.Serializers;
+using SimpleIdentityServer.Common.Saml.SoapMessages;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -48,16 +48,16 @@ namespace SimpleIdentityServer.Eid.Sign
             }
             
             var nsmgr = new XmlNamespaceManager(xmlDocument.NameTable); // 1. Construct the SignedInfo.
-            nsmgr.AddNamespace(Common.Constants.XmlPrefixes.Wsu, Common.Constants.XmlNamespaces.Wsu);
-            nsmgr.AddNamespace(Common.Constants.XmlPrefixes.SoapEnv, Common.Constants.XmlNamespaces.SoapEnvelope);
-            nsmgr.AddNamespace(Common.Constants.XmlPrefixes.Wsse, Common.Constants.XmlNamespaces.Wsse);
-            nsmgr.AddNamespace(Common.Constants.XmlPrefixes.Ds, Common.Constants.XmlNamespaces.Ds);
-            var bodyTokenNode = xmlDocument.SelectSingleNode($"//{Common.Constants.XmlPrefixes.SoapEnv}:Body", nsmgr);
-            var timeStampNode = xmlDocument.SelectSingleNode($"//{Common.Constants.XmlPrefixes.Wsu}:Timestamp", nsmgr);
-            var binaryTokenNode = xmlDocument.SelectSingleNode($"//{Common.Constants.XmlPrefixes.Wsse}:BinarySecurityToken", nsmgr);
-            var timeStampId = timeStampNode.Attributes[$"{Common.Constants.XmlPrefixes.Wsu}:Id"].Value;
-            var binaryTokenId = binaryTokenNode.Attributes[$"{Common.Constants.XmlPrefixes.Wsu}:Id"].Value;
-            var bodyTokenId = bodyTokenNode.Attributes[$"{Common.Constants.XmlPrefixes.Wsu}:Id"].Value;
+            nsmgr.AddNamespace(Common.Saml.Constants.XmlPrefixes.Wsu, Common.Saml.Constants.XmlNamespaces.Wsu);
+            nsmgr.AddNamespace(Common.Saml.Constants.XmlPrefixes.SoapEnv, Common.Saml.Constants.XmlNamespaces.SoapEnvelope);
+            nsmgr.AddNamespace(Common.Saml.Constants.XmlPrefixes.Wsse, Common.Saml.Constants.XmlNamespaces.Wsse);
+            nsmgr.AddNamespace(Common.Saml.Constants.XmlPrefixes.Ds, Common.Saml.Constants.XmlNamespaces.Ds);
+            var bodyTokenNode = xmlDocument.SelectSingleNode($"//{Common.Saml.Constants.XmlPrefixes.SoapEnv}:Body", nsmgr);
+            var timeStampNode = xmlDocument.SelectSingleNode($"//{Common.Saml.Constants.XmlPrefixes.Wsu}:Timestamp", nsmgr);
+            var binaryTokenNode = xmlDocument.SelectSingleNode($"//{Common.Saml.Constants.XmlPrefixes.Wsse}:BinarySecurityToken", nsmgr);
+            var timeStampId = timeStampNode.Attributes[$"{Common.Saml.Constants.XmlPrefixes.Wsu}:Id"].Value;
+            var binaryTokenId = binaryTokenNode.Attributes[$"{Common.Saml.Constants.XmlPrefixes.Wsu}:Id"].Value;
+            var bodyTokenId = bodyTokenNode.Attributes[$"{Common.Saml.Constants.XmlPrefixes.Wsu}:Id"].Value;
             var signatureNode = Canonilize(xml, new[]
             {
                 timeStampId,
@@ -92,11 +92,11 @@ namespace SimpleIdentityServer.Eid.Sign
                 GenerateId("STR"),
                 $"#{binaryTokenId}");
             var result = new SoapSignature(GenerateId("SIG"), signatureValueB64, soapKeyInfo);
-            var referenceNodes = signatureNode.SelectNodes($"//{Common.Constants.XmlPrefixes.Ds}:Reference", nsmgr);
+            var referenceNodes = signatureNode.SelectNodes($"//{Common.Saml.Constants.XmlPrefixes.Ds}:Reference", nsmgr);
             foreach(XmlNode referenceNode in referenceNodes)
             {
                 var uri = referenceNode.Attributes["URI"].Value;
-                var digestValueNode = referenceNode.SelectSingleNode($"{Common.Constants.XmlPrefixes.Ds}:DigestValue", nsmgr);
+                var digestValueNode = referenceNode.SelectSingleNode($"{Common.Saml.Constants.XmlPrefixes.Ds}:DigestValue", nsmgr);
                 result.References.Add(new SoapReference(uri, digestValueNode.InnerText));
             }
 
@@ -128,7 +128,7 @@ namespace SimpleIdentityServer.Eid.Sign
             {
                 var reference = new Reference($"#{id}");
                 reference.AddTransform(env);
-                reference.DigestMethod = Common.Constants.XmlNamespaces.Sha1;
+                reference.DigestMethod = Common.Saml.Constants.XmlNamespaces.Sha1;
                 signedXml.AddReference(reference);
             }
 
@@ -145,7 +145,7 @@ namespace SimpleIdentityServer.Eid.Sign
                 return;
             }
 
-            node.Prefix = Common.Constants.XmlPrefixes.Ds;
+            node.Prefix = Common.Saml.Constants.XmlPrefixes.Ds;
             foreach (XmlNode child in node.ChildNodes)
             {
                 ChangePrefix(child);

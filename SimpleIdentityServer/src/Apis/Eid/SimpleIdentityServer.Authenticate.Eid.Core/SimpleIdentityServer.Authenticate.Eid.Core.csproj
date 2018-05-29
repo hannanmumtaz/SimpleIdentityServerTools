@@ -30,6 +30,6 @@
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Core.Common\SimpleIdentityServer.Core.Common.csproj" />
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Core\SimpleIdentityServer.Core.csproj" />
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.EF\SimpleIdentityServer.EF.csproj" />
-    <ProjectReference Include="..\SimpleIdentityServer.Eid.Common\SimpleIdentityServer.Eid.Common.csproj" />
+    <ProjectReference Include="..\..\Common\SimpleIdentityServer.Common.Saml\SimpleIdentityServer.Common.Saml.csproj" />
   </ItemGroup>
 </Project>

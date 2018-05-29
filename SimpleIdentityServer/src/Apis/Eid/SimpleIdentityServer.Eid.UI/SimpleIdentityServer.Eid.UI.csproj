@@ -16,7 +16,7 @@
     <DotNetCliToolReference Include="ElectronNET.CLI" Version="0.0.9" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SimpleIdentityServer.Eid.Common\SimpleIdentityServer.Eid.Common.csproj" />
+    <ProjectReference Include="..\..\Common\SimpleIdentityServer.Common.Saml\SimpleIdentityServer.Common.Saml.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Eid.Ehealth\SimpleIdentityServer.Eid.Ehealth.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Eid.Sign\SimpleIdentityServer.Eid.Sign.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Eid\SimpleIdentityServer.Eid.csproj" />

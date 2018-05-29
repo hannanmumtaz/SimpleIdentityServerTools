@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using PcscDotNet;
-using SimpleIdentityServer.Eid.Common.Serializers;
+using SimpleIdentityServer.Common.Saml.Serializers;
 using SimpleIdentityServer.Eid.Ehealth.Builders;
 using SimpleIdentityServer.Eid.Ehealth.Tlv;
 using SimpleIdentityServer.Eid.Exceptions;

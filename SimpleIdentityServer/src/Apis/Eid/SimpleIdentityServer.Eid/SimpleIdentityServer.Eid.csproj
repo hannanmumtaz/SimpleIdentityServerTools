@@ -10,6 +10,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PcscDotNet\PcscDotNet.csproj" />
-    <ProjectReference Include="..\SimpleIdentityServer.Eid.Common\SimpleIdentityServer.Eid.Common.csproj" />
   </ItemGroup>
 </Project>

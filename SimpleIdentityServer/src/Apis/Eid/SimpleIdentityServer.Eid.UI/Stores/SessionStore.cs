@@ -1,4 +1,4 @@
-﻿using SimpleIdentityServer.Eid.Common.Serializers;
+﻿using SimpleIdentityServer.Common.Saml.Serializers;
 using System;
 using System.Xml;
 

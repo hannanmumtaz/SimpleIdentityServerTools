@@ -80,8 +80,8 @@ namespace SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions
             }
 
             var nsmgr = new XmlNamespaceManager(xmlDocument.NameTable);
-            nsmgr.AddNamespace(SimpleIdentityServer.Eid.Common.Constants.XmlPrefixes.Ds, SimpleIdentityServer.Eid.Common.Constants.XmlNamespaces.Ds);
-            nsmgr.AddNamespace(SimpleIdentityServer.Eid.Common.Constants.XmlPrefixes.Wsse, SimpleIdentityServer.Eid.Common.Constants.XmlNamespaces.Wsse);
+            nsmgr.AddNamespace(Common.Saml.Constants.XmlPrefixes.Ds, Common.Saml.Constants.XmlNamespaces.Ds);
+            nsmgr.AddNamespace(Common.Saml.Constants.XmlPrefixes.Wsse, Common.Saml.Constants.XmlNamespaces.Wsse);
             var signatureNode = xmlDocument.SelectSingleNode("//ds:SignatureValue", nsmgr);
             if (signatureNode == null)
             {
@@ -143,9 +143,9 @@ namespace SimpleIdentityServer.Authenticate.Eid.Core.Login.Actions
             }
             
             var nsmgr = new XmlNamespaceManager(xmlDocument.NameTable);
-            nsmgr.AddNamespace(SimpleIdentityServer.Eid.Common.Constants.XmlPrefixes.Saml, SimpleIdentityServer.Eid.Common.Constants.XmlNamespaces.Saml);
-            nsmgr.AddNamespace(SimpleIdentityServer.Eid.Common.Constants.XmlPrefixes.Ds, SimpleIdentityServer.Eid.Common.Constants.XmlNamespaces.Ds);
-            nsmgr.AddNamespace(SimpleIdentityServer.Eid.Common.Constants.XmlPrefixes.Wsse, SimpleIdentityServer.Eid.Common.Constants.XmlNamespaces.Wsse);
+            nsmgr.AddNamespace(Common.Saml.Constants.XmlPrefixes.Saml, Common.Saml.Constants.XmlNamespaces.Saml);
+            nsmgr.AddNamespace(Common.Saml.Constants.XmlPrefixes.Ds, Common.Saml.Constants.XmlNamespaces.Ds);
+            nsmgr.AddNamespace(Common.Saml.Constants.XmlPrefixes.Wsse, Common.Saml.Constants.XmlNamespaces.Wsse);
             var nodes = xmlDocument.SelectNodes("//saml:Attribute/saml:AttributeValue", nsmgr);
             var claims = new List<Claim>();
             var adr = new JObject();

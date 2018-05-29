@@ -13,8 +13,8 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Apis\Common\SimpleIdentityServer.Common.Saml\SimpleIdentityServer.Common.Saml.csproj" />
     <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Authenticate.Eid\SimpleIdentityServer.Authenticate.Eid.csproj" />
-    <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid.Common\SimpleIdentityServer.Eid.Common.csproj" />
     <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid.Ehealth\SimpleIdentityServer.Eid.Ehealth.csproj" />
     <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid.Sign\SimpleIdentityServer.Eid.Sign.csproj" />
     <ProjectReference Include="..\..\src\Apis\Eid\SimpleIdentityServer.Eid\SimpleIdentityServer.Eid.csproj" />

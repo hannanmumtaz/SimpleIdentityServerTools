@@ -9,7 +9,7 @@
     <PackageReference Include="System.Security.Cryptography.Xml" Version="4.4.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SimpleIdentityServer.Eid.Common\SimpleIdentityServer.Eid.Common.csproj" />
+    <ProjectReference Include="..\..\Common\SimpleIdentityServer.Common.Saml\SimpleIdentityServer.Common.Saml.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Eid\SimpleIdentityServer.Eid.csproj" />
   </ItemGroup>
 </Project>

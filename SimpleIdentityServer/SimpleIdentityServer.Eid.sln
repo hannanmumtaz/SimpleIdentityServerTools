@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27130.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Eid", "src\Apis\Eid\SimpleIdentityServer.Eid\SimpleIdentityServer.Eid.csproj", "{ED6CD139-5878-4033-B1F7-C8F1E32B6363}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Eid.Common", "src\Apis\Eid\SimpleIdentityServer.Eid.Common\SimpleIdentityServer.Eid.Common.csproj", "{17326F4F-8E54-4604-A70F-35464E078933}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Eid.Sign", "src\Apis\Eid\SimpleIdentityServer.Eid.Sign\SimpleIdentityServer.Eid.Sign.csproj", "{43D9B4BD-5E97-4010-8C78-7DF4E0FDF840}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Eid.UI", "src\Apis\Eid\SimpleIdentityServer.Eid.UI\SimpleIdentityServer.Eid.UI.csproj", "{679EB5D6-22C9-47AE-9A0A-A24A94B9DDE4}"
@@ -15,13 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PcscDotNet", "src\Apis\Eid\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Eid.Ehealth", "src\Apis\Eid\SimpleIdentityServer.Eid.Ehealth\SimpleIdentityServer.Eid.Ehealth.csproj", "{14AB2FB1-0391-4EC1-A30E-ED3CEFA79D46}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03. Testing Layer", "03. Testing Layer", "{A0321FBA-DF9D-4FCC-AADE-C2A7978A1F59}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 Testing Layer", "04 Testing Layer", "{A0321FBA-DF9D-4FCC-AADE-C2A7978A1F59}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Eid.Tests", "tests\SimpleIdentityServer.Eid.Tests\SimpleIdentityServer.Eid.Tests.csproj", "{80F948D3-6F52-4DF1-9D3E-B38C36879E37}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. Eid Layer", "01. Eid Layer", "{2CE3A303-2D72-4136-8462-B48AE744574A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02. Eid Layer", "02. Eid Layer", "{2CE3A303-2D72-4136-8462-B48AE744574A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02. OpenId Layer", "02. OpenId Layer", "{9A497463-C557-4F14-9060-78A5FE27E200}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03. OpenId Layer", "03. OpenId Layer", "{9A497463-C557-4F14-9060-78A5FE27E200}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Eid.OpenId", "src\Apis\Eid\SimpleIdentityServer.Eid.OpenId\SimpleIdentityServer.Eid.OpenId.csproj", "{944386F6-B87C-4F5A-94AC-74AF87A6BF81}"
 EndProject
@@ -77,6 +75,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Security.Cryptograph
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Client", "..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Client\SimpleIdentityServer.Client.csproj", "{B075B38B-6A3A-44ED-8CBE-4FBDA9106147}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. Core Layer", "01. Core Layer", "{9E13B6B9-5B5F-4F0B-9D76-F9C1BCE9D3AB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Common.Saml", "src\Apis\Common\SimpleIdentityServer.Common.Saml\SimpleIdentityServer.Common.Saml.csproj", "{84597FCA-9007-4C53-B6C7-37A9465C90F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,10 +89,6 @@ Global
 		{ED6CD139-5878-4033-B1F7-C8F1E32B6363}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED6CD139-5878-4033-B1F7-C8F1E32B6363}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED6CD139-5878-4033-B1F7-C8F1E32B6363}.Release|Any CPU.Build.0 = Release|Any CPU
-		{17326F4F-8E54-4604-A70F-35464E078933}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{17326F4F-8E54-4604-A70F-35464E078933}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{17326F4F-8E54-4604-A70F-35464E078933}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{17326F4F-8E54-4604-A70F-35464E078933}.Release|Any CPU.Build.0 = Release|Any CPU
 		{43D9B4BD-5E97-4010-8C78-7DF4E0FDF840}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{43D9B4BD-5E97-4010-8C78-7DF4E0FDF840}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43D9B4BD-5E97-4010-8C78-7DF4E0FDF840}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -203,13 +201,16 @@ Global
 		{B075B38B-6A3A-44ED-8CBE-4FBDA9106147}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B075B38B-6A3A-44ED-8CBE-4FBDA9106147}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B075B38B-6A3A-44ED-8CBE-4FBDA9106147}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84597FCA-9007-4C53-B6C7-37A9465C90F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84597FCA-9007-4C53-B6C7-37A9465C90F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84597FCA-9007-4C53-B6C7-37A9465C90F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84597FCA-9007-4C53-B6C7-37A9465C90F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{ED6CD139-5878-4033-B1F7-C8F1E32B6363} = {2CE3A303-2D72-4136-8462-B48AE744574A}
-		{17326F4F-8E54-4604-A70F-35464E078933} = {2CE3A303-2D72-4136-8462-B48AE744574A}
 		{43D9B4BD-5E97-4010-8C78-7DF4E0FDF840} = {2CE3A303-2D72-4136-8462-B48AE744574A}
 		{679EB5D6-22C9-47AE-9A0A-A24A94B9DDE4} = {2CE3A303-2D72-4136-8462-B48AE744574A}
 		{A22D0464-1B9A-4835-BD60-7CBF96728B27} = {2CE3A303-2D72-4136-8462-B48AE744574A}
@@ -242,6 +243,7 @@ Global
 		{022AEC1F-71AB-45B0-954F-8CF2D25CE2FF} = {34ECCA15-B44F-4F54-B36A-2BAB98E7297F}
 		{A5470707-E76F-4E38-BD5D-B364C5365EFD} = {34ECCA15-B44F-4F54-B36A-2BAB98E7297F}
 		{B075B38B-6A3A-44ED-8CBE-4FBDA9106147} = {34ECCA15-B44F-4F54-B36A-2BAB98E7297F}
+		{84597FCA-9007-4C53-B6C7-37A9465C90F9} = {9E13B6B9-5B5F-4F0B-9D76-F9C1BCE9D3AB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FFB2834E-13F7-40B1-A7D9-561DA8F91949}
