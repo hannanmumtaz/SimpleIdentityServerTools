@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SimpleIdentityServer.Module.Feed.Common.Responses;
+using SimpleIdentityServer.Module.Feed.Host.Extensions;
 
 namespace SimpleIdentityServer.Module.Feed.Host.Controllers
 {
@@ -8,7 +10,12 @@ namespace SimpleIdentityServer.Module.Feed.Host.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return new OkResult();
+            var issuer = Request.GetAbsoluteUriWithVirtualPath();
+            var result = new ConfigurationResponse
+            {
+                ProjectsEndpoint = $"{issuer}/{Constants.Routes.ProjectsController}"
+            };
+            return new OkObjectResult(result);
         }
     }
 }

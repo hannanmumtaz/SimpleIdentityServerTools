@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>SSimpleIdentityServer.Module.Feed.Client.Tests test project</Description>
+    <Authors>thierry habart</Authors>
+    <TargetFramework>net461</TargetFramework>
+    <AssemblyName>SimpleIdentityServer.Module.Feed.Client.Tests</AssemblyName>
+    <PackageId>SimpleIdentityServer.Module.Feed.Client.Tests</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.1" />
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <PackageReference Include="Moq" Version="4.8.1" />
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="2.0.1" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Apis\Module\SimpleIdentityServer.Module.Feed.Client\SimpleIdentityServer.Module.Feed.Client.csproj" />
+    <ProjectReference Include="..\..\src\Apis\Module\SimpleIdentityServer.Module.Feed.EF.InMemory\SimpleIdentityServer.Module.Feed.EF.InMemory.csproj" />
+    <ProjectReference Include="..\..\src\Apis\Module\SimpleIdentityServer.Module.Feed.Host\SimpleIdentityServer.Module.Feed.Host.csproj" />
+  </ItemGroup>
+
+</Project>

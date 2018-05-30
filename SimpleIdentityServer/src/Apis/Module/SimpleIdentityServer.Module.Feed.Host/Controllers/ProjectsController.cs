@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SimpleIdentityServer.Module.Feed.Common.Responses;
 using SimpleIdentityServer.Module.Feed.Core.Projects;
 using SimpleIdentityServer.Module.Feed.Host.Extensions;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.Module.Feed.Host.Controllers
@@ -46,6 +49,30 @@ namespace SimpleIdentityServer.Module.Feed.Host.Controllers
         [HttpGet("{projectName}/{version}")]
         public async Task<IActionResult> Get(string projectName, string version)
         {
+            var project = await GetProject(projectName, version);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return new OkObjectResult(project);
+        }
+
+        [HttpGet("{projectName}/{version}/download")]
+        public async Task<IActionResult> Download(string projectName, string version)
+        {
+            var project = await GetProject(projectName, version);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var stream = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(project)));
+            return File(stream, "text/plain", "config.json"); ;
+        }
+
+        private async Task<ProjectResponse> GetProject(string projectName, string version)
+        {
             if (string.IsNullOrWhiteSpace(projectName))
             {
                 throw new ArgumentNullException(nameof(projectName));
@@ -59,10 +86,10 @@ namespace SimpleIdentityServer.Module.Feed.Host.Controllers
             var result = await _projectActions.GetProject(projectName, version);
             if (result == null)
             {
-                return NotFound();
+                return null;
             }
 
-            return new OkObjectResult(result.ToDto());
+            return result.ToDto();
         }
     }
 }
