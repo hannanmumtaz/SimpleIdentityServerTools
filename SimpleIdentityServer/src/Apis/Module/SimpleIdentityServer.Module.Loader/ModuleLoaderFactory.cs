@@ -1,4 +1,5 @@
-﻿using SimpleIdentityServer.Module.Loader.Factories;
+﻿using SimpleIdentityServer.Module.Feed.Client;
+using SimpleIdentityServer.Module.Loader.Factories;
 using SimpleIdentityServer.Module.Loader.Nuget;
 using System;
 
@@ -14,7 +15,8 @@ namespace SimpleIdentityServer.Module.Loader
             }
 
             var nugetClient = new NugetClient(new HttpClientFactory());
-            return new ModuleLoader(nugetClient, options);
+            var moduleFeedClientFactory = new ModuleFeedClientFactory();
+            return new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
         }
     }
 }

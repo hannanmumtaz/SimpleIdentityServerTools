@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SimpleIdentityServer.Module.Loader
 {
@@ -13,6 +14,9 @@ namespace SimpleIdentityServer.Module.Loader
             };
         }
 
+        public Uri ModuleFeedUri { get; set; }
+        public string ProjectName { get; set; }
+        public string Version { get; set; }
         public string ModulePath { get; set; }
         public IEnumerable<string> NugetSources { get; set; }
     }

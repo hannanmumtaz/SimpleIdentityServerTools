@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using SimpleIdentityServer.Module.Feed.Client;
+using SimpleIdentityServer.Module.Feed.Common.Responses;
 using SimpleIdentityServer.Module.Loader.Exceptions;
 using SimpleIdentityServer.Module.Loader.Nuget;
 using SimpleIdentityServer.Module.Loader.Nuget.DTOs.Responses;
@@ -14,7 +16,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
@@ -59,19 +60,28 @@ namespace SimpleIdentityServer.Module.Loader
     {
         private const string _fkName = "net461"; // TODO : Resolve the current framework version.
         private readonly INugetClient _nugetClient;
+        private readonly IModuleFeedClientFactory _moduleFeedClientFactory;
         private readonly ModuleLoaderOptions _options;
         private const string _configFile = "config.json";
+        private const string _configTemplateFile = "config.template.config";
         private ICollection<IModule> _modules;
         private bool _isInitialized = false;
         private bool _isPackagesRestored = false;
-        private ProjectConfiguration _projectConfiguration;
+        private bool _isConfigTemplateRestored = false;
+        // private ProjectConfiguration _projectConfiguration;
+        private ProjectResponse _projectConfiguration;
         private ConcurrentBag<string> _installedLibs;
 
-        public ModuleLoader(INugetClient nugetClient, ModuleLoaderOptions options)
+        public ModuleLoader(INugetClient nugetClient, IModuleFeedClientFactory moduleFeedClientFactory, ModuleLoaderOptions options)
         {
             if (nugetClient == null)
             {
                 throw new ArgumentNullException(nameof(nugetClient));
+            }
+
+            if (moduleFeedClientFactory == null)
+            {
+                throw new ArgumentNullException(nameof(moduleFeedClientFactory));
             }
 
             if (options == null)
@@ -80,6 +90,7 @@ namespace SimpleIdentityServer.Module.Loader
             }
 
             _nugetClient = nugetClient;
+            _moduleFeedClientFactory = moduleFeedClientFactory;
             _options = options;
         }
 
@@ -109,6 +120,16 @@ namespace SimpleIdentityServer.Module.Loader
                 throw new ModuleLoaderInternalException("At least one nuget sources must be specified");
             }
 
+            if(string.IsNullOrWhiteSpace(_options.ProjectName))
+            {
+                throw new ModuleLoaderConfigurationException("The project name must be specified");
+            }
+
+            if (_options.ModuleFeedUri == null)
+            {
+                throw new ModuleLoaderConfigurationException("The ModuleFeedUri parameter must be specified");
+            }
+
             var configurationFilePath = Path.Combine(_options.ModulePath, _configFile);
             if (!File.Exists(configurationFilePath))
             {
@@ -116,7 +137,7 @@ namespace SimpleIdentityServer.Module.Loader
             }
 
             var json = File.ReadAllText(configurationFilePath);
-            _projectConfiguration = JsonConvert.DeserializeObject<ProjectConfiguration>(json);
+            _projectConfiguration = JsonConvert.DeserializeObject<ProjectResponse>(json);
             if (_projectConfiguration == null)
             {
                 throw new ModuleLoaderConfigurationException($"{configurationFilePath} is not a valid configuration file");
@@ -140,21 +161,22 @@ namespace SimpleIdentityServer.Module.Loader
                 throw new ModuleLoaderInternalException("the loader is not initialized");
             }
 
-            if (_projectConfiguration.Modules == null || !_projectConfiguration.Modules.Any())
+            await RestoreTemplateConfigurationFile();
+            if (_projectConfiguration.Units == null || !_projectConfiguration.Units.Any())
             {
                 return;
             }
 
             var watch = Stopwatch.StartNew();
             _installedLibs = new ConcurrentBag<string>();
-            foreach (var module in _projectConfiguration.Modules)
+            foreach (var unit in _projectConfiguration.Units)
             {
-                if (module.Packages == null || !module.Packages.Any())
+                if (unit.Packages == null || !unit.Packages.Any())
                 {
                     continue;
                 }
 
-                foreach(var package in module.Packages)
+                foreach(var package in unit.Packages)
                 {
                     _installedLibs.Add($"{package.Library}.{package.Version}");
                     await RestorePackages(package.Library, package.Version);
@@ -185,20 +207,25 @@ namespace SimpleIdentityServer.Module.Loader
                 throw new ModuleLoaderInternalException("the packages are not restored");
             }
 
+            if (!_isConfigTemplateRestored)
+            {
+                throw new ModuleLoaderInternalException("the config template is not restored");
+            }
+
             _modules = new List<IModule>();
-            if (_projectConfiguration.Modules == null || !_projectConfiguration.Modules.Any())
+            if (_projectConfiguration.Units == null || !_projectConfiguration.Units.Any())
             {
                 return;
             }
 
-            foreach(var module in _projectConfiguration.Modules)
+            foreach(var unit in _projectConfiguration.Units)
             {
-                if (module.Packages == null || !module.Packages.Any())
+                if (unit.Packages == null || !unit.Packages.Any())
                 {
                     continue;
                 }
 
-                foreach(var package in module.Packages)
+                foreach(var package in unit.Packages)
                 {
                     var path = GetPath($"{package.Library}.{package.Version}/lib/{_fkName}/{package.Library}.dll");
                     if (!File.Exists(path))
@@ -260,6 +287,65 @@ namespace SimpleIdentityServer.Module.Loader
         }
 
         #region Private methods
+
+        /// <summary>
+        /// If the configuration template file doesn't exist then download it from the Module Feed Api and add it into the folder.
+        /// If the configuration template exists then exit the method.
+        /// </summary>
+        /// <returns></returns>
+        private async Task RestoreTemplateConfigurationFile()
+        {
+            var templateConfigurationFile = GetPath(_configTemplateFile);
+            if (File.Exists(templateConfigurationFile))
+            {
+                _isConfigTemplateRestored = true;
+                return;
+            }
+
+            var version = await ResolveVersion();
+            using (var contentStream = await _moduleFeedClientFactory.BuildModuleFeedClient().GetProjectClient().Download(_options.ModuleFeedUri.AbsoluteUri, _options.ProjectName, version))
+            {
+                using (var stream = new FileStream(templateConfigurationFile, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    await contentStream.CopyToAsync(stream);
+                }
+            }
+
+            _isConfigTemplateRestored = true;
+        }
+
+        /// <summary>
+        /// Check the configuration file structure.
+        /// </summary>
+        /// <returns></returns>
+        private async Task CheckConfigurationFile()
+        {
+
+        }
+
+        /// <summary>
+        /// If the project doesn't exist then throw an exception.
+        /// If the version doesn't exist or the version is null or empty then returns the latest one.
+        /// Returns the requested version.
+        /// </summary>
+        /// <returns></returns>
+        private async Task<string> ResolveVersion()
+        {
+            var projects = await _moduleFeedClientFactory.BuildModuleFeedClient().GetProjectClient().Get(_options.ModuleFeedUri.AbsoluteUri, _options.ProjectName);
+            if (projects == null || !projects.Any())
+            {
+                throw new ModuleLoaderInternalException($"The project {_options.ProjectName} doesn't exist");
+            }
+
+            var version = _options.Version;
+            var versions = projects.Select(p => p.Version);
+            if (string.IsNullOrWhiteSpace(version) || !versions.Contains(version))
+            {
+                version = versions.OrderByDescending(v => v).First();
+            }
+
+            return version;
+        }
 
         private Assembly AssemblyResolve(object sender, ResolveEventArgs args)
         {

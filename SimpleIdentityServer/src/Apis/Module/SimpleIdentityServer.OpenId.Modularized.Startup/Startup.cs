@@ -45,11 +45,13 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             {
                 NugetSources = new List<string>
                 {
-                    @"c:\Projects\SimpleIdentityServer\SimpleIdentityServer\src\feed\",
+                    @"d:\Projects\SimpleIdentityServer\SimpleIdentityServer\src\feed\",
                     "https://api.nuget.org/v3/index.json",
                     "https://www.myget.org/F/advance-ict/api/v3/index.json"
                 },
-                ModulePath = @"d:\Modules\"
+                ModulePath = @"d:\Projects\Modules\",
+                ModuleFeedUri = new Uri("http://localhost:60008/configuration"),
+                ProjectName = "OpenIdProvider"
             });
             _moduleLoader.ModuleInstalled += ModuleInstalled;
             _moduleLoader.PackageRestored += PackageRestored;

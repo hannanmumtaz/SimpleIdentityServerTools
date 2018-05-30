@@ -9,7 +9,7 @@ namespace SimpleIdentityServer.Module.Feed.Client
         IModuleFeedClient BuildModuleFeedClient();
     }
 
-    internal class ModuleFeedClientFactory : IModuleFeedClientFactory
+    public class ModuleFeedClientFactory : IModuleFeedClientFactory
     {
         private readonly ServiceProvider _serviceProvider;
 
