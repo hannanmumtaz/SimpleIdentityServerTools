@@ -31,7 +31,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="config.template.json">
+    <None Update="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="config.template.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="confs\config.json">

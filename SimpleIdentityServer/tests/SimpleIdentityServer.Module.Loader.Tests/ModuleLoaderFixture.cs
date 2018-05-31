@@ -118,7 +118,7 @@ namespace SimpleIdentityServer.Module.Loader.Tests
             var moduleFeedClientFactory = new ModuleFeedClientFactory();
             var options = new ModuleLoaderOptions
             {
-                ModulePath = Directory.GetCurrentDirectory(),
+                ModulePath = @"C:\",
                 NugetSources = new[] { "nuget" },
                 ProjectName = "projectName",
                 ModuleFeedUri = new Uri("http://localhost/configuration")
@@ -167,7 +167,7 @@ namespace SimpleIdentityServer.Module.Loader.Tests
             var moduleFeedClientMock = new Mock<IModuleFeedClient>();
             var moduleFeedClientFactoryMock = new Mock<IModuleFeedClientFactory>();
             projectClientMock.Setup(d => d.Download(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(Task.FromResult<Stream>(new FileStream("config.template.json", FileMode.Open, FileAccess.Read)));
+                .Returns(Task.FromResult<Stream>(new FileStream("config.template.config", FileMode.Open, FileAccess.Read)));
             moduleFeedClientMock.Setup(m => m.GetProjectClient()).Returns(projectClientMock.Object);
             moduleFeedClientFactoryMock.Setup(m => m.BuildModuleFeedClient()).Returns(moduleFeedClientMock.Object);
             var options = new ModuleLoaderOptions
@@ -187,41 +187,20 @@ namespace SimpleIdentityServer.Module.Loader.Tests
             Assert.NotNull(exception);
             Assert.Equal($"The project {options.ProjectName} doesn't exist", exception.Message);
         }
+        
+        #endregion
+
+        #region CheckConfigurationFile
 
         [Fact]
-        public async Task WhenRestorePacakgesAndConfigurationFileIsNotValidThenExceptionIsThrown()
+        public void WhenCheckConfigurationFileThenExceptionIsThrown()
         {
             // ARRANGE
-            var currentDirectory = Directory.GetCurrentDirectory();
-            if (File.Exists(Path.Combine(currentDirectory, $"confs\\config.template.config")))
-            {
-                File.Delete(Path.Combine(currentDirectory, $"confs\\config.template.config"));
-            }
-
             var nugetClientMock = new Mock<INugetClient>();
-            var projectClientMock = new Mock<IProjectClient>();
-            var moduleFeedClientMock = new Mock<IModuleFeedClient>();
             var moduleFeedClientFactoryMock = new Mock<IModuleFeedClientFactory>();
-            projectClientMock.Setup(d => d.Download(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(Task.FromResult<Stream>(new FileStream("config.template.json", FileMode.Open, FileAccess.Read)));
-            moduleFeedClientMock.Setup(m => m.GetProjectClient()).Returns(projectClientMock.Object);
-            projectClientMock.Setup(d => d.Get(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult<IEnumerable<ProjectResponse>>(new []
-            {
-                new ProjectResponse
-                {
-                    ProjectName = "projectName",
-                    Version = "3.0.0-rc6"
-                },
-                new ProjectResponse
-                {
-                    ProjectName = "projectName",
-                    Version = "3.0.0-rc7"
-                }
-            }));
-            moduleFeedClientFactoryMock.Setup(m => m.BuildModuleFeedClient()).Returns(moduleFeedClientMock.Object);
             var options = new ModuleLoaderOptions
             {
-                ModulePath = Path.Combine(Directory.GetCurrentDirectory(), "confs"),
+                ModulePath = Directory.GetCurrentDirectory(),
                 NugetSources = new[] { "nuget" },
                 ProjectName = "projectName",
                 ModuleFeedUri = new Uri("http://localhost/configuration")
@@ -230,7 +209,7 @@ namespace SimpleIdentityServer.Module.Loader.Tests
             // ACT
             var moduleLoader = new ModuleLoader(nugetClientMock.Object, moduleFeedClientFactoryMock.Object, options);
             moduleLoader.Initialize();
-            var exception = await Assert.ThrowsAsync<ModuleLoaderAggregateConfigurationException>(() => moduleLoader.RestorePackages());
+            var exception = Assert.Throws<ModuleLoaderAggregateConfigurationException>(() => moduleLoader.CheckConfigurationFile());
 
             // ASSERTS
             Assert.NotNull(exception);

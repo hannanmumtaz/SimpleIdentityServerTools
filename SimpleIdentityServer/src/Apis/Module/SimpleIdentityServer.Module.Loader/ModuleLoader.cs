@@ -30,6 +30,7 @@ namespace SimpleIdentityServer.Module.Loader
         void ConfigureServices(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env, Dictionary<string, string> opts = null);
         void Configure(IRouteBuilder routes);
         void Configure(IApplicationBuilder app);
+        void CheckConfigurationFile();
         event EventHandler Initialized;
         event EventHandler<IntEventArgs> PackageRestored;
         event EventHandler ModulesLoaded;
@@ -149,7 +150,60 @@ namespace SimpleIdentityServer.Module.Loader
                 Initialized(this, EventArgs.Empty);
             }
         }
-        
+
+        /// <summary>
+        /// Check the configuration file structure.
+        /// </summary>
+        /// <returns></returns>
+        public void CheckConfigurationFile()
+        {
+            var errorMessages = new List<string>();
+            var configTemplate = JsonConvert.DeserializeObject<ProjectResponse>(File.ReadAllText(GetPath(_configTemplateFile)));
+            if (configTemplate.Id != _projectConfiguration.Id)
+            {
+                errorMessages.Add("The config identifier is not the same than the one in the configuration template file");
+            }
+
+            if (configTemplate.ProjectName != _projectConfiguration.ProjectName)
+            {
+                errorMessages.Add("The config projectName is not the same than the one in the configuration template file");
+            }
+
+            if (configTemplate.Version != _projectConfiguration.Version)
+            {
+                errorMessages.Add("The config version is not the same than the one in the configuration template file");
+            }
+
+            if (configTemplate.Units != null)
+            {
+                foreach (var unit in configTemplate.Units)
+                {
+                    var configUnit = _projectConfiguration.Units.FirstOrDefault(u => u.UnitName == unit.UnitName);
+                    if (configUnit == null)
+                    {
+                        errorMessages.Add($"The unit {unit.UnitName} doesn't exist");
+                        continue;
+                    }
+
+                    foreach (var groupedPackages in unit.Packages.GroupBy(p => p.CategoryName))
+                    {
+                        var configPackage = configUnit.Packages == null ? null : configUnit.Packages.FirstOrDefault(p => groupedPackages.Any(gp => gp.Library == p.Library &&
+                             gp.Version == p.Version &&
+                             gp.CategoryName == groupedPackages.Key));
+                        if (configPackage == null)
+                        {
+                            errorMessages.Add($"One of the following package {string.Join(";", groupedPackages.Select(gp => gp.Library).ToArray())} must be installed under the unit {unit.UnitName}");
+                        }
+                    }
+                }
+            }
+
+            if (errorMessages.Any())
+            {
+                throw new ModuleLoaderAggregateConfigurationException("invalid configuration", errorMessages);
+            }
+        }
+
         /// <summary>
         /// Restore the packages.
         /// </summary>
@@ -162,7 +216,6 @@ namespace SimpleIdentityServer.Module.Loader
             }
 
             await RestoreTemplateConfigurationFile();
-            CheckConfigurationFile();
             var watch = Stopwatch.StartNew();
             _installedLibs = new ConcurrentBag<string>();
             foreach (var unit in _projectConfiguration.Units)
@@ -308,59 +361,6 @@ namespace SimpleIdentityServer.Module.Loader
             }
 
             _isConfigTemplateRestored = true;
-        }
-
-        /// <summary>
-        /// Check the configuration file structure.
-        /// </summary>
-        /// <returns></returns>
-        private void CheckConfigurationFile()
-        {
-            var errorMessages = new List<string>();
-            var configTemplate = JsonConvert.DeserializeObject<ProjectResponse>(File.ReadAllText(GetPath(_configTemplateFile)));
-            if (configTemplate.Id != _projectConfiguration.Id)
-            {
-                errorMessages.Add("The config identifier is not the same than the one in the configuration template file");
-            }
-
-            if (configTemplate.ProjectName != _projectConfiguration.ProjectName)
-            {
-                errorMessages.Add("The config projectName is not the same than the one in the configuration template file");
-            }
-
-            if (configTemplate.Version != _projectConfiguration.Version)
-            {
-                errorMessages.Add("The config version is not the same than the one in the configuration template file");
-            }
-
-            if (configTemplate.Units != null)
-            {
-                foreach (var unit in configTemplate.Units)
-                {
-                    var configUnit = _projectConfiguration.Units.FirstOrDefault(u => u.UnitName == unit.UnitName);
-                    if (configUnit == null)
-                    {
-                        errorMessages.Add($"The unit {unit.UnitName} doesn't exist");
-                        continue;
-                    }
-
-                    foreach(var groupedPackages in unit.Packages.GroupBy(p => p.CategoryName))
-                    {
-                        var configPackage = configUnit.Packages == null ? null :configUnit.Packages.FirstOrDefault(p => groupedPackages.Any(gp => gp.Library == p.Library && 
-                            gp.Version == p.Version &&
-                            gp.CategoryName == groupedPackages.Key));
-                        if (configPackage == null)
-                        {
-                            errorMessages.Add($"One of the following package {string.Join(";", groupedPackages.Select(gp => gp.Library).ToArray())} must be installed under the unit {unit.UnitName}");
-                        }
-                    }
-                }
-            }
-
-            if(errorMessages.Any())
-            {
-                throw new ModuleLoaderAggregateConfigurationException("invalid configuration", errorMessages);
-            }
         }
 
         /// <summary>

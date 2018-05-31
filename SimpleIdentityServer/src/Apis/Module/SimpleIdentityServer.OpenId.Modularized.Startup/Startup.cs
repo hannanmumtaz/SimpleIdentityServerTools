@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -7,8 +8,11 @@ using Serilog;
 using Serilog.Events;
 using SimpleIdentityServer.Host;
 using SimpleIdentityServer.Module.Loader;
+using SimpleIdentityServer.Module.Loader.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace SimpleIdentityServer.OpenId.Modularized.Startup
 {
@@ -125,6 +129,40 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             IHostingEnvironment env,
             ILoggerFactory loggerFactory)
         {
+            try
+            {
+                _moduleLoader.CheckConfigurationFile();
+            }
+            catch(ModuleLoaderAggregateConfigurationException ex)
+            {
+                app.Run(async context =>
+                {
+                    var html = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Errors\\ModuleLoaderError.html"));
+                    var strBuilder = new StringBuilder();
+                    if (ex.Messages != null)
+                    {
+                        foreach(var message in ex.Messages)
+                        {
+                            strBuilder.Append($"<li>{message}</li>");
+                        }
+                    }
+
+                    html = html.Replace("{errors}", strBuilder.ToString());
+                    await context.Response.WriteAsync(html);
+                });
+                return;
+            }
+            catch(Exception ex)
+            {
+                app.Run(async context =>
+                {
+                    var html = Path.Combine(Directory.GetCurrentDirectory(), "Errors\\ModuleLoaderError.html");
+                    html = html.Replace("{errors}", ex.Message);
+                    await context.Response.WriteAsync(html);
+                });
+                return;
+            }
+
             //1 . Enable CORS.
             app.UseCors("AllowAll");
             // 2. Use static files.
