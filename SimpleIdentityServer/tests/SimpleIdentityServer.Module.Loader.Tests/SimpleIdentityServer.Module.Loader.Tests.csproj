@@ -28,7 +28,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Apis\Module\SimpleIdentityServer.Module.Loader\SimpleIdentityServer.Module.Loader.csproj" />
-    <ProjectReference Include="..\..\src\Apis\SimpleIdServer\SimpleIdentityServer.Module.Loader\SimpleIdentityServer.Module.Loader.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="config.template.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="confs\config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties confs_4config_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

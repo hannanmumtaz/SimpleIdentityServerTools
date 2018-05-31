@@ -117,7 +117,7 @@ namespace SimpleIdentityServer.Module.Loader
 
             if (_options.NugetSources == null || !_options.NugetSources.Any())
             {
-                throw new ModuleLoaderInternalException("At least one nuget sources must be specified");
+                throw new ModuleLoaderConfigurationException("At least one nuget sources must be specified");
             }
 
             if(string.IsNullOrWhiteSpace(_options.ProjectName))
@@ -162,11 +162,7 @@ namespace SimpleIdentityServer.Module.Loader
             }
 
             await RestoreTemplateConfigurationFile();
-            if (_projectConfiguration.Units == null || !_projectConfiguration.Units.Any())
-            {
-                return;
-            }
-
+            CheckConfigurationFile();
             var watch = Stopwatch.StartNew();
             _installedLibs = new ConcurrentBag<string>();
             foreach (var unit in _projectConfiguration.Units)
@@ -318,9 +314,53 @@ namespace SimpleIdentityServer.Module.Loader
         /// Check the configuration file structure.
         /// </summary>
         /// <returns></returns>
-        private async Task CheckConfigurationFile()
+        private void CheckConfigurationFile()
         {
+            var errorMessages = new List<string>();
+            var configTemplate = JsonConvert.DeserializeObject<ProjectResponse>(File.ReadAllText(GetPath(_configTemplateFile)));
+            if (configTemplate.Id != _projectConfiguration.Id)
+            {
+                errorMessages.Add("The config identifier is not the same than the one in the configuration template file");
+            }
 
+            if (configTemplate.ProjectName != _projectConfiguration.ProjectName)
+            {
+                errorMessages.Add("The config projectName is not the same than the one in the configuration template file");
+            }
+
+            if (configTemplate.Version != _projectConfiguration.Version)
+            {
+                errorMessages.Add("The config version is not the same than the one in the configuration template file");
+            }
+
+            if (configTemplate.Units != null)
+            {
+                foreach (var unit in configTemplate.Units)
+                {
+                    var configUnit = _projectConfiguration.Units.FirstOrDefault(u => u.UnitName == unit.UnitName);
+                    if (configUnit == null)
+                    {
+                        errorMessages.Add($"The unit {unit.UnitName} doesn't exist");
+                        continue;
+                    }
+
+                    foreach(var groupedPackages in unit.Packages.GroupBy(p => p.CategoryName))
+                    {
+                        var configPackage = configUnit.Packages == null ? null :configUnit.Packages.FirstOrDefault(p => groupedPackages.Any(gp => gp.Library == p.Library && 
+                            gp.Version == p.Version &&
+                            gp.CategoryName == groupedPackages.Key));
+                        if (configPackage == null)
+                        {
+                            errorMessages.Add($"One of the following package {string.Join(";", groupedPackages.Select(gp => gp.Library).ToArray())} must be installed under the unit {unit.UnitName}");
+                        }
+                    }
+                }
+            }
+
+            if(errorMessages.Any())
+            {
+                throw new ModuleLoaderAggregateConfigurationException("invalid configuration", errorMessages);
+            }
         }
 
         /// <summary>

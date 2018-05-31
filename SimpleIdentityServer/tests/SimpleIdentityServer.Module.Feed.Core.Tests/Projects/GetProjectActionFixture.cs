@@ -17,7 +17,7 @@ namespace SimpleIdentityServer.Module.Feed.Core.Tests.Projects
         {
             // ARRANGE
             InitializeFakeObjects();
-
+            
             // ACTS & ASSERTS
             await Assert.ThrowsAsync<ArgumentNullException>(() => _getProjectAction.Execute(null));
             await Assert.ThrowsAsync<ArgumentNullException>(() => _getProjectAction.Execute(null, null));

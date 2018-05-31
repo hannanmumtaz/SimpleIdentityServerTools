@@ -28,3 +28,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: InternalsVisibleTo("SimpleIdentityServer.Module.Feed.Client.Tests")]
+[assembly: InternalsVisibleTo("SimpleIdentityServer.Module.Loader.Tests")]

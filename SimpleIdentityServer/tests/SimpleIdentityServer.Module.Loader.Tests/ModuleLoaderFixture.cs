@@ -1,9 +1,14 @@
-﻿using SimpleIdentityServer.Module.Loader.Exceptions;
+﻿using Moq;
+using SimpleIdentityServer.Module.Feed.Client;
+using SimpleIdentityServer.Module.Feed.Client.Projects;
+using SimpleIdentityServer.Module.Feed.Common.Responses;
+using SimpleIdentityServer.Module.Loader.Exceptions;
 using SimpleIdentityServer.Module.Loader.Factories;
 using SimpleIdentityServer.Module.Loader.Nuget;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -14,8 +19,9 @@ namespace SimpleIdentityServer.Module.Loader.Tests
         [Fact]
         public void WhenPassingNullParameterToConstructorThenExceptionIsThrown()
         {
-            Assert.Throws<ArgumentNullException>(() => new ModuleLoader(null, null));
-            Assert.Throws<ArgumentNullException>(() => new ModuleLoader(new NugetClient(new HttpClientFactory()), null));
+            Assert.Throws<ArgumentNullException>(() => new ModuleLoader(null, null, null));
+            Assert.Throws<ArgumentNullException>(() => new ModuleLoader(new NugetClient(new HttpClientFactory()), null, null));
+            Assert.Throws<ArgumentNullException>(() => new ModuleLoader(new NugetClient(new HttpClientFactory()), new ModuleFeedClientFactory(), null));
         }
 
         #region Initialize
@@ -25,11 +31,12 @@ namespace SimpleIdentityServer.Module.Loader.Tests
         {
             // ARRANGE
             var nugetClient = new NugetClient(new HttpClientFactory());
+            var moduleFeedClientFactory = new ModuleFeedClientFactory();
             var options = new ModuleLoaderOptions
             {
                 ModulePath = "bad_path"
             };
-            var moduleLoader = new ModuleLoader(nugetClient, options);
+            var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
 
             // ACT
             var exception = Assert.Throws<DirectoryNotFoundException>(() => moduleLoader.Initialize());
@@ -43,18 +50,64 @@ namespace SimpleIdentityServer.Module.Loader.Tests
         {
             // ARRANGE
             var nugetClient = new NugetClient(new HttpClientFactory());
+            var moduleFeedClientFactory = new ModuleFeedClientFactory();
             var options = new ModuleLoaderOptions
             {
                 ModulePath = Directory.GetCurrentDirectory(),
                 NugetSources = null
             };
-            var moduleLoader = new ModuleLoader(nugetClient, options);
+            var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
 
             // ACT
-            var exception = Assert.Throws<ModuleLoaderInternalException>(() => moduleLoader.Initialize());
+            var exception = Assert.Throws<ModuleLoaderConfigurationException>(() => moduleLoader.Initialize());
 
             // ASSERT
             Assert.NotNull(exception);
+            Assert.Equal("At least one nuget sources must be specified", exception.Message);
+        }
+
+        [Fact]
+        public void WhenInitializeModuleLoaderAndProjectNameIsNullThenExceptionIsThrown()
+        {
+            // ARRANGE
+            var nugetClient = new NugetClient(new HttpClientFactory());
+            var moduleFeedClientFactory = new ModuleFeedClientFactory();
+            var options = new ModuleLoaderOptions
+            {
+                ModulePath = Directory.GetCurrentDirectory(),
+                NugetSources = new[] { "nuget" },
+                ProjectName = null
+            };
+            var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
+
+            // ACT
+            var exception = Assert.Throws<ModuleLoaderConfigurationException>(() => moduleLoader.Initialize());
+
+            // ASSERT
+            Assert.NotNull(exception);
+            Assert.Equal("The project name must be specified", exception.Message);
+        }
+
+        [Fact]
+        public void WhenInitializeModuleLoaderAndModuleFeedUriIsNullThenExceptionIsThrown()
+        {
+            // ARRANGE
+            var nugetClient = new NugetClient(new HttpClientFactory());
+            var moduleFeedClientFactory = new ModuleFeedClientFactory();
+            var options = new ModuleLoaderOptions
+            {
+                ModulePath = Directory.GetCurrentDirectory(),
+                NugetSources = new[] { "nuget" },
+                ProjectName = "projectName"
+            };
+            var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
+
+            // ACT
+            var exception = Assert.Throws<ModuleLoaderConfigurationException>(() => moduleLoader.Initialize());
+
+            // ASSERT
+            Assert.NotNull(exception);
+            Assert.Equal("The ModuleFeedUri parameter must be specified", exception.Message);
         }
 
         [Fact]
@@ -62,17 +115,15 @@ namespace SimpleIdentityServer.Module.Loader.Tests
         {
             // ARRANGE
             var nugetClient = new NugetClient(new HttpClientFactory());
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var parent = Directory.GetParent(currentDirectory);
+            var moduleFeedClientFactory = new ModuleFeedClientFactory();
             var options = new ModuleLoaderOptions
             {
-                ModulePath = parent.FullName,
-                NugetSources = new List<string>
-                {
-                    "nugetsource"
-                }
+                ModulePath = Directory.GetCurrentDirectory(),
+                NugetSources = new[] { "nuget" },
+                ProjectName = "projectName",
+                ModuleFeedUri = new Uri("http://localhost/configuration")
             };
-            var moduleLoader = new ModuleLoader(nugetClient, options);
+            var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
 
             // ACT
             var exception = Assert.Throws<FileNotFoundException>(() => moduleLoader.Initialize());
@@ -90,14 +141,100 @@ namespace SimpleIdentityServer.Module.Loader.Tests
         {
             // ARRANGE
             var nugetClient = new NugetClient(new HttpClientFactory());
+            var moduleFeedClientFactory = new ModuleFeedClientFactory();
             var options = new ModuleLoaderOptions();
-            var moduleLoader = new ModuleLoader(nugetClient, options);
+            var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
 
             // ACT
             var ex = await Assert.ThrowsAsync<ModuleLoaderInternalException>(() => moduleLoader.RestorePackages());
 
             // ASSERT
             Assert.NotNull(ex);
+        }
+
+        [Fact]
+        public async Task WhenRestorePackagesAndNoProjectExistsThenExceptionIsThrown()
+        {
+            // ARRANGE
+            var currentDirectory = Directory.GetCurrentDirectory();
+            if (File.Exists(Path.Combine(currentDirectory, $"confs\\config.template.config")))
+            {
+                File.Delete(Path.Combine(currentDirectory, $"confs\\config.template.config"));
+            }
+
+            var nugetClientMock = new Mock<INugetClient>();
+            var projectClientMock = new Mock<IProjectClient>();
+            var moduleFeedClientMock = new Mock<IModuleFeedClient>();
+            var moduleFeedClientFactoryMock = new Mock<IModuleFeedClientFactory>();
+            projectClientMock.Setup(d => d.Download(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.FromResult<Stream>(new FileStream("config.template.json", FileMode.Open, FileAccess.Read)));
+            moduleFeedClientMock.Setup(m => m.GetProjectClient()).Returns(projectClientMock.Object);
+            moduleFeedClientFactoryMock.Setup(m => m.BuildModuleFeedClient()).Returns(moduleFeedClientMock.Object);
+            var options = new ModuleLoaderOptions
+            {
+                ModulePath = Path.Combine(Directory.GetCurrentDirectory(), "confs"),
+                NugetSources = new[] { "nuget" },
+                ProjectName = "projectName",
+                ModuleFeedUri = new Uri("http://localhost/configuration")
+            };
+
+            // ACT
+            var moduleLoader = new ModuleLoader(nugetClientMock.Object, moduleFeedClientFactoryMock.Object, options);
+            moduleLoader.Initialize();
+            var exception = await Assert.ThrowsAsync<ModuleLoaderInternalException>(() => moduleLoader.RestorePackages());
+
+            // ASSERTS
+            Assert.NotNull(exception);
+            Assert.Equal($"The project {options.ProjectName} doesn't exist", exception.Message);
+        }
+
+        [Fact]
+        public async Task WhenRestorePacakgesAndConfigurationFileIsNotValidThenExceptionIsThrown()
+        {
+            // ARRANGE
+            var currentDirectory = Directory.GetCurrentDirectory();
+            if (File.Exists(Path.Combine(currentDirectory, $"confs\\config.template.config")))
+            {
+                File.Delete(Path.Combine(currentDirectory, $"confs\\config.template.config"));
+            }
+
+            var nugetClientMock = new Mock<INugetClient>();
+            var projectClientMock = new Mock<IProjectClient>();
+            var moduleFeedClientMock = new Mock<IModuleFeedClient>();
+            var moduleFeedClientFactoryMock = new Mock<IModuleFeedClientFactory>();
+            projectClientMock.Setup(d => d.Download(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.FromResult<Stream>(new FileStream("config.template.json", FileMode.Open, FileAccess.Read)));
+            moduleFeedClientMock.Setup(m => m.GetProjectClient()).Returns(projectClientMock.Object);
+            projectClientMock.Setup(d => d.Get(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult<IEnumerable<ProjectResponse>>(new []
+            {
+                new ProjectResponse
+                {
+                    ProjectName = "projectName",
+                    Version = "3.0.0-rc6"
+                },
+                new ProjectResponse
+                {
+                    ProjectName = "projectName",
+                    Version = "3.0.0-rc7"
+                }
+            }));
+            moduleFeedClientFactoryMock.Setup(m => m.BuildModuleFeedClient()).Returns(moduleFeedClientMock.Object);
+            var options = new ModuleLoaderOptions
+            {
+                ModulePath = Path.Combine(Directory.GetCurrentDirectory(), "confs"),
+                NugetSources = new[] { "nuget" },
+                ProjectName = "projectName",
+                ModuleFeedUri = new Uri("http://localhost/configuration")
+            };
+
+            // ACT
+            var moduleLoader = new ModuleLoader(nugetClientMock.Object, moduleFeedClientFactoryMock.Object, options);
+            moduleLoader.Initialize();
+            var exception = await Assert.ThrowsAsync<ModuleLoaderAggregateConfigurationException>(() => moduleLoader.RestorePackages());
+
+            // ASSERTS
+            Assert.NotNull(exception);
+            Assert.Equal(5, exception.Messages.Count());
         }
 
         #endregion

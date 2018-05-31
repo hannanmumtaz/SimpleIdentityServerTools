@@ -30,6 +30,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Module\SimpleIdentityServer.Module.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Module.Feed.Client\SimpleIdentityServer.Module.Feed.Client.csproj" />
-    <ProjectReference Include="..\SimpleIdentityServer.Module\SimpleIdentityServer.Module.csproj" />
   </ItemGroup>
 </Project>

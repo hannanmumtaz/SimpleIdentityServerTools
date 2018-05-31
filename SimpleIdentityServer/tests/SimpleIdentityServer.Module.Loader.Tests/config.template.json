@@ -1,0 +1,22 @@
+﻿{
+  "id": "projectName_3.0.0-rc7",
+  "version": "3.0.0-rc7",
+  "name": "projectName",
+  "units": [
+    {
+      "name": "unit1",
+      "packages": [
+        {
+          "lib": "lib1",
+          "version": "1",
+          "category": "cat1"
+        },
+        {
+          "lib": "lib2",
+          "version": "2",
+          "category": "cat2"
+        }
+      ]
+    }
+  ]
+}
