@@ -78,7 +78,9 @@ namespace SimpleIdentityServer.Module.Loader.Nuget
 
             var httpClient = _httpClientFactory.GetHttpClient();
             var request = new HttpRequestMessage(HttpMethod.Get, $"{url}{packageName}/{version}/{packageName}.{version}.nupkg");
-            return await (await httpClient.SendAsync(request).ConfigureAwait(false)).Content.ReadAsStreamAsync().ConfigureAwait(false);
+            var httpResponse = await httpClient.SendAsync(request).ConfigureAwait(false);
+            var result = await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            return result;
         }
     }
 }

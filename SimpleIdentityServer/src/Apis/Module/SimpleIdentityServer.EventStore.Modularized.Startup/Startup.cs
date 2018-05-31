@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace SimpleIdentityServer.OpenId.Modularized.Startup
+namespace SimpleIdentityServer.EventStore.Modularized.Startup
 {
     public class Startup
     {
@@ -30,19 +30,6 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
-            _options = new IdentityServerOptions
-            {
-                Authenticate = new AuthenticateOptions
-                {
-                    CookieName = Constants.CookieName,
-                    ExternalCookieName = Constants.ExternalCookieName
-                },
-                Scim = new ScimOptions
-                {
-                    IsEnabled = true,
-                    EndPoint = "http://localhost:5555/"
-                }
-            };
             _env = env;
             var moduleLoaderFactory = new ModuleLoaderFactory();
             _moduleLoader = moduleLoaderFactory.BuidlerModuleLoader(new ModuleLoaderOptions
@@ -53,21 +40,16 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
                     "https://api.nuget.org/v3/index.json",
                     "https://www.myget.org/F/advance-ict/api/v3/index.json"
                 },
+                ModulePath = @"d:\Projects\Modules\",
                 ModuleFeedUri = new Uri("http://localhost:60008/configuration"),
                 ProjectName = "OpenIdProvider"
             });
             _moduleLoader.ModuleInstalled += ModuleInstalled;
             _moduleLoader.PackageRestored += PackageRestored;
             _moduleLoader.ModulesLoaded += ModulesLoaded;
-            _moduleLoader.ModuleCannotBeInstalled += ModuleCannotBeInstalled;
             _moduleLoader.Initialize();
             _moduleLoader.RestorePackages().Wait();
             _moduleLoader.LoadModules();
-        }
-
-        private void _moduleLoader_ModuleCannotBeInstalled(object sender, StrEventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -212,13 +194,6 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
         private void UseSerilogLogging(ILoggerFactory logger)
         {
             logger.AddSerilog();
-        }
-
-        private static void ModuleCannotBeInstalled(object sender, StrEventArgs e)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"The nuget package {e.Value} cannot be installed");
-            Console.ForegroundColor = ConsoleColor.White;
         }
 
         private static void ModuleInstalled(object sender, StrEventArgs e)

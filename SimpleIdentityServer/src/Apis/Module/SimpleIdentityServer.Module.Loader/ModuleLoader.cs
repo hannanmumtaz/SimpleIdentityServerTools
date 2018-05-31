@@ -16,6 +16,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
@@ -35,6 +36,7 @@ namespace SimpleIdentityServer.Module.Loader
         event EventHandler<IntEventArgs> PackageRestored;
         event EventHandler ModulesLoaded;
         event EventHandler<StrEventArgs> ModuleInstalled;
+        event EventHandler<StrEventArgs> ModuleCannotBeInstalled;
     }
 
     public class StrEventArgs : EventArgs
@@ -59,10 +61,13 @@ namespace SimpleIdentityServer.Module.Loader
     
     internal sealed class ModuleLoader : IModuleLoader
     {
+        private ConcurrentBag<string> _restoredPackages;
+        private const string ENV_NAME = "SID_MODULE";
         private const string _fkName = "net461"; // TODO : Resolve the current framework version.
         private readonly INugetClient _nugetClient;
         private readonly IModuleFeedClientFactory _moduleFeedClientFactory;
         private readonly ModuleLoaderOptions _options;
+        private string _modulePath;
         private const string _configFile = "config.json";
         private const string _configTemplateFile = "config.template.config";
         private ICollection<IModule> _modules;
@@ -71,7 +76,6 @@ namespace SimpleIdentityServer.Module.Loader
         private bool _isConfigTemplateRestored = false;
         // private ProjectConfiguration _projectConfiguration;
         private ProjectResponse _projectConfiguration;
-        private ConcurrentBag<string> _installedLibs;
 
         public ModuleLoader(INugetClient nugetClient, IModuleFeedClientFactory moduleFeedClientFactory, ModuleLoaderOptions options)
         {
@@ -99,6 +103,7 @@ namespace SimpleIdentityServer.Module.Loader
         public event EventHandler<IntEventArgs> PackageRestored;
         public event EventHandler ModulesLoaded;
         public event EventHandler<StrEventArgs> ModuleInstalled;
+        public event EventHandler<StrEventArgs> ModuleCannotBeInstalled;
 
         /// <summary>
         /// Initialize the module loader.
@@ -110,12 +115,18 @@ namespace SimpleIdentityServer.Module.Loader
                 throw new ModuleLoaderInternalException("the loader is already initialized");
             }
 
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
-            if (!Directory.Exists(_options.ModulePath))
+            _modulePath = Environment.GetEnvironmentVariable(ENV_NAME);
+            if (string.IsNullOrWhiteSpace(_modulePath))
             {
-                throw new DirectoryNotFoundException(nameof(_options.ModulePath));
+                throw new ModuleLoaderConfigurationException($"The {ENV_NAME} environment variable must be set");
             }
 
+            if (!Directory.Exists(_modulePath))
+            {
+                throw new ModuleLoaderConfigurationException($"The directory specified in the {ENV_NAME} environment variable doesn't exist");
+            }
+
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
             if (_options.NugetSources == null || !_options.NugetSources.Any())
             {
                 throw new ModuleLoaderConfigurationException("At least one nuget sources must be specified");
@@ -131,7 +142,7 @@ namespace SimpleIdentityServer.Module.Loader
                 throw new ModuleLoaderConfigurationException("The ModuleFeedUri parameter must be specified");
             }
 
-            var configurationFilePath = Path.Combine(_options.ModulePath, _configFile);
+            var configurationFilePath = Path.Combine(Directory.GetCurrentDirectory(), _configFile);
             if (!File.Exists(configurationFilePath))
             {
                 throw new FileNotFoundException(configurationFilePath);
@@ -158,7 +169,7 @@ namespace SimpleIdentityServer.Module.Loader
         public void CheckConfigurationFile()
         {
             var errorMessages = new List<string>();
-            var configTemplate = JsonConvert.DeserializeObject<ProjectResponse>(File.ReadAllText(GetPath(_configTemplateFile)));
+            var configTemplate = JsonConvert.DeserializeObject<ProjectResponse>(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), _configTemplateFile)));
             if (configTemplate.Id != _projectConfiguration.Id)
             {
                 errorMessages.Add("The config identifier is not the same than the one in the configuration template file");
@@ -215,9 +226,9 @@ namespace SimpleIdentityServer.Module.Loader
                 throw new ModuleLoaderInternalException("the loader is not initialized");
             }
 
+            _restoredPackages = new ConcurrentBag<string>();
             await RestoreTemplateConfigurationFile();
             var watch = Stopwatch.StartNew();
-            _installedLibs = new ConcurrentBag<string>();
             foreach (var unit in _projectConfiguration.Units)
             {
                 if (unit.Packages == null || !unit.Packages.Any())
@@ -227,7 +238,6 @@ namespace SimpleIdentityServer.Module.Loader
 
                 foreach(var package in unit.Packages)
                 {
-                    _installedLibs.Add($"{package.Library}.{package.Version}");
                     await RestorePackages(package.Library, package.Version);
                 }
             }
@@ -276,7 +286,7 @@ namespace SimpleIdentityServer.Module.Loader
 
                 foreach(var package in unit.Packages)
                 {
-                    var path = GetPath($"{package.Library}.{package.Version}/lib/{_fkName}/{package.Library}.dll");
+                    var path = Path.Combine(_modulePath, $"{package.Library}.{package.Version}\\lib\\{_fkName}\\{package.Library}.dll");
                     if (!File.Exists(path))
                     {
                         throw new ModuleLoaderInternalException($"The module {package.Library}.{package.Version} cannot be loaded");
@@ -344,7 +354,7 @@ namespace SimpleIdentityServer.Module.Loader
         /// <returns></returns>
         private async Task RestoreTemplateConfigurationFile()
         {
-            var templateConfigurationFile = GetPath(_configTemplateFile);
+            var templateConfigurationFile = Path.Combine(Directory.GetCurrentDirectory(), _configTemplateFile);
             if (File.Exists(templateConfigurationFile))
             {
                 _isConfigTemplateRestored = true;
@@ -422,13 +432,13 @@ namespace SimpleIdentityServer.Module.Loader
             var version = string.Join(".", splittedVersion);
             var subVersion = string.Join(".", splittedVersion.Take(2));
             var baseVersion = splittedVersion.ElementAt(0);
-            var moduleDirectories = Directory.GetDirectories(_options.ModulePath, $"{packageName}.{version}*");
+            var moduleDirectories = Directory.GetDirectories(_modulePath, $"{packageName}.{version}*");
             if (moduleDirectories == null || !moduleDirectories.Any())
             {
-                moduleDirectories = Directory.GetDirectories(_options.ModulePath, $"{packageName}.{subVersion}*");
+                moduleDirectories = Directory.GetDirectories(_modulePath, $"{packageName}.{subVersion}*");
                 if (moduleDirectories == null || !moduleDirectories.Any())
                 {
-                    moduleDirectories = Directory.GetDirectories(_options.ModulePath, $"{packageName}.{baseVersion}*");
+                    moduleDirectories = Directory.GetDirectories(_modulePath, $"{packageName}.{baseVersion}*");
                     if (moduleDirectories == null || !moduleDirectories.Any())
                     {
                         return null;
@@ -472,14 +482,21 @@ namespace SimpleIdentityServer.Module.Loader
 
         private async Task RestorePackages(string packageName, string version)
         {
+            var key = $"{packageName}_{version}";
+            if (_restoredPackages.Contains(key))
+            {
+                return;
+            }
+
+            _restoredPackages.Add(key);
             if (string.IsNullOrWhiteSpace(packageName) || string.IsNullOrWhiteSpace(version))
             {
                 return;
             }
 
             var pkgName = $"{packageName}.{version}";
-            var packagePath = GetPath(pkgName);
-            var nuSpecPath = GetPath(Path.Combine(pkgName, packageName + ".nuspec"));
+            var packagePath = Path.Combine(_modulePath, pkgName);
+            var nuSpecPath = Path.Combine(_modulePath, pkgName, packageName + ".nuspec");
             if (!Directory.Exists(packagePath))
             {
                 await DownloadNugetPackage(packageName, version);
@@ -539,11 +556,7 @@ namespace SimpleIdentityServer.Module.Loader
             var operations = new List<Task>();
             foreach(var nugetDependency in nugetDependencies)
             {
-                if (!_installedLibs.Contains($"{nugetDependency.Id}.{nugetDependency.Version}"))
-                {
-                    operations.Add(RestorePackages(nugetDependency.Id, nugetDependency.Version));
-                    _installedLibs.Add($"{nugetDependency.Id}.{nugetDependency.Version}");
-                }
+                operations.Add(RestorePackages(nugetDependency.Id, nugetDependency.Version));
             }
 
             await Task.WhenAll(operations);
@@ -553,8 +566,8 @@ namespace SimpleIdentityServer.Module.Loader
         {
             var pkgSubPath = $"{packageName}.{version}";
             var pkgFileSubPath = pkgSubPath + ".nupkg";
-            var pkgPath = GetPath(pkgSubPath);
-            var pkgFilePath = GetPath(pkgFileSubPath);
+            var pkgPath = Path.Combine(_modulePath, pkgSubPath);
+            var pkgFilePath = Path.Combine(_modulePath, pkgFileSubPath);
             foreach (var nugetSource in _options.NugetSources)
             {
                 Uri uriResult;
@@ -603,13 +616,37 @@ namespace SimpleIdentityServer.Module.Loader
                         continue;
                     }
 
-                    using (var contentStream = await _nugetClient.DownloadNugetPackage(pkgBaseAdr.Id, packageName, version))
+                    var cannotDownload = false;
+                    int i = 1;
+                    do
                     {
-                        using (var stream = new FileStream(pkgFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                        try
                         {
-                            await contentStream.CopyToAsync(stream);
+                            using (var contentStream = await _nugetClient.DownloadNugetPackage(pkgBaseAdr.Id, packageName, version))
+                            {
+                                using (var stream = new FileStream(pkgFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                                {
+                                    await contentStream.CopyToAsync(stream);
+                                }
+                            }
+
+                            cannotDownload = false;
                         }
-                    }
+                        catch (Exception)
+                        {
+                            cannotDownload = true;
+                            if (ModuleCannotBeInstalled != null)
+                            {
+                                ModuleCannotBeInstalled(this, new StrEventArgs(packageName));
+                            }
+
+                            Thread.Sleep(_options.NugetRetryAfterMs);
+                        }
+                        finally
+                        {
+                            i++;
+                        }
+                    } while (cannotDownload && i <= _options.NugetNbRetry);
                 }
 
                 ZipFile.ExtractToDirectory(pkgFilePath, pkgPath);
@@ -622,11 +659,6 @@ namespace SimpleIdentityServer.Module.Loader
 
                 return;
             }
-        }
-
-        private string GetPath(string subPath)
-        {
-            return Path.Combine(_options.ModulePath, subPath);
         }
 
         private IEnumerable<string> GetSupportedFrameworks()

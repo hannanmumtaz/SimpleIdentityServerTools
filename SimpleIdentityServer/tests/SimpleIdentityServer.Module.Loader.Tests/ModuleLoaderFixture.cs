@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -16,6 +17,39 @@ namespace SimpleIdentityServer.Module.Loader.Tests
 {
     public class ModuleLoaderFixture
     {
+        private const string _templateJson = "{" +
+              "\"id\": \"projectName_3.0.0-rc7\"," +
+              "\"version\": \"3.0.0-rc7\"," +
+              "\"name\": \"projectName\"," +
+              "\"units\": [" +
+                "{" +
+                  "\"name\": \"unit1\"," +
+                  "\"packages\": [" +
+                    "{" +
+                      "\"lib\": \"lib1\"," +
+                      "\"version\": \"1\"," +
+                      "\"category\": \"cat1\"" +
+                    "}," +
+                    "{" +
+                      "\"lib\": \"lib2\"," +
+                      "\"version\": \"2\"," +
+                      "\"category\": \"cat2\"" +
+                    "}" +
+                  "]" +
+                "}" +
+              "]" +
+            "}";
+        private const string _configJson = "{" +
+              "\"id\": \"projectName_3.0.0-rc8\"," +
+              "\"version\": \"3.0.0-rc8\", " +
+              "\"name\": \"projectName\", " +
+              "\"units\": [" +
+                "{" +
+                            "\"name\": \"unit1\"" +
+                "}" +
+              "]" +
+            "}";
+
         [Fact]
         public void WhenPassingNullParameterToConstructorThenExceptionIsThrown()
         {
@@ -27,22 +61,39 @@ namespace SimpleIdentityServer.Module.Loader.Tests
         #region Initialize
 
         [Fact]
-        public void WhenInitializeModuleLoaderAndModulePathDoesntExistThenExceptionIsThrown()
+        public void WhenInitializeModuleLoaderAndNoEnvironmentVariableThenExceptionIsThrown()
+        {
+            // ARRANGE
+            Environment.SetEnvironmentVariable("SID_MODULE", null);
+            var nugetClient = new NugetClient(new HttpClientFactory());
+            var moduleFeedClientFactory = new ModuleFeedClientFactory();
+            var options = new ModuleLoaderOptions();
+            var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
+
+            // ACT
+            var exception = Assert.Throws<ModuleLoaderConfigurationException>(() => moduleLoader.Initialize());
+
+            // ASSERT
+            Assert.NotNull(exception);
+            Assert.Equal($"The SID_MODULE environment variable must be set", exception.Message);
+        }
+
+        [Fact]
+        public void WhenInitializeModuleLoaderAndEnvironmentVariableIsNotValidThenExceptionIsThrown()
         {
             // ARRANGE
             var nugetClient = new NugetClient(new HttpClientFactory());
             var moduleFeedClientFactory = new ModuleFeedClientFactory();
-            var options = new ModuleLoaderOptions
-            {
-                ModulePath = "bad_path"
-            };
+            var options = new ModuleLoaderOptions();
             var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
+            Environment.SetEnvironmentVariable("SID_MODULE", "invalid");
 
             // ACT
-            var exception = Assert.Throws<DirectoryNotFoundException>(() => moduleLoader.Initialize());
+            var exception = Assert.Throws<ModuleLoaderConfigurationException>(() => moduleLoader.Initialize());
 
             // ASSERT
             Assert.NotNull(exception);
+            Assert.Equal("The directory specified in the SID_MODULE environment variable doesn't exist", exception.Message);
         }
 
         [Fact]
@@ -51,9 +102,9 @@ namespace SimpleIdentityServer.Module.Loader.Tests
             // ARRANGE
             var nugetClient = new NugetClient(new HttpClientFactory());
             var moduleFeedClientFactory = new ModuleFeedClientFactory();
+            Environment.SetEnvironmentVariable("SID_MODULE", "C:\\");
             var options = new ModuleLoaderOptions
             {
-                ModulePath = Directory.GetCurrentDirectory(),
                 NugetSources = null
             };
             var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
@@ -72,9 +123,9 @@ namespace SimpleIdentityServer.Module.Loader.Tests
             // ARRANGE
             var nugetClient = new NugetClient(new HttpClientFactory());
             var moduleFeedClientFactory = new ModuleFeedClientFactory();
+            Environment.SetEnvironmentVariable("SID_MODULE", "C:\\");
             var options = new ModuleLoaderOptions
             {
-                ModulePath = Directory.GetCurrentDirectory(),
                 NugetSources = new[] { "nuget" },
                 ProjectName = null
             };
@@ -94,9 +145,9 @@ namespace SimpleIdentityServer.Module.Loader.Tests
             // ARRANGE
             var nugetClient = new NugetClient(new HttpClientFactory());
             var moduleFeedClientFactory = new ModuleFeedClientFactory();
+            Environment.SetEnvironmentVariable("SID_MODULE", "C:\\");
             var options = new ModuleLoaderOptions
             {
-                ModulePath = Directory.GetCurrentDirectory(),
                 NugetSources = new[] { "nuget" },
                 ProjectName = "projectName"
             };
@@ -114,11 +165,12 @@ namespace SimpleIdentityServer.Module.Loader.Tests
         public void WhenInitializeModuleLoaderAndConfigurationFileDoesntExistThenExceptionIsThrown()
         {
             // ARRANGE
+            RemoveFiles();
             var nugetClient = new NugetClient(new HttpClientFactory());
             var moduleFeedClientFactory = new ModuleFeedClientFactory();
+            Environment.SetEnvironmentVariable("SID_MODULE", "C:\\");
             var options = new ModuleLoaderOptions
             {
-                ModulePath = @"C:\",
                 NugetSources = new[] { "nuget" },
                 ProjectName = "projectName",
                 ModuleFeedUri = new Uri("http://localhost/configuration")
@@ -156,23 +208,19 @@ namespace SimpleIdentityServer.Module.Loader.Tests
         public async Task WhenRestorePackagesAndNoProjectExistsThenExceptionIsThrown()
         {
             // ARRANGE
-            var currentDirectory = Directory.GetCurrentDirectory();
-            if (File.Exists(Path.Combine(currentDirectory, $"confs\\config.template.config")))
-            {
-                File.Delete(Path.Combine(currentDirectory, $"confs\\config.template.config"));
-            }
-
+            RemoveFiles();
+            AddConfigFile();
             var nugetClientMock = new Mock<INugetClient>();
             var projectClientMock = new Mock<IProjectClient>();
             var moduleFeedClientMock = new Mock<IModuleFeedClient>();
             var moduleFeedClientFactoryMock = new Mock<IModuleFeedClientFactory>();
             projectClientMock.Setup(d => d.Download(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(Task.FromResult<Stream>(new FileStream("config.template.config", FileMode.Open, FileAccess.Read)));
+                .Returns(Task.FromResult<Stream>(new MemoryStream(Encoding.UTF8.GetBytes(_templateJson))));
             moduleFeedClientMock.Setup(m => m.GetProjectClient()).Returns(projectClientMock.Object);
             moduleFeedClientFactoryMock.Setup(m => m.BuildModuleFeedClient()).Returns(moduleFeedClientMock.Object);
+            Environment.SetEnvironmentVariable("SID_MODULE", "C:\\");
             var options = new ModuleLoaderOptions
             {
-                ModulePath = Path.Combine(Directory.GetCurrentDirectory(), "confs"),
                 NugetSources = new[] { "nuget" },
                 ProjectName = "projectName",
                 ModuleFeedUri = new Uri("http://localhost/configuration")
@@ -196,11 +244,14 @@ namespace SimpleIdentityServer.Module.Loader.Tests
         public void WhenCheckConfigurationFileThenExceptionIsThrown()
         {
             // ARRANGE
+            RemoveFiles();
+            AddTemplateFile();
+            AddConfigFile();
             var nugetClientMock = new Mock<INugetClient>();
             var moduleFeedClientFactoryMock = new Mock<IModuleFeedClientFactory>();
+            Environment.SetEnvironmentVariable("SID_MODULE", "C:\\");
             var options = new ModuleLoaderOptions
             {
-                ModulePath = Directory.GetCurrentDirectory(),
                 NugetSources = new[] { "nuget" },
                 ProjectName = "projectName",
                 ModuleFeedUri = new Uri("http://localhost/configuration")
@@ -213,9 +264,32 @@ namespace SimpleIdentityServer.Module.Loader.Tests
 
             // ASSERTS
             Assert.NotNull(exception);
-            Assert.Equal(5, exception.Messages.Count());
+            Assert.Equal(4, exception.Messages.Count());
         }
 
         #endregion
+
+        private void RemoveFiles()
+        {
+            if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "config.json")))
+            {
+                File.Delete(Path.Combine(Directory.GetCurrentDirectory(), "config.json"));
+            }
+            
+            if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "config.template.config")))
+            {
+                File.Delete(Path.Combine(Directory.GetCurrentDirectory(), "config.template.config"));
+            }
+        }
+
+        private void AddTemplateFile()
+        {
+            File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "config.template.config"), _templateJson);
+        }
+
+        private void AddConfigFile()
+        {
+            File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "config.json"), _configJson);
+        }
     }
 }
