@@ -21,6 +21,7 @@
             public const string Library = "lib";
             public const string Version = "version";
             public const string CategoryName = "category";
+            public const string Parameters = "parameters";
         }
     }
 }

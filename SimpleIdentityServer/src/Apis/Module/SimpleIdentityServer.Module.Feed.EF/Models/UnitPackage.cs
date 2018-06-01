@@ -2,6 +2,7 @@
 {
     public class UnitPackage
     {
+        public string Id { get; set; }
         public string Library { get; set; }
         public string Version { get; set; }
         public string CategoryId { get; set; }

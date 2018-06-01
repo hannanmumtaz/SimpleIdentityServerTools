@@ -12,6 +12,8 @@ namespace SimpleIdentityServer.Module.Feed.Common.Responses
         public string Version { get; set; }
         [DataMember(Name = Constants.UnitPackageResponseNames.CategoryName)]
         public string CategoryName { get; set; }
+        [DataMember(Name = Constants.UnitPackageResponseNames.Parameters)]
+        public IDictionary<string, string> Parameters { get; set; }
     }
 
     [DataContract]

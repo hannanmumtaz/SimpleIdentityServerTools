@@ -1,0 +1,18 @@
+﻿{
+  "id": "EventStore_3.0.0-rc7",
+  "version": "3.0.0-rc7",
+  "name": "EventStore",
+  "units": [
+    {
+      "name": "eventstorerepository",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.EventStore.SqlServer",
+          "version": "3.0.0-rc7",
+          "category": "store",
+          "parameters": { "EventStoreConnectionString": "Data Source=.;Initial Catalog=EventStore;Integrated Security=True;" }
+        }
+      ]
+    }
+  ]
+}

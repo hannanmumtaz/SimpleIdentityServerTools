@@ -1,29 +1,45 @@
-﻿using Microsoft.AspNetCore.Builder;
+#region copyright
+// Copyright 2015 Habart Thierry
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+#endregion
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SimpleIdentityServer.EventStore.Host.Extensions;
 using SimpleIdentityServer.Module.Loader;
+using SimpleIdentityServer.OAuth2Introspection;
+using SimpleIdentityServer.Uma.Host.Configurations;
+using SimpleIdentityServer.Uma.Host.Extensions;
+using SimpleIdentityServer.Uma.Host.Middlewares;
+using SimpleIdentityServer.Uma.Logging;
 using System;
 using System.Collections.Generic;
 
-namespace SimpleIdentityServer.EventStore.Modularized.Startup
+namespace SimpleIdentityServer.Uma.Startup
 {
     public class Startup
     {
         private IModuleLoader _moduleLoader;
+        private UmaHostConfiguration _umaHostConfiguration;
         private IHostingEnvironment _env;
-        public IConfigurationRoot Configuration { get; set; }
 
         public Startup(IHostingEnvironment env)
         {
-            var builder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
             _env = env;
+            _umaHostConfiguration = new UmaHostConfiguration();
             var moduleLoaderFactory = new ModuleLoaderFactory();
             _moduleLoader = moduleLoaderFactory.BuidlerModuleLoader(new ModuleLoaderOptions
             {
@@ -34,7 +50,7 @@ namespace SimpleIdentityServer.EventStore.Modularized.Startup
                     "https://www.myget.org/F/advance-ict/api/v3/index.json"
                 },
                 ModuleFeedUri = new Uri("http://localhost:60008/configuration"),
-                ProjectName = "ScimProvider"
+                ProjectName = "UmaProvider"
             });
             _moduleLoader.ModuleInstalled += ModuleInstalled;
             _moduleLoader.PackageRestored += PackageRestored;
@@ -45,31 +61,41 @@ namespace SimpleIdentityServer.EventStore.Modularized.Startup
             _moduleLoader.LoadModules();
         }
 
+        public IConfigurationRoot Configuration { get; set; }
+        
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging();
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
-            services.AddEventStoreHost();
+            services.AddAuthentication(OAuth2IntrospectionOptions.AuthenticationScheme)
+                .AddOAuth2Introspection(opts =>
+                {
+                    opts.ClientId = "uma";
+                    opts.ClientSecret = "uma";
+                    opts.WellKnownConfigurationUrl = "http://localhost:60004/.well-known/uma2-configuration";
+                });
+            services.AddUmaHost(_umaHostConfiguration);
             services.AddMvc();
             _moduleLoader.ConfigureServices(services, null, _env);
         }
 
-        public void Configure(IApplicationBuilder app,
-            IHostingEnvironment env,
-            ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
-            app.UseStatusCodePages();
+            app.UseAuthentication();
             app.UseCors("AllowAll");
+            app.UseUmaExceptionHandler(new ExceptionHandlerMiddlewareOptions
+            {
+                UmaEventSource = app.ApplicationServices.GetService<IUmaServerEventSource>()
+            });
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller}/{action}/{id?}");
             });
-            _moduleLoader.Configure(app);
         }
 
         private static void ModuleCannotBeInstalled(object sender, StrEventArgs e)

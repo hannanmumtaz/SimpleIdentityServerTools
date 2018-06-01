@@ -1,0 +1,56 @@
+﻿{
+  "id": "ScimProvider_3.0.0-rc7",
+  "version": "3.0.0-rc7",
+  "name": "ScimProvider",
+  "units": [
+    {
+      "name": "scimrepository",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Scim.Db.EF.InMemory",
+          "version": "3.0.0-rc7",
+          "category": "store"
+        }
+      ]
+    },
+    {
+      "name": "scimeventstore",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.EventStore.SqlServer",
+          "version": "3.0.0-rc7",
+          "category": "store",
+          "parameters": { "EventStoreConnectionString": "Data Source=.;Initial Catalog=EventStore;Integrated Security=True;" }
+        },
+        {
+          "lib": "SimpleIdentityServer.Scim.EventStore.Handler",
+          "version": "3.0.0-rc7",
+          "category": "handler",
+          "parameters": {
+            "EventStoreHandlerType": "scim"
+          }
+        },
+        {
+          "lib": "SimpleBus.InMemory",
+          "version": "3.0.0-rc7",
+          "category": "bus"
+        }
+      ]
+    },
+    {
+      "name": "concurrency",
+      "packages": [
+        {
+          "lib": "WebApiContrib.Core.Storage.InMemory",
+          "version": "3.0.0-rc7",
+          "category": "cache"
+        },
+        {
+          "lib": "WebApiContrib.Core.Concurrency",
+          "version": "3.0.0-rc7",
+          "category": "concurrency"
+        }
+      ]
+    }
+  ]
+}

@@ -15,7 +15,7 @@ namespace SimpleIdentityServer.Module.Feed.EF.Mappings
 
             modelBuilder.Entity<UnitPackage>()
                 .ToTable("unitPackages")
-                .HasKey(p => p.Library);
+                .HasKey(p => p.Id);
             modelBuilder.Entity<UnitPackage>()
                 .HasOne(p => p.Category)
                 .WithMany(p => p.Packages)

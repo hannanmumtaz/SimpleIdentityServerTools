@@ -3,17 +3,10 @@
   <PropertyGroup>
     <TargetFrameworks>net461;netcoreapp2.0</TargetFrameworks>
     <PreserveCompilationContext>true</PreserveCompilationContext>
-    <AssemblyName>SimpleIdentityServer.OpenId.Modularized.Startup</AssemblyName>
+    <AssemblyName>SimpleIdentityServer.Uma.Modularized.Startup</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>SimpleIdentityServer.OpenId.Modularized.Startup</PackageId>
+    <PackageId>SimpleIdentityServer.Uma.Modularized.Startup</PackageId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="wwwroot\**" />
-    <Content Remove="wwwroot\**" />
-    <EmbeddedResource Remove="wwwroot\**" />
-    <None Remove="wwwroot\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="2.0.1" />
@@ -21,16 +14,12 @@
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Https" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Server.IISIntegration" Version="2.0.2" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="1.0.0" />
-    <PackageReference Include="Serilog.Sinks.ColoredConsole" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="2.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.0.2" />
   </ItemGroup>
-
-  <ItemGroup>
-      <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />
-  </ItemGroup> 
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <Reference Include="System.Web" />
@@ -39,7 +28,8 @@
   </ItemGroup> 
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Host\SimpleIdentityServer.Host.csproj" />
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.OAuth2Introspection\SimpleIdentityServer.OAuth2Introspection.csproj" />
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\Uma\SimpleIdentityServer.Uma.Host\SimpleIdentityServer.Uma.Host.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Module.Loader\SimpleIdentityServer.Module.Loader.csproj" />
   </ItemGroup>
 
@@ -51,9 +41,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
-
 </Project>

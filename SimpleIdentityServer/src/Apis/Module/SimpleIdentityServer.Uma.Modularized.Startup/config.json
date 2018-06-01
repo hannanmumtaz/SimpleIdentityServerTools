@@ -1,7 +1,7 @@
 ﻿{
-	"id":"OpenIdProvider_3.0.0-rc7",
-	"version":"3.0.0-rc7",
-	"name":"OpenIdProvider",
+  "id": "UmaProvider_3.0.0-rc7",
+  "version": "3.0.0-rc7",
+  "name": "UmaProvider",
   "units": [
     {
       "name": "oauthstorage",
@@ -27,12 +27,25 @@
       ]
     },
     {
-      "name": "openidui",
+      "name": "umastorage",
       "packages": [
         {
-          "lib": "SimpleIdentityServer.Authenticate.Basic",
+          "lib": "SimpleIdentityServer.Uma.Store.InMemory",
           "version": "3.0.0-rc7",
-          "category": "ui"
+          "category": "cache"
+        }
+      ]
+    },
+    {
+      "name": "umarepository",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Uma.EF.SqlServer",
+          "version": "3.0.0-rc7",
+          "category": "store",
+          "parameters": {
+            "UmaConnectionString": "Data Source=.;Initial Catalog=SimpleIdServerOauthUma;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+          }
         }
       ]
     },
@@ -52,7 +65,7 @@
           "version": "3.0.0-rc7",
           "category": "handler",
           "parameters": {
-            "EventStoreHandlerType": "openid"
+            "EventStoreHandlerType": "auth"
           }
         },
         {
@@ -61,19 +74,6 @@
           "category": "bus"
         }
       ]
-    }
-  ],
-  "connectors": [
-    {
-      "name": "Facebook",
-      "parameters": {
-        "clientId": "569242033233529",
-        "clientSecret": "12e0f33817634c0a650c0121d05e53eb",
-        "scopes": [
-          "public_profile",
-          "email"
-        ]
-      }
     }
   ]
 }

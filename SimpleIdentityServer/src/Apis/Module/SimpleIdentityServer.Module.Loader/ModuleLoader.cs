@@ -28,7 +28,7 @@ namespace SimpleIdentityServer.Module.Loader
         void Initialize();
         Task RestorePackages();
         void LoadModules();
-        void ConfigureServices(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env, Dictionary<string, string> opts = null);
+        void ConfigureServices(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env);
         void Configure(IRouteBuilder routes);
         void Configure(IApplicationBuilder app);
         void CheckConfigurationFile();
@@ -58,23 +58,34 @@ namespace SimpleIdentityServer.Module.Loader
 
         public long Value { get; private set; }
     }
-    
+
+    public class LoadedModule
+    {
+        public LoadedModule(IModule instance, UnitPackageResponse unit)
+        {
+            Instance = instance;
+            Unit = unit;
+        }
+
+        public IModule Instance { get; private set; }
+        public UnitPackageResponse Unit { get; private set; }
+    }
+
     internal sealed class ModuleLoader : IModuleLoader
     {
+
         private ConcurrentBag<string> _restoredPackages;
         private const string ENV_NAME = "SID_MODULE";
-        private const string _fkName = "net461"; // TODO : Resolve the current framework version.
         private readonly INugetClient _nugetClient;
         private readonly IModuleFeedClientFactory _moduleFeedClientFactory;
         private readonly ModuleLoaderOptions _options;
         private string _modulePath;
         private const string _configFile = "config.json";
         private const string _configTemplateFile = "config.template.config";
-        private ICollection<IModule> _modules;
+        private ICollection<LoadedModule> _modules;
         private bool _isInitialized = false;
         private bool _isPackagesRestored = false;
         private bool _isConfigTemplateRestored = false;
-        // private ProjectConfiguration _projectConfiguration;
         private ProjectResponse _projectConfiguration;
 
         public ModuleLoader(INugetClient nugetClient, IModuleFeedClientFactory moduleFeedClientFactory, ModuleLoaderOptions options)
@@ -228,6 +239,7 @@ namespace SimpleIdentityServer.Module.Loader
 
             _restoredPackages = new ConcurrentBag<string>();
             await RestoreTemplateConfigurationFile();
+            CheckConfigurationFile();
             var watch = Stopwatch.StartNew();
             foreach (var unit in _projectConfiguration.Units)
             {
@@ -271,7 +283,7 @@ namespace SimpleIdentityServer.Module.Loader
                 throw new ModuleLoaderInternalException("the config template is not restored");
             }
 
-            _modules = new List<IModule>();
+            _modules = new List<LoadedModule>();
             if (_projectConfiguration.Units == null || !_projectConfiguration.Units.Any())
             {
                 return;
@@ -286,7 +298,20 @@ namespace SimpleIdentityServer.Module.Loader
 
                 foreach(var package in unit.Packages)
                 {
-                    var path = Path.Combine(_modulePath, $"{package.Library}.{package.Version}\\lib\\{_fkName}\\{package.Library}.dll");
+                    var packagePath = Path.Combine(_modulePath, $"{package.Library}.{package.Version}\\lib");
+                    string fkName = null;
+#if NET461
+                    if (Directory.Exists(Path.Combine(packagePath, "net461")))
+                    {
+                        fkName = "net461";
+                    }
+#endif
+                    if (string.IsNullOrWhiteSpace(fkName))
+                    {
+                        fkName = "netstandard2.0";
+                    }
+
+                    var path = Path.Combine(_modulePath, $"{package.Library}.{package.Version}\\lib\\{fkName}\\{package.Library}.dll");
                     if (!File.Exists(path))
                     {
                         throw new ModuleLoaderInternalException($"The module {package.Library}.{package.Version} cannot be loaded");
@@ -299,7 +324,8 @@ namespace SimpleIdentityServer.Module.Loader
                         throw new ModuleLoaderInternalException($"The module {package.Library}.{package.Version} doesn't contain an implementation of IModule");
                     }
 
-                    _modules.Add((IModule)Activator.CreateInstance(modules.First()));
+                    var instance = (IModule)Activator.CreateInstance(modules.First());
+                    _modules.Add(new LoadedModule(instance, package));
                 }
             }
 
@@ -313,7 +339,7 @@ namespace SimpleIdentityServer.Module.Loader
         /// Returns the list of loaded modules.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<IModule> GetModules()
+        public IEnumerable<LoadedModule> GetModules()
         {
             return _modules;
         }
@@ -321,27 +347,27 @@ namespace SimpleIdentityServer.Module.Loader
         /// <summary>
         /// Register the services.
         /// </summary>
-        public void ConfigureServices(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env, Dictionary<string, string> opts = null)
+        public void ConfigureServices(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env)
         {
-            foreach (var module in _modules)
+            foreach (var loadedModule in _modules)
             {
-                module.ConfigureServices(services, mvcBuilder, env, opts);
+                loadedModule.Instance.ConfigureServices(services, mvcBuilder, env, loadedModule.Unit.Parameters);
             }
         }
 
         public void Configure(IRouteBuilder routes)
         {
-            foreach (var module in _modules)
+            foreach (var loadedModule in _modules)
             {
-                module.Configure(routes);
+                loadedModule.Instance.Configure(routes);
             }
         }
 
         public void Configure(IApplicationBuilder app)
         {
-            foreach (var module in _modules)
+            foreach (var loadedModule in _modules)
             {
-                module.Configure(app);
+                loadedModule.Instance.Configure(app);
             }
         }
 
@@ -441,7 +467,11 @@ namespace SimpleIdentityServer.Module.Loader
                     moduleDirectories = Directory.GetDirectories(_modulePath, $"{packageName}.{baseVersion}*");
                     if (moduleDirectories == null || !moduleDirectories.Any())
                     {
-                        return null;
+                        moduleDirectories = Directory.GetDirectories(_modulePath, $"{packageName}.*");
+                        if (moduleDirectories == null || !moduleDirectories.Any())
+                        {
+                            return null;
+                        }
                     }
                 }
             }            

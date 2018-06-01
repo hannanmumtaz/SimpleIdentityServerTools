@@ -1,18 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using SimpleIdentityServer.Host;
 using SimpleIdentityServer.Module.Loader;
-using SimpleIdentityServer.Module.Loader.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
 namespace SimpleIdentityServer.OpenId.Modularized.Startup
 {
@@ -21,15 +16,9 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
         private IModuleLoader _moduleLoader;
         private IdentityServerOptions _options;
         private IHostingEnvironment _env;
-        public IConfigurationRoot Configuration { get; set; }
 
         public Startup(IHostingEnvironment env)
         {
-            var builder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
             _options = new IdentityServerOptions
             {
                 Authenticate = new AuthenticateOptions
@@ -49,12 +38,14 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             {
                 NugetSources = new List<string>
                 {
-                    @"d:\Projects\SimpleIdentityServer\SimpleIdentityServer\src\feed\",
+                    @"c:\Projects\SimpleIdentityServerTools\IdServer\SimpleIdentityServer\src\feed\",
                     "https://api.nuget.org/v3/index.json",
                     "https://www.myget.org/F/advance-ict/api/v3/index.json"
                 },
                 ModuleFeedUri = new Uri("http://localhost:60008/configuration"),
-                ProjectName = "OpenIdProvider"
+                ProjectName = "OpenIdProvider",
+                NugetNbRetry = 5,
+                NugetRetryAfterMs = 1000
             });
             _moduleLoader.ModuleInstalled += ModuleInstalled;
             _moduleLoader.PackageRestored += PackageRestored;
@@ -65,20 +56,13 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             _moduleLoader.LoadModules();
         }
 
-        private void _moduleLoader_ModuleCannotBeInstalled(object sender, StrEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
-            // 2. Add the dependencies needed to enable CORS
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
             ConfigureLogging(services);
             services.AddOpenIdApi(_options);
-            // 4. Enable logging
             services.AddLogging();
             services.AddAuthentication(Constants.ExternalCookieName)
                 .AddCookie(Constants.ExternalCookieName)
@@ -97,14 +81,9 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
                 {
                     opts.LoginPath = "/Authenticate";
                 });
-            // 5. Configure MVC
             var mvcBuilder = services.AddMvc();
             services.AddAuthenticationWebsite(mvcBuilder, _env);
-            _moduleLoader.ConfigureServices(services, mvcBuilder, _env, new Dictionary<string, string>
-            {
-                { "OAuthConnectionString", Configuration["Db:OpenIdConnectionString"] },
-                { "EventStoreHandlerType", "openid" }
-            });
+            _moduleLoader.ConfigureServices(services, mvcBuilder, _env);
         }
 
         private void ConfigureLogging(IServiceCollection services)
@@ -134,40 +113,6 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             IHostingEnvironment env,
             ILoggerFactory loggerFactory)
         {
-            try
-            {
-                _moduleLoader.CheckConfigurationFile();
-            }
-            catch(ModuleLoaderAggregateConfigurationException ex)
-            {
-                app.Run(async context =>
-                {
-                    var html = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Errors\\ModuleLoaderError.html"));
-                    var strBuilder = new StringBuilder();
-                    if (ex.Messages != null)
-                    {
-                        foreach(var message in ex.Messages)
-                        {
-                            strBuilder.Append($"<li>{message}</li>");
-                        }
-                    }
-
-                    html = html.Replace("{errors}", strBuilder.ToString());
-                    await context.Response.WriteAsync(html);
-                });
-                return;
-            }
-            catch(Exception ex)
-            {
-                app.Run(async context =>
-                {
-                    var html = Path.Combine(Directory.GetCurrentDirectory(), "Errors\\ModuleLoaderError.html");
-                    html = html.Replace("{errors}", ex.Message);
-                    await context.Response.WriteAsync(html);
-                });
-                return;
-            }
-
             //1 . Enable CORS.
             app.UseCors("AllowAll");
             // 2. Use static files.
