@@ -45,7 +45,7 @@ namespace SimpleIdentityServer.Uma.Startup
             {
                 NugetSources = new List<string>
                 {
-                    @"c:\Projects\SimpleIdentityServerTools\IdServer\SimpleIdentityServer\src\feed\",
+                    @"d:\Projects\SimpleIdentityServerTools\IdServer\SimpleIdentityServer\src\feed\",
                     "https://api.nuget.org/v3/index.json",
                     "https://www.myget.org/F/advance-ict/api/v3/index.json"
                 },
@@ -65,6 +65,7 @@ namespace SimpleIdentityServer.Uma.Startup
         
         public void ConfigureServices(IServiceCollection services)
         {
+            _moduleLoader.ConfigureServices(services, null, _env);
             services.AddLogging();
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                 .AllowAnyMethod()
@@ -78,7 +79,6 @@ namespace SimpleIdentityServer.Uma.Startup
                 });
             services.AddUmaHost(_umaHostConfiguration);
             services.AddMvc();
-            _moduleLoader.ConfigureServices(services, null, _env);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

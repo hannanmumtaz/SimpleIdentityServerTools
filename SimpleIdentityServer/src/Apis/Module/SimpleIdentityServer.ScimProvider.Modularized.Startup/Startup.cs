@@ -41,7 +41,7 @@ namespace SimpleIdentityServer.ScimProvider.Modularized.Startup
             {
                 NugetSources = new List<string>
                 {
-                    @"c:\Projects\SimpleIdentityServerTools\IdServer\SimpleIdentityServer\src\feed\",
+                    @"d:\Projects\SimpleIdentityServerTools\IdServer\SimpleIdentityServer\src\feed\",
                     "https://api.nuget.org/v3/index.json",
                     "https://www.myget.org/F/advance-ict/api/v3/index.json"
                 },

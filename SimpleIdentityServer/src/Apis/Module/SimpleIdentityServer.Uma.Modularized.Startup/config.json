@@ -21,7 +21,7 @@
           "version": "3.0.0-rc7",
           "category": "store",
           "parameters": {
-            "OAuthConnectionString": "Data Source=.;Initial Catalog=SimpleIdentityServer;Integrated Security=True;"
+            "OAuthConnectionString": "Data Source=.;Initial Catalog=SimpleIdServerOauthUma;Integrated Security=True;"
           }
         }
       ]
@@ -44,7 +44,7 @@
           "version": "3.0.0-rc7",
           "category": "store",
           "parameters": {
-            "UmaConnectionString": "Data Source=.;Initial Catalog=SimpleIdServerOauthUma;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+            "UmaConnectionString": "Data Source=.;Initial Catalog=SimpleIdServerUma;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
           }
         }
       ]
@@ -72,6 +72,21 @@
           "lib": "SimpleBus.InMemory",
           "version": "3.0.0-rc7",
           "category": "bus"
+        }
+      ]
+    },
+    {
+      "name": "concurrency",
+      "packages": [
+        {
+          "lib": "WebApiContrib.Core.Storage.InMemory",
+          "version": "3.0.0-rc7",
+          "category": "cache"
+        },
+        {
+          "lib": "WebApiContrib.Core.Concurrency",
+          "version": "3.0.0-rc7",
+          "category": "concurrency"
         }
       ]
     }

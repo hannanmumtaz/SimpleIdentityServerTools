@@ -481,6 +481,11 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                         ProjectId = "UmaProvider_3.0.0-rc7",
                         UnitId = "umarepository"
                     },
+                    new ProjectUnit
+                    {
+                        ProjectId = "UmaProvider_3.0.0-rc7",
+                        UnitId = "concurrency"
+                    },
                     // SCIM
                     new ProjectUnit
                     {
