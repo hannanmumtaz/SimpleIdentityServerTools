@@ -4,6 +4,16 @@
   "name": "UmaProvider",
   "units": [
     {
+      "name": "umahost",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Uma.Host",
+          "version": "3.0.0-rc7",
+          "category": "host"
+        }
+      ]
+    },
+    {
       "name": "oauthstorage",
       "packages": [
         {

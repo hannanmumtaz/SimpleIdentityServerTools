@@ -21,10 +21,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleIdentityServer.Module.Loader;
 using SimpleIdentityServer.OAuth2Introspection;
-using SimpleIdentityServer.Uma.Host.Configurations;
-using SimpleIdentityServer.Uma.Host.Extensions;
-using SimpleIdentityServer.Uma.Host.Middlewares;
-using SimpleIdentityServer.Uma.Logging;
 using System;
 using System.Collections.Generic;
 
@@ -33,13 +29,11 @@ namespace SimpleIdentityServer.Uma.Startup
     public class Startup
     {
         private IModuleLoader _moduleLoader;
-        private UmaHostConfiguration _umaHostConfiguration;
         private IHostingEnvironment _env;
 
         public Startup(IHostingEnvironment env)
         {
             _env = env;
-            _umaHostConfiguration = new UmaHostConfiguration();
             var moduleLoaderFactory = new ModuleLoaderFactory();
             _moduleLoader = moduleLoaderFactory.BuidlerModuleLoader(new ModuleLoaderOptions
             {
@@ -65,7 +59,6 @@ namespace SimpleIdentityServer.Uma.Startup
         
         public void ConfigureServices(IServiceCollection services)
         {
-            _moduleLoader.ConfigureServices(services, null, _env);
             services.AddLogging();
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                 .AllowAnyMethod()
@@ -77,8 +70,8 @@ namespace SimpleIdentityServer.Uma.Startup
                     opts.ClientSecret = "uma";
                     opts.WellKnownConfigurationUrl = "http://localhost:60004/.well-known/uma2-configuration";
                 });
-            services.AddUmaHost(_umaHostConfiguration);
-            services.AddMvc();
+            var mvc = services.AddMvc();
+            _moduleLoader.ConfigureServices(services, mvc, _env);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -86,10 +79,7 @@ namespace SimpleIdentityServer.Uma.Startup
             loggerFactory.AddConsole();
             app.UseAuthentication();
             app.UseCors("AllowAll");
-            app.UseUmaExceptionHandler(new ExceptionHandlerMiddlewareOptions
-            {
-                UmaEventSource = app.ApplicationServices.GetService<IUmaServerEventSource>()
-            });
+            _moduleLoader.Configure(app);
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

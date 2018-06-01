@@ -423,6 +423,20 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             }
                         }
                     },
+                    new Unit
+                    {
+                        UnitName = "umahost",
+                        Packages = new []
+                        {
+                            new UnitPackage
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Library = "SimpleIdentityServer.Uma.Host",
+                                Version = "3.0.0-rc7",
+                                CategoryId = "store"
+                            }
+                        }
+                    }
                 });
             }
         }
@@ -461,6 +475,11 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                         UnitId = "eventstorerepository"
                     },
                     // UMA
+                    new ProjectUnit
+                    {
+                        ProjectId = "UmaProvider_3.0.0-rc7",
+                        UnitId = "umahost"
+                    },
                     new ProjectUnit
                     {
                         ProjectId = "UmaProvider_3.0.0-rc7",
