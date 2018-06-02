@@ -299,25 +299,30 @@ namespace SimpleIdentityServer.Module.Loader
                 foreach(var package in unit.Packages)
                 {
                     var packagePath = Path.Combine(_modulePath, $"{package.Library}.{package.Version}\\lib");
-                    string fkName = null;
-#if NET461
-                    if (Directory.Exists(Path.Combine(packagePath, "net461")))
-                    {
-                        fkName = "net461";
-                    }
-#endif
-                    if (string.IsNullOrWhiteSpace(fkName))
-                    {
-                        fkName = "netstandard2.0";
-                    }
-
-                    var path = Path.Combine(_modulePath, $"{package.Library}.{package.Version}\\lib\\{fkName}\\{package.Library}.dll");
-                    if (!File.Exists(path))
+                    if (!Directory.Exists(packagePath))
                     {
                         throw new ModuleLoaderInternalException($"The module {package.Library}.{package.Version} cannot be loaded");
                     }
 
-                    var assm = Assembly.LoadFile(path);
+                    var supportedFrameworks = GetSupportedFrameworks();
+                    var fkDirectories = Directory.GetDirectories(packagePath);
+                    var filteredFkDirectories = fkDirectories.Where(fkdir => supportedFrameworks.Any(sfk =>
+                    {
+                        var dirInfo = new DirectoryInfo(fkdir);
+                        return sfk == dirInfo.Name;
+                    })).OrderByDescending(s => s);
+                    var dllPath = string.Empty;
+                    if (filteredFkDirectories != null && filteredFkDirectories.Any())
+                    {
+                        dllPath = Path.Combine(filteredFkDirectories.First(), $"{package.Library}.dll");
+                    }
+
+                    if (string.IsNullOrWhiteSpace(dllPath) || !File.Exists(dllPath))
+                    {
+                        throw new ModuleLoaderInternalException($"The module {package.Library}.{package.Version} cannot be loaded");
+                    }
+                    
+                    var assm = Assembly.LoadFile(dllPath);
                     var modules = assm.GetExportedTypes().Where(t => typeof(IModule).IsAssignableFrom(t));
                     if (modules == null || !modules.Any() || modules.Count() != 1)
                     {
@@ -504,7 +509,8 @@ namespace SimpleIdentityServer.Module.Loader
 
             if (!string.IsNullOrWhiteSpace(dllPath) && File.Exists(dllPath))
             {
-                return Assembly.LoadFrom(dllPath);
+                var assm = Assembly.LoadFrom(dllPath);
+                return assm;
             }
 
             return null;
@@ -705,7 +711,10 @@ namespace SimpleIdentityServer.Module.Loader
 #else
             return new List<string>
             {
-                "netstandard"
+                "netstandard2.0",
+                "netstandard1.6",
+                "netstandard1.0",
+                "netcoreapp2.0"
             };
 #endif
         }

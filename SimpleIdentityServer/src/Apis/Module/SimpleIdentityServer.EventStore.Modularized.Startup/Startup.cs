@@ -28,7 +28,7 @@ namespace SimpleIdentityServer.EventStore.Modularized.Startup
             {
                 NugetSources = new List<string>
                 {
-                    @"d:\Projects\SimpleIdentityServerTools\IdServer\SimpleIdentityServer\src\feed\",
+                    @"d:\sidfeeds\",
                     "https://api.nuget.org/v3/index.json",
                     "https://www.myget.org/F/advance-ict/api/v3/index.json"
                 },
