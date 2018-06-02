@@ -4,12 +4,25 @@
   "name": "ScimProvider",
   "units": [
     {
+      "name": "scimhost",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Scim.Host",
+          "version": "3.0.0-rc7",
+          "category": "host"
+        }
+      ]
+    },
+    {
       "name": "scimrepository",
       "packages": [
         {
-          "lib": "SimpleIdentityServer.Scim.Db.EF.InMemory",
+          "lib": "SimpleIdentityServer.Scim.Db.EF.SqlServer",
           "version": "3.0.0-rc7",
-          "category": "store"
+          "category": "store",
+          "parameters": {
+            "ScimConnectionString": "Data Source=.;Initial Catalog=ScimServer;Integrated Security=True;Pooling=False"
+          }
         }
       ]
     },

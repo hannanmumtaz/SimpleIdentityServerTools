@@ -16,12 +16,10 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleIdentityServer.Module.Loader;
 using SimpleIdentityServer.OAuth2Introspection;
-using SimpleIdentityServer.Scim.Host.Extensions;
 using System;
 using System.Collections.Generic;
 
@@ -69,9 +67,8 @@ namespace SimpleIdentityServer.ScimProvider.Modularized.Startup
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
-            services.AddScimHost();
-            services.AddMvc();
-            _moduleLoader.ConfigureServices(services, null, _env);
+            var mvc = services.AddMvc();
+            _moduleLoader.ConfigureServices(services, mvc, _env);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

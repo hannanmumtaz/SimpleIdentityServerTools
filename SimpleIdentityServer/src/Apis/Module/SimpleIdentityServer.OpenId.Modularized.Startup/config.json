@@ -4,6 +4,22 @@
 	"name":"OpenIdProvider",
   "units": [
     {
+      "name": "openidhost",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Host",
+          "version": "3.0.0-rc7",
+          "category": "host",
+          "parameters": {
+            "OpenIdCookieName": "SimpleIdServer-Startup",
+            "OpenIdExternalCookieName": "External-SimpleIdServer",
+            "ScimEndpoint": "http://localhost:5555/",
+            "ScimEndpointEnabled": "true"
+          }
+        }
+      ]
+    },
+    {
       "name": "oauthstorage",
       "packages": [
         {

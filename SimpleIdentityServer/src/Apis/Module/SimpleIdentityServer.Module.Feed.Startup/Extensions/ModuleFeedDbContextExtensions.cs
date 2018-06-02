@@ -56,6 +56,10 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new PackageCategory
                     {
                         Name = "concurrency"
+                    },
+                    new PackageCategory
+                    {
+                        Name = "host"
                     }
                 });
             }
@@ -126,6 +130,21 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                                 Library = "WebApiContrib.Core.Concurrency",
                                 Version = "3.0.0-rc7",
                                 CategoryId = "concurrency"
+                            }
+                        }
+                    },
+                    // OPENID
+                    new Unit
+                    {
+                        UnitName = "openidhost",
+                        Packages = new []
+                        {
+                            new UnitPackage
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Library = "SimpleIdentityServer.Host",
+                                Version = "3.0.0-rc7",
+                                CategoryId = "host"
                             }
                         }
                     },
@@ -248,6 +267,21 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             }
                         }
                     },
+                    // EVENT STORE
+                    new Unit
+                    {
+                        UnitName = "eventstorehost",
+                        Packages = new []
+                        {
+                            new UnitPackage
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Library = "SimpleIdentityServer.EventStore.Host",
+                                Version = "3.0.0-rc7",
+                                CategoryId = "host"
+                            }
+                        }
+                    },
                     new Unit
                     {
                         UnitName = "eventstorerepository",
@@ -283,6 +317,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             }
                         }
                     },
+                    // UMA
                     new Unit
                     {
                         UnitName = "umastorage",
@@ -336,6 +371,35 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                                 Library = "SimpleIdentityServer.Uma.EF.InMemory",
                                 Version = "3.0.0-rc7",
                                 CategoryId = "store"
+                            }
+                        }
+                    },
+                    new Unit
+                    {
+                        UnitName = "umahost",
+                        Packages = new []
+                        {
+                            new UnitPackage
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Library = "SimpleIdentityServer.Uma.Host",
+                                Version = "3.0.0-rc7",
+                                CategoryId = "store"
+                            }
+                        }
+                    },
+                    // SCIM
+                    new Unit
+                    {
+                        UnitName = "scimhost",
+                        Packages = new []
+                        {
+                            new UnitPackage
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Library = "SimpleIdentityServer.Scim.Host",
+                                Version = "3.0.0-rc7",
+                                CategoryId = "host"
                             }
                         }
                     },
@@ -422,20 +486,6 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                                 CategoryId = "bus"
                             }
                         }
-                    },
-                    new Unit
-                    {
-                        UnitName = "umahost",
-                        Packages = new []
-                        {
-                            new UnitPackage
-                            {
-                                Id = Guid.NewGuid().ToString(),
-                                Library = "SimpleIdentityServer.Uma.Host",
-                                Version = "3.0.0-rc7",
-                                CategoryId = "store"
-                            }
-                        }
                     }
                 });
             }
@@ -448,6 +498,11 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                 dbContext.ProjectUnits.AddRange(new[]
                 {
                     // OPENID
+                    new ProjectUnit
+                    {
+                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        UnitId = "openidhost"
+                    },
                     new ProjectUnit
                     {
                         ProjectId = "OpenIdProvider_3.0.0-rc7",
@@ -469,6 +524,11 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                         UnitId = "openidui"
                     },
                     // EVENT STORE.
+                    new ProjectUnit
+                    {
+                        ProjectId = "EventStore_3.0.0-rc7",
+                        UnitId = "eventstorehost"
+                    },
                     new ProjectUnit
                     {
                         ProjectId = "EventStore_3.0.0-rc7",
@@ -506,6 +566,11 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                         UnitId = "concurrency"
                     },
                     // SCIM
+                    new ProjectUnit
+                    {
+                        ProjectId = "ScimProvider_3.0.0-rc7",
+                        UnitId = "scimhost"
+                    },
                     new ProjectUnit
                     {
                         ProjectId = "ScimProvider_3.0.0-rc7",

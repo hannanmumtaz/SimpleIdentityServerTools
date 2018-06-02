@@ -115,6 +115,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiContrib.Core.Storage.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiContrib.Core.Storage.Redis", "..\IdServer\SimpleIdentityServer\src\Lib\WebApiContrib\WebApiContrib.Core.Storage.Redis\WebApiContrib.Core.Storage.Redis.csproj", "{B5AA2648-7822-430E-809B-DDF5F6C14511}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Authenticate.Basic", "..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Authenticate.Basic\SimpleIdentityServer.Authenticate.Basic.csproj", "{FE6DB9F3-E5B4-491C-855B-673BBA5C42F2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -297,6 +299,10 @@ Global
 		{B5AA2648-7822-430E-809B-DDF5F6C14511}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5AA2648-7822-430E-809B-DDF5F6C14511}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5AA2648-7822-430E-809B-DDF5F6C14511}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE6DB9F3-E5B4-491C-855B-673BBA5C42F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE6DB9F3-E5B4-491C-855B-673BBA5C42F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE6DB9F3-E5B4-491C-855B-673BBA5C42F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE6DB9F3-E5B4-491C-855B-673BBA5C42F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -354,6 +360,7 @@ Global
 		{BF4AC916-6E2B-4F7E-B643-3D15C8929CBB} = {904272C9-6D48-4C44-8D06-FB0954276C91}
 		{A8DAD8FF-6E4F-4D8E-A0D5-A061867B1233} = {904272C9-6D48-4C44-8D06-FB0954276C91}
 		{B5AA2648-7822-430E-809B-DDF5F6C14511} = {904272C9-6D48-4C44-8D06-FB0954276C91}
+		{FE6DB9F3-E5B4-491C-855B-673BBA5C42F2} = {6AAF30A9-D0F6-47F8-9052-EDA10C4EC7C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE45928A-3A95-4F4A-9EF7-E845C4BEA746}

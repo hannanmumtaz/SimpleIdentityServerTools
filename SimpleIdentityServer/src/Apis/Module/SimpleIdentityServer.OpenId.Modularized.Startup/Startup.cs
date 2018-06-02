@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
-using SimpleIdentityServer.Host;
 using SimpleIdentityServer.Module.Loader;
 using System;
 using System.Collections.Generic;
@@ -14,24 +13,10 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
     public class Startup
     {
         private IModuleLoader _moduleLoader;
-        private IdentityServerOptions _options;
         private IHostingEnvironment _env;
 
         public Startup(IHostingEnvironment env)
         {
-            _options = new IdentityServerOptions
-            {
-                Authenticate = new AuthenticateOptions
-                {
-                    CookieName = Constants.CookieName,
-                    ExternalCookieName = Constants.ExternalCookieName
-                },
-                Scim = new ScimOptions
-                {
-                    IsEnabled = true,
-                    EndPoint = "http://localhost:5555/"
-                }
-            };
             _env = env;
             var moduleLoaderFactory = new ModuleLoaderFactory();
             _moduleLoader = moduleLoaderFactory.BuidlerModuleLoader(new ModuleLoaderOptions
@@ -62,7 +47,6 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
             ConfigureLogging(services);
-            services.AddOpenIdApi(_options);
             services.AddLogging();
             services.AddAuthentication(Constants.ExternalCookieName)
                 .AddCookie(Constants.ExternalCookieName)
@@ -74,15 +58,12 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
                     opts.Scope.Add("public_profile");
                     opts.Scope.Add("email");
                 });
-            services.AddAuthentication(Host.Constants.TwoFactorCookieName)
-                .AddCookie(Host.Constants.TwoFactorCookieName);
             services.AddAuthentication(Constants.CookieName)
                 .AddCookie(Constants.CookieName, opts =>
                 {
                     opts.LoginPath = "/Authenticate";
                 });
             var mvcBuilder = services.AddMvc();
-            services.AddAuthenticationWebsite(mvcBuilder, _env);
             _moduleLoader.ConfigureServices(services, mvcBuilder, _env);
         }
 
@@ -113,33 +94,35 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             IHostingEnvironment env,
             ILoggerFactory loggerFactory)
         {
+            UseSerilogLogging(loggerFactory);
+            app.UseAuthentication();
             //1 . Enable CORS.
             app.UseCors("AllowAll");
             // 2. Use static files.
             app.UseStaticFiles();
             // 3. Redirect error to custom pages.
             app.UseStatusCodePagesWithRedirects("~/Error/{0}");
-            // 4. Enable SimpleIdentityServer
-            app.UseOpenIdApi(_options, loggerFactory);
+            // 4. Configure the modules.
+            _moduleLoader.Configure(app);
             // 5. Configure ASP.NET MVC
             app.UseMvc(routes =>
             {
                 routes.MapRoute("Error401Route",
-                    Host.Constants.EndPoints.Get401,
+                    "Error/401",
                     new
                     {
                         controller = "Error",
                         action = "Get401"
                     });
                 routes.MapRoute("Error404Route",
-                    Host.Constants.EndPoints.Get404,
+                    "Error/404",
                     new
                     {
                         controller = "Error",
                         action = "Get404"
                     });
                 routes.MapRoute("Error500Route",
-                    Host.Constants.EndPoints.Get500,
+                    "Error/500",
                     new
                     {
                         controller = "Error",
@@ -150,8 +133,6 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-            UseSerilogLogging(loggerFactory);
-            _moduleLoader.Configure(app);
         }
 
         private void UseSerilogLogging(ILoggerFactory logger)

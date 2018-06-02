@@ -4,6 +4,16 @@
   "name": "EventStore",
   "units": [
     {
+      "name": "eventstorehost",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.EventStore.Host",
+          "version": "3.0.0-rc7",
+          "category": "host"
+        }
+      ]
+    },
+    {
       "name": "eventstorerepository",
       "packages": [
         {

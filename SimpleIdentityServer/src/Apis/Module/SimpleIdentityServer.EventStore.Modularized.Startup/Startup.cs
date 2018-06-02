@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SimpleIdentityServer.EventStore.Host.Extensions;
 using SimpleIdentityServer.Module.Loader;
 using System;
 using System.Collections.Generic;
@@ -34,7 +33,7 @@ namespace SimpleIdentityServer.EventStore.Modularized.Startup
                     "https://www.myget.org/F/advance-ict/api/v3/index.json"
                 },
                 ModuleFeedUri = new Uri("http://localhost:60008/configuration"),
-                ProjectName = "ScimProvider"
+                ProjectName = "EventStore"
             });
             _moduleLoader.ModuleInstalled += ModuleInstalled;
             _moduleLoader.PackageRestored += PackageRestored;
@@ -51,9 +50,8 @@ namespace SimpleIdentityServer.EventStore.Modularized.Startup
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
-            services.AddEventStoreHost();
-            services.AddMvc();
-            _moduleLoader.ConfigureServices(services, null, _env);
+            var mvc = services.AddMvc();
+            _moduleLoader.ConfigureServices(services, mvc, _env);
         }
 
         public void Configure(IApplicationBuilder app,
