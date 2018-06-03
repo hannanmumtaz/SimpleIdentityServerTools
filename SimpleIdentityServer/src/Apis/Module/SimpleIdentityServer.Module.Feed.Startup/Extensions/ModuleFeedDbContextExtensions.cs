@@ -122,7 +122,8 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "WebApiContrib.Core.Storage.Redis",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "cache"
+                                CategoryId = "cache",
+                                Parameters = "RedisCacheInstanceName,RedisCacheConfiguration,RedisCachePort"
                             },
                             new UnitPackage
                             {
@@ -144,7 +145,8 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Host",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "host"
+                                CategoryId = "host",
+                                Parameters = "OpenIdCookieName,OpenIdExternalCookieName,ScimEndpoint,ScimEndpointEnabled"
                             }
                         }
                     },
@@ -165,7 +167,8 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Store.Redis",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "cache"
+                                CategoryId = "cache",
+                                Parameters = "OauthRedisStorageConfiguration,OauthRedisStorageInstanceName,OauthRedisStoragePort"
                             }
                         }
                     },
@@ -179,21 +182,24 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EF.SqlServer",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "OAuthConnectionString"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EF.Postgre",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "OAuthConnectionString"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EF.Sqlite",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "OAuthConnectionString"
                             },
                             new UnitPackage
                             {
@@ -235,28 +241,32 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.Sqlite",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "EventStoreConnectionString"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.Postgre",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "EventStoreConnectionString"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.SqlServer",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "EventStoreConnectionString"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.Handler",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "handler"
+                                CategoryId = "handler",
+                                Parameters = "EventStoreHandlerType"
                             },
                             new UnitPackage
                             {
@@ -299,21 +309,24 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.Postgre",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "EventStoreConnectionString"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.Sqlite",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "EventStoreConnectionString"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.SqlServer",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "EventStoreConnectionString"
                             }
                         }
                     },
@@ -335,7 +348,8 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Uma.Store.Redis",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "cache"
+                                CategoryId = "cache",
+                                Parameters = "UmaRedisStorageConfiguration,UmaRedisStorageInstanceName,UmaRedisStoragePort"
                             }
                         }
                     },
@@ -349,21 +363,24 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Uma.EF.SqlServer",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "UmaConnectionString"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Uma.EF.Postgre",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "UmaConnectionString"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Uma.EF.Sqlite",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "UmaConnectionString"
                             },
                             new UnitPackage
                             {
@@ -420,21 +437,24 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Scim.Db.EF.Postgre",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "ScimConnectionString"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Scim.Db.EF.Sqlite",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "ScimConnectionString"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Scim.Db.EF.SqlServer",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "ScimConnectionString"
                             }
                         }
                     },
@@ -455,21 +475,24 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.Sqlite",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "EventStoreConnectionString"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.Postgre",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "EventStoreConnectionString"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.SqlServer",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "store",
+                                Parameters = "EventStoreConnectionString"
                             },
                             new UnitPackage
                             {

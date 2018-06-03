@@ -7,6 +7,7 @@ namespace SimpleIdentityServer.Module.Feed.Core.Models
         public string Library { get; set; }
         public string Version { get; set; }
         public string CategoryName { get; set; }
+        public IEnumerable<string> Parameters { get; set; }
     }
         
     public class ProjectUnitAggregate

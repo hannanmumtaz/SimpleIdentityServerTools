@@ -23,4 +23,8 @@
     <Reference Include="System.Net.Http.WebRequest" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Apis\Parameter\SimpleIdentityServer.Parameter.Core\SimpleIdentityServer.Parameter.Core.csproj" />
+  </ItemGroup>
+
 </Project>

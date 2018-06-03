@@ -49,7 +49,8 @@ namespace SimpleIdentityServer.Module.Feed.EF.Extensions
             {
                 CategoryName = unitPackage.Category == null ? null : unitPackage.Category.Name,
                 Library = unitPackage.Library,
-                Version = unitPackage.Version
+                Version = unitPackage.Version,
+                Parameters = string.IsNullOrWhiteSpace(unitPackage.Parameters) ? new string[0] : unitPackage.Parameters.Split(',')
             };
         }
     }

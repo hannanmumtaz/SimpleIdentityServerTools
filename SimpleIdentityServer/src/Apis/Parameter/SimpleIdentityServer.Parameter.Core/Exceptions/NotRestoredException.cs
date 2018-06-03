@@ -2,5 +2,14 @@
 {
     public class NotRestoredException : BaseParameterException
     {
+        public NotRestoredException()
+        {
+
+        }
+
+        public NotRestoredException(string message) : base(message)
+        {
+
+        }
     }
 }

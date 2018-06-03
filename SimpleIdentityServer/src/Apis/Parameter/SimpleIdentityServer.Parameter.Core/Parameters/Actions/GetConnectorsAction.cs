@@ -1,6 +1,11 @@
 ﻿namespace SimpleIdentityServer.Parameter.Core.Parameters.Actions
 {
-    internal class GetConnectorsAction
+    public interface IGetConnectorsAction
+    {
+
+    }
+
+    internal class GetConnectorsAction : IGetConnectorsAction
     {
     }
 }

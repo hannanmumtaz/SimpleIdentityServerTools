@@ -1,8 +1,15 @@
-﻿using System;
-
-namespace SimpleIdentityServer.Parameter.Core.Exceptions
+﻿namespace SimpleIdentityServer.Parameter.Core.Exceptions
 {
     public class ConfigurationNotFoundException : BaseParameterException
     {
+        public ConfigurationNotFoundException()
+        {
+
+        }
+
+        public ConfigurationNotFoundException(string message) : base(message)
+        {
+
+        }
     }
 }

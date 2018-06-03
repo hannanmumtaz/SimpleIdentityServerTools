@@ -45,11 +45,21 @@ namespace SimpleIdentityServer.Module.Feed.Host.Extensions
                 throw new ArgumentNullException(nameof(unitPackageAggregate));
             }
 
+            var parameters = new Dictionary<string, string>();
+            if (unitPackageAggregate.Parameters != null)
+            {
+                foreach(var record in unitPackageAggregate.Parameters)
+                {
+                    parameters.Add(record, string.Empty);
+                }
+            }
+
             return new UnitPackageResponse
             {
                 CategoryName = unitPackageAggregate.CategoryName,
                 Library = unitPackageAggregate.Library,
-                Version = unitPackageAggregate.Version
+                Version = unitPackageAggregate.Version,
+                Parameters = parameters
             };
         }
     }
