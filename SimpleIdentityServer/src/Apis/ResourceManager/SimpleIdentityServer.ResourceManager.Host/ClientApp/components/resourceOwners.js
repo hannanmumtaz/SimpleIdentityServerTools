@@ -348,7 +348,6 @@ class ResourceOwners extends Component {
                         </ul>
                     </Grid>
                 </Grid>
-
             </div>
             <div className="card">
                 <div className="header">

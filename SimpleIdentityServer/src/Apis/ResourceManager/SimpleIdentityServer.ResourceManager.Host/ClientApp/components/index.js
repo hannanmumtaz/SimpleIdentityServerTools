@@ -22,6 +22,7 @@ import ScimResources from './scimResources';
 import ViewScimSchema from './viewScimSchema';
 import ViewScimAttribute from './viewScimAttribute';
 import ViewScimResource from './viewScimResource';
+import Settings from './settings';
 
 exports.Dashboard = Dashboard;
 exports.About = About;
@@ -47,3 +48,4 @@ exports.ScimResources = ScimResources;
 exports.ViewScimSchema = ViewScimSchema;
 exports.ViewScimAttribute = ViewScimAttribute;
 exports.ViewScimResource = ViewScimResource;
+exports.Settings = Settings;

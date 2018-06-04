@@ -29,5 +29,7 @@ namespace SimpleIdentityServer.ResourceManager.Common.Responses
         public string ScimEdp { get; set; }
         [DataMember(Name = Constants.ConfigurationResponseNames.HierarchicalresourcesEdp)]
         public string HierarchicalresourcesEdp { get; set; }
+        [DataMember(Name = Constants.ConfigurationResponseNames.ParametersEdp)]
+        public string ParametersEdp { get; set; }
     }
 }

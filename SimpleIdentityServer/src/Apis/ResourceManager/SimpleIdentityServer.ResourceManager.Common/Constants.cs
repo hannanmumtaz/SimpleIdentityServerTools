@@ -31,6 +31,7 @@
             public const string AuthPoliciesEdp = "authpolicies_endpoint";
             public const string ScimEdp = "scim_endpoint";
             public const string HierarchicalresourcesEdp = "hierarchicalresources_endpoint";
+            public const string ParametersEdp = "parameters_endpoint";
         }
     }
 }

@@ -24,6 +24,7 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Controllers
                 AuthPoliciesEdp = $"{issuer}/{Constants.RouteNames.AuthPoliciesController}",
                 ScimEdp = $"{issuer}/{Constants.RouteNames.ScimController}",
                 HierarchicalresourcesEdp = $"{issuer}/{Constants.RouteNames.HierarchicalResourcesController}",
+                ParametersEdp = $"{issuer}/{Constants.RouteNames.ParametersController}"
             };
             return new OkObjectResult(configuration);
         }

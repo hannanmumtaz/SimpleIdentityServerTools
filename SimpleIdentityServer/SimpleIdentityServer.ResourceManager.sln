@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07. UMA", "07. UMA", "{0EE6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04. Website Host", "04. Website Host", "{847E94ED-FF4A-43EE-9D0F-28A5219E3E01}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "09. Other", "09. Other", "{0F3B4FB9-1CD1-405D-A849-3F20A62BC6E4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "10. Other", "10. Other", "{0F3B4FB9-1CD1-405D-A849-3F20A62BC6E4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiContrib.Core.Concurrency", "..\IdServer\SimpleIdentityServer\src\Lib\WebApiContrib\WebApiContrib.Core.Concurrency\WebApiContrib.Core.Concurrency.csproj", "{E6F14E2B-8045-4D36-BDDD-FEF36CA9632F}"
 EndProject
@@ -184,6 +184,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Scim.Startup", "..\IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Startup\SimpleIdentityServer.Scim.Startup.csproj", "{8B56C9D8-BE03-40C3-84FA-ADCF4C183902}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Manager.Auth.Host.Startup", "src\Apis\Manager\SimpleIdentityServer.Manager.Auth.Host.Startup\SimpleIdentityServer.Manager.Auth.Host.Startup.csproj", "{207DF99B-A6B6-4E25-BB56-D204A617DDE7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "09. Parameter", "09. Parameter", "{0236DC8A-90BC-4FA8-B53D-887EAC749B2E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Parameter.Client", "src\Apis\Parameter\SimpleIdentityServer.Parameter.Client\SimpleIdentityServer.Parameter.Client.csproj", "{0B6445C1-5AFE-4E8A-BC8C-6F199A4FA87B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Parameter.Common", "src\Apis\Parameter\SimpleIdentityServer.Parameter.Common\SimpleIdentityServer.Parameter.Common.csproj", "{A8D098DF-8A23-41C7-A0C7-E81622D00008}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -483,6 +489,14 @@ Global
 		{207DF99B-A6B6-4E25-BB56-D204A617DDE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{207DF99B-A6B6-4E25-BB56-D204A617DDE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{207DF99B-A6B6-4E25-BB56-D204A617DDE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B6445C1-5AFE-4E8A-BC8C-6F199A4FA87B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B6445C1-5AFE-4E8A-BC8C-6F199A4FA87B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B6445C1-5AFE-4E8A-BC8C-6F199A4FA87B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B6445C1-5AFE-4E8A-BC8C-6F199A4FA87B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8D098DF-8A23-41C7-A0C7-E81622D00008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8D098DF-8A23-41C7-A0C7-E81622D00008}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8D098DF-8A23-41C7-A0C7-E81622D00008}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8D098DF-8A23-41C7-A0C7-E81622D00008}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -573,6 +587,9 @@ Global
 		{26290AFE-AF23-4ED9-BCC4-DEF5C413340F} = {736DB7E1-6AA9-466A-8470-EFC582B219FA}
 		{8B56C9D8-BE03-40C3-84FA-ADCF4C183902} = {442923F7-F406-476D-B7C2-52892078172C}
 		{207DF99B-A6B6-4E25-BB56-D204A617DDE7} = {442923F7-F406-476D-B7C2-52892078172C}
+		{0236DC8A-90BC-4FA8-B53D-887EAC749B2E} = {4EC3C9B3-7417-4BF9-A9A0-3259BD6A0D5B}
+		{0B6445C1-5AFE-4E8A-BC8C-6F199A4FA87B} = {0236DC8A-90BC-4FA8-B53D-887EAC749B2E}
+		{A8D098DF-8A23-41C7-A0C7-E81622D00008} = {0236DC8A-90BC-4FA8-B53D-887EAC749B2E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E1AD5C7-B8BE-4890-9985-F2BDCAD9425F}

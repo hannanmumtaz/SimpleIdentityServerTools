@@ -450,6 +450,9 @@ class Layout extends Component {
                             {t('manageScimServers')}
                         </MenuItem>
                     ))}
+                    {(!process.env.IS_MANAGE_DISABLED && (
+                        <MenuItem key="/settings" selected={pathName.indexOf('/settings') !== -1} onClick={() => self.navigate('/settings')}>{t('settingsMenuItem')}</MenuItem>
+                    ))}
                     {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
                         <Collapse in={this.state.isScimOpened}>
                             <List>

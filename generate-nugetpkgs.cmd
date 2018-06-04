@@ -6,6 +6,12 @@ dotnet pack --output d:\sidfeeds\ SimpleIdentityServer\src\Apis\Module\SimpleIde
 dotnet pack --output d:\sidfeeds\ SimpleIdentityServer\src\Apis\Module\SimpleIdentityServer.Module.Feed.Common /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\ SimpleIdentityServer\src\Apis\Module\SimpleIdentityServer.Module.Feed.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 
+REM PARAMETERS
+dotnet pack --output d:\sidfeeds\ SimpleIdentityServer\src\Apis\Parameter\SimpleIdentityServer.Parameter.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\ SimpleIdentityServer\src\Apis\Parameter\SimpleIdentityServer.Parameter.Common /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\ SimpleIdentityServer\src\Apis\Parameter\SimpleIdentityServer.Parameter.Core /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\ SimpleIdentityServer\src\Apis\Parameter\SimpleIdentityServer.Parameter.Host /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+
 REM COMMON
 dotnet pack --output d:\sidfeeds\ IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Module /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\ SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Common.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
