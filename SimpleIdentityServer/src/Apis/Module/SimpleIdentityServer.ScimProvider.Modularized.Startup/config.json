@@ -14,6 +14,16 @@
       ]
     },
     {
+      "name": "parametesrapi",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Parameter.Host",
+          "version": "3.0.0-rc7",
+          "category": "host"
+        }
+      ]
+    },
+    {
       "name": "scimrepository",
       "packages": [
         {

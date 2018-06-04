@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.Client;
 using SimpleIdentityServer.Configuration.Client;
+using SimpleIdentityServer.Parameter.Client;
 using SimpleIdentityServer.ResourceManager.Core.Api.AuthPolicies;
 using SimpleIdentityServer.ResourceManager.Core.Api.AuthPolicies.Actions;
 using SimpleIdentityServer.ResourceManager.Core.Api.Claims;
@@ -9,6 +10,8 @@ using SimpleIdentityServer.ResourceManager.Core.Api.Clients;
 using SimpleIdentityServer.ResourceManager.Core.Api.Clients.Actions;
 using SimpleIdentityServer.ResourceManager.Core.Api.HierarchicalResources;
 using SimpleIdentityServer.ResourceManager.Core.Api.HierarchicalResources.Actions;
+using SimpleIdentityServer.ResourceManager.Core.Api.Parameters;
+using SimpleIdentityServer.ResourceManager.Core.Api.Parameters.Actions;
 using SimpleIdentityServer.ResourceManager.Core.Api.Profile;
 using SimpleIdentityServer.ResourceManager.Core.Api.Profile.Actions;
 using SimpleIdentityServer.ResourceManager.Core.Api.ResourceOwners;
@@ -40,6 +43,7 @@ namespace SimpleIdentityServer.ResourceManager.Core
             services.AddUmaClient();
             services.AddScimClient();
             services.AddOpenIdManagerClient();
+            services.AddParameterClient();
             services.AddTransient<IEndpointHelper, EndpointHelper>();
             services.AddTransient<ISearchResourcesetAction, SearchResourcesetAction>();
             services.AddTransient<IResourcesetActions, ResourcesetActions>();
@@ -90,6 +94,9 @@ namespace SimpleIdentityServer.ResourceManager.Core
             services.AddTransient<IDeleteHierarchicalResourcesAction, DeleteHierarchicalResourcesAction>();
             services.AddTransient<IGetHierarchicalResourceAction, GetHierarchicalResourceAction>();
             services.AddTransient<ISearchHierarchicalResourcesAction, SearchHierarchicalResourcesAction>();
+            services.AddTransient<IParameterActions, ParameterActions>();
+            services.AddTransient<IGetParametersAction, GetParametersAction>();
+            services.AddTransient<IUpdateParametersAction, UpdateParametersAction>();
             return services;
         }
 

@@ -10,13 +10,19 @@ import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/D
 import Input, { InputLabel } from 'material-ui/Input';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 
+import Visibility from '@material-ui/icons/Visibility'; 
+
 class Settings extends Component {
 	constructor(props) {
 		super(props);
 		this.refresh = this.refresh.bind(this);
 		this.state = {
 			isLoading: false,
-			modules: []
+			modules: [
+                { name: 'scim' },
+                { name: 'auth' },
+                { name: 'openid'}
+            ]
 		};
 	}
 
@@ -34,6 +40,17 @@ class Settings extends Component {
 		var self = this;
 		const {t} = self.props;
 		var rows = [];
+        self.state.modules.forEach(function(module) {
+            rows.push(
+                <TableRow>
+                    <TableCell>{module.name}</TableCell>
+                    <TableCell>
+                        <IconButton onClick={ () => self.props.history.push('/settings/' + module.name) }><Visibility /></IconButton>
+                    </TableCell>
+                </TableRow>
+            );
+        });
+
 		return (<div className="block">
 			<div className="block-header">
                 <Grid container>

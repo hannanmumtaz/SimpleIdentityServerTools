@@ -21,7 +21,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleIdentityServer.Client;
-using SimpleIdentityServer.Configuration.Client;
 using SimpleIdentityServer.ResourceManager.Host.Stores;
 
 namespace SimpleIdentityServer.ResourceManager.Host
@@ -78,7 +77,6 @@ namespace SimpleIdentityServer.ResourceManager.Host
         {
             services.AddSingleton(Configuration);
             services.AddIdServerClient();
-            services.AddConfigurationClient();
             services.AddTransient<IAccessTokenStore, AccessTokenStore>();
         }
     }

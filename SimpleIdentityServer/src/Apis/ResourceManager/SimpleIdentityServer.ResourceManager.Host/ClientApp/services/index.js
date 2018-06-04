@@ -9,6 +9,7 @@ import ProfileService from './profileService';
 import ClaimService from './claimService';
 import AuthPolicyService from './authPolicyService';
 import ScimService from './scimService';
+import ParameterService from './parameterService';
 
 exports.SessionService = SessionService;
 exports.WebsiteService = WebsiteService;
@@ -21,3 +22,4 @@ exports.ProfileService = ProfileService;
 exports.ClaimService = ClaimService;
 exports.AuthPolicyService = AuthPolicyService;
 exports.ScimService = ScimService;
+exports.ParameterService = ParameterService;

@@ -85,8 +85,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Resour
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.ResourceManager.EF", "src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.EF\SimpleIdentityServer.ResourceManager.EF.csproj", "{EE0102A9-7096-463F-9391-F074E357CF69}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Configuration.Startup", "src\Apis\Configuration\SimpleIdentityServer.Configuration.Startup\SimpleIdentityServer.Configuration.Startup.csproj", "{C635FF6A-6FE0-4994-BEB7-3282617CBFB2}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Manager.Host.Startup", "src\Apis\Manager\SimpleIdentityServer.Manager.Host.Startup\SimpleIdentityServer.Manager.Host.Startup.csproj", "{0771B739-9FE8-4D07-8B2A-A81067D272D0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.ResourceManager.API.Host", "src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.API.Host\SimpleIdentityServer.ResourceManager.API.Host.csproj", "{040717F7-9039-4092-9B4A-3420B2B451A4}"
@@ -309,10 +307,6 @@ Global
 		{EE0102A9-7096-463F-9391-F074E357CF69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE0102A9-7096-463F-9391-F074E357CF69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE0102A9-7096-463F-9391-F074E357CF69}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C635FF6A-6FE0-4994-BEB7-3282617CBFB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C635FF6A-6FE0-4994-BEB7-3282617CBFB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C635FF6A-6FE0-4994-BEB7-3282617CBFB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C635FF6A-6FE0-4994-BEB7-3282617CBFB2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0771B739-9FE8-4D07-8B2A-A81067D272D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0771B739-9FE8-4D07-8B2A-A81067D272D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0771B739-9FE8-4D07-8B2A-A81067D272D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -538,7 +532,6 @@ Global
 		{331AAB1E-3B07-43E6-9AE3-9D136DC0BA7E} = {0F3B4FB9-1CD1-405D-A849-3F20A62BC6E4}
 		{F25F093A-C88E-4233-89C3-8C3F60AAFD3C} = {736DB7E1-6AA9-466A-8470-EFC582B219FA}
 		{EE0102A9-7096-463F-9391-F074E357CF69} = {46443992-2A56-4DF1-92B7-6E4C7EA093FA}
-		{C635FF6A-6FE0-4994-BEB7-3282617CBFB2} = {442923F7-F406-476D-B7C2-52892078172C}
 		{0771B739-9FE8-4D07-8B2A-A81067D272D0} = {442923F7-F406-476D-B7C2-52892078172C}
 		{040717F7-9039-4092-9B4A-3420B2B451A4} = {736DB7E1-6AA9-466A-8470-EFC582B219FA}
 		{0ED43548-2A4E-4AC2-85F8-C4DD843236E0} = {442923F7-F406-476D-B7C2-52892078172C}

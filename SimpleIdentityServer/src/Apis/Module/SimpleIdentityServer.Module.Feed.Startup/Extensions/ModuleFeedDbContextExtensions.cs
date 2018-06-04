@@ -134,6 +134,20 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             }
                         }
                     },
+                    new Unit
+                    {
+                        UnitName = "parametesrapi",
+                        Packages = new []
+                        {
+                            new UnitPackage
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Library = "SimpleIdentityServer.Parameter.Host",
+                                Version = "3.0.0-rc7",
+                                CategoryId = "host"
+                            }
+                        }
+                    },
                     // OPENID
                     new Unit
                     {
@@ -546,6 +560,11 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                         ProjectId = "OpenIdProvider_3.0.0-rc7",
                         UnitId = "openidui"
                     },
+                    new ProjectUnit
+                    {
+                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        UnitId = "parametesrapi"
+                    },
                     // EVENT STORE.
                     new ProjectUnit
                     {
@@ -556,6 +575,11 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     {
                         ProjectId = "EventStore_3.0.0-rc7",
                         UnitId = "eventstorerepository"
+                    },
+                    new ProjectUnit
+                    {
+                        ProjectId = "EventStore_3.0.0-rc7",
+                        UnitId = "parametesrapi"
                     },
                     // UMA
                     new ProjectUnit
@@ -588,6 +612,11 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                         ProjectId = "UmaProvider_3.0.0-rc7",
                         UnitId = "concurrency"
                     },
+                    new ProjectUnit
+                    {
+                        ProjectId = "UmaProvider_3.0.0-rc7",
+                        UnitId = "parametesrapi"
+                    },
                     // SCIM
                     new ProjectUnit
                     {
@@ -608,6 +637,11 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     {
                         ProjectId = "ScimProvider_3.0.0-rc7",
                         UnitId = "scimrepository"
+                    },
+                    new ProjectUnit
+                    {
+                        ProjectId = "ScimProvider_3.0.0-rc7",
+                        UnitId = "parametesrapi"
                     }
                 });
             }
