@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SimpleIdentityServer.Module.Feed.Common.Responses;
 using SimpleIdentityServer.Parameter.Core.Exceptions;
+using SimpleIdentityServer.Parameter.Core.Helpers;
 using SimpleIdentityServer.Parameter.Core.Responses;
 using System.IO;
 
@@ -13,10 +14,17 @@ namespace SimpleIdentityServer.Parameter.Core.Parameters.Actions
 
     internal sealed class GetModulesAction : IGetModulesAction
     {
+        private readonly IDirectoryHelper _directoryHelper;
+
+        public GetModulesAction(IDirectoryHelper directoryHelper)
+        {
+            _directoryHelper = directoryHelper;
+        }
+
         public GetModulesResponse Execute()
         {
             // NOTE : This operation should be called only if the dependencies have been resolved.
-            var currentDirectory = Directory.GetCurrentDirectory();
+            var currentDirectory = _directoryHelper.GetCurrentDirectory();
             var configurationPath = Path.Combine(currentDirectory, Constants.ConfigurationFileName);
             var configurationTemplatePath = Path.Combine(currentDirectory, Constants.ConfigurationTemplateFileName);
             if (!File.Exists(configurationPath))
