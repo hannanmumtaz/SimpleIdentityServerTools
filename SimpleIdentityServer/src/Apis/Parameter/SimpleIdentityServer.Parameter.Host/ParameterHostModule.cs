@@ -32,7 +32,6 @@ namespace SimpleIdentityServer.Parameter.Host
                 throw new ArgumentNullException(nameof(mvcBuilder));
             }
 
-
             var assembly = typeof(ParametersController).Assembly;
             mvcBuilder.AddApplicationPart(assembly);
             services.AddParameterHost();

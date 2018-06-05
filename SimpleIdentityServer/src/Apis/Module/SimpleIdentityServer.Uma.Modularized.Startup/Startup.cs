@@ -63,13 +63,6 @@ namespace SimpleIdentityServer.Uma.Startup
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
-            services.AddAuthentication(OAuth2IntrospectionOptions.AuthenticationScheme)
-                .AddOAuth2Introspection(opts =>
-                {
-                    opts.ClientId = "uma";
-                    opts.ClientSecret = "uma";
-                    opts.WellKnownConfigurationUrl = "http://localhost:60004/.well-known/uma2-configuration";
-                });
             var mvc = services.AddMvc();
             _moduleLoader.ConfigureServices(services, mvc, _env);
         }

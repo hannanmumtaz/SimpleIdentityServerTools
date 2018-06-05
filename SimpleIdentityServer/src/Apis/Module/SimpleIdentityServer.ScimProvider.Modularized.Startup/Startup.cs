@@ -57,13 +57,6 @@ namespace SimpleIdentityServer.ScimProvider.Modularized.Startup
         
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(OAuth2IntrospectionOptions.AuthenticationScheme)
-                .AddOAuth2Introspection(opts =>
-                {
-                    opts.ClientId = "Scim";
-                    opts.ClientSecret = "~V*nH{q4;qL/=8+Z";
-                    opts.WellKnownConfigurationUrl = "http://localhost:60004/.well-known/uma2-configuration";
-                });
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()));

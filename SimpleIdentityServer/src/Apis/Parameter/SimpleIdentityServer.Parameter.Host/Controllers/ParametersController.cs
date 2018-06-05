@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SimpleIdentityServer.Common.Dtos.Responses;
 using SimpleIdentityServer.Parameter.Common.DTOs.Requests;
 using SimpleIdentityServer.Parameter.Core.Exceptions;
@@ -22,6 +23,7 @@ namespace SimpleIdentityServer.Parameter.Host.Controllers
         }
 
         [HttpGet("modules")]
+        [Authorize("get")]
         public IActionResult GetModules()
         {
             var modules = _parameterActions.GetModules();
@@ -30,12 +32,14 @@ namespace SimpleIdentityServer.Parameter.Host.Controllers
         }
 
         [HttpGet("connectors")]
+        [Authorize("get")]
         public IActionResult GetConnectors()
         {
             return new NotFoundResult();
         }
 
         [HttpPut("modules")]
+        [Authorize("add")]
         public IActionResult UpdateModules([FromBody] IEnumerable<UpdateParameterRequest> updateParametersRequest)
         {
             if (updateParametersRequest == null)

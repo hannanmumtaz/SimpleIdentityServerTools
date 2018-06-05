@@ -13,6 +13,11 @@ namespace SimpleIdentityServer.Parameter.Host.Extensions
                 throw new ArgumentNullException(nameof(ISupportRequiredService));
             }
 
+            services.AddAuthorization(opts =>
+            {
+                opts.AddPolicy("get", policy => policy.RequireClaim("scope", "get_parameters"));
+                opts.AddPolicy("add", policy => policy.RequireClaim("scope", "add_parameters"));
+            });
             services.AddParameterCore();
             return services;
         }

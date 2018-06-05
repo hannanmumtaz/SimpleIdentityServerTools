@@ -60,6 +60,10 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new PackageCategory
                     {
                         Name = "host"
+                    },
+                    new PackageCategory
+                    {
+                        Name = "introspect"
                     }
                 });
             }
@@ -105,6 +109,21 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
             {
                 dbContext.Units.AddRange(new[]
                 {
+                    new Unit
+                    {
+                        UnitName = "authentication",
+                        Packages = new []
+                        {
+                            new UnitPackage
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Library = "SimpleIdentityServer.OAuth2Introspection",
+                                Version = "3.0.0-rc7",
+                                CategoryId = "introspect",
+                                Parameters = "OauthIntrospectClientId,OauthIntrospectClientSecret,OauthIntrospectAuthUrl"
+                            }
+                        }
+                    },
                     new Unit
                     {
                         UnitName = "concurrency",
@@ -538,6 +557,11 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new ProjectUnit
                     {
                         ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        UnitId = "authentication"
+                    },
+                    new ProjectUnit
+                    {
+                        ProjectId = "OpenIdProvider_3.0.0-rc7",
                         UnitId = "openidhost"
                     },
                     new ProjectUnit
@@ -569,6 +593,11 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new ProjectUnit
                     {
                         ProjectId = "EventStore_3.0.0-rc7",
+                        UnitId = "authentication"
+                    },
+                    new ProjectUnit
+                    {
+                        ProjectId = "EventStore_3.0.0-rc7",
                         UnitId = "eventstorehost"
                     },
                     new ProjectUnit
@@ -582,6 +611,11 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                         UnitId = "parametesrapi"
                     },
                     // UMA
+                    new ProjectUnit
+                    {
+                        ProjectId = "UmaProvider_3.0.0-rc7",
+                        UnitId = "authentication"
+                    },
                     new ProjectUnit
                     {
                         ProjectId = "UmaProvider_3.0.0-rc7",
@@ -618,6 +652,11 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                         UnitId = "parametesrapi"
                     },
                     // SCIM
+                    new ProjectUnit
+                    {
+                        ProjectId = "ScimProvider_3.0.0-rc7",
+                        UnitId = "authentication"
+                    },
                     new ProjectUnit
                     {
                         ProjectId = "ScimProvider_3.0.0-rc7",
