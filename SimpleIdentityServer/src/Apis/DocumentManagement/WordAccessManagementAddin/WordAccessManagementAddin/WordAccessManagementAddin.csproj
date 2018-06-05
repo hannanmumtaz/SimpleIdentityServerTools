@@ -194,6 +194,7 @@
     <Compile Include="Ribbon.Designer.cs">
       <DependentUpon>Ribbon.cs</DependentUpon>
     </Compile>
+    <Compile Include="Stores\AuthenticationStore.cs" />
     <Compile Include="ThisAddIn.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -205,6 +206,25 @@
     </Compile>
     <AppDesigner Include="Properties\" />
     <None Include="WordAccessManagementAddin_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Client\SimpleIdentityServer.Client.csproj">
+      <Project>{3d5c5fd0-62f4-4cc6-8db5-14d2198c4831}</Project>
+      <Name>SimpleIdentityServer.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Core.Common\SimpleIdentityServer.Core.Common.csproj">
+      <Project>{31ef5813-d2de-4e34-8020-a970cce8075f}</Project>
+      <Name>SimpleIdentityServer.Core.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Core.Jwt\SimpleIdentityServer.Core.Jwt.csproj">
+      <Project>{c1adb19e-bf98-48b5-b758-055e6fabd558}</Project>
+      <Name>SimpleIdentityServer.Core.Jwt</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\IdServer\SimpleIdentityServer\src\Lib\System.Security.Cryptography.Algorithms.Extensions\System.Security.Cryptography.Algorithms.Extensions.csproj">
+      <Project>{b59df624-ccfb-44d9-80be-28a12a4accde}</Project>
+      <Name>System.Security.Cryptography.Algorithms.Extensions</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
