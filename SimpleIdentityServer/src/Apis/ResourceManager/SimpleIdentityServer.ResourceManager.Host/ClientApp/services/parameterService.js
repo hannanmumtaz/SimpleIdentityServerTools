@@ -34,6 +34,7 @@ module.exports = {
                 url: Constants.apiUrl + '/parameters/' + type,
                 method: "PUT",
                 data: data,
+                contentType: 'application/json',
                 headers: {
                 	"Authorization": "Bearer "+ session.token
                 }

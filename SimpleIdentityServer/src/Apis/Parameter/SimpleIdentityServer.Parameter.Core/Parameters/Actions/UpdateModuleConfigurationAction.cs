@@ -82,6 +82,13 @@ namespace SimpleIdentityServer.Parameter.Core.Parameters.Actions
                     continue;
                 }
 
+                projectUnitPackage.Library = updateParameter.LibraryName;
+                if (updateParameter.Parameters == null)
+                {
+                    updateParameter.Parameters = new Dictionary<string, string>();
+                    continue;
+                }
+
                 foreach (var parameter in updateParameter.Parameters)
                 {
                     if (projectUnitPackage.Parameters.ContainsKey(parameter.Key))
@@ -97,7 +104,6 @@ namespace SimpleIdentityServer.Parameter.Core.Parameters.Actions
                         }
 
                         projectUnitPackage.Parameters.Add(parameter.Key, parameter.Value);
-                        projectUnitPackage.Library = updateParameter.LibraryName;
                     }
                 }
             }

@@ -415,7 +415,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Uma.Host",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "store"
+                                CategoryId = "host"
                             }
                         }
                     },
