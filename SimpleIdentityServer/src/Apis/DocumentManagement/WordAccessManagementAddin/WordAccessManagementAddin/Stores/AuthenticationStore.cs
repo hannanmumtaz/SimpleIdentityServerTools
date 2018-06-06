@@ -49,27 +49,24 @@ namespace WordAccessManagementAddin.Stores
         public JwsPayload JwsPayload { get; private set; }
         public event EventHandler Authenticated;
 
-        public static AuthenticationStore ParseDictionary(IEnumerable<KeyValuePair<string, string>> dic)
+        public void Update(IEnumerable<KeyValuePair<string, string>> dic)
         {
             if (dic == null)
             {
                 throw new ArgumentNullException(nameof(dic));
             }
-
-            var instance = new AuthenticationStore();
+            
             var accessTokenKvp= dic.FirstOrDefault(x => x.Key == "access_token");
             var idTokenTokenKvp = dic.FirstOrDefault(x => x.Key == "id_token");
             if (!default(KeyValuePair<string, string>).Equals(accessTokenKvp))
             {
-                instance.AccessToken = accessTokenKvp.Value;
+                AccessToken = accessTokenKvp.Value;
             }
 
             if (!default(KeyValuePair<string, string>).Equals(idTokenTokenKvp))
             {
-                instance.IdentityToken = idTokenTokenKvp.Value;
+                IdentityToken = idTokenTokenKvp.Value;
             }
-            
-            return instance;
         }
     }
 }

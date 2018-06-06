@@ -74,28 +74,28 @@
             this.protectButton.Label = "Protect";
             this.protectButton.Name = "protectButton";
             this.protectButton.ShowImage = true;
-            this.protectButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.OnProtect);
+            this.protectButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.HandleProtect);
             // 
             // unprotectButton
             // 
             this.unprotectButton.Label = "Unprotect";
             this.unprotectButton.Name = "unprotectButton";
             this.unprotectButton.ShowImage = true;
-            this.unprotectButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.OnUnprotect);
+            this.unprotectButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.HandleUnprotect);
             // 
             // loginButton
             // 
             this.loginButton.Label = "Login";
             this.loginButton.Name = "loginButton";
             this.loginButton.ShowImage = true;
-            this.loginButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.OnClickLogin);
+            this.loginButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.HandleLogin);
             // 
             // Ribbon
             // 
             this.Name = "Ribbon";
             this.RibbonType = "Microsoft.Word.Document";
             this.Tabs.Add(this.manageTab);
-            this.Load += new Microsoft.Office.Tools.Ribbon.RibbonUIEventHandler(this.OnLoadRibbon);
+            this.Load += new Microsoft.Office.Tools.Ribbon.RibbonUIEventHandler(this.HandleRibbonLoad);
             this.manageTab.ResumeLayout(false);
             this.manageTab.PerformLayout();
             this.manageGroup.ResumeLayout(false);
