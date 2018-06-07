@@ -18,4 +18,8 @@
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleIdentityServer.DocumentManagement.Core\SimpleIdentityServer.DocumentManagement.Core.csproj" />
+  </ItemGroup>
 </Project>
