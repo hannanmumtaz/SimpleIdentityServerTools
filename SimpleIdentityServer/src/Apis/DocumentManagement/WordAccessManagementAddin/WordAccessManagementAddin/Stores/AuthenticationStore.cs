@@ -10,7 +10,6 @@ namespace WordAccessManagementAddin.Stores
     {
         private static AuthenticationStore _instance;
         private IJwsParser _jwsParser;
-        private string _identityToken;
 
         private AuthenticationStore()
         {
@@ -28,28 +27,13 @@ namespace WordAccessManagementAddin.Stores
         }
 
         public string AccessToken { get; private set; }
-        public string IdentityToken {
-            get
-            {
-                return _identityToken;
-            }
-            set
-            {
-                if (_identityToken != value)
-                {
-                    _identityToken = value;
-                    JwsPayload = _jwsParser.GetPayload(_identityToken);
-                    if (Authenticated != null)
-                    {
-                        Authenticated(this, EventArgs.Empty);
-                    }
-                }
-            }
-        }
+        public string IdentityToken { get; private set; }
         public JwsPayload JwsPayload { get; private set; }
-        public event EventHandler Authenticated;
 
-        public void Update(IEnumerable<KeyValuePair<string, string>> dic)
+        public event EventHandler Authenticated;
+        public event EventHandler Disconnected;
+
+        public void Authenticate(IEnumerable<KeyValuePair<string, string>> dic)
         {
             if (dic == null)
             {
@@ -66,6 +50,22 @@ namespace WordAccessManagementAddin.Stores
             if (!default(KeyValuePair<string, string>).Equals(idTokenTokenKvp))
             {
                 IdentityToken = idTokenTokenKvp.Value;
+                JwsPayload = _jwsParser.GetPayload(IdentityToken);
+                if (Authenticated != null)
+                {
+                    Authenticated(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public void Disconnect()
+        {
+            AccessToken = null;
+            IdentityToken = null;
+            JwsPayload = null;
+            if (Disconnected != null)
+            {
+                Disconnected(this, EventArgs.Empty);
             }
         }
     }

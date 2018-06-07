@@ -1,10 +1,6 @@
-﻿using Microsoft.Office.Interop.Word;
-using Microsoft.Office.Tools.Ribbon;
+﻿using Microsoft.Office.Tools.Ribbon;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
+using WordAccessManagementAddin.Controls;
 using WordAccessManagementAddin.Stores;
 
 namespace WordAccessManagementAddin
@@ -16,24 +12,50 @@ namespace WordAccessManagementAddin
 
         private void HandleRibbonLoad(object sender, RibbonUIEventArgs e)
         {
+            DisplayLogin(true);
             _authenticationStore = AuthenticationStore.Instance();
             _authenticationStore.Authenticated += HandleAuthenticate;
         }
 
         private void HandleAuthenticate(object sender, EventArgs e)
         {
-            var jwsPayload = _authenticationStore.JwsPayload;
-            var givenName = jwsPayload["given_name"];
-            var picture = jwsPayload["picture"];
-            string s = "";
+            DisplayLogin(false);
         }
 
         private void HandleLogin(object sender, RibbonControlEventArgs e)
         {
-            var authForm = new AuthenticateUserControl();
-            authForm.Show();
+            var authenticateUc = new AuthenticateUserControl();
+            authenticateUc.Show();
         }
 
+        private void HandleDisconnect(object sender, RibbonControlEventArgs e)
+        {
+            _authenticationStore.Disconnect();
+            DisplayLogin(true);
+        }
+
+        private void HandleProtect(object sender, RibbonControlEventArgs e)
+        {
+            var protectUc = new ProtectUserControl();
+            protectUc.Show();
+        }
+
+        private void HandleProfile(object sender, RibbonControlEventArgs e)
+        {
+            var profileUc = new ProfileUserControl();
+            profileUc.Show();
+        }
+
+        private void DisplayLogin(bool isDisplayed)
+        {
+            profileButton.Visible = !isDisplayed;
+            protectButton.Visible = !isDisplayed;
+            disconnectButton.Visible = !isDisplayed;
+            loginButton.Visible = isDisplayed;
+        }
+
+
+        /*
         private void HandleProtect(object sender, RibbonControlEventArgs e)
         {
             var activeDocument = Globals.ThisAddIn.Application.ActiveDocument;
@@ -49,7 +71,6 @@ namespace WordAccessManagementAddin
                 {
                     Range range = section.Range;
                     // EXTRACT THE IMAGES.
-                    /*
                     foreach(Microsoft.Office.Interop.Word.InlineShape shape in range.InlineShapes)
                     {
                         if (shape == null || shape.Type != WdInlineShapeType.wdInlineShapePicture)
@@ -61,7 +82,6 @@ namespace WordAccessManagementAddin
                         string s1 = "";
 
                     }
-                    */
                     var encryptedResult = new List<string>();
                     int nbParag = range.Paragraphs.Count;
                     for (int i = 0; i < nbParag; i++)
@@ -92,7 +112,9 @@ namespace WordAccessManagementAddin
                 }
             }
         }
+        */
 
+        /*
         private void HandleUnprotect(object sender, RibbonControlEventArgs e)
         {
             var activeDocument = Globals.ThisAddIn.Application.ActiveDocument;
@@ -137,5 +159,6 @@ namespace WordAccessManagementAddin
                 }
             }
         }
+        */
     }
 }

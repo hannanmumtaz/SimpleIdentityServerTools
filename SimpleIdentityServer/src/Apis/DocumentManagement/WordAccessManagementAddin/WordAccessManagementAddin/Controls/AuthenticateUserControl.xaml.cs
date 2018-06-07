@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using WordAccessManagementAddin.Stores;
 
-namespace WordAccessManagementAddin
+namespace WordAccessManagementAddin.Controls
 {
     public partial class AuthenticateUserControl : Window
     {
@@ -23,11 +23,21 @@ namespace WordAccessManagementAddin
             webBrowser.Navigated += HandleNavigated;
         }
 
+        /// <summary>
+        /// Handle the "navigating" event of the webrowser.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void HandleNavigating(object sender, NavigatingCancelEventArgs e)
         {
             DisplaySpinner(true);
         }
 
+        /// <summary>
+        /// Handle the "navigated" event of the webrowser.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void HandleNavigated(object sender, NavigationEventArgs e)
         {
             HideScriptErrors(webBrowser, true);
@@ -44,10 +54,14 @@ namespace WordAccessManagementAddin
                 var splittedParameter = r.Split('=');
                 return new KeyValuePair<string, string>(splittedParameter[0], splittedParameter[1]);
             });
-            AuthenticationStore.Instance().Update(parameters);
+            AuthenticationStore.Instance().Authenticate(parameters);
             Close();
         }
 
+        /// <summary>
+        /// Display the login spinner.
+        /// </summary>
+        /// <param name="isDisplayed"></param>
         private void DisplaySpinner(bool isDisplayed)
         {
             if (isDisplayed)
@@ -61,8 +75,13 @@ namespace WordAccessManagementAddin
                 webBrowser.Visibility = Visibility.Visible;
             }
         }
-
-        public void HideScriptErrors(WebBrowser wb, bool Hide)
+        
+        /// <summary>
+        /// Hide the script errors.
+        /// </summary>
+        /// <param name="wb"></param>
+        /// <param name="Hide"></param>
+        private static void HideScriptErrors(WebBrowser wb, bool Hide)
         {
             var fiComWebBrowser = typeof(WebBrowser).GetField("_axIWebBrowser2", BindingFlags.Instance | BindingFlags.NonPublic);
             if (fiComWebBrowser == null) return;

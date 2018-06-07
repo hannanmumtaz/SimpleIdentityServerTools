@@ -1,4 +1,8 @@
-﻿namespace WordAccessManagementAddin
+﻿using System;
+using System.IO;
+using System.Windows.Media.Imaging;
+
+namespace WordAccessManagementAddin
 {
     partial class Ribbon : Microsoft.Office.Tools.Ribbon.RibbonBase
     {
@@ -34,13 +38,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Ribbon));
             this.manageTab = this.Factory.CreateRibbonTab();
             this.manageGroup = this.Factory.CreateRibbonGroup();
             this.manageAccess = this.Factory.CreateRibbonMenu();
             this.protectButton = this.Factory.CreateRibbonButton();
-            this.unprotectButton = this.Factory.CreateRibbonButton();
+            this.profileButton = this.Factory.CreateRibbonButton();
             this.loginButton = this.Factory.CreateRibbonButton();
+            this.disconnectButton = this.Factory.CreateRibbonButton();
             this.manageTab.SuspendLayout();
             this.manageGroup.SuspendLayout();
             this.SuspendLayout();
@@ -61,10 +65,12 @@
             // manageAccess
             // 
             this.manageAccess.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.manageAccess.Image = ((System.Drawing.Image)(resources.GetObject("manageAccess.Image")));
+            var imgPath = Directory.GetCurrentDirectory() + @"\Resources\logo.png";
+            this.manageAccess.Image = System.Drawing.Image.FromFile(imgPath);
             this.manageAccess.Items.Add(this.protectButton);
-            this.manageAccess.Items.Add(this.unprotectButton);
+            this.manageAccess.Items.Add(this.profileButton);
             this.manageAccess.Items.Add(this.loginButton);
+            this.manageAccess.Items.Add(this.disconnectButton);
             this.manageAccess.Label = "manageAccess";
             this.manageAccess.Name = "manageAccess";
             this.manageAccess.ShowImage = true;
@@ -76,12 +82,12 @@
             this.protectButton.ShowImage = true;
             this.protectButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.HandleProtect);
             // 
-            // unprotectButton
+            // profileButton
             // 
-            this.unprotectButton.Label = "Unprotect";
-            this.unprotectButton.Name = "unprotectButton";
-            this.unprotectButton.ShowImage = true;
-            this.unprotectButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.HandleUnprotect);
+            this.profileButton.Label = "Profile";
+            this.profileButton.Name = "profileButton";
+            this.profileButton.ShowImage = true;
+            this.profileButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.HandleProfile);
             // 
             // loginButton
             // 
@@ -89,6 +95,12 @@
             this.loginButton.Name = "loginButton";
             this.loginButton.ShowImage = true;
             this.loginButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.HandleLogin);
+            //
+            // disconnectButton
+            //
+            this.disconnectButton.Label = "Disconnect";
+            this.disconnectButton.Name = "disconnectButton";
+            this.disconnectButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.HandleDisconnect);
             // 
             // Ribbon
             // 
@@ -109,8 +121,9 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonTab manageTab;
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup manageGroup;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton protectButton;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton unprotectButton;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton profileButton;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton loginButton;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton disconnectButton;
         internal Microsoft.Office.Tools.Ribbon.RibbonMenu manageAccess;
     }
 
