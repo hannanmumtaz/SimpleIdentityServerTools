@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Media.Imaging;
+using WordAccessManagementAddin.Helpers;
 
 namespace WordAccessManagementAddin
 {
@@ -42,6 +43,8 @@ namespace WordAccessManagementAddin
             this.manageGroup = this.Factory.CreateRibbonGroup();
             this.manageAccess = this.Factory.CreateRibbonMenu();
             this.protectButton = this.Factory.CreateRibbonButton();
+            this.protectOfflineBtn = this.Factory.CreateRibbonButton();
+            this.unprotectOfflineBtn = this.Factory.CreateRibbonButton();
             this.profileButton = this.Factory.CreateRibbonButton();
             this.loginButton = this.Factory.CreateRibbonButton();
             this.disconnectButton = this.Factory.CreateRibbonButton();
@@ -58,7 +61,7 @@ namespace WordAccessManagementAddin
             // 
             // manageGroup
             // 
-            this.manageGroup.Items.Add(this.manageAccess);
+            this.manageGroup.Items.Add (this.manageAccess);
             this.manageGroup.Label = "accessManagement";
             this.manageGroup.Name = "manageGroup";
             // 
@@ -66,11 +69,13 @@ namespace WordAccessManagementAddin
             // 
             this.manageAccess.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             var imgPath = Directory.GetCurrentDirectory() + @"\Resources\logo.png";
-            this.manageAccess.Image = System.Drawing.Image.FromFile(imgPath);
+            this.manageAccess.Image = ResourceHelper.GetImage("WordAccessManagementAddin.Resources.logo.png");
             this.manageAccess.Items.Add(this.protectButton);
             this.manageAccess.Items.Add(this.profileButton);
             this.manageAccess.Items.Add(this.loginButton);
             this.manageAccess.Items.Add(this.disconnectButton);
+            this.manageAccess.Items.Add(this.protectOfflineBtn);
+            this.manageAccess.Items.Add(this.unprotectOfflineBtn);
             this.manageAccess.Label = "manageAccess";
             this.manageAccess.Name = "manageAccess";
             this.manageAccess.ShowImage = true;
@@ -81,6 +86,18 @@ namespace WordAccessManagementAddin
             this.protectButton.Name = "protectButton";
             this.protectButton.ShowImage = true;
             this.protectButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.HandleProtect);
+            //
+            // protectOfflineBtn
+            //
+            this.protectOfflineBtn.Label = "ProtectOffline";
+            this.protectOfflineBtn.Name = "protectOffline";
+            this.protectOfflineBtn.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.HandleProtectOffline);
+            //
+            // protectOfflineBtn
+            //
+            this.unprotectOfflineBtn.Label = "UnprotectOffline";
+            this.unprotectOfflineBtn.Name = "unprotectOffline";
+            this.unprotectOfflineBtn.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.HandleUnprotectOffline);
             // 
             // profileButton
             // 
@@ -124,6 +141,8 @@ namespace WordAccessManagementAddin
         internal Microsoft.Office.Tools.Ribbon.RibbonButton profileButton;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton loginButton;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton disconnectButton;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton protectOfflineBtn;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton unprotectOfflineBtn;
         internal Microsoft.Office.Tools.Ribbon.RibbonMenu manageAccess;
     }
 

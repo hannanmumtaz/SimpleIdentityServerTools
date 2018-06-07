@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
+using WordAccessManagementAddin.Helpers;
 
 namespace WordAccessManagementAddin.Controls.Converters
 {
@@ -14,8 +15,13 @@ namespace WordAccessManagementAddin.Controls.Converters
                 return null;
             }
 
-            var uri = new Uri(value.ToString(), UriKind.RelativeOrAbsolute);
-            return new BitmapImage(uri);
+            Uri uri;
+            if (Uri.TryCreate(value.ToString(), UriKind.RelativeOrAbsolute, out uri))
+            {
+                return new BitmapImage(uri);
+            }
+            return ResourceHelper.GetBitmapImage(value.ToString());
+
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

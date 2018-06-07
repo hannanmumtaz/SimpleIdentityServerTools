@@ -43,14 +43,13 @@ namespace WordAccessManagementAddin.Controls.Controllers
             var picture = TryGetKey(_store.JwsPayload, SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.Picture);
             if (string.IsNullOrWhiteSpace(picture))
             {
-                var currentDirectory = Directory.GetCurrentDirectory();
                 if (gender == "female")
                 {
-                    picture = currentDirectory + @"Resources\female.png";
+                    picture =  "WordAccessManagementAddin.Resources.female.png";
                 }
                 else
                 {
-                    picture = currentDirectory + @"Resources\male.png";
+                    picture = "WordAccessManagementAddin.Resources.male.png";
                 }
             }
 
