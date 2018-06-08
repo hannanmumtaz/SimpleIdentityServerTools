@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>SimpleIdentityServer.DocumentManagement.Client Class Library</Description>
+    <Authors>thierry habart</Authors>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <AssemblyName>SimpleIdentityServer.DocumentManagement.Client</AssemblyName>
+    <PackageId>SimpleIdentityServer.DocumentManagement.Client</PackageId>
+    <RootNamespace>SimpleIdentityServer.DocumentManagement.Client</RootNamespace>
+  </PropertyGroup>
+  
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\SimpleIdentityServer.Common.Client\SimpleIdentityServer.Common.Client.csproj" />
+    <ProjectReference Include="..\SimpleIdentityServer.DocumentManagement.Common\SimpleIdentityServer.DocumentManagement.Common.csproj" />
+  </ItemGroup>
+</Project>

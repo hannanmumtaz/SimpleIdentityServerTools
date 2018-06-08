@@ -39,8 +39,8 @@ namespace SimpleIdentityServer.DocumentManagement.Startup
             {
                 OAuth = new OAuthOptions
                 {
-                    ClientId = "",
-                    ClientSecret = "",
+                    ClientId = "DocumentManagementApi",
+                    ClientSecret = "QZhq68aE44BmYEX9",
                     WellKnownConfiguration = "http://localhost:60004/.well-known/uma2-configuration"
                 }
             });
