@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.DocumentManagement.Core.Aggregates;
 using SimpleIdentityServer.DocumentManagement.Core.Repositories;
 using SimpleIdentityServer.DocumentManagement.EF.Extensions;
+using System;
+using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.DocumentManagement.EF.Repositories
 {
@@ -35,6 +35,8 @@ namespace SimpleIdentityServer.DocumentManagement.EF.Repositories
                     }
 
                     var newRecord = document.ToModel();
+                    newRecord.CreateDateTime = DateTime.UtcNow;
+                    newRecord.UpdateDateTime = DateTime.UtcNow;
                     context.OfficeDocuments.Add(newRecord);
                     await context.SaveChangesAsync().ConfigureAwait(false);
                     return true;

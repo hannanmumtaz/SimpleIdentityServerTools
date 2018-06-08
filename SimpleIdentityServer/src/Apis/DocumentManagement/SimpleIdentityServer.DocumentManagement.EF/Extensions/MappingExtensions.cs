@@ -18,6 +18,7 @@ namespace SimpleIdentityServer.DocumentManagement.EF.Extensions
                 Id = document.Id,
                 Subject = document.Subject,
                 UmaResourceId = document.UmaResourceId,
+                UmaPolicyId = document.UmaPolicyId,
                 UpdateDateTime = document.UpdateDateTime,
                 CreateDateTime = document.CreateDateTime,
                 PublicKey = document.PublicKey
@@ -36,6 +37,7 @@ namespace SimpleIdentityServer.DocumentManagement.EF.Extensions
                 Id = document.Id,
                 Subject = document.Subject,
                 UmaResourceId = document.UmaResourceId,
+                UmaPolicyId = document.UmaPolicyId,
                 UpdateDateTime = document.UpdateDateTime,
                 CreateDateTime = document.CreateDateTime,
                 PublicKey = document.PublicKey

@@ -13,6 +13,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.0.3" />
   </ItemGroup> 
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
@@ -22,5 +23,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\SimpleIdentityServer.Common.Dtos\SimpleIdentityServer.Common.Dtos.csproj" />
+    <ProjectReference Include="..\SimpleIdentityServer.DocumentManagement.Common\SimpleIdentityServer.DocumentManagement.Common.csproj" />
+    <ProjectReference Include="..\SimpleIdentityServer.DocumentManagement.Core\SimpleIdentityServer.DocumentManagement.Core.csproj" />
+    <ProjectReference Include="..\SimpleIdentityServer.DocumentManagement.EF.InMemory\SimpleIdentityServer.DocumentManagement.EF.InMemory.csproj" />
   </ItemGroup>
 </Project>
