@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.Client;
+using SimpleIdentityServer.Core.Jwt;
 using SimpleIdentityServer.DocumentManagement.Api.Extensions;
 using SimpleIdentityServer.DocumentManagement.Core.Extensions;
 using SimpleIdentityServer.Uma.Client;
@@ -23,11 +24,12 @@ namespace SimpleIdentityServer.DocumentManagement.Api
 
             services.AddIdServerClient();
             services.AddUmaClient();
+            services.AddSimpleIdentityServerJwt();
             services.AddAuthorization(opts =>
             {
                 opts.AddPolicy("connected", policy => policy.RequireAuthenticatedUser());
             });
-            services.AddSingleton(options.OAuth);
+            services.AddSingleton(options);
             services.AddDocumentManagementCore();
             return services;
         }

@@ -4,7 +4,11 @@ using SimpleIdentityServer.Common.Dtos.Responses;
 using SimpleIdentityServer.DocumentManagement.Client.Responses;
 using SimpleIdentityServer.DocumentManagement.Common.DTOs.Responses;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
@@ -52,25 +56,14 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
             {
                 httpResponse.EnsureSuccessStatusCode();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                if (!string.IsNullOrWhiteSpace(json))
-                {
-                    return new GetOfficeDocumentResponse
-                    {
-                        ContainsError = true,
-                        Error = new ErrorResponse
-                        {
-                            Code = "internal",
-                            Message = ex.Message
-                        }
-                    };
-                }
-
                 return new GetOfficeDocumentResponse
                 {
                     ContainsError = true,
-                    Error = JsonConvert.DeserializeObject<ErrorResponse>(json)
+                    UmaResourceId = TryGetValue(httpResponse.Headers, "UmaResource"),
+                    UmaWellKnownConfiguration = TryGetValue(httpResponse.Headers, "UmaWellKnownUrl"),
+                    Error = TryGetError(json)
                 };
             }
 
@@ -79,6 +72,34 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
                 ContainsError = false,
                 OfficeDocument = JsonConvert.DeserializeObject<OfficeDocumentResponse>(json)
             };
+        }
+
+        private static string TryGetValue(HttpResponseHeaders header, string name)
+        {
+            IEnumerable<string> values;
+            if (header.TryGetValues(name, out values))
+            {
+                return values.First();
+            }
+
+            return null;
+        }
+
+        private static ErrorResponse TryGetError(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return null;
+            }
+
+            try
+            {
+                return JsonConvert.DeserializeObject<ErrorResponse>(json);
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

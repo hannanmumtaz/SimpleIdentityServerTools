@@ -20,8 +20,9 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Extensions
             return new OfficeDocumentResponse
             {
                 Id = document.Id,
-                PrivateKey = document.PrivateKey,
-                PublicKey = document.PublicKey,
+                EncAlg = (OfficeDocumentEncAlgorithms?)document.EncAlg,
+                EncPassword = document.EncPassword,
+                EncSalt = document.EncSalt,
                 CreateDateTime = document.CreateDateTime,
                 UpdateDateTime = document.UpdateDateTime
             };
@@ -50,8 +51,9 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Extensions
             return new OfficeDocumentAggregate
             {
                 Id = request.Id,
-                PrivateKey = request.PrivateKey,
-                PublicKey = request.PublicKey
+                EncAlg = (EncAlgorithms?)request.EncAlg,
+                EncPassword = request.EncPassword,
+                EncSalt = request.EncSalt
             };
         }
 

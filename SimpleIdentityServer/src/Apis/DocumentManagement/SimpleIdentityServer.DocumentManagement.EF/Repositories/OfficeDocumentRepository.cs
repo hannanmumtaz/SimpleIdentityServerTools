@@ -29,7 +29,7 @@ namespace SimpleIdentityServer.DocumentManagement.EF.Repositories
                 using (var context = serviceScope.ServiceProvider.GetService<DocumentManagementDbContext>())
                 {
                     var rec = await context.OfficeDocuments.FirstOrDefaultAsync(p => p.Id == document.Id).ConfigureAwait(false);
-                    if (rec == null)
+                    if (rec != null)
                     {
                         return false;
                     }

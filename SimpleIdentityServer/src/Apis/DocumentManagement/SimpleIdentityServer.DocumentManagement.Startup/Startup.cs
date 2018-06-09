@@ -7,6 +7,7 @@ using SimpleIdentityServer.DocumentManagement.Api;
 using SimpleIdentityServer.DocumentManagement.Api.Extensions;
 using SimpleIdentityServer.DocumentManagement.EF.InMemory;
 using SimpleIdentityServer.UserInfoIntrospection;
+using SimpleIdentityServer.Common.TokenStore.InMemory;
 
 namespace SimpleIdentityServer.DocumentManagement.Startup
 {
@@ -34,8 +35,9 @@ namespace SimpleIdentityServer.DocumentManagement.Startup
                 {
                     opts.WellKnownConfigurationUrl = "http://localhost:60000/.well-known/openid-configuration";
                 });
+            services.AddTokenStoreInMemory();
             services.AddDocumentManagementEFInMemory();
-            services.AddDocumentManagementHost(new DocumentManagementApiOptions
+            services.AddDocumentManagementHost(new DocumentManagementApiOptions("http://localhost:60000/.well-known/openid-configuration")
             {
                 OAuth = new OAuthOptions
                 {
@@ -49,6 +51,7 @@ namespace SimpleIdentityServer.DocumentManagement.Startup
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.UseAuthentication();
             app.UseCors("AllowAll");
             loggerFactory.AddConsole();
             app.UseStatusCodePages();

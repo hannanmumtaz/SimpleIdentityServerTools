@@ -9,11 +9,13 @@
 
     public class DocumentManagementApiOptions
     {
-        public DocumentManagementApiOptions()
+        public DocumentManagementApiOptions(string openIdWellKnownConfiguration)
         {
             OAuth = new OAuthOptions();
+            OpenIdWellKnownConfiguration = openIdWellKnownConfiguration;
         }
 
         public OAuthOptions OAuth { get; set; }
+        public string OpenIdWellKnownConfiguration { get; private set; }
     }
 }

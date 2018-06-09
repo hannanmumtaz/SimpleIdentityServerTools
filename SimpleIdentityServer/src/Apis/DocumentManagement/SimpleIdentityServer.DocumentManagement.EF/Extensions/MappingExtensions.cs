@@ -21,7 +21,9 @@ namespace SimpleIdentityServer.DocumentManagement.EF.Extensions
                 UmaPolicyId = document.UmaPolicyId,
                 UpdateDateTime = document.UpdateDateTime,
                 CreateDateTime = document.CreateDateTime,
-                PublicKey = document.PublicKey
+                EncAlg = (EncAlgorithms)document.EncAlg,
+                EncPassword = document.EncPassword,
+                EncSalt = document.EncSalt
             };
         }
 
@@ -40,7 +42,9 @@ namespace SimpleIdentityServer.DocumentManagement.EF.Extensions
                 UmaPolicyId = document.UmaPolicyId,
                 UpdateDateTime = document.UpdateDateTime,
                 CreateDateTime = document.CreateDateTime,
-                PublicKey = document.PublicKey
+                EncAlg = (int)document.EncAlg,
+                EncPassword = document.EncPassword,
+                EncSalt = document.EncSalt
             };
         }
     }

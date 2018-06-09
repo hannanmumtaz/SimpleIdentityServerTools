@@ -18,9 +18,9 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
     public class OfficeDocumentsController : Controller
     {
         private readonly IOfficeDocumentActions _officeDocumentActions;
-        private readonly OAuthOptions _options;
+        private readonly DocumentManagementApiOptions _options;
 
-        public OfficeDocumentsController(IOfficeDocumentActions officeDocumentActions, OAuthOptions options)
+        public OfficeDocumentsController(IOfficeDocumentActions officeDocumentActions, DocumentManagementApiOptions options)
         {
             _officeDocumentActions = officeDocumentActions;
             _options = options;
@@ -87,7 +87,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             {
                 var parameter = request.ToParameter();
                 parameter.Subject = subject;
-                await _officeDocumentActions.Add(request.ToParameter(), GetAuthenticateParameter(_options));
+                await _officeDocumentActions.Add(_options.OpenIdWellKnownConfiguration, parameter, GetAuthenticateParameter(_options));
                 return new OkResult();
             }
             catch (BaseDocumentManagementApiException ex)
@@ -109,15 +109,21 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             }
 
             string accessToken;
-            if (!TryGetAccessToken(out accessToken))
-            {
-                return new UnauthorizedResult();
-            }
-
+            TryGetAccessToken(out accessToken);
             try
             {
                 var result = await _officeDocumentActions.Get(id, accessToken, GetAuthenticateParameter(_options));
                 return new OkObjectResult(result.ToDto());
+            }
+            catch(NoUmaAccessTokenException ex)
+            {
+                Response.Headers.Add("UmaResource", ex.UmaResourceId);
+                Response.Headers.Add("UmaWellKnownUrl", ex.WellKnownConfiguration);
+                return new UnauthorizedResult();
+            }
+            catch(NotAuthorizedException ex)
+            {
+                return GetError(ex.Code, ex.Message, HttpStatusCode.Unauthorized);
             }
             catch(DocumentNotFoundException)
             {
@@ -150,7 +156,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             }
 
             var splittedAuthValue = authValue.Split(' ');
-            if (splittedAuthValue.Count() != 2 || splittedAuthValue[0] == "Bearer")
+            if (splittedAuthValue.Count() != 2 || splittedAuthValue[0] != "Bearer")
             {
                 return false;
             }
@@ -165,14 +171,8 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             {
                 return null;
             }
-
-            var identity = User.Claims as ClaimsIdentity;
-            if (identity == null)
-            {
-                return null;
-            }
-
-            var subjectClaim = identity.Claims.FirstOrDefault(c => c.Type == "sub");
+            
+            var subjectClaim = User.Claims.FirstOrDefault(c => c.Type == "sub");
             if (subjectClaim == null)
             {
                 return null;
@@ -181,7 +181,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             return subjectClaim.Value;
         }
 
-        private static IActionResult GetError(string code, string message)
+        private static IActionResult GetError(string code, string message, HttpStatusCode httpStatusCode = HttpStatusCode.InternalServerError)
         {
             var error = new ErrorResponse
             {
@@ -190,17 +190,17 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             };
             return new JsonResult(error)
             {
-                StatusCode = (int)HttpStatusCode.InternalServerError
+                StatusCode = (int)httpStatusCode
             };
         }
 
-        private static AuthenticateParameter GetAuthenticateParameter(OAuthOptions options)
+        private static AuthenticateParameter GetAuthenticateParameter(DocumentManagementApiOptions options)
         {
             return new AuthenticateParameter
             {
-                ClientId = options.ClientId,
-                ClientSecret = options.ClientSecret,
-                WellKnownConfigurationUrl = options.WellKnownConfiguration
+                ClientId = options.OAuth.ClientId,
+                ClientSecret = options.OAuth.ClientSecret,
+                WellKnownConfigurationUrl = options.OAuth.WellKnownConfiguration
             };
         }
     }

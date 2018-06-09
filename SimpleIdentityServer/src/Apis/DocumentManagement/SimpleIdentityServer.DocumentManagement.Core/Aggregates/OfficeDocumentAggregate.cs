@@ -2,6 +2,10 @@
 
 namespace SimpleIdentityServer.DocumentManagement.Core.Aggregates
 {
+    public enum EncAlgorithms
+    {
+        AES
+    }
     public class OfficeDocumentAggregate
     {
         public OfficeDocumentAggregate()
@@ -9,24 +13,19 @@ namespace SimpleIdentityServer.DocumentManagement.Core.Aggregates
 
         }
 
-        public OfficeDocumentAggregate(string id, string subject, string publicKey)
+        public OfficeDocumentAggregate(string id, string subject, EncAlgorithms? encAlg, string password, string salt)
         {
             Id = id;
             Subject = subject;
-            PublicKey = publicKey;
-        }
-
-        public OfficeDocumentAggregate(string id, string subject, string publicKey, string privateKey)
-        {
-            Id = id;
-            Subject = subject;
-            PublicKey = publicKey;
-            PrivateKey = privateKey;
+            EncAlg = encAlg;
+            EncPassword = password;
+            EncSalt = salt;
         }
 
         public string Id { get; set; }
-        public string PublicKey { get; set; }
-        public string PrivateKey { get; set; }
+        public EncAlgorithms? EncAlg { get; set; }
+        public string EncPassword { get; set; }
+        public string EncSalt { get; set; }
         public string UmaResourceId { get; set; }
         public string UmaPolicyId { get; set; }
         public string Subject { get; set; }

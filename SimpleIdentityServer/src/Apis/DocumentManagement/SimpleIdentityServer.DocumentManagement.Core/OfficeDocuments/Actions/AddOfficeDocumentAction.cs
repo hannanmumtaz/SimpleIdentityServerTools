@@ -2,22 +2,19 @@
 using SimpleIdentityServer.Common.TokenStore;
 using SimpleIdentityServer.DocumentManagement.Core.Aggregates;
 using SimpleIdentityServer.DocumentManagement.Core.Exceptions;
-using SimpleIdentityServer.DocumentManagement.Core.Extensions;
 using SimpleIdentityServer.DocumentManagement.Core.Parameters;
 using SimpleIdentityServer.DocumentManagement.Core.Repositories;
 using SimpleIdentityServer.Uma.Common.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
 {
     public interface IAddOfficeDocumentAction
     {
-        Task<bool> Execute(OfficeDocumentAggregate document, AuthenticateParameter authenticateParameter);
+        Task<bool> Execute(string openIdWellKnownConfiguration, OfficeDocumentAggregate document, AuthenticateParameter authenticateParameter);
     }
 
     internal sealed class AddOfficeDocumentAction : IAddOfficeDocumentAction
@@ -33,8 +30,13 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
             _tokenStore = tokenStore;
         }
 
-        public async Task<bool> Execute(OfficeDocumentAggregate document, AuthenticateParameter authenticateParameter)
+        public async Task<bool> Execute(string openidWellKnownConfiguration, OfficeDocumentAggregate document, AuthenticateParameter authenticateParameter)
         {
+            if (string.IsNullOrWhiteSpace(openidWellKnownConfiguration))
+            {
+                throw new ArgumentNullException(nameof(openidWellKnownConfiguration));
+            }
+
             if (document == null)
             {
                 throw new ArgumentNullException(nameof(document));
@@ -83,7 +85,8 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
                                 Value = document.Subject
                             }
                         },
-                        Scopes = Constants.DEFAULT_SCOPES.ToList()
+                        Scopes = Constants.DEFAULT_SCOPES.ToList(),
+                        OpenIdProvider = openidWellKnownConfiguration
                     }
                 }
             }, authenticateParameter.WellKnownConfigurationUrl, grantedToken.AccessToken);
@@ -92,8 +95,15 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
                 throw new InternalDocumentException("internal", "uma_policy_cannot_be_created");
             }
 
-            officeDocument.UmaResourceId = resource.Id;
-            officeDocument.UmaPolicyId = policy.PolicyId;
+            officeDocument = new OfficeDocumentAggregate
+            {
+                Id = document.Id,
+                EncAlg = document.EncAlg,
+                EncSalt = document.EncSalt,
+                EncPassword = document.EncPassword,
+                UmaResourceId = resource.Id,
+                UmaPolicyId = policy.PolicyId
+            };
             if (!await _officeDocumentRepository.Add(officeDocument))
             {
                 throw new InternalDocumentException("internal", "cannot_update_document");
@@ -118,48 +128,19 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
                 throw new ArgumentNullException(nameof(document.Subject));
             }
 
-            if (string.IsNullOrWhiteSpace(document.PublicKey))
+            if (document.EncAlg == null)
             {
-                throw new ArgumentNullException(nameof(document.PublicKey));
-            }            
-            
-            try
-            {
-                CheckXml(document.PublicKey);
-            }
-            catch(Exception)
-            {
-                throw new InternalDocumentException("internal", "invalid_public_key");
+                throw new ArgumentNullException(nameof(document.EncAlg));
             }
 
-            if (!string.IsNullOrWhiteSpace(document.PrivateKey))
+            if (string.IsNullOrWhiteSpace(document.EncPassword))
             {
-                try
-                {
-                    CheckXml(document.PrivateKey);
-                }
-                catch (Exception)
-                {
-                    throw new InternalDocumentException("internal", "invalid_private_key");
-                }
+                throw new ArgumentNullException(nameof(document.EncPassword));
             }
-        }
 
-        private static void CheckXml(string xml)
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (string.IsNullOrWhiteSpace(document.EncSalt))
             {
-                using (var rsa = new RSACryptoServiceProvider())
-                {
-                    rsa.FromXmlStringCore(xml);
-                }
-            }
-            else
-            {
-                using (var rsa = new RSAOpenSsl())
-                {
-                    rsa.FromXmlStringCore(xml);
-                }
+                throw new ArgumentNullException(nameof(document.EncSalt));
             }
         }
     }

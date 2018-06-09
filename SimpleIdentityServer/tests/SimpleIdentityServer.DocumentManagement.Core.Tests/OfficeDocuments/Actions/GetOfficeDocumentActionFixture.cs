@@ -21,7 +21,6 @@ namespace SimpleIdentityServer.DocumentManagement.Core.Tests.OfficeDocuments.Act
             // ACTS & ASSERTS
             await Assert.ThrowsAsync<ArgumentNullException>(() => getOfficeDocumentAction.Execute(null, null, null));
             await Assert.ThrowsAsync<ArgumentNullException>(() => getOfficeDocumentAction.Execute("documentId", null, null));
-            await Assert.ThrowsAsync<ArgumentNullException>(() => getOfficeDocumentAction.Execute("documentId", "accessToken", null));
         }
 
         [Fact]
@@ -33,7 +32,22 @@ namespace SimpleIdentityServer.DocumentManagement.Core.Tests.OfficeDocuments.Act
             var getOfficeDocumentAction = new GetOfficeDocumentAction(officeDocumentRepositoryStub.Object, null, null);
 
             // ACT
-            var exception = await Assert.ThrowsAsync<DocumentNotFoundException>(() => getOfficeDocumentAction.Execute("documentId", "accessToken", new AuthenticateParameter()));
+            var exception = await Assert.ThrowsAsync<DocumentNotFoundException>(() => getOfficeDocumentAction.Execute("documentId", null, new AuthenticateParameter()));
+
+            // ASSERTS
+            Assert.NotNull(exception);
+        }
+
+        [Fact]
+        public async Task WhenNoUmaAccessTokenIsPassedThenExceptionIsThrown()
+        {
+            // ARRANGE
+            var officeDocumentRepositoryStub = new Mock<IOfficeDocumentRepository>();
+            officeDocumentRepositoryStub.Setup(o => o.Get(It.IsAny<string>())).Returns(Task.FromResult(new OfficeDocumentAggregate { UmaResourceId = "uma" }));
+            var getOfficeDocumentAction = new GetOfficeDocumentAction(officeDocumentRepositoryStub.Object, null, null);
+
+            // ACT
+            var exception = await Assert.ThrowsAsync<NoUmaAccessTokenException>(() => getOfficeDocumentAction.Execute("documentId", null, new AuthenticateParameter()));
 
             // ASSERTS
             Assert.NotNull(exception);

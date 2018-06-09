@@ -7,7 +7,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
 {
     public interface IOfficeDocumentActions
     {
-        Task<bool> Add(OfficeDocumentAggregate document, AuthenticateParameter authenticateParameter);
+        Task<bool> Add(string openidWellKnownConfiguration, OfficeDocumentAggregate document, AuthenticateParameter authenticateParameter);
         Task<OfficeDocumentAggregate> Get(string documentId, string accessToken, AuthenticateParameter authenticateParameter);
         Task<bool> Update(string subject, string documentId, UpdateOfficeDocumentParameter parameter, AuthenticateParameter authenticateParameter);
     }
@@ -25,9 +25,9 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
             _updateOfficeDocumentAction = updateOfficeDocumentAction;
         }
 
-        public Task<bool> Add(OfficeDocumentAggregate document, AuthenticateParameter authenticateParameter)
+        public Task<bool> Add(string openidWellKnownConfiguration, OfficeDocumentAggregate document, AuthenticateParameter authenticateParameter)
         {
-            return _addOfficeDocumentAction.Execute(document, authenticateParameter);
+            return _addOfficeDocumentAction.Execute(openidWellKnownConfiguration, document, authenticateParameter);
         }
 
         public Task<OfficeDocumentAggregate> Get(string documentId, string accessToken, AuthenticateParameter authenticateParameter)
