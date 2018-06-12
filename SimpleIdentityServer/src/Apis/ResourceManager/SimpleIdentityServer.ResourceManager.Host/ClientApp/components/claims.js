@@ -125,20 +125,24 @@ class Claims extends Component {
     * Execute when the page has changed.
     */
     handleChangePage(evt, page) {
-        this.setState({
+        var self = this;
+        self.setState({
             page: page
+        }, function() {
+            self.refreshData();            
         });
-        this.refreshData();
     }
 
     /**
     * Execute when the number of records has changed.
     */
     handleChangeRowsPage(evt) {
-        this.setState({
+        var self = this;
+        self.setState({
             pageSize: evt.target.value
+        }, function() {
+            self.refreshData();
         });
-        this.refreshData();
     }
 
     /**
