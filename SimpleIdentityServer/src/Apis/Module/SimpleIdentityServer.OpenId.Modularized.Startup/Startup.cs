@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,7 @@ using Serilog.Events;
 using SimpleIdentityServer.Module.Loader;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SimpleIdentityServer.OpenId.Modularized.Startup
 {
@@ -14,6 +16,8 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
     {
         private IModuleLoader _moduleLoader;
         private IHostingEnvironment _env;
+        private IServiceCollection _services;
+        private IApplicationBuilder _app;
 
         public Startup(IHostingEnvironment env)
         {
@@ -35,14 +39,19 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             _moduleLoader.ModuleInstalled += ModuleInstalled;
             _moduleLoader.PackageRestored += PackageRestored;
             _moduleLoader.ModulesLoaded += ModulesLoaded;
+            _moduleLoader.ConnectorsLoaded += HandleConnectorsLoaded;
             _moduleLoader.ModuleCannotBeInstalled += ModuleCannotBeInstalled;
+            _moduleLoader.ConnectorsChanged += HandleConnectorsChanged;
             _moduleLoader.Initialize();
             _moduleLoader.RestorePackages().Wait();
+            _moduleLoader.RestoreConnectors().Wait();
             _moduleLoader.LoadModules();
+            _moduleLoader.WatchConfigurationFileChanges();
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            _services = services;
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
@@ -50,21 +59,12 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             services.AddLogging();
             var mvcBuilder = services.AddMvc();
             _moduleLoader.ConfigureServices(services, mvcBuilder, _env);
-            services.AddAuthentication(Constants.ExternalCookieName)
-                .AddCookie(Constants.ExternalCookieName)
-                .AddFacebook(opts =>
-                {
-                    opts.ClientId = "569242033233529";
-                    opts.ClientSecret = "12e0f33817634c0a650c0121d05e53eb";
-                    opts.SignInScheme = Constants.ExternalCookieName;
-                    opts.Scope.Add("public_profile");
-                    opts.Scope.Add("email");
-                });
             services.AddAuthentication(Constants.CookieName)
                 .AddCookie(Constants.CookieName, opts =>
                 {
                     opts.LoginPath = "/Authenticate";
-                });
+                });            
+            _moduleLoader.LoadConnectors(); // WHEN THE FILE HAS CHANGED THEN RELOAD THE CONNECTORS.
         }
 
         private void ConfigureLogging(IServiceCollection services)
@@ -94,6 +94,7 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             IHostingEnvironment env,
             ILoggerFactory loggerFactory)
         {
+            _app = app;
             UseSerilogLogging(loggerFactory);
             app.UseAuthentication();
             //1 . Enable CORS.
@@ -138,6 +139,34 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
         private void UseSerilogLogging(ILoggerFactory logger)
         {
             logger.AddSerilog();
+        }
+
+        private void HandleConnectorsChanged(object sender, EventArgs e)
+        {
+            _moduleLoader.Dispose();
+            WebHost.Restart();
+            // _moduleLoader.LoadConnectors();
+        }
+
+        private void HandleConnectorsLoaded(object sender, EventArgs e)
+        {
+            // _moduleLoader.GetConnectors();
+        }
+
+        private void HandleFileChanged(object sender, FileSystemEventArgs e)
+        {
+            /*
+            _services.AddAuthentication(Constants.ExternalCookieName)
+                .AddCookie(Constants.ExternalCookieName)
+                .AddFacebook(opts =>
+                {
+                    opts.ClientId = "569242033233529";
+                    opts.ClientSecret = "12e0f33817634c0a650c0121d05e53eb";
+                    opts.SignInScheme = Constants.ExternalCookieName;
+                    opts.Scope.Add("public_profile");
+                    opts.Scope.Add("email");
+                });
+            */
         }
 
         private static void ModuleCannotBeInstalled(object sender, StrEventArgs e)

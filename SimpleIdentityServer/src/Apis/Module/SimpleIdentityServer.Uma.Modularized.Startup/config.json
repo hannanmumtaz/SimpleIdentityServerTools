@@ -125,5 +125,14 @@
         }
       ]
     }
+  ],
+  "connectors": [
+    {
+      "name": "",
+      "version": "",
+      "parameters": {
+        "":  ""
+      }
+    }
   ]
 }

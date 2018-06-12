@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using SimpleIdentityServer.Connectors.Common;
 using SimpleIdentityServer.Module.Feed.Client;
 using SimpleIdentityServer.Module.Feed.Common.Responses;
 using SimpleIdentityServer.Module.Loader.Exceptions;
@@ -23,20 +24,27 @@ using System.Xml.Serialization;
 
 namespace SimpleIdentityServer.Module.Loader
 {
-    public interface IModuleLoader
+    public interface IModuleLoader : IDisposable
     {
         void Initialize();
+        void WatchConfigurationFileChanges();
         Task RestorePackages();
+        Task RestoreConnectors();
         void LoadModules();
+        void LoadConnectors();
         void ConfigureServices(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env);
         void Configure(IRouteBuilder routes);
         void Configure(IApplicationBuilder app);
         void CheckConfigurationFile();
+        IEnumerable<LoadedModule> GetModules();
+        IEnumerable<LoadedConnector> GetConnectors();
         event EventHandler Initialized;
         event EventHandler<IntEventArgs> PackageRestored;
         event EventHandler ModulesLoaded;
         event EventHandler<StrEventArgs> ModuleInstalled;
         event EventHandler<StrEventArgs> ModuleCannotBeInstalled;
+        event EventHandler ConnectorsLoaded;
+        event EventHandler ConnectorsChanged;
     }
 
     public class StrEventArgs : EventArgs
@@ -71,9 +79,21 @@ namespace SimpleIdentityServer.Module.Loader
         public UnitPackageResponse Unit { get; private set; }
     }
 
+    public class LoadedConnector
+    {
+        public LoadedConnector(IConnector instance, ConnectorResponse connector)
+        {
+            Instance = instance;
+            Connector = connector;
+        }
+
+        public IConnector Instance { get; private set; }
+        public ConnectorResponse Connector { get; private set; }
+    }
+
     internal sealed class ModuleLoader : IModuleLoader
     {
-
+        private FileSystemWatcher _watcher;
         private ConcurrentBag<string> _restoredPackages;
         private const string ENV_NAME = "SID_MODULE";
         private readonly INugetClient _nugetClient;
@@ -83,9 +103,12 @@ namespace SimpleIdentityServer.Module.Loader
         private const string _configFile = "config.json";
         private const string _configTemplateFile = "config.template.config";
         private ICollection<LoadedModule> _modules;
+        private ICollection<LoadedConnector> _connectors;
         private bool _isInitialized = false;
         private bool _isPackagesRestored = false;
         private bool _isConfigTemplateRestored = false;
+        private bool _isConnectorsRestore = false;
+        private DateTime _lastWriteTime;
         private ProjectResponse _projectConfiguration;
 
         public ModuleLoader(INugetClient nugetClient, IModuleFeedClientFactory moduleFeedClientFactory, ModuleLoaderOptions options)
@@ -112,7 +135,10 @@ namespace SimpleIdentityServer.Module.Loader
 
         public event EventHandler Initialized;
         public event EventHandler<IntEventArgs> PackageRestored;
+        public event EventHandler<IntEventArgs> ConnectorsRestored;
+        public event EventHandler ConnectorsChanged;
         public event EventHandler ModulesLoaded;
+        public event EventHandler ConnectorsLoaded;
         public event EventHandler<StrEventArgs> ModuleInstalled;
         public event EventHandler<StrEventArgs> ModuleCannotBeInstalled;
 
@@ -171,6 +197,26 @@ namespace SimpleIdentityServer.Module.Loader
             {
                 Initialized(this, EventArgs.Empty);
             }
+        }
+
+        /// <summary>
+        /// Watch the changes on the configuration file.
+        /// </summary>
+        public void WatchConfigurationFileChanges()
+        {
+            if (_watcher != null)
+            {
+                throw new ModuleLoaderInternalException("The configuration file is already watched");
+            }
+            
+            _watcher = new FileSystemWatcher
+            {
+                NotifyFilter = NotifyFilters.LastWrite,
+                Path = Directory.GetCurrentDirectory(),
+                Filter = "*.json"
+            };
+            _watcher.Changed += HandleFileChanged;
+            _watcher.EnableRaisingEvents = true;
         }
 
         /// <summary>
@@ -241,16 +287,19 @@ namespace SimpleIdentityServer.Module.Loader
             await RestoreTemplateConfigurationFile();
             CheckConfigurationFile();
             var watch = Stopwatch.StartNew();
-            foreach (var unit in _projectConfiguration.Units)
+            if (_projectConfiguration.Units != null)
             {
-                if (unit.Packages == null || !unit.Packages.Any())
+                foreach (var unit in _projectConfiguration.Units)
                 {
-                    continue;
-                }
+                    if (unit.Packages == null || !unit.Packages.Any())
+                    {
+                        continue;
+                    }
 
-                foreach(var package in unit.Packages)
-                {
-                    await RestorePackages(package.Library, package.Version);
+                    foreach (var package in unit.Packages)
+                    {
+                        await RestorePackages(package.Library, package.Version);
+                    }
                 }
             }
 
@@ -261,6 +310,47 @@ namespace SimpleIdentityServer.Module.Loader
             {
                 PackageRestored(this, new IntEventArgs(watch.ElapsedMilliseconds));
             }
+        }
+
+        /// <summary>
+        /// Restore the connectors.
+        /// </summary>
+        /// <returns></returns>
+        public async Task RestoreConnectors()
+        {
+            if (!_isInitialized)
+            {
+                throw new ModuleLoaderInternalException("the loader is not initialized");
+            }
+
+            if (!_isPackagesRestored)
+            {
+                throw new ModuleLoaderInternalException("the packages are not restored");
+            }
+
+            if (!_isConfigTemplateRestored)
+            {
+                throw new ModuleLoaderInternalException("the config template is not restored");
+            }
+
+            _isConnectorsRestore = false;
+            var watch = Stopwatch.StartNew();
+            if (_projectConfiguration.Connectors != null)
+            {
+                foreach (var connector in _projectConfiguration.Connectors)
+                {
+                    await RestorePackages(connector.Library, connector.Version);
+                }
+            }
+
+            watch.Stop();
+            Trace.WriteLine($"Finish to restore the connectors in {watch.ElapsedMilliseconds} ms");
+            if (ConnectorsRestored != null)
+            {
+                ConnectorsRestored(this, new IntEventArgs(watch.ElapsedMilliseconds));
+            }
+
+            _isConnectorsRestore = true;
         }
 
         /// <summary>
@@ -298,38 +388,7 @@ namespace SimpleIdentityServer.Module.Loader
 
                 foreach(var package in unit.Packages)
                 {
-                    var packagePath = Path.Combine(_modulePath, $"{package.Library}.{package.Version}\\lib");
-                    if (!Directory.Exists(packagePath))
-                    {
-                        throw new ModuleLoaderInternalException($"The module {package.Library}.{package.Version} cannot be loaded");
-                    }
-
-                    var supportedFrameworks = GetSupportedFrameworks();
-                    var fkDirectories = Directory.GetDirectories(packagePath);
-                    var filteredFkDirectories = fkDirectories.Where(fkdir => supportedFrameworks.Any(sfk =>
-                    {
-                        var dirInfo = new DirectoryInfo(fkdir);
-                        return sfk == dirInfo.Name;
-                    })).OrderByDescending(s => s);
-                    var dllPath = string.Empty;
-                    if (filteredFkDirectories != null && filteredFkDirectories.Any())
-                    {
-                        dllPath = Path.Combine(filteredFkDirectories.First(), $"{package.Library}.dll");
-                    }
-
-                    if (string.IsNullOrWhiteSpace(dllPath) || !File.Exists(dllPath))
-                    {
-                        throw new ModuleLoaderInternalException($"The module {package.Library}.{package.Version} cannot be loaded");
-                    }
-                    
-                    var assm = Assembly.LoadFile(dllPath);
-                    var modules = assm.GetExportedTypes().Where(t => typeof(IModule).IsAssignableFrom(t));
-                    if (modules == null || !modules.Any() || modules.Count() != 1)
-                    {
-                        throw new ModuleLoaderInternalException($"The module {package.Library}.{package.Version} doesn't contain an implementation of IModule");
-                    }
-
-                    var instance = (IModule)Activator.CreateInstance(modules.First());
+                    var instance = LoadLibrary<IModule>(package.Library, package.Version);
                     _modules.Add(new LoadedModule(instance, package));
                 }
             }
@@ -341,12 +400,69 @@ namespace SimpleIdentityServer.Module.Loader
         }
 
         /// <summary>
+        /// Load the connectors.
+        /// </summary>
+        public void LoadConnectors()
+        {
+            if (!_isInitialized)
+            {
+                throw new ModuleLoaderInternalException("the loader is not initialized");
+            }
+
+            if (!_isPackagesRestored)
+            {
+                throw new ModuleLoaderInternalException("the packages are not restored");
+            }
+
+            if (!_isConnectorsRestore)
+            {
+                throw new ModuleLoaderInternalException("the connectors are not restored");
+            }
+
+            if (!_isConfigTemplateRestored)
+            {
+                throw new ModuleLoaderInternalException("the config template is not restored");
+            }
+
+            _connectors = new List<LoadedConnector>();
+            if (_projectConfiguration.Connectors == null || !_projectConfiguration.Connectors.Any())
+            {
+                return;
+            }
+
+            foreach(var connector in _projectConfiguration.Connectors)
+            {
+                if (string.IsNullOrWhiteSpace(connector.Library) || string.IsNullOrWhiteSpace(connector.Version))
+                {
+                    continue;
+                }
+
+                var instance = LoadLibrary<IConnector>(connector.Library, connector.Version);
+                _connectors.Add(new LoadedConnector(instance, connector));
+            }
+
+            if (ConnectorsLoaded != null)
+            {
+                ConnectorsLoaded(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
         /// Returns the list of loaded modules.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<LoadedModule> GetModules()
         {
             return _modules;
+        }
+
+        /// <summary>
+        /// Returns the list of loaded connectors.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<LoadedConnector> GetConnectors()
+        {
+            return _connectors;
         }
         
         /// <summary>
@@ -376,7 +492,91 @@ namespace SimpleIdentityServer.Module.Loader
             }
         }
 
+        /// <summary>
+        /// Dispose the unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            if (_watcher != null)
+            {
+                _watcher.Dispose();
+            }
+        }
+
         #region Private methods
+
+        private T LoadLibrary<T>(string library, string version)
+        {
+            var packagePath = Path.Combine(_modulePath, $"{library}.{version}\\lib");
+            if (!Directory.Exists(packagePath))
+            {
+                throw new ModuleLoaderInternalException($"The module {library}.{version} cannot be loaded");
+            }
+
+            var supportedFrameworks = GetSupportedFrameworks();
+            var fkDirectories = Directory.GetDirectories(packagePath);
+            var filteredFkDirectories = fkDirectories.Where(fkdir => supportedFrameworks.Any(sfk =>
+            {
+                var dirInfo = new DirectoryInfo(fkdir);
+                return sfk == dirInfo.Name;
+            })).OrderByDescending(s => s);
+            var dllPath = string.Empty;
+            if (filteredFkDirectories != null && filteredFkDirectories.Any())
+            {
+                dllPath = Path.Combine(filteredFkDirectories.First(), $"{library}.dll");
+            }
+
+            if (string.IsNullOrWhiteSpace(dllPath) || !File.Exists(dllPath))
+            {
+                throw new ModuleLoaderInternalException($"The module {library}.{version} cannot be loaded");
+            }
+
+            var assm = Assembly.LoadFile(dllPath);
+            var modules = assm.GetExportedTypes().Where(t => typeof(T).IsAssignableFrom(t));
+            if (modules == null || !modules.Any() || modules.Count() != 1)
+            {
+                throw new ModuleLoaderInternalException($"The module {library}.{version} doesn't contain an implementation of IModule");
+            }
+
+            return (T)Activator.CreateInstance(modules.First());
+        }
+
+        private void HandleFileChanged(object sender, FileSystemEventArgs e)
+        {
+            if (e.Name != _configFile)
+            {
+                return;
+            }
+
+            DateTime lastWriteTime = File.GetLastWriteTime(e.FullPath);
+            if (_lastWriteTime != lastWriteTime)
+            {
+                _lastWriteTime = lastWriteTime;
+                while(true)
+                {
+                    try
+                    {
+
+                        var json = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), _configFile));
+                        var projectConfiguration = JsonConvert.DeserializeObject<ProjectResponse>(json);
+                        var projectConfigurationConnectors = projectConfiguration.Connectors == null ? new List<ConnectorResponse>() : projectConfiguration.Connectors;
+                        var localProjectConfigurationConnectors = _projectConfiguration.Connectors == null ? new List<ConnectorResponse>() : _projectConfiguration.Connectors;
+                        if (projectConfigurationConnectors.Count() != localProjectConfigurationConnectors.Count() ||
+                            projectConfigurationConnectors.Any(p => !localProjectConfigurationConnectors.Any(lp => lp.Name == p.Name && lp.Version == p.Version)))
+                        {
+                            if (ConnectorsChanged != null)
+                            {
+                                ConnectorsChanged(this, EventArgs.Empty);
+                            }
+                        }
+
+                        _projectConfiguration = projectConfiguration;
+                        return;
+                    }
+                    catch (IOException) { }
+                }
+            }
+        }
 
         /// <summary>
         /// If the configuration template file doesn't exist then download it from the Module Feed Api and add it into the folder.

@@ -1,1 +1,106 @@
-{"id":"OpenIdProvider_3.0.0-rc7","version":"3.0.0-rc7","name":"OpenIdProvider","units":[{"name":"openidhost","packages":[{"lib":"SimpleIdentityServer.Host","version":"3.0.0-rc7","category":"host","parameters":{"OpenIdCookieName":"SimpleIdServer-Startup","OpenIdExternalCookieName":"External-SimpleIdServer","ScimEndpoint":"http://localhost:5555/","ScimEndpointEnabled":"true"}}]},{"name":"parametesrapi","packages":[{"lib":"SimpleIdentityServer.Parameter.Host","version":"3.0.0-rc7","category":"host","parameters":null}]},{"name":"authentication","packages":[{"lib":"SimpleIdentityServer.OAuth2Introspection","version":"3.0.0-rc7","category":"introspect","parameters":{"OauthIntrospectClientId":"OpenId","OauthIntrospectClientSecret":"z4Bp!:B@rFw4Xs+]","OauthIntrospectAuthUrl":"http://localhost:60004/.well-known/uma2-configuration"}}]},{"name":"oauthstorage","packages":[{"lib":"SimpleIdentityServer.Store.InMemory","version":"3.0.0-rc7","category":"cache","parameters":null}]},{"name":"oauthrepository","packages":[{"lib":"SimpleIdentityServer.EF.SqlServer","version":"3.0.0-rc7","category":"store","parameters":{"OAuthConnectionString":"Data Source=.;Initial Catalog=SimpleIdentityServer;Integrated Security=True;"}}]},{"name":"openidui","packages":[{"lib":"SimpleIdentityServer.Authenticate.Basic","version":"3.0.0-rc7","category":"ui","parameters":null}]},{"name":"oautheventstore","packages":[{"lib":"SimpleIdentityServer.EventStore.InMemory","version":"3.0.0-rc7","category":"store","parameters":null},{"lib":"SimpleIdentityServer.EventStore.Handler","version":"3.0.0-rc7","category":"handler","parameters":{"EventStoreHandlerType":"openid"}},{"lib":"SimpleBus.InMemory","version":"3.0.0-rc7","category":"bus","parameters":null}]}]}
+{
+  "id": "OpenIdProvider_3.0.0-rc7",
+  "version": "3.0.0-rc7",
+  "name": "OpenIdProvider",
+  "units": [
+    {
+      "name": "openidhost",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Host",
+          "version": "3.0.0-rc7",
+          "category": "host",
+          "parameters": {
+            "OpenIdCookieName": "SimpleIdServer-Startup",
+            "OpenIdExternalCookieName": "External-SimpleIdServer",
+            "ScimEndpoint": "http://localhost:5555/",
+            "ScimEndpointEnabled": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "parametesrapi",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Parameter.Host",
+          "version": "3.0.0-rc7",
+          "category": "host",
+          "parameters": null
+        }
+      ]
+    },
+    {
+      "name": "authentication",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.OAuth2Introspection",
+          "version": "3.0.0-rc7",
+          "category": "introspect",
+          "parameters": {
+            "OauthIntrospectClientId": "OpenId",
+            "OauthIntrospectClientSecret": "z4Bp!:B@rFw4Xs+]",
+            "OauthIntrospectAuthUrl": "http://localhost:60004/.well-known/uma2-configuration"
+          }
+        }
+      ]
+    },
+    {
+      "name": "oauthstorage",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Store.InMemory",
+          "version": "3.0.0-rc7",
+          "category": "cache",
+          "parameters": null
+        }
+      ]
+    },
+    {
+      "name": "oauthrepository",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.EF.SqlServer",
+          "version": "3.0.0-rc7",
+          "category": "store",
+          "parameters": { "OAuthConnectionString": "Data Source=.;Initial Catalog=SimpleIdentityServer;Integrated Security=True;" }
+        }
+      ]
+    },
+    {
+      "name": "openidui",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Authenticate.Basic",
+          "version": "3.0.0-rc7",
+          "category": "ui",
+          "parameters": null
+        }
+      ]
+    },
+    {
+      "name": "oautheventstore",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.EventStore.InMemory",
+          "version": "3.0.0-rc7",
+          "category": "store",
+          "parameters": null
+        },
+        {
+          "lib": "SimpleIdentityServer.EventStore.Handler",
+          "version": "3.0.0-rc7",
+          "category": "handler",
+          "parameters": { "EventStoreHandlerType": "openid" }
+        },
+        {
+          "lib": "SimpleBus.InMemory",
+          "version": "3.0.0-rc7",
+          "category": "bus",
+          "parameters": null
+        }
+      ]
+    }
+  ],
+  "connectors": []
+}
