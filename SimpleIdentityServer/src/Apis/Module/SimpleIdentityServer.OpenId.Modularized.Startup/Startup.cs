@@ -48,6 +48,8 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
                 .AllowAnyHeader()));
             ConfigureLogging(services);
             services.AddLogging();
+            var mvcBuilder = services.AddMvc();
+            _moduleLoader.ConfigureServices(services, mvcBuilder, _env);
             services.AddAuthentication(Constants.ExternalCookieName)
                 .AddCookie(Constants.ExternalCookieName)
                 .AddFacebook(opts =>
@@ -63,8 +65,6 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
                 {
                     opts.LoginPath = "/Authenticate";
                 });
-            var mvcBuilder = services.AddMvc();
-            _moduleLoader.ConfigureServices(services, mvcBuilder, _env);
         }
 
         private void ConfigureLogging(IServiceCollection services)
