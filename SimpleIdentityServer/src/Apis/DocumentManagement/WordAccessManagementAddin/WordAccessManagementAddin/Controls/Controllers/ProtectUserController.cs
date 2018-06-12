@@ -1,5 +1,14 @@
-﻿using System.Linq;
+﻿using SimpleIdentityServer.DocumentManagement.Client;
+using SimpleIdentityServer.DocumentManagement.Common.DTOs.Requests;
+using SimpleIdentityServer.DocumentManagement.Common.DTOs.Responses;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using WordAccessManagementAddin.Controls.ViewModels;
+using WordAccessManagementAddin.Extensions;
+using WordAccessManagementAddin.Stores;
 
 namespace WordAccessManagementAddin.Controls.Controllers
 {
@@ -15,7 +24,7 @@ namespace WordAccessManagementAddin.Controls.Controllers
             });
             ViewModel.PermissionAdded += HandleAddPermission;
             ViewModel.PermissionsRemoved += HandlePermissionsRemoved;
-            ViewModel.PermissionsSaved += HandlePermissionsSaved;
+            ViewModel.PermissionsSaved += (s, e) => HandlePermissionsSaved();
         }
 
         /// <summary>
@@ -23,9 +32,60 @@ namespace WordAccessManagementAddin.Controls.Controllers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HandlePermissionsSaved(object sender, System.EventArgs e)
+        private async Task HandlePermissionsSaved()
         {
+            ViewModel.CanExecuteRemovePermissions = false;
+            var activeDocument = Globals.ThisAddIn.Application.ActiveDocument;
+            if (activeDocument == null)
+            {
+                return;
+            }
 
+            var docMgClientFactory = new DocumentManagementFactory();
+            var officeDocumentClient = docMgClientFactory.GetOfficeDocumentClient();
+            var authenticateStore = AuthenticationStore.Instance();
+            string sidDocumentIdValue;
+            if (!activeDocument.TryGetVariable(Constants.VariableName, out sidDocumentIdValue))
+            {
+                sidDocumentIdValue = Guid.NewGuid().ToString();
+                var addResponse = await officeDocumentClient.Add(new AddOfficeDocumentRequest
+                {
+                    Id = sidDocumentIdValue,
+                    EncAlg = OfficeDocumentEncAlgorithms.RSA,
+                    EncPassword = Guid.NewGuid().ToString(),
+                    EncSalt = Guid.NewGuid().ToString()
+                }, Constants.DocumentApiBaseUrl, authenticateStore.AccessToken);
+                if (addResponse.ContainsError)
+                {
+                    return;
+                }
+
+                activeDocument.Variables.Add(Constants.VariableName, sidDocumentIdValue);
+            }
+
+            var permissions = new List<OfficeDocumentPermissionRequest>();
+            if (ViewModel.Users != null && ViewModel.Users.Any())
+            {
+                foreach(var user in ViewModel.Users)
+                {
+                    permissions.Add(new OfficeDocumentPermissionRequest
+                    {
+                        Scopes = user.Permissions,
+                        Subject = user.Name
+                    });
+                }
+            }
+
+            if (!permissions.Any())
+            {
+                return;
+            }
+
+            await officeDocumentClient.Update(sidDocumentIdValue, new UpdateOfficeDocumentRequest
+            {
+                Permissions = permissions
+            }, Constants.DocumentApiBaseUrl, authenticateStore.AccessToken);
+            ViewModel.CanExecuteRemovePermissions = true;
         }
 
         /// <summary>

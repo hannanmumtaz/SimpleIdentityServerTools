@@ -96,7 +96,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
                 throw new InvalidConfigurationException("invalid_client_configuration");
             }
 
-            var policy = await _identityServerUmaClientFactory.GetPolicyClient().Get(officeDocument.UmaPolicyId, authenticateParameter.WellKnownConfigurationUrl, grantedToken.AccessToken);
+            var policy = await _identityServerUmaClientFactory.GetPolicyClient().GetByResolution(officeDocument.UmaPolicyId, authenticateParameter.WellKnownConfigurationUrl, grantedToken.AccessToken);
             if (policy == null || string.IsNullOrWhiteSpace(policy.Id))
             {
                 throw new InternalDocumentException("internal", "uma_policy_doesnt_exist");
@@ -114,7 +114,8 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
                             Value = subject
                         }
                     },
-                    Scopes = Constants.DEFAULT_SCOPES.ToList()
+                    Scopes = Constants.DEFAULT_SCOPES.ToList(),
+                    OpenIdProvider = "http://localhost:60000/.well-known/openid-configuration"
                 }
             };
             foreach(var permission in parameter.Permissions)
@@ -129,7 +130,8 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
                             Value = permission.Subject
                         }
                     },
-                    Scopes = permission.Scopes.ToList()
+                    Scopes = permission.Scopes.ToList(),
+                    OpenIdProvider = "http://localhost:60000/.well-known/openid-configuration"
                 });
             }
             if (!await _identityServerUmaClientFactory.GetPolicyClient().UpdateByResolution(new PutPolicy

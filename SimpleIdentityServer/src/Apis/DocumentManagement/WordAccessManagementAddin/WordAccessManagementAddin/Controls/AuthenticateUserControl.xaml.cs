@@ -11,14 +11,10 @@ namespace WordAccessManagementAddin.Controls
 {
     public partial class AuthenticateUserControl : Window
     {
-        private const string _clientId = "ResourceManagerClientId";
-        private const string _callbackUrl = "http://localhost:64950/callback";
-        private const string _baseUrl = "http://localhost:60000";
-
         public AuthenticateUserControl()
         {
             InitializeComponent();
-            webBrowser.Navigate(new Uri($"{_baseUrl}/authorization?scope=openid role profile&state=75BCNvRlEGHpQRCT&redirect_uri={_callbackUrl}&response_type=id_token token&client_id={_clientId}&nonce=nonce&response_mode=query"));
+            webBrowser.Navigate(new Uri($"{Constants.OpenIdBaseUrl}/authorization?scope=openid role profile&state=75BCNvRlEGHpQRCT&redirect_uri={Constants.CallbackUrl}&response_type=id_token token&client_id={Constants.ClientId}&nonce=nonce&response_mode=query"));
             webBrowser.Navigating += HandleNavigating;
             webBrowser.Navigated += HandleNavigated;
         }
@@ -42,7 +38,7 @@ namespace WordAccessManagementAddin.Controls
         {
             HideScriptErrors(webBrowser, true);
             DisplaySpinner(false);
-            if (e.Uri == null || !e.Uri.AbsoluteUri.StartsWith(_callbackUrl))
+            if (e.Uri == null || !e.Uri.AbsoluteUri.StartsWith(Constants.CallbackUrl))
             {
                 return;
             }

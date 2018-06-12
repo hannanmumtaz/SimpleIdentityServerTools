@@ -28,7 +28,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
 
         #region Operations
 
-        [HttpPost("{id}")]
+        [HttpPut("{id}")]
         [Authorize("connected")]
         public async Task<IActionResult> Update(string id, [FromBody] UpdateOfficeDocumentRequest request)
         {

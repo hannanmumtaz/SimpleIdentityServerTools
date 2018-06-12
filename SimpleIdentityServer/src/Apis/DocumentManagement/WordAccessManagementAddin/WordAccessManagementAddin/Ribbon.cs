@@ -46,6 +46,11 @@ namespace WordAccessManagementAddin
             protectUc.Show();
         }
 
+        private void HandleUnprotect(object sender, RibbonControlEventArgs e)
+        {
+
+        }
+
         private void HandleProtectOffline(object sender, RibbonControlEventArgs e)
         {
             var document = Globals.ThisAddIn.Application.ActiveDocument;
@@ -88,6 +93,7 @@ namespace WordAccessManagementAddin
         {
             profileButton.Visible = !isDisplayed;
             protectButton.Visible = !isDisplayed;
+            unprotectButton.Visible = !isDisplayed;
             disconnectButton.Visible = !isDisplayed;
             loginButton.Visible = isDisplayed;
         }

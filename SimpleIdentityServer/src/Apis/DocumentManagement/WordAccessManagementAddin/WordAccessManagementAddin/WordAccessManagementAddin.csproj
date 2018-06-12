@@ -170,6 +170,7 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="Constants.cs" />
     <Compile Include="Controls\AuthenticateUserControl.xaml.cs">
       <DependentUpon>AuthenticateUserControl.xaml</DependentUpon>
     </Compile>
@@ -187,6 +188,8 @@
     <Compile Include="Controls\ViewModels\ProfileUserViewModel.cs" />
     <Compile Include="Controls\ViewModels\ProtectUserViewModel.cs" />
     <Compile Include="Controls\ViewModels\RelayCommand.cs" />
+    <Compile Include="Extensions\DocumentExtension.cs" />
+    <Compile Include="Helpers\EncryptionHelper.cs" />
     <Compile Include="Helpers\ResourceHelper.cs" />
     <Compile Include="Helpers\SteganographyHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -258,9 +261,29 @@
       <Project>{c1adb19e-bf98-48b5-b758-055e6fabd558}</Project>
       <Name>SimpleIdentityServer.Core.Jwt</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\Uma\SimpleIdentityServer.Uma.Client\SimpleIdentityServer.Uma.Client.csproj">
+      <Project>{1acf8f2e-a71d-4eee-bb3e-4e491d3c85de}</Project>
+      <Name>SimpleIdentityServer.Uma.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\Uma\SimpleIdentityServer.Uma.Common\SimpleIdentityServer.Uma.Common.csproj">
+      <Project>{075048dd-50c4-47c8-9433-6106aa9d8968}</Project>
+      <Name>SimpleIdentityServer.Uma.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\..\IdServer\SimpleIdentityServer\src\Lib\System.Security.Cryptography.Algorithms.Extensions\System.Security.Cryptography.Algorithms.Extensions.csproj">
       <Project>{b59df624-ccfb-44d9-80be-28a12a4accde}</Project>
       <Name>System.Security.Cryptography.Algorithms.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\SimpleIdentityServer.Common.Client\SimpleIdentityServer.Common.Client.csproj">
+      <Project>{bb0920bc-bef0-4a0c-9aec-af1e35b4af4f}</Project>
+      <Name>SimpleIdentityServer.Common.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SimpleIdentityServer.DocumentManagement.Client\SimpleIdentityServer.DocumentManagement.Client.csproj">
+      <Project>{b208cd30-bb6e-45b9-9568-37dc2e63d4d7}</Project>
+      <Name>SimpleIdentityServer.DocumentManagement.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SimpleIdentityServer.DocumentManagement.Common\SimpleIdentityServer.DocumentManagement.Common.csproj">
+      <Project>{df1b5668-6d86-42d7-a593-b58b01f743bb}</Project>
+      <Name>SimpleIdentityServer.DocumentManagement.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -273,6 +296,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\lock.png" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

@@ -55,6 +55,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Common
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.DocumentManagement.Client.Tests", "tests\SimpleIdentityServer.DocumentManagement.Client.Tests\SimpleIdentityServer.DocumentManagement.Client.Tests.csproj", "{52E7834C-3AED-473C-B936-FB57EB8113BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordAccessManagementAddin", "src\Apis\DocumentManagement\WordAccessManagementAddin\WordAccessManagementAddin\WordAccessManagementAddin.csproj", "{B05A4AB2-3137-4C09-9AA1-40F5C50B3400}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -137,6 +139,10 @@ Global
 		{52E7834C-3AED-473C-B936-FB57EB8113BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52E7834C-3AED-473C-B936-FB57EB8113BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52E7834C-3AED-473C-B936-FB57EB8113BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B05A4AB2-3137-4C09-9AA1-40F5C50B3400}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B05A4AB2-3137-4C09-9AA1-40F5C50B3400}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B05A4AB2-3137-4C09-9AA1-40F5C50B3400}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B05A4AB2-3137-4C09-9AA1-40F5C50B3400}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -163,6 +169,7 @@ Global
 		{B208CD30-BB6E-45B9-9568-37DC2E63D4D7} = {F7EDF26F-9971-4772-8CDF-5A900A370498}
 		{BB0920BC-BEF0-4A0C-9AEC-AF1E35B4AF4F} = {C543E3A7-12FE-40D2-B6EC-88764D7BF0AA}
 		{52E7834C-3AED-473C-B936-FB57EB8113BE} = {07A979F9-ACD1-4F51-9AE2-0CAEC74243A9}
+		{B05A4AB2-3137-4C09-9AA1-40F5C50B3400} = {0A7B69EE-E1A1-4B92-BA6A-DA5C3AC27294}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8D2966C7-42AE-44DA-8F5E-9BADBEB674A8}

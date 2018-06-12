@@ -101,8 +101,9 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
                 EncAlg = document.EncAlg,
                 EncSalt = document.EncSalt,
                 EncPassword = document.EncPassword,
+                Subject = document.Subject,
                 UmaResourceId = resource.Id,
-                UmaPolicyId = policy.PolicyId
+                UmaPolicyId = policy.PolicyId,
             };
             if (!await _officeDocumentRepository.Add(officeDocument))
             {

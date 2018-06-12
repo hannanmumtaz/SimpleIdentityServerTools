@@ -60,6 +60,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
             {
                 return new GetOfficeDocumentResponse
                 {
+                    StatusCode = httpResponse.StatusCode,
                     ContainsError = true,
                     UmaResourceId = TryGetValue(httpResponse.Headers, "UmaResource"),
                     UmaWellKnownConfiguration = TryGetValue(httpResponse.Headers, "UmaWellKnownUrl"),

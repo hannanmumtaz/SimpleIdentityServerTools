@@ -102,7 +102,7 @@ namespace WordAccessManagementAddin.Controls.ViewModels
             Permissions = new ObservableCollection<PermissionViewModel>();
             Users = new ObservableCollection<UserViewModel>();
             AddCommand = new RelayCommand(HandleAddPermission, p => CanExecuteAddPermission());
-            RemoveCommand = new RelayCommand(HandleRemovePermissions, p => CanExecuteRemovePermissions());
+            RemoveCommand = new RelayCommand(HandleRemovePermissions, p => HandleCanExecuteRemovePermissions());
             SaveCommand = new RelayCommand(HandleSavePermissions, p => CanSavePermissions());
         }
 
@@ -129,6 +129,7 @@ namespace WordAccessManagementAddin.Controls.ViewModels
         public event EventHandler PermissionAdded;
         public event EventHandler PermissionsRemoved;
         public event EventHandler PermissionsSaved;
+        public bool CanExecuteRemovePermissions { get; set; }
 
         private void HandleAddPermission(object o)
         {
@@ -151,9 +152,9 @@ namespace WordAccessManagementAddin.Controls.ViewModels
             }
         }
 
-        private bool CanExecuteRemovePermissions()
+        private bool HandleCanExecuteRemovePermissions()
         {
-            return true;
+            return CanExecuteRemovePermissions;
         }
 
         private void HandleSavePermissions(object o)
