@@ -8,5 +8,6 @@ namespace SimpleIdentityServer.Module.Feed.EF.Models
         public string Version { get; set; }
         public string ProjectName { get; set; }
         public virtual ICollection<ProjectUnit> Units { get; set; }
+        public virtual ICollection<Connector> Connectors { get; set; }
     }
 }

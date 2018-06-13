@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -57,12 +58,12 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             ConfigureLogging(services);
             services.AddLogging();
             var mvcBuilder = services.AddMvc();
+            _moduleLoader.ConfigureServices(services, mvcBuilder, _env);
             services.AddAuthentication(Constants.CookieName)
                 .AddCookie(Constants.CookieName, opts =>
                 {
                     opts.LoginPath = "/Authenticate";
                 });
-            _moduleLoader.ConfigureServices(services, mvcBuilder, _env);
         }
 
         private void ConfigureLogging(IServiceCollection services)
@@ -94,7 +95,8 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
         {
             _app = app;
             UseSerilogLogging(loggerFactory);
-            app.UseAuthentication();
+            // app.UseAuthentication();
+            app.UseMiddleware<LocalAuthenticationMiddleware>();
             //1 . Enable CORS.
             app.UseCors("AllowAll");
             // 2. Use static files.

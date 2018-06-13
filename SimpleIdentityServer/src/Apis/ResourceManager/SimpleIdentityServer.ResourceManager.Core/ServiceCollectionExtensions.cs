@@ -96,7 +96,9 @@ namespace SimpleIdentityServer.ResourceManager.Core
             services.AddTransient<ISearchHierarchicalResourcesAction, SearchHierarchicalResourcesAction>();
             services.AddTransient<IParameterActions, ParameterActions>();
             services.AddTransient<IGetParametersAction, GetParametersAction>();
+            services.AddTransient<Api.Parameters.Actions.IGetConnectorsAction, GetConnectorsAction>();
             services.AddTransient<IUpdateParametersAction, UpdateParametersAction>();
+            services.AddTransient<Api.Parameters.Actions.IUpdateConnectorsAction, UpdateConnectorsAction>();
             return services;
         }
 

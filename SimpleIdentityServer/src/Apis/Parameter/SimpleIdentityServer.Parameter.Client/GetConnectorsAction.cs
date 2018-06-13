@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SimpleIdentityServer.Common.Client.Factories;
-using SimpleIdentityServer.Module.Feed.Common.Responses;
+using SimpleIdentityServer.Parameter.Common.DTOs.Results;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -10,7 +9,7 @@ namespace SimpleIdentityServer.Parameter.Client
 {
     public interface IGetConnectorsAction
     {
-        Task<IEnumerable<ProjectConnectorResponse>> Execute(string baseUrl, string accessToken = null);
+        Task<GetConnectorsResult> Execute(string baseUrl, string accessToken = null);
     }
 
     internal sealed class GetConnectorsAction : IGetConnectorsAction
@@ -22,7 +21,7 @@ namespace SimpleIdentityServer.Parameter.Client
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<IEnumerable<ProjectConnectorResponse>> Execute(string baseUrl, string accessToken = null)
+        public async Task<GetConnectorsResult> Execute(string baseUrl, string accessToken = null)
         {
             if (string.IsNullOrWhiteSpace(baseUrl))
             {
@@ -43,7 +42,7 @@ namespace SimpleIdentityServer.Parameter.Client
             var httpResponse = await httpClient.SendAsync(request).ConfigureAwait(false);
             httpResponse.EnsureSuccessStatusCode();
             var json = await httpResponse.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IEnumerable<ProjectConnectorResponse>>(json);
+            return JsonConvert.DeserializeObject<GetConnectorsResult>(json);
         }
     }
 }

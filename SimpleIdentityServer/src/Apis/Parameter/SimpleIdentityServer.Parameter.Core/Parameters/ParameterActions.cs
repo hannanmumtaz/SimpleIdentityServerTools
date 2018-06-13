@@ -1,5 +1,4 @@
-﻿using SimpleIdentityServer.Module.Feed.Common.Responses;
-using SimpleIdentityServer.Parameter.Core.Parameters.Actions;
+﻿using SimpleIdentityServer.Parameter.Core.Parameters.Actions;
 using SimpleIdentityServer.Parameter.Core.Params;
 using SimpleIdentityServer.Parameter.Core.Responses;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ namespace SimpleIdentityServer.Parameter.Core.Parameters
     public interface IParameterActions
     {
         GetModulesResponse GetModules();
-        IEnumerable<ProjectConnectorResponse> GetConnectors();
+        GetConnectorsResponse GetConnectors();
         bool Update(IEnumerable<UpdateParameter> updateParameters);
         bool Update(IEnumerable<UpdateConnector> updateConnectors);
     }
@@ -35,7 +34,7 @@ namespace SimpleIdentityServer.Parameter.Core.Parameters
             return _getModulesAction.Execute();
         }
 
-        public IEnumerable<ProjectConnectorResponse> GetConnectors()
+        public GetConnectorsResponse GetConnectors()
         {
             return _getConnectorsAction.Execute();
         }

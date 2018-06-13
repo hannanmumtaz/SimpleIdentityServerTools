@@ -15,7 +15,7 @@ namespace SimpleIdentityServer.Module.Feed.EF.Mappings
 
             modelBuilder.Entity<Connector>()
                 .ToTable("connectors")
-                .HasKey(p => p.Name);
+                .HasKey(p => p.Id);
             return modelBuilder;
         }
     }

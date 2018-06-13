@@ -466,6 +466,10 @@ class Layout extends Component {
                     {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
                         <MenuItem key="/settings" selected={pathName.indexOf('/settings') !== -1} onClick={() => self.navigate('/settings')}>{t('settingsMenuItem')}</MenuItem>
                     ))}
+                    {/* CONNECTORS */}
+                    {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
+                        <MenuItem key="/connectors" selected={pathName.indexOf('/connectors') !== -1} onClick={() => self.navigate('/connectors')}>{t('connectorsMenuItem')}</MenuItem>
+                    ))}
                     {/* Logs */}         
                     {!process.env.IS_LOG_DISABLED && this.state.isLoggedIn  && (
                        <MenuItem key='logs' selected={pathName.indexOf('/logs') !== -1} onClick={() => self.navigate('/logs')}>

@@ -15,7 +15,15 @@ namespace SimpleIdentityServer.Parameter.Host.Extensions
 
             services.AddAuthorization(opts =>
             {
-                opts.AddPolicy("get", policy => policy.RequireClaim("scope", "get_parameters"));
+                opts.AddPolicy("get", policy =>
+                {
+                    policy.RequireAssertion(a =>
+                    {
+                        var user = a.User;
+                        return true;
+                    });
+                    // policy.RequireClaim("scope", "get_parameters");
+                });
                 opts.AddPolicy("add", policy => policy.RequireClaim("scope", "add_parameters"));
             });
             services.AddParameterCore();

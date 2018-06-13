@@ -30,6 +30,14 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Controllers
 
             var result = await _parameterActions.Get(User.GetSubject(), type);
             return new OkObjectResult(result);
+        }	
+
+        [Authorize("connected")]
+        [HttpGet("connectors")]
+        public async Task<IActionResult> GetConnectors()
+        {
+            var result = await _parameterActions.GetConnectors(User.GetSubject());
+            return new OkObjectResult(result);
         }
 
         [Authorize("connected")]
@@ -47,6 +55,19 @@ namespace SimpleIdentityServer.ResourceManager.API.Host.Controllers
             }
             
             await _parameterActions.Update(User.GetSubject(), updateParameters, type);
+            return new OkResult();
+        }
+
+        [Authorize("connected")]
+        [HttpPut("connectors")]
+        public async Task<IActionResult> UpdateConnectors([FromBody] IEnumerable<UpdateConnectorRequest> updateParameters)
+        {
+            if(updateParameters == null)
+            {
+                throw new ArgumentNullException(nameof(updateParameters));
+            }
+            
+            await _parameterActions.UpdateConnectors(User.GetSubject(), updateParameters);
             return new OkResult();
         }
     }

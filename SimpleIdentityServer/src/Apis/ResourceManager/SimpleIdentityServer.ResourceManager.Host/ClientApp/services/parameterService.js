@@ -44,5 +44,47 @@ module.exports = {
 				reject(e);
 			});
 		});
-	}
+	},
+    /**
+    * Get the connectors.
+    */
+    getConnectors: function() {
+        return new Promise(function (resolve, reject) {
+            var session = SessionService.getSession();
+            $.ajax({
+                url: Constants.apiUrl + '/parameters/connectors',
+                method: "GET",
+                contentType: 'application/json',
+                headers: {
+                    "Authorization": "Bearer "+ session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });
+    },
+    /**
+    * Update the connectors.
+    */
+    updateConnectors: function(request) {
+        return new Promise(function (resolve, reject) {
+            var data = JSON.stringify(request);
+            var session = SessionService.getSession();
+            $.ajax({
+                url: Constants.apiUrl + '/parameters/connectors',
+                method: "PUT",
+                data: data,
+                contentType: 'application/json',
+                headers: {
+                    "Authorization": "Bearer "+ session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });
+    }
 };

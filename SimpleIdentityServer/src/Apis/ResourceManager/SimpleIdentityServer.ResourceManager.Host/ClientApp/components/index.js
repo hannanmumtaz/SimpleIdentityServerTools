@@ -24,6 +24,7 @@ import ViewScimAttribute from './viewScimAttribute';
 import ViewScimResource from './viewScimResource';
 import Settings from './settings';
 import ViewSetting from './viewSetting';
+import Connectors from './connectors';
 
 exports.Dashboard = Dashboard;
 exports.About = About;
@@ -51,3 +52,4 @@ exports.ViewScimAttribute = ViewScimAttribute;
 exports.ViewScimResource = ViewScimResource;
 exports.Settings = Settings;
 exports.ViewSetting = ViewSetting;
+exports.Connectors = Connectors;

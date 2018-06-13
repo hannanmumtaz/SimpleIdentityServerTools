@@ -20,17 +20,6 @@
       ]
     },
     {
-      "name": "parametesrapi",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.Parameter.Host",
-          "version": "3.0.0-rc7",
-          "category": "host",
-          "parameters": null
-        }
-      ]
-    },
-    {
       "name": "authentication",
       "packages": [
         {
@@ -42,6 +31,17 @@
             "OauthIntrospectClientSecret": "z4Bp!:B@rFw4Xs+]",
             "OauthIntrospectAuthUrl": "http://localhost:60004/.well-known/uma2-configuration"
           }
+        }
+      ]
+    },
+    {
+      "name": "parametesrapi",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Parameter.Host",
+          "version": "3.0.0-rc7",
+          "category": "host",
+          "parameters": null
         }
       ]
     },
@@ -103,15 +103,5 @@
     }
   ],
   "connectors": [
-    {
-      "name": "Facebook",
-      "lib": "SimpleIdentityServer.Connectors.Facebook",
-      "version": "3.0.0-rc7",
-      "parameters": {
-        "ClientId": "569242033233529",
-        "ClientSecret": "12e0f33817634c0a650c0121d05e53eb",
-        "Scopes": "public_profile;email"
-      }
-    }
   ]
 }

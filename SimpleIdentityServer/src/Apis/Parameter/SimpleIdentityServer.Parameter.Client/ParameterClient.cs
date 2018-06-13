@@ -1,5 +1,4 @@
 ﻿using SimpleIdentityServer.Common.Dtos.Responses;
-using SimpleIdentityServer.Module.Feed.Common.Responses;
 using SimpleIdentityServer.Parameter.Common.DTOs.Requests;
 using SimpleIdentityServer.Parameter.Common.DTOs.Results;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ namespace SimpleIdentityServer.Parameter.Client
     public interface IParameterClient
     {
         Task<GetModulesResult> Get(string baseUrl, string accessToken = null);
-        Task<IEnumerable<ProjectConnectorResponse>> GetConnectors(string baseUrl, string accessToken = null);
+        Task<GetConnectorsResult> GetConnectors(string baseUrl, string accessToken = null);
         Task<ErrorResponse> Update(string baseUrl, IEnumerable<UpdateParameterRequest> parameters, string accessToken = null);
         Task<ErrorResponse> UpdateConnectors(string baseUrl, IEnumerable<UpdateConnectorRequest> parameters, string accessToken = null);
     }
@@ -36,7 +35,7 @@ namespace SimpleIdentityServer.Parameter.Client
             return _getModulesAction.Execute(baseUrl, accessToken);
         }
 
-        public Task<IEnumerable<ProjectConnectorResponse>> GetConnectors(string baseUrl, string accessToken = null)
+        public Task<GetConnectorsResult> GetConnectors(string baseUrl, string accessToken = null)
         {
             return _getConnectorsAction.Execute(baseUrl, accessToken);
         }

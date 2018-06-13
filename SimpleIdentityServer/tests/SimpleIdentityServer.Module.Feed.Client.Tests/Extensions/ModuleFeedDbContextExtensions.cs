@@ -36,6 +36,7 @@ namespace SimpleIdentityServer.Module.Feed.Client.Tests.Extensions
                 {
                     new Connector
                     {
+                        ProjectId = "OpenIdProvider_3.0.0-rc7",
                         Library = "lib",
                         Description = "description",
                         Name = "name",

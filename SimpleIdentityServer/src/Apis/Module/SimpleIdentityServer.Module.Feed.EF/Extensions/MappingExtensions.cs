@@ -8,38 +8,18 @@ namespace SimpleIdentityServer.Module.Feed.EF.Extensions
 {
     internal static class MappingExtensions
     {
-        public static Connector ToModel(this ConnectorAggregate connector)
+        public static ProjectConnectorAggregate ToDomain(this Connector connector)
         {
             if (connector == null)
             {
                 throw new ArgumentNullException(nameof(connector));
             }
 
-            return new Connector
+            return new ProjectConnectorAggregate
             {
                 Library = connector.Library,
                 Name = connector.Name,
-                Parameters = connector.Parameters,
-                Version = connector.Version,
-                CreateDateTime = connector.CreateDateTime,
-                Description = connector.Description,
-                Picture = connector.Picture,
-                UpdateDateTime = connector.UpdateDateTime
-            };
-        }
-
-        public static ConnectorAggregate ToDomain(this Connector connector)
-        {
-            if (connector == null)
-            {
-                throw new ArgumentNullException(nameof(connector));
-            }
-
-            return new ConnectorAggregate
-            {
-                Library = connector.Library,
-                Name = connector.Name,
-                Parameters = connector.Parameters,
+                Parameters = string.IsNullOrWhiteSpace(connector.Parameters) ? new string[0] : connector.Parameters.Split(','),
                 Version = connector.Version,
                 CreateDateTime = connector.CreateDateTime,
                 Description = connector.Description,
@@ -60,7 +40,8 @@ namespace SimpleIdentityServer.Module.Feed.EF.Extensions
                 Id = project.Id,
                 ProjectName = project.ProjectName,
                 Version = project.Version,
-                Units = project.Units == null ? new List<ProjectUnitAggregate>() : project.Units.Select(u => u.ToDomain())
+                Units = project.Units == null ? new List<ProjectUnitAggregate>() : project.Units.Select(u => u.ToDomain()),
+                Connectors = project.Connectors == null ? new List<ProjectConnectorAggregate>() : project.Connectors.Select(u => u.ToDomain())
             };
         }
 

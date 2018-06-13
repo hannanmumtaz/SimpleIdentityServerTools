@@ -1,5 +1,4 @@
-﻿using SimpleIdentityServer.Module.Feed.Common.Requests;
-using SimpleIdentityServer.Module.Feed.Common.Responses;
+﻿using SimpleIdentityServer.Module.Feed.Common.Responses;
 using SimpleIdentityServer.Module.Feed.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -9,38 +8,28 @@ namespace SimpleIdentityServer.Module.Feed.Host.Extensions
 {
     internal static class MappingExtensions
     {
-        public static ConnectorAggregate ToParameter(this AddConnectorRequest request)
-        {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
-            return new ConnectorAggregate
-            {
-                Description = request.Description,
-                Library = request.Library,
-                Name = request.Name,
-                Parameters = request == null ? string.Empty : string.Join(",", request.Parameters),
-                Picture = request.Picture,
-                Version = request.Version
-            };
-        }
-
-        public static ConnectorResponse ToDto(this ConnectorAggregate connector)
+        public static ProjectConnectorResponse ToDto(this ProjectConnectorAggregate connector)
         {
             if (connector == null)
             {
                 throw new ArgumentNullException(nameof(connector));
             }
 
-            return new ConnectorResponse
+            var parameters = new Dictionary<string, string>();
+            if (connector.Parameters != null)
+            {
+                foreach (var record in connector.Parameters)
+                {
+                    parameters.Add(record, string.Empty);
+                }
+            }
+            return new ProjectConnectorResponse
             {
                 CreateDateTime = connector.CreateDateTime,
                 Description = connector.Description,
                 Library = connector.Library,
                 Name = connector.Name,
-                Parameters = string.IsNullOrWhiteSpace(connector.Parameters) ? new string[0] : connector.Parameters.Split(','),
+                Parameters = parameters,
                 Picture = connector.Picture,
                 UpdateDateTime = connector.UpdateDateTime,
                 Version = connector.Version
@@ -59,7 +48,8 @@ namespace SimpleIdentityServer.Module.Feed.Host.Extensions
                 Id = project.Id,
                 ProjectName = project.ProjectName,
                 Version = project.Version,
-                Units = project.Units == null ? new List<ProjectUnitResponse>() : project.Units.Select(u => u.ToDto())
+                Units = project.Units == null ? new List<ProjectUnitResponse>() : project.Units.Select(u => u.ToDto()),
+                Connectors = project.Connectors == null ? new List<ProjectConnectorResponse>() : project.Connectors.Select(u => u.ToDto())
             };
         }
 

@@ -53,5 +53,19 @@ namespace SimpleIdentityServer.Parameter.Host.Extensions
                 Units = resp.ProjectUnits
             };
         }
+
+        public static GetConnectorsResult ToDto(this GetConnectorsResponse resp)
+        {
+            if (resp == null)
+            {
+                throw new ArgumentNullException(nameof(resp));
+            }
+
+            return new GetConnectorsResult
+            {
+                Connectors = resp.Connectors,
+                TemplateConnectors = resp.TemplateConnectors
+            };
+        }
     }
 }

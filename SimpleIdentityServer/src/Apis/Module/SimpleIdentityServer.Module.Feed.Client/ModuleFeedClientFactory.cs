@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.Common.Client;
-using SimpleIdentityServer.Module.Feed.Client.Connectors;
 using SimpleIdentityServer.Module.Feed.Client.Projects;
 
 namespace SimpleIdentityServer.Module.Feed.Client
@@ -33,11 +32,6 @@ namespace SimpleIdentityServer.Module.Feed.Client
             serviceCollection.AddTransient<IConfigurationClient, ConfigurationClient>();
             serviceCollection.AddTransient<IDownloadProjectConfiguration, DownloadProjectConfiguration>();
             serviceCollection.AddTransient<IGetProjectOperation, GetProjectOperation>();
-            serviceCollection.AddTransient<IConnectorClient, ConnectorClient>();
-            serviceCollection.AddTransient<IGetConnectorOperation, GetConnectorOperation>();
-            serviceCollection.AddTransient<IGetAllConnectorsOperation, GetAllConnectorsOperation>();
-            serviceCollection.AddTransient<IAddConnectorOperation, AddConnectorOperation>();
-            serviceCollection.AddTransient<IDeleteConnectorOperation, DeleteConnectorOperation>();
             serviceCollection.AddCommonClient();
             return serviceCollection;
         }

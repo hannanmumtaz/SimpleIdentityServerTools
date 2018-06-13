@@ -22,6 +22,12 @@ namespace SimpleIdentityServer.Parameter.Host.Controllers
             _parameterActions = parameterActions;
         }
 
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            return null;
+        }
+
         [HttpGet("modules")]
         [Authorize("get")]
         public IActionResult GetModules()
@@ -36,6 +42,7 @@ namespace SimpleIdentityServer.Parameter.Host.Controllers
         public IActionResult GetConnectors()
         {
             var connectors = _parameterActions.GetConnectors();
+            var result = connectors.ToDto();
             return new OkObjectResult(connectors);
         }
 

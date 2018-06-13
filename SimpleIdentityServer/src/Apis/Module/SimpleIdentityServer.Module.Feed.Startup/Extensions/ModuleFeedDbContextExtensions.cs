@@ -18,6 +18,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
             AddProjects(dbContext);
             AddUnits(dbContext);
             AddProjectUnits(dbContext);
+            AddConnectors(dbContext);
             try
             {
                 dbContext.SaveChanges();
@@ -35,6 +36,8 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                 {
                     new Connector
                     {
+                        Id = Guid.NewGuid().ToString(),
+                        ProjectId = "OpenIdProvider_3.0.0-rc7",
                         Name = "Facebook",
                         Library = "SimpleIdentityServer.Connectors.Facebook",
                         Version = "3.0.0-rc7",

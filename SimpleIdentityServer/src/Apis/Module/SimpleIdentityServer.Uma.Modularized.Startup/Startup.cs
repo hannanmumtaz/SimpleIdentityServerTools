@@ -21,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleIdentityServer.Module.Loader;
 using SimpleIdentityServer.OAuth2Introspection;
+using SimpleIdentityServer.Uma.Modularized.Startup;
 using System;
 using System.Collections.Generic;
 
@@ -70,7 +71,8 @@ namespace SimpleIdentityServer.Uma.Startup
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
-            app.UseAuthentication();
+            // app.UseAuthentication();
+            app.UseMiddleware<LocalAuthenticationMiddleware>();
             app.UseCors("AllowAll");
             _moduleLoader.Configure(app);
             app.UseMvc(routes =>
