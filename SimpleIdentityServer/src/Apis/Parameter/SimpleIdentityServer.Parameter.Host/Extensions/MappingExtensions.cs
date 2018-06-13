@@ -8,6 +8,22 @@ namespace SimpleIdentityServer.Parameter.Host.Extensions
 {
     internal static class MappingExtensions
     {
+        public static UpdateConnector ToParameter(this UpdateConnectorRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            return new UpdateConnector
+            {
+                Library = request.Library,
+                Name = request.Name,
+                Parameters = request.Parameters,
+                Version = request.Version
+            };
+        }
+
         public static UpdateParameter ToParameter(this UpdateParameterRequest request)
         {
             if (request == null)

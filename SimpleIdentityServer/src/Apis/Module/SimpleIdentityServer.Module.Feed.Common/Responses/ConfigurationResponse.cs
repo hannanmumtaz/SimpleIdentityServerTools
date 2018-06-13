@@ -7,5 +7,7 @@ namespace SimpleIdentityServer.Module.Feed.Common.Responses
     {
         [DataMember(Name = "projects_edp")]
         public string ProjectsEndpoint { get; set; }
+        [DataMember(Name = "connectors_edp")]
+        public string ConnectorsEndpoint { get; set; }
     }
 }

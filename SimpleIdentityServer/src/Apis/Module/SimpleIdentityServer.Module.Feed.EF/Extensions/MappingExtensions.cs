@@ -8,6 +8,46 @@ namespace SimpleIdentityServer.Module.Feed.EF.Extensions
 {
     internal static class MappingExtensions
     {
+        public static Connector ToModel(this ConnectorAggregate connector)
+        {
+            if (connector == null)
+            {
+                throw new ArgumentNullException(nameof(connector));
+            }
+
+            return new Connector
+            {
+                Library = connector.Library,
+                Name = connector.Name,
+                Parameters = connector.Parameters,
+                Version = connector.Version,
+                CreateDateTime = connector.CreateDateTime,
+                Description = connector.Description,
+                Picture = connector.Picture,
+                UpdateDateTime = connector.UpdateDateTime
+            };
+        }
+
+        public static ConnectorAggregate ToDomain(this Connector connector)
+        {
+            if (connector == null)
+            {
+                throw new ArgumentNullException(nameof(connector));
+            }
+
+            return new ConnectorAggregate
+            {
+                Library = connector.Library,
+                Name = connector.Name,
+                Parameters = connector.Parameters,
+                Version = connector.Version,
+                CreateDateTime = connector.CreateDateTime,
+                Description = connector.Description,
+                Picture = connector.Picture,
+                UpdateDateTime = connector.UpdateDateTime
+            };
+        }
+
         public static ProjectAggregate ToDomain(this Project project)
         {
             if (project == null)

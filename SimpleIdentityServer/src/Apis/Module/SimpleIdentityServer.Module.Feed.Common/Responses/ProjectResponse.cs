@@ -26,7 +26,7 @@ namespace SimpleIdentityServer.Module.Feed.Common.Responses
     }
 
     [DataContract]
-    public class ConnectorResponse
+    public class ProjectConnectorResponse
     {
         [DataMember(Name = Constants.ConnectorResponseNames.Name)]
         public string Name { get; set; }
@@ -50,6 +50,6 @@ namespace SimpleIdentityServer.Module.Feed.Common.Responses
         [DataMember(Name = Constants.ProjectResponseNames.Units)]
         public IEnumerable<ProjectUnitResponse> Units { get; set; }
         [DataMember(Name = Constants.ProjectResponseNames.Connectors)]
-        public IEnumerable<ConnectorResponse> Connectors { get; set; }
+        public IEnumerable<ProjectConnectorResponse> Connectors { get; set; }
     }
 }

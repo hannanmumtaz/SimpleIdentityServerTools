@@ -15,6 +15,7 @@ namespace SimpleIdentityServer.Module.Feed.EF
             }
 
             services.AddTransient<IProjectRepository, ProjectRepository>();
+            services.AddTransient<IConnectorRepository, ConnectorRepository>();
             return services;
         }
     }

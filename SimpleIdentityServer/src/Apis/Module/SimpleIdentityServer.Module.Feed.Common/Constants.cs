@@ -28,9 +28,13 @@
         public static class ConnectorResponseNames
         {
             public const string Name = "name";
+            public const string Description = "description";
+            public const string Picture = "picture";
             public const string Library = "lib";
             public const string Version = "version";
             public const string Parameters = "parameters";
+            public const string CreateDateTime = "create_datetime";
+            public const string UpdateDateTime = "update_datetime";
         }
     }
 }

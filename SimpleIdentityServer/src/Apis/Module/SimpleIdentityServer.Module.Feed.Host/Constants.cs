@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SimpleIdentityServer.Module.Feed.Host
+﻿namespace SimpleIdentityServer.Module.Feed.Host
 {
     internal static class Constants
     {
@@ -12,6 +6,7 @@ namespace SimpleIdentityServer.Module.Feed.Host
         {
             public const string ConfigurationController = "configuration";
             public const string ProjectsController = "projects";
+            public const string ConnectorsController = "connectors";
         }
     }
 }

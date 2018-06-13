@@ -1,4 +1,5 @@
-﻿using SimpleIdentityServer.Module.Feed.Common.Responses;
+﻿using SimpleIdentityServer.Module.Feed.Common.Requests;
+using SimpleIdentityServer.Module.Feed.Common.Responses;
 using SimpleIdentityServer.Module.Feed.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,44 @@ namespace SimpleIdentityServer.Module.Feed.Host.Extensions
 {
     internal static class MappingExtensions
     {
+        public static ConnectorAggregate ToParameter(this AddConnectorRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            return new ConnectorAggregate
+            {
+                Description = request.Description,
+                Library = request.Library,
+                Name = request.Name,
+                Parameters = request == null ? string.Empty : string.Join(",", request.Parameters),
+                Picture = request.Picture,
+                Version = request.Version
+            };
+        }
+
+        public static ConnectorResponse ToDto(this ConnectorAggregate connector)
+        {
+            if (connector == null)
+            {
+                throw new ArgumentNullException(nameof(connector));
+            }
+
+            return new ConnectorResponse
+            {
+                CreateDateTime = connector.CreateDateTime,
+                Description = connector.Description,
+                Library = connector.Library,
+                Name = connector.Name,
+                Parameters = string.IsNullOrWhiteSpace(connector.Parameters) ? new string[0] : connector.Parameters.Split(','),
+                Picture = connector.Picture,
+                UpdateDateTime = connector.UpdateDateTime,
+                Version = connector.Version
+            };
+        }
+
         public static ProjectResponse ToDto(this ProjectAggregate project)
         {
             if (project == null)

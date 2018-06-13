@@ -35,7 +35,8 @@ namespace SimpleIdentityServer.Parameter.Host.Controllers
         [Authorize("get")]
         public IActionResult GetConnectors()
         {
-            return new NotFoundResult();
+            var connectors = _parameterActions.GetConnectors();
+            return new OkObjectResult(connectors);
         }
 
         [HttpPut("modules")]
@@ -78,6 +79,19 @@ namespace SimpleIdentityServer.Parameter.Host.Controllers
                     Message = ex.Message
                 }, HttpStatusCode.InternalServerError);
             }
+        }
+
+        [HttpPost("connectors")]
+        [Authorize("add")]
+        public IActionResult UpdateConnectors([FromBody] IEnumerable<UpdateConnectorRequest> updateConnectorsRequest)
+        {
+            if (updateConnectorsRequest == null)
+            {
+                throw new ArgumentNullException(nameof(updateConnectorsRequest));
+            }
+
+            _parameterActions.Update(updateConnectorsRequest.Select(u => u.ToParameter()));
+            return new OkResult();
         }
 
         private IActionResult BuildError(ErrorResponse error, HttpStatusCode httpStatusCode)

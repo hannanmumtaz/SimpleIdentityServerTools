@@ -13,7 +13,8 @@ namespace SimpleIdentityServer.Module.Feed.Host.Controllers
             var issuer = Request.GetAbsoluteUriWithVirtualPath();
             var result = new ConfigurationResponse
             {
-                ProjectsEndpoint = $"{issuer}/{Constants.Routes.ProjectsController}"
+                ProjectsEndpoint = $"{issuer}/{Constants.Routes.ProjectsController}",
+                ConnectorsEndpoint = $"{issuer}/{Constants.Routes.ConnectorsController}"
             };
             return new OkObjectResult(result);
         }

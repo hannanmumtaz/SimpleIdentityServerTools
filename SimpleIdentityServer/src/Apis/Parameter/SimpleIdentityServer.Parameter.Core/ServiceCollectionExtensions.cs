@@ -19,6 +19,8 @@ namespace SimpleIdentityServer.Parameter.Core
             services.AddTransient<IGetModulesAction, GetModulesAction>();
             services.AddTransient<IUpdateModuleConfigurationAction, UpdateModuleConfigurationAction>();
             services.AddTransient<IDirectoryHelper, DirectoryHelper>();
+            services.AddTransient<IGetConnectorsAction, GetConnectorsAction>();
+            services.AddTransient<IUpdateConnectorsAction, UpdateConnectorsAction>();
             return services;
         }
     }

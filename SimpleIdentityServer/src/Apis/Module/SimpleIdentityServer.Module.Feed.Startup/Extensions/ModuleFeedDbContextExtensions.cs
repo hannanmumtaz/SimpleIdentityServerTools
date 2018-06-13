@@ -27,6 +27,27 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
             return dbContext;
         }
 
+        private static void AddConnectors(ModuleFeedDbContext dbContext)
+        {
+            if (!dbContext.Connectors.Any())
+            {
+                dbContext.Connectors.AddRange(new[]
+                {
+                    new Connector
+                    {
+                        Name = "Facebook",
+                        Library = "SimpleIdentityServer.Connectors.Facebook",
+                        Version = "3.0.0-rc7",
+                        Description = "Facebook identity provider",
+                        Parameters = "ClientId,ClientSecret,Scopes",
+                        CreateDateTime = DateTime.UtcNow,
+                        UpdateDateTime = DateTime.UtcNow,
+                        Picture = "https://blog.addthiscdn.com/wp-content/uploads/2015/11/logo-facebook.png"
+                    }
+                });
+            }
+        }
+
         private static void AddCategories(ModuleFeedDbContext dbContext)
         {
             if (!dbContext.Categories.Any())

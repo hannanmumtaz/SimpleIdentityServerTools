@@ -19,6 +19,7 @@ namespace SimpleIdentityServer.Module.Feed.EF
         public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<Unit> Units { get; set; }
         public virtual DbSet<ProjectUnit> ProjectUnits { get; set; }
+        public virtual DbSet<Connector> Connectors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,7 +27,8 @@ namespace SimpleIdentityServer.Module.Feed.EF
                 .AddPackageCategoryMapping()
                 .AddUnitMapping()
                 .AddProjectUnitMapping()
-                .AddUnitPackageMapping();
+                .AddUnitPackageMapping()
+                .AddConnectorMapping();
             base.OnModelCreating(modelBuilder);
         }
     }

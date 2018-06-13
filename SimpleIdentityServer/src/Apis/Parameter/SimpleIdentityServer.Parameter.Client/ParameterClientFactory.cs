@@ -31,6 +31,7 @@ namespace SimpleIdentityServer.Parameter.Client
             services.AddTransient<IGetModulesAction, GetModulesAction>();
             services.AddTransient<IGetConnectorsAction, GetConnectorsAction>();
             services.AddTransient<IUpdateModulesAction, UpdateModulesAction>();
+            services.AddTransient<IUpdateConnectorsAction, UpdateConnectorsAction>();
             return services;
         }
     }

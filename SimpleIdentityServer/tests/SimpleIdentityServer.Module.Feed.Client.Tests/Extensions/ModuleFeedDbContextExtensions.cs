@@ -18,6 +18,7 @@ namespace SimpleIdentityServer.Module.Feed.Client.Tests.Extensions
             AddProjects(dbContext);
             AddUnits(dbContext);
             AddProjectUnits(dbContext);
+            AddConnectors(dbContext);
             try
             {
                 dbContext.SaveChanges();
@@ -25,6 +26,27 @@ namespace SimpleIdentityServer.Module.Feed.Client.Tests.Extensions
             catch (Exception) { }
 
             return dbContext;
+        }
+
+        private static void AddConnectors(ModuleFeedDbContext dbContext)
+        {
+            if (!dbContext.Connectors.Any())
+            {
+                dbContext.Connectors.AddRange(new[]
+                {
+                    new Connector
+                    {
+                        Library = "lib",
+                        Description = "description",
+                        Name = "name",
+                        Picture = "picture",
+                        CreateDateTime = DateTime.UtcNow,
+                        Version = "version",
+                        UpdateDateTime = DateTime.UtcNow,
+                        Parameters = "p1,p2"
+                    }
+                });
+            }
         }
 
         private static void AddCategories(ModuleFeedDbContext dbContext)
