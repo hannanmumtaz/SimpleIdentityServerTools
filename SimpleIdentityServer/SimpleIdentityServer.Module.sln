@@ -133,8 +133,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Parame
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07. Connectors", "07. Connectors", "{EC29B82C-5F43-4014-AA0D-69A53B614E15}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Connectors.Authentication", "src\Apis\Connectors\SimpleIdentityServer.Connectors.Authentication\SimpleIdentityServer.Connectors.Authentication.csproj", "{787C4D6A-E226-446B-AC70-3C16F708E656}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Connectors.Facebook", "src\Apis\Connectors\SimpleIdentityServer.Connectors.Facebook\SimpleIdentityServer.Connectors.Facebook.csproj", "{C01A82DC-CFA0-4DDF-B36A-9F9AAAE7C3F9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Connectors.Common", "src\Apis\Connectors\SimpleIdentityServer.Connectors.Common\SimpleIdentityServer.Connectors.Common.csproj", "{0A8E60EA-8506-41EC-90FC-17E3477E7BCF}"
@@ -349,10 +347,6 @@ Global
 		{CC4AAF77-08FC-4075-BED7-A2E50A5354A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC4AAF77-08FC-4075-BED7-A2E50A5354A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC4AAF77-08FC-4075-BED7-A2E50A5354A1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{787C4D6A-E226-446B-AC70-3C16F708E656}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{787C4D6A-E226-446B-AC70-3C16F708E656}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{787C4D6A-E226-446B-AC70-3C16F708E656}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{787C4D6A-E226-446B-AC70-3C16F708E656}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C01A82DC-CFA0-4DDF-B36A-9F9AAAE7C3F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C01A82DC-CFA0-4DDF-B36A-9F9AAAE7C3F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C01A82DC-CFA0-4DDF-B36A-9F9AAAE7C3F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -427,7 +421,6 @@ Global
 		{DB4EB06B-B7D9-454E-8CF3-AFEE0D173284} = {71A0B326-6CE9-4827-B986-FF2B4B8ECF8D}
 		{CC4AAF77-08FC-4075-BED7-A2E50A5354A1} = {71A0B326-6CE9-4827-B986-FF2B4B8ECF8D}
 		{EC29B82C-5F43-4014-AA0D-69A53B614E15} = {93C9091B-046A-4760-84B3-15B6701B7099}
-		{787C4D6A-E226-446B-AC70-3C16F708E656} = {EC29B82C-5F43-4014-AA0D-69A53B614E15}
 		{C01A82DC-CFA0-4DDF-B36A-9F9AAAE7C3F9} = {EC29B82C-5F43-4014-AA0D-69A53B614E15}
 		{0A8E60EA-8506-41EC-90FC-17E3477E7BCF} = {EC29B82C-5F43-4014-AA0D-69A53B614E15}
 	EndGlobalSection

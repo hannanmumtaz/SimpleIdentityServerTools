@@ -34,6 +34,8 @@ namespace SimpleIdentityServer.Module.Feed.Common.Responses
         public string Library { get; set; }
         [DataMember(Name = Constants.ConnectorResponseNames.Version)]
         public string Version { get; set; }
+        [DataMember(Name = Constants.ConnectorResponseNames.Parameters)]
+        public IDictionary<string, string> Parameters { get; set; }
     }
 
     [DataContract]

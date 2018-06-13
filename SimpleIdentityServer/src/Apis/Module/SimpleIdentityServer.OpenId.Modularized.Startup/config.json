@@ -102,5 +102,16 @@
       ]
     }
   ],
-  "connectors": []
+  "connectors": [
+    {
+      "name": "Facebook",
+      "lib": "SimpleIdentityServer.Connectors.Facebook",
+      "version": "3.0.0-rc7",
+      "parameters": {
+        "ClientId": "569242033233529",
+        "ClientSecret": "12e0f33817634c0a650c0121d05e53eb",
+        "Scopes": "public_profile;email"
+      }
+    }
+  ]
 }

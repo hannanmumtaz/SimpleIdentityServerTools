@@ -30,6 +30,7 @@
             public const string Name = "name";
             public const string Library = "lib";
             public const string Version = "version";
+            public const string Parameters = "parameters";
         }
     }
 }

@@ -30,9 +30,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="2.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.0.2" />
-    <!--
     <PackageReference Include="SimpleIdentityServer.Module.Loader" Version="3.0.0-rc7" />
-    -->
   </ItemGroup>
 
   <ItemGroup>
@@ -57,9 +55,4 @@
   <ItemGroup>
     <Folder Include="Views\" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SimpleIdentityServer.Module.Loader\SimpleIdentityServer.Module.Loader.csproj" />
-  </ItemGroup>
-
 </Project>

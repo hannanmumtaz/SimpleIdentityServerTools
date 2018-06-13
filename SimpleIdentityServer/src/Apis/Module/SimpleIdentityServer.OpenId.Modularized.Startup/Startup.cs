@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -8,7 +7,6 @@ using Serilog.Events;
 using SimpleIdentityServer.Module.Loader;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace SimpleIdentityServer.OpenId.Modularized.Startup
 {
@@ -46,6 +44,7 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             _moduleLoader.RestorePackages().Wait();
             _moduleLoader.RestoreConnectors().Wait();
             _moduleLoader.LoadModules();
+            _moduleLoader.LoadConnectors();
             _moduleLoader.WatchConfigurationFileChanges();
         }
 
@@ -58,13 +57,12 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             ConfigureLogging(services);
             services.AddLogging();
             var mvcBuilder = services.AddMvc();
-            _moduleLoader.ConfigureServices(services, mvcBuilder, _env);
             services.AddAuthentication(Constants.CookieName)
                 .AddCookie(Constants.CookieName, opts =>
                 {
                     opts.LoginPath = "/Authenticate";
-                });            
-            _moduleLoader.LoadConnectors(); // WHEN THE FILE HAS CHANGED THEN RELOAD THE CONNECTORS.
+                });
+            _moduleLoader.ConfigureServices(services, mvcBuilder, _env);
         }
 
         private void ConfigureLogging(IServiceCollection services)
@@ -145,28 +143,11 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
         {
             _moduleLoader.Dispose();
             WebHost.Restart();
-            // _moduleLoader.LoadConnectors();
         }
 
         private void HandleConnectorsLoaded(object sender, EventArgs e)
         {
-            // _moduleLoader.GetConnectors();
-        }
-
-        private void HandleFileChanged(object sender, FileSystemEventArgs e)
-        {
-            /*
-            _services.AddAuthentication(Constants.ExternalCookieName)
-                .AddCookie(Constants.ExternalCookieName)
-                .AddFacebook(opts =>
-                {
-                    opts.ClientId = "569242033233529";
-                    opts.ClientSecret = "12e0f33817634c0a650c0121d05e53eb";
-                    opts.SignInScheme = Constants.ExternalCookieName;
-                    opts.Scope.Add("public_profile");
-                    opts.Scope.Add("email");
-                });
-            */
+            Console.WriteLine("The connectors are loaded");
         }
 
         private static void ModuleCannotBeInstalled(object sender, StrEventArgs e)

@@ -466,13 +466,24 @@ namespace SimpleIdentityServer.Module.Loader
         }
         
         /// <summary>
-        /// Register the services.
+        /// Configure the modules & connectors.
         /// </summary>
         public void ConfigureServices(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env)
         {
-            foreach (var loadedModule in _modules)
+            if (_modules != null)
             {
-                loadedModule.Instance.ConfigureServices(services, mvcBuilder, env, loadedModule.Unit.Parameters);
+                foreach (var loadedModule in _modules)
+                {
+                    loadedModule.Instance.ConfigureServices(services, mvcBuilder, env, loadedModule.Unit.Parameters);
+                }
+            }
+
+            if (_connectors != null)
+            {
+                foreach(var connector in _connectors)
+                {
+                    connector.Instance.Configure(services, connector.Connector.Parameters);
+                }
             }
         }
 
