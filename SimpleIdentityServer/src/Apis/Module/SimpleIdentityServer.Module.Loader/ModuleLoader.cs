@@ -81,14 +81,14 @@ namespace SimpleIdentityServer.Module.Loader
 
     public class LoadedConnector
     {
-        public LoadedConnector(IConnector instance, ConnectorResponse connector)
+        public LoadedConnector(IConnector instance, ProjectConnectorResponse connector)
         {
             Instance = instance;
             Connector = connector;
         }
 
         public IConnector Instance { get; private set; }
-        public ConnectorResponse Connector { get; private set; }
+        public ProjectConnectorResponse Connector { get; private set; }
     }
 
     internal sealed class ModuleLoader : IModuleLoader
@@ -570,8 +570,8 @@ namespace SimpleIdentityServer.Module.Loader
 
                         var json = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), _configFile));
                         var projectConfiguration = JsonConvert.DeserializeObject<ProjectResponse>(json);
-                        var projectConfigurationConnectors = projectConfiguration.Connectors == null ? new List<ConnectorResponse>() : projectConfiguration.Connectors;
-                        var localProjectConfigurationConnectors = _projectConfiguration.Connectors == null ? new List<ConnectorResponse>() : _projectConfiguration.Connectors;
+                        var projectConfigurationConnectors = projectConfiguration.Connectors == null ? new List<ProjectConnectorResponse>() : projectConfiguration.Connectors;
+                        var localProjectConfigurationConnectors = _projectConfiguration.Connectors == null ? new List<ProjectConnectorResponse>() : _projectConfiguration.Connectors;
                         if (projectConfigurationConnectors.Count() != localProjectConfigurationConnectors.Count() ||
                             projectConfigurationConnectors.Any(p => !localProjectConfigurationConnectors.Any(lp => lp.Name == p.Name && lp.Version == p.Version)))
                         {
