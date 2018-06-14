@@ -20,8 +20,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleIdentityServer.Module.Loader;
-using SimpleIdentityServer.OAuth2Introspection;
-using SimpleIdentityServer.Uma.Modularized.Startup;
 using System;
 using System.Collections.Generic;
 
@@ -65,14 +63,19 @@ namespace SimpleIdentityServer.Uma.Startup
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
             var mvc = services.AddMvc();
-            _moduleLoader.ConfigureServices(services, mvc, _env);
+            var authBuilder = services.AddAuthentication();
+            _moduleLoader.ConfigureModuleServices(services, mvc, _env);
+            _moduleLoader.ConfigureModuleAuthentication(authBuilder);
+            services.AddAuthorization(opts =>
+            {
+                _moduleLoader.ConfigureModuleAuthorization(opts);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
-            // app.UseAuthentication();
-            app.UseMiddleware<LocalAuthenticationMiddleware>();
+            app.UseAuthentication();
             app.UseCors("AllowAll");
             _moduleLoader.Configure(app);
             app.UseMvc(routes =>

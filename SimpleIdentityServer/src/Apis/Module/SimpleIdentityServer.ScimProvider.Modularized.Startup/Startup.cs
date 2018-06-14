@@ -61,7 +61,13 @@ namespace SimpleIdentityServer.ScimProvider.Modularized.Startup
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
             var mvc = services.AddMvc();
-            _moduleLoader.ConfigureServices(services, mvc, _env);
+            var authBuilder = services.AddAuthentication();
+            _moduleLoader.ConfigureModuleServices(services, mvc, _env);
+            _moduleLoader.ConfigureModuleAuthentication(authBuilder);
+            services.AddAuthorization(opts =>
+            {
+                _moduleLoader.ConfigureModuleAuthorization(opts);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

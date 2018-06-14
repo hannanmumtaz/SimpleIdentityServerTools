@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,7 +34,10 @@ namespace SimpleIdentityServer.Module.Loader
         Task RestoreConnectors();
         void LoadModules();
         void LoadConnectors();
-        void ConfigureServices(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env);
+        void ConfigureModuleServices(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env);
+        void ConfigureModuleAuthentication(AuthenticationBuilder localAuthBuilder);
+        void ConfigureConnectorAuthentication(AuthenticationBuilder localAuthBuilder);
+        void ConfigureModuleAuthorization(AuthorizationOptions authorizationOptions);
         void Configure(IRouteBuilder routes);
         void Configure(IApplicationBuilder app);
         void CheckConfigurationFile();
@@ -466,9 +471,9 @@ namespace SimpleIdentityServer.Module.Loader
         }
         
         /// <summary>
-        /// Configure the modules & connectors.
+        /// Configure the module services.
         /// </summary>
-        public void ConfigureServices(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env)
+        public void ConfigureModuleServices(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env)
         {
             if (_modules != null)
             {
@@ -477,12 +482,50 @@ namespace SimpleIdentityServer.Module.Loader
                     loadedModule.Instance.ConfigureServices(services, mvcBuilder, env, loadedModule.Unit.Parameters);
                 }
             }
+        }
 
+        /// <summary>
+        /// Configure the module authentication
+        /// </summary>
+        /// <param name="localAuthBuilder"></param>
+        /// <param name="externalAuthBuilder"></param>
+        public void ConfigureModuleAuthentication(AuthenticationBuilder localAuthBuilder)
+        {
+            if (_modules != null)
+            {
+                foreach (var loadedModule in _modules)
+                {
+                    loadedModule.Instance.ConfigureAuthentication(localAuthBuilder, loadedModule.Unit.Parameters);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Configure the connectors authentication.
+        /// </summary>
+        /// <param name="localAuthBuilder"></param>
+        public void ConfigureConnectorAuthentication(AuthenticationBuilder localAuthBuilder)
+        {
             if (_connectors != null)
             {
-                foreach(var connector in _connectors)
+                foreach (var connector in _connectors)
                 {
-                    connector.Instance.Configure(services, connector.Connector.Parameters);
+                    connector.Instance.Configure(localAuthBuilder, connector.Connector.Parameters);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Configure the module authorization.
+        /// </summary>
+        /// <param name="authorizationOptions"></param>
+        public void ConfigureModuleAuthorization(AuthorizationOptions authorizationOptions)
+        {
+            if (_modules != null)
+            {
+                foreach (var loadedModule in _modules)
+                {
+                    loadedModule.Instance.ConfigureAuthorization(authorizationOptions, loadedModule.Unit.Parameters);
                 }
             }
         }

@@ -22,12 +22,6 @@ namespace SimpleIdentityServer.Parameter.Host.Controllers
             _parameterActions = parameterActions;
         }
 
-        [HttpGet("test")]
-        public IActionResult Test()
-        {
-            return null;
-        }
-
         [HttpGet("modules")]
         [Authorize("get")]
         public IActionResult GetModules()

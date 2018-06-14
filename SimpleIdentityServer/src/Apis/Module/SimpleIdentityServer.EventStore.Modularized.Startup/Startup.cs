@@ -51,7 +51,8 @@ namespace SimpleIdentityServer.EventStore.Modularized.Startup
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
             var mvc = services.AddMvc();
-            _moduleLoader.ConfigureServices(services, mvc, _env);
+            var authBuilder = services.AddAuthentication();
+            _moduleLoader.ConfigureModuleServices(services, mvc, _env);
         }
 
         public void Configure(IApplicationBuilder app,

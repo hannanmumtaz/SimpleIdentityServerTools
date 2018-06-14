@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.Connectors.Common;
 using SimpleIdentityServer.Connectors.Common.Extensions;
 using System;
@@ -21,11 +22,11 @@ namespace SimpleIdentityServer.Connectors.Facebook
             Scopes
         };
 
-        public void Configure(IServiceCollection services, IDictionary<string, string> options)
+        public void Configure(AuthenticationBuilder authBuilder, IDictionary<string, string> options)
         {
-            if (services == null)
+            if (authBuilder == null)
             {
-                throw new ArgumentNullException(nameof(services));
+                throw new ArgumentNullException(nameof(authBuilder));
             }
 
             if (options == null)
@@ -39,9 +40,7 @@ namespace SimpleIdentityServer.Connectors.Facebook
                 cookieName = Constants.DEFAULT_COOKIE_NAME;
             }
 
-            services.AddAuthentication(cookieName)
-                .AddCookie(cookieName)
-                .AddFacebook(opts =>
+            authBuilder.AddFacebook(opts =>
                 {
                     opts.ClientId = options.TryGetStr(ClientId);
                     opts.ClientSecret = options.TryGetStr(ClientSecret);
