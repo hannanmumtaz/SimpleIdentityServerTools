@@ -31,7 +31,7 @@ namespace SimpleIdentityServer.Parameter.Host
             authorizationOptions.AddParameterAuthPolicy();
         }
 
-        public void ConfigureServices(IServiceCollection services, IMvcBuilder mvcBuilder = null, IHostingEnvironment env = null, IDictionary<string, string> options = null)
+        public void ConfigureServices(IServiceCollection services, IMvcBuilder mvcBuilder = null, IHostingEnvironment env = null, IDictionary<string, string> options = null, IEnumerable<ModuleUIDescriptor> moduleUiDescriptors = null)
         {
             if (services == null)
             {
@@ -46,6 +46,11 @@ namespace SimpleIdentityServer.Parameter.Host
             var assembly = typeof(ParametersController).Assembly;
             mvcBuilder.AddApplicationPart(assembly);
             services.AddParameterHost();
+        }
+
+        public ModuleUIDescriptor GetModuleUI()
+        {
+            return null;
         }
 
         public IEnumerable<string> GetOptionKeys()

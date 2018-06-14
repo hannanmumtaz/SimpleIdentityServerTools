@@ -32,6 +32,7 @@ namespace SimpleIdentityServer.Module.Loader
         void WatchConfigurationFileChanges();
         Task RestorePackages();
         Task RestoreConnectors();
+        IEnumerable<ModuleUIDescriptor> GetModuleUIDescriptors();
         void LoadModules();
         void LoadConnectors();
         void ConfigureModuleServices(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env);
@@ -469,6 +470,20 @@ namespace SimpleIdentityServer.Module.Loader
         {
             return _connectors;
         }
+
+        /// <summary>
+        /// Returns the list of UI descriptor.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<ModuleUIDescriptor> GetModuleUIDescriptors()
+        {
+            if (_modules == null)
+            {
+                return null;
+            }
+
+            return _modules.Select(m => m.Instance.GetModuleUI()).Where(m => m != null);
+        }
         
         /// <summary>
         /// Configure the module services.
@@ -477,9 +492,10 @@ namespace SimpleIdentityServer.Module.Loader
         {
             if (_modules != null)
             {
+                var moduleUiDescriptors = GetModuleUIDescriptors();
                 foreach (var loadedModule in _modules)
                 {
-                    loadedModule.Instance.ConfigureServices(services, mvcBuilder, env, loadedModule.Unit.Parameters);
+                    loadedModule.Instance.ConfigureServices(services, mvcBuilder, env, loadedModule.Unit.Parameters, moduleUiDescriptors);
                 }
             }
         }

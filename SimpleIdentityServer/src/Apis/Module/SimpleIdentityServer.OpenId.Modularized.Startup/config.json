@@ -4,7 +4,7 @@
   "name": "OpenIdProvider",
   "units": [
     {
-      "name": "openidhost",
+      "name": "openidapi",
       "packages": [
         {
           "lib": "SimpleIdentityServer.Host",
@@ -35,7 +35,7 @@
       ]
     },
     {
-      "name": "parametesrapi",
+      "name": "parametersrapi",
       "packages": [
         {
           "lib": "SimpleIdentityServer.Parameter.Host",
@@ -71,9 +71,21 @@
       "name": "openidui",
       "packages": [
         {
+          "lib": "SimpleIdentityServer.Shell",
+          "version": "3.0.0-rc7",
+          "category": "shell",
+          "parameters": null
+        },
+        {
           "lib": "SimpleIdentityServer.Authenticate.Basic",
           "version": "3.0.0-rc7",
-          "category": "ui",
+          "category": "authenticate",
+          "parameters": null
+        },
+        {
+          "lib": "SimpleIdentityServer.UserManagement",
+          "version": "3.0.0-rc7",
+          "category": "usermanagement",
           "parameters": null
         }
       ]

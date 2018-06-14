@@ -137,6 +137,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Connec
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Connectors.Common", "src\Apis\Connectors\SimpleIdentityServer.Connectors.Common\SimpleIdentityServer.Connectors.Common.csproj", "{0A8E60EA-8506-41EC-90FC-17E3477E7BCF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Shell", "..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Shell\SimpleIdentityServer.Shell.csproj", "{77BB48A5-BDC1-43BB-8D79-02B950F5718D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.UserManagement", "..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.UserManagement\SimpleIdentityServer.UserManagement.csproj", "{A0A77886-B747-40D8-9F85-AB77D5DC773D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -355,6 +359,14 @@ Global
 		{0A8E60EA-8506-41EC-90FC-17E3477E7BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A8E60EA-8506-41EC-90FC-17E3477E7BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A8E60EA-8506-41EC-90FC-17E3477E7BCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77BB48A5-BDC1-43BB-8D79-02B950F5718D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77BB48A5-BDC1-43BB-8D79-02B950F5718D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77BB48A5-BDC1-43BB-8D79-02B950F5718D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77BB48A5-BDC1-43BB-8D79-02B950F5718D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0A77886-B747-40D8-9F85-AB77D5DC773D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0A77886-B747-40D8-9F85-AB77D5DC773D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0A77886-B747-40D8-9F85-AB77D5DC773D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0A77886-B747-40D8-9F85-AB77D5DC773D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -423,6 +435,8 @@ Global
 		{EC29B82C-5F43-4014-AA0D-69A53B614E15} = {93C9091B-046A-4760-84B3-15B6701B7099}
 		{C01A82DC-CFA0-4DDF-B36A-9F9AAAE7C3F9} = {EC29B82C-5F43-4014-AA0D-69A53B614E15}
 		{0A8E60EA-8506-41EC-90FC-17E3477E7BCF} = {EC29B82C-5F43-4014-AA0D-69A53B614E15}
+		{77BB48A5-BDC1-43BB-8D79-02B950F5718D} = {6AAF30A9-D0F6-47F8-9052-EDA10C4EC7C4}
+		{A0A77886-B747-40D8-9F85-AB77D5DC773D} = {6AAF30A9-D0F6-47F8-9052-EDA10C4EC7C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE45928A-3A95-4F4A-9EF7-E845C4BEA746}

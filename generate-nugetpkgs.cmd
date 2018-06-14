@@ -35,6 +35,8 @@ dotnet pack --output d:\sidfeeds\ IdServer\SimpleIdentityServer\src\Apis\Uma\Sim
 dotnet pack --output d:\sidfeeds\ IdServer\SimpleIdentityServer\src\Apis\Uma\SimpleIdentityServer.Uma.Store.InMemory /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 
 REM SIMPLEIDSERVER
+dotnet pack --output d:\sidfeeds\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.UserManagement /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Shell /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Authenticate.Basic /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Core /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%

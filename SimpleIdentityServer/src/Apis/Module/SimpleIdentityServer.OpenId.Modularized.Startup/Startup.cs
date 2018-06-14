@@ -114,31 +114,7 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             // 5. Configure ASP.NET MVC
             app.UseMvc(routes =>
             {
-                routes.MapRoute("Error401Route",
-                    "Error/401",
-                    new
-                    {
-                        controller = "Error",
-                        action = "Get401"
-                    });
-                routes.MapRoute("Error404Route",
-                    "Error/404",
-                    new
-                    {
-                        controller = "Error",
-                        action = "Get404"
-                    });
-                routes.MapRoute("Error500Route",
-                    "Error/500",
-                    new
-                    {
-                        controller = "Error",
-                        action = "Get500"
-                    });
                 _moduleLoader.Configure(routes);
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
 

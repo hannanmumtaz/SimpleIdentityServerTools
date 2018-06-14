@@ -88,6 +88,18 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new PackageCategory
                     {
                         Name = "introspect"
+                    },
+                    new PackageCategory
+                    {
+                        Name = "shell"
+                    },
+                    new PackageCategory
+                    {
+                        Name = "authenticate"
+                    },
+                    new PackageCategory
+                    {
+                        Name = "usermanagement"
                     }
                 });
             }
@@ -179,7 +191,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     },
                     new Unit
                     {
-                        UnitName = "parametesrapi",
+                        UnitName = "parametersrapi",
                         Packages = new []
                         {
                             new UnitPackage
@@ -194,7 +206,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     // OPENID
                     new Unit
                     {
-                        UnitName = "openidhost",
+                        UnitName = "openidapi",
                         Packages = new []
                         {
                             new UnitPackage
@@ -275,9 +287,23 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
+                                Library = "SimpleIdentityServer.Shell",
+                                Version = "3.0.0-rc7",
+                                CategoryId = "shell"
+                            },
+                            new UnitPackage
+                            {
+                                Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Authenticate.Basic",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "ui"
+                                CategoryId = "authenticate"
+                            },
+                            new UnitPackage
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Library = "SimpleIdentityServer.UserManagement",
+                                Version = "3.0.0-rc7",
+                                CategoryId = "usermanagement"
                             }
                         }
                     },
@@ -586,7 +612,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new ProjectUnit
                     {
                         ProjectId = "OpenIdProvider_3.0.0-rc7",
-                        UnitId = "openidhost"
+                        UnitId = "openidapi"
                     },
                     new ProjectUnit
                     {
@@ -611,7 +637,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new ProjectUnit
                     {
                         ProjectId = "OpenIdProvider_3.0.0-rc7",
-                        UnitId = "parametesrapi"
+                        UnitId = "parametersrapi"
                     },
                     // EVENT STORE.
                     new ProjectUnit
@@ -632,7 +658,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new ProjectUnit
                     {
                         ProjectId = "EventStore_3.0.0-rc7",
-                        UnitId = "parametesrapi"
+                        UnitId = "parametersrapi"
                     },
                     // UMA
                     new ProjectUnit
@@ -673,7 +699,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new ProjectUnit
                     {
                         ProjectId = "UmaProvider_3.0.0-rc7",
-                        UnitId = "parametesrapi"
+                        UnitId = "parametersrapi"
                     },
                     // SCIM
                     new ProjectUnit
@@ -704,7 +730,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new ProjectUnit
                     {
                         ProjectId = "ScimProvider_3.0.0-rc7",
-                        UnitId = "parametesrapi"
+                        UnitId = "parametersrapi"
                     }
                 });
             }
