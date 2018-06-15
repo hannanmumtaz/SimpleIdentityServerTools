@@ -34,18 +34,57 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
             {
                 dbContext.Connectors.AddRange(new[]
                 {
-                    new Connector
+                    new Connector // Facebook
                     {
                         Id = Guid.NewGuid().ToString(),
                         ProjectId = "OpenIdProvider_3.0.0-rc7",
                         Name = "Facebook",
                         Library = "SimpleIdentityServer.Connectors.Facebook",
                         Version = "3.0.0-rc7",
-                        Description = "Facebook identity provider",
+                        Description = "Refer to this url https://developers.facebook.com to create a new client",
                         Parameters = "ClientId,ClientSecret,Scopes",
                         CreateDateTime = DateTime.UtcNow,
                         UpdateDateTime = DateTime.UtcNow,
                         Picture = "https://blog.addthiscdn.com/wp-content/uploads/2015/11/logo-facebook.png"
+                    },
+                    new Connector // Microsoft account.
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        Name = "MicrosoftAccount",
+                        Library = "SimpleIdentityServer.Connectors.MicrosoftAccount",
+                        Version = "3.0.0-rc7",
+                        Description = "Refer to this url http://go.microsoft.com/fwlink/?LinkID=144070 to create a new client",
+                        Parameters = "ClientId,ClientSecret,Scopes",
+                        CreateDateTime = DateTime.UtcNow,
+                        UpdateDateTime = DateTime.UtcNow,
+                        Picture = "https://is2-ssl.mzstatic.com/image/thumb/Purple128/v4/ad/c7/ce/adc7ce3b-f989-9147-0066-b79383ecc05b/contsched.gvqizhnn.png/1200x630bb.png"
+                    },
+                    new Connector // Google
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        Name = "Google",
+                        Library = "SimpleIdentityServer.Connectors.Google",
+                        Version = "3.0.0-rc7",
+                        Description = "Refer to this url https://console.developers.google.com/apis/credentials to create a new client",
+                        Parameters = "ClientId,ClientSecret,Scopes",
+                        CreateDateTime = DateTime.UtcNow,
+                        UpdateDateTime = DateTime.UtcNow,
+                        Picture = "https://cdn.icon-icons.com/icons2/1222/PNG/512/1492616990-1-google-search-logo-engine-service-suits_83412.png"
+                    },
+                    new Connector // Twitter
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        Name = "Twitter",
+                        Library = "SimpleIdentityServer.Connectors.Twitter",
+                        Version = "3.0.0-rc7",
+                        Description = "Refer to this url https://apps.twitter.com/ to create a new client",
+                        Parameters = "ClientId,ClientSecret,Scopes",
+                        CreateDateTime = DateTime.UtcNow,
+                        UpdateDateTime = DateTime.UtcNow,
+                        Picture = "https://png.icons8.com/color/1600/twitter-squared.png"
                     }
                 });
             }

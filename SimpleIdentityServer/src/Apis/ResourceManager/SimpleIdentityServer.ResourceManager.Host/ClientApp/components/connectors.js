@@ -141,7 +141,8 @@ class Connectors extends Component {
     handleSaveSettings() {
         var self = this;
         const {t} = self.props;
-        var selectedParameters = self.state.selectedParameters;
+        var selectedParameters = self.state.selectedParameters; // CHECK ONLY THE REQUIRED PARAMETERS.
+        /*
         for(var parameterName in selectedParameters) {
             var parameterValue = selectedParameters[parameterName];
             if(!parameterValue || parameterValue === '') {
@@ -152,7 +153,7 @@ class Connectors extends Component {
                 return;
             }
         }
-
+        */
         var connectors = self.state.connectors;
         var selectedConnector = connectors.filter(function(co) { return co.name === self.state.selectedConnector.name; })[0];
         selectedConnector.parameters = selectedParameters;
