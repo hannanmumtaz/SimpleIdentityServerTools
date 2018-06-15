@@ -141,6 +141,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Shell"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.UserManagement", "..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.UserManagement\SimpleIdentityServer.UserManagement.csproj", "{A0A77886-B747-40D8-9F85-AB77D5DC773D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Connectors.MicrosoftAccount", "src\Apis\Connectors\SimpleIdentityServer.Connectors.MicrosoftAccount\SimpleIdentityServer.Connectors.MicrosoftAccount.csproj", "{9E832F73-28A8-467B-B1EC-B2536DDBA15F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Connectors.Google", "src\Apis\Connectors\SimpleIdentityServer.Connectors.Google\SimpleIdentityServer.Connectors.Google.csproj", "{58CEC1FA-1A19-4A16-A2B5-34376E0A8C16}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Connectors.Twitter", "src\Apis\Connectors\SimpleIdentityServer.Connectors.Twitter\SimpleIdentityServer.Connectors.Twitter.csproj", "{58CA376D-D6AC-4ECE-A4C8-C132B6E1AE94}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -367,6 +373,18 @@ Global
 		{A0A77886-B747-40D8-9F85-AB77D5DC773D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0A77886-B747-40D8-9F85-AB77D5DC773D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0A77886-B747-40D8-9F85-AB77D5DC773D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E832F73-28A8-467B-B1EC-B2536DDBA15F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E832F73-28A8-467B-B1EC-B2536DDBA15F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E832F73-28A8-467B-B1EC-B2536DDBA15F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E832F73-28A8-467B-B1EC-B2536DDBA15F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58CEC1FA-1A19-4A16-A2B5-34376E0A8C16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58CEC1FA-1A19-4A16-A2B5-34376E0A8C16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58CEC1FA-1A19-4A16-A2B5-34376E0A8C16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58CEC1FA-1A19-4A16-A2B5-34376E0A8C16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58CA376D-D6AC-4ECE-A4C8-C132B6E1AE94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58CA376D-D6AC-4ECE-A4C8-C132B6E1AE94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58CA376D-D6AC-4ECE-A4C8-C132B6E1AE94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58CA376D-D6AC-4ECE-A4C8-C132B6E1AE94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -437,6 +455,9 @@ Global
 		{0A8E60EA-8506-41EC-90FC-17E3477E7BCF} = {EC29B82C-5F43-4014-AA0D-69A53B614E15}
 		{77BB48A5-BDC1-43BB-8D79-02B950F5718D} = {6AAF30A9-D0F6-47F8-9052-EDA10C4EC7C4}
 		{A0A77886-B747-40D8-9F85-AB77D5DC773D} = {6AAF30A9-D0F6-47F8-9052-EDA10C4EC7C4}
+		{9E832F73-28A8-467B-B1EC-B2536DDBA15F} = {EC29B82C-5F43-4014-AA0D-69A53B614E15}
+		{58CEC1FA-1A19-4A16-A2B5-34376E0A8C16} = {EC29B82C-5F43-4014-AA0D-69A53B614E15}
+		{58CA376D-D6AC-4ECE-A4C8-C132B6E1AE94} = {EC29B82C-5F43-4014-AA0D-69A53B614E15}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE45928A-3A95-4F4A-9EF7-E845C4BEA746}

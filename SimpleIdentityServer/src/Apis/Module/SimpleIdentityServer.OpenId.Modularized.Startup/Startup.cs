@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
+using SimpleIdentityServer.Connectors.MicrosoftAccount;
 using SimpleIdentityServer.Module.Loader;
 using System;
 using System.Collections.Generic;
