@@ -37,7 +37,7 @@ namespace SimpleIdentityServer.Parameter.Host.Controllers
         {
             var connectors = _parameterActions.GetConnectors();
             var result = connectors.ToDto();
-            return new OkObjectResult(connectors);
+            return new OkObjectResult(result);
         }
 
         [HttpPut("modules")]
@@ -82,7 +82,7 @@ namespace SimpleIdentityServer.Parameter.Host.Controllers
             }
         }
 
-        [HttpPost("connectors")]
+        [HttpPut("connectors")]
         [Authorize("add")]
         public IActionResult UpdateConnectors([FromBody] IEnumerable<UpdateConnectorRequest> updateConnectorsRequest)
         {

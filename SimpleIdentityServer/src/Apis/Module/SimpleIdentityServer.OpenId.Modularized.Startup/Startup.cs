@@ -125,8 +125,8 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
 
         private void HandleConnectorsChanged(object sender, EventArgs e)
         {
-            _moduleLoader.Dispose();
-            WebHost.Restart();
+            // _moduleLoader.Dispose();
+            // WebHost.Restart();
         }
 
         private void HandleConnectorsLoaded(object sender, EventArgs e)
