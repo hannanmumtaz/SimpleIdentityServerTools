@@ -1,7 +1,9 @@
 ﻿using SimpleIdentityServer.Module.Feed.EF;
 using SimpleIdentityServer.Module.Feed.EF.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
 {
@@ -45,7 +47,55 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                         Parameters = "ClientId,ClientSecret,Scopes",
                         CreateDateTime = DateTime.UtcNow,
                         UpdateDateTime = DateTime.UtcNow,
-                        Picture = "https://blog.addthiscdn.com/wp-content/uploads/2015/11/logo-facebook.png"
+                        Picture = "https://blog.addthiscdn.com/wp-content/uploads/2015/11/logo-facebook.png",
+                        Scopes = new List<ConnectorScope>(),
+                        ConnectorClaims = new List<ConnectorClaim>
+                        {
+                            new ConnectorClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Name = "id"
+                            },
+                            new ConnectorClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Name = "age_range",
+                                Children = new List<ConnectorClaim>
+                                {
+                                    new ConnectorClaim
+                                    {
+                                        Id = Guid.NewGuid().ToString(),
+                                        Name = "min"
+                                    },
+                                    new ConnectorClaim
+                                    {
+                                        Id = Guid.NewGuid().ToString(),
+                                        Name = "max"
+                                    }
+                                }
+                            },
+                            new ConnectorClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Name = "birthday"
+                            }
+                        },
+                        ConnectorClaimRules = new List<ConnectorClaimRule>
+                        {
+                            new ConnectorClaimRule
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Source = "id",
+                                Destination = ClaimTypes.NameIdentifier
+                            },
+                            new ConnectorClaimRule
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Source = "birthday",
+                                Destination = ClaimTypes.DateOfBirth
+                            }
+                        },
+                        IsSocial = true
                     },
                     new Connector // Microsoft account.
                     {
@@ -58,7 +108,35 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                         Parameters = "ClientId,ClientSecret,Scopes",
                         CreateDateTime = DateTime.UtcNow,
                         UpdateDateTime = DateTime.UtcNow,
-                        Picture = "https://is2-ssl.mzstatic.com/image/thumb/Purple128/v4/ad/c7/ce/adc7ce3b-f989-9147-0066-b79383ecc05b/contsched.gvqizhnn.png/1200x630bb.png"
+                        Picture = "https://is2-ssl.mzstatic.com/image/thumb/Purple128/v4/ad/c7/ce/adc7ce3b-f989-9147-0066-b79383ecc05b/contsched.gvqizhnn.png/1200x630bb.png",
+                        Scopes = new List<ConnectorScope>
+                        {
+                            new ConnectorScope
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Name = "openid",
+                                Description = ""
+                            },
+                            new ConnectorScope
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Name = "email",
+                                Description = ""
+                            },
+                            new ConnectorScope
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Name = "profile",
+                                Description = ""
+                            },
+                            new ConnectorScope
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Name = "offline_access",
+                                Description = ""
+                            }
+                        },
+                        IsSocial = true
                     },
                     new Connector // Google
                     {
@@ -71,7 +149,26 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                         Parameters = "ClientId,ClientSecret,Scopes",
                         CreateDateTime = DateTime.UtcNow,
                         UpdateDateTime = DateTime.UtcNow,
-                        Picture = "https://cdn.icon-icons.com/icons2/1222/PNG/512/1492616990-1-google-search-logo-engine-service-suits_83412.png"
+                        Picture = "https://cdn.icon-icons.com/icons2/1222/PNG/512/1492616990-1-google-search-logo-engine-service-suits_83412.png",
+                        Scopes = new List<ConnectorScope>
+                        {
+                            new ConnectorScope
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Name = "openid"
+                            },
+                            new ConnectorScope
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Name = "email"
+                            },
+                            new ConnectorScope
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Name = "profile"
+                            }
+                        },
+                        IsSocial = true
                     },
                     new Connector // Twitter
                     {
@@ -84,7 +181,21 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                         Parameters = "ClientId,ClientSecret,Scopes",
                         CreateDateTime = DateTime.UtcNow,
                         UpdateDateTime = DateTime.UtcNow,
-                        Picture = "https://png.icons8.com/color/1600/twitter-squared.png"
+                        Picture = "https://png.icons8.com/color/1600/twitter-squared.png",
+                        IsSocial = true
+                    },
+                    new Connector // WsFederation
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        Name = "WsFederation",
+                        Library = "SimpleIdentityServer.Connectors.WsFederation",
+                        Version = "3.0.0-rc7",
+                        Description = "Configure WSFederation",
+                        Parameters = "",
+                        CreateDateTime = DateTime.UtcNow,
+                        UpdateDateTime = DateTime.UtcNow,
+                        IsSocial = false
                     }
                 });
             }

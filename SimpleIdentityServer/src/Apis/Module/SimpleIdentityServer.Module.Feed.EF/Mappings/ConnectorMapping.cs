@@ -16,6 +16,18 @@ namespace SimpleIdentityServer.Module.Feed.EF.Mappings
             modelBuilder.Entity<Connector>()
                 .ToTable("connectors")
                 .HasKey(p => p.Id);
+            modelBuilder.Entity<Connector>()
+                .HasMany(p => p.Scopes)
+                .WithOne(p => p.Connector)
+                .HasForeignKey(p => p.ConnectorId);
+            modelBuilder.Entity<Connector>()
+                .HasMany(p => p.ConnectorClaimRules)
+                .WithOne(p => p.Connector)
+                .HasForeignKey(p => p.ConnectorId);
+            modelBuilder.Entity<Connector>()
+                .HasMany(p => p.ConnectorClaims)
+                .WithOne(p => p.Connector)
+                .HasForeignKey(p => p.ConnectorId);
             return modelBuilder;
         }
     }
