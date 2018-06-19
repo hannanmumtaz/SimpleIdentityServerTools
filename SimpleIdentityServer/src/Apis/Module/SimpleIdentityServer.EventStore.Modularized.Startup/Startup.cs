@@ -28,7 +28,8 @@ namespace SimpleIdentityServer.EventStore.Modularized.Startup
             {
                 NugetSources = new List<string>
                 {
-                    @"d:\sidfeeds\",
+                    @"d:\sidfeeds\core\",
+                    @"d:\sidfeeds\tools\",
                     "https://api.nuget.org/v3/index.json",
                     "https://www.myget.org/F/advance-ict/api/v3/index.json"
                 },
@@ -36,12 +37,12 @@ namespace SimpleIdentityServer.EventStore.Modularized.Startup
                 ProjectName = "EventStore"
             });
             _moduleLoader.ModuleInstalled += ModuleInstalled;
-            _moduleLoader.PackageRestored += PackageRestored;
+            _moduleLoader.UnitsRestored += HandleUnitsRestored;
             _moduleLoader.ModulesLoaded += ModulesLoaded;
             _moduleLoader.ModuleCannotBeInstalled += ModuleCannotBeInstalled;
             _moduleLoader.Initialize();
-            _moduleLoader.RestorePackages().Wait();
-            _moduleLoader.LoadModules();
+            _moduleLoader.RestoreUnits().Wait();
+            _moduleLoader.LoadUnits();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -83,9 +84,9 @@ namespace SimpleIdentityServer.EventStore.Modularized.Startup
             Console.WriteLine($"The nuget package {e.Value} is installed");
         }
 
-        private static void PackageRestored(object sender, IntEventArgs e)
+        private static void HandleUnitsRestored(object sender, IntEventArgs e)
         {
-            Console.WriteLine($"Finish to restore the packages in {e.Value}");
+            Console.WriteLine($"Finish to restore the units in {e.Value}");
         }
 
         private static void ModulesLoaded(object sender, EventArgs e)

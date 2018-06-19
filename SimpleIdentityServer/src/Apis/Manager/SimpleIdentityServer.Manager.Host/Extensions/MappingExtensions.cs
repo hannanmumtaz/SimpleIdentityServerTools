@@ -125,7 +125,7 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
                 Id = request.Login,
                 Password = request.Password,
                 IsLocalAccount = request.IsLocalAccount,
-                TwoFactorAuthentication = (SimpleIdentityServer.Core.Common.Models.TwoFactorAuthentications)request.TwoFactorAuthentication,
+                TwoFactorAuthentication = request.TwoFactorAuthentication,
                 Claims = claims
             };
         }
@@ -143,11 +143,7 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
 
         public static AddUserParameter ToParameter(this AddResourceOwnerRequest request)
         {
-            return new AddUserParameter
-            {
-                Login = request.Subject,
-                Password = request.Password
-            };
+            return new AddUserParameter(request.Subject, request.Password);
         }
 
         public static GetJwsParameter ToParameter(this GetJwsRequest getJwsRequest)
@@ -639,7 +635,7 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
                 Password = resourceOwner.Password,
                 IsLocalAccount = resourceOwner.IsLocalAccount,
                 Claims = claims,
-                TwoFactorAuthentication = (Common.Responses.TwoFactorAuthentications)resourceOwner.TwoFactorAuthentication,
+                TwoFactorAuthentication = resourceOwner.TwoFactorAuthentication,
                 CreateDateTime = resourceOwner.CreateDateTime,
                 UpdateDateTime = resourceOwner.UpdateDateTime
             };

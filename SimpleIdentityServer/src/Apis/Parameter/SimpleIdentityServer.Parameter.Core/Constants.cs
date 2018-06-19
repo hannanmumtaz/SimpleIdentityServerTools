@@ -3,6 +3,6 @@
     internal static class Constants
     {
         public const string ConfigurationFileName = "config.json";
-        public const string ConfigurationTemplateFileName = "config.template.config";
+        public const string ConfigurationTemplateFileName = "config.template.json";
     }
 }

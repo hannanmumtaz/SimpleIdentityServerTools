@@ -8,6 +8,34 @@ namespace SimpleIdentityServer.Module.Feed.Host.Extensions
 {
     internal static class MappingExtensions
     {
+        public static ProjectTwoFactorAuthenticator ToDto(this ProjectTwoFactorAuthenticatorAggregate twoFactor)
+        {
+            if (twoFactor == null)
+            {
+                throw new ArgumentNullException(nameof(twoFactor));
+            }
+
+            var parameters = new Dictionary<string, string>();
+            if (twoFactor.Parameters != null)
+            {
+                foreach (var record in twoFactor.Parameters)
+                {
+                    parameters.Add(record, string.Empty);
+                }
+            }
+            return new ProjectTwoFactorAuthenticator
+            {
+                CreateDateTime = twoFactor.CreateDateTime,
+                Description = twoFactor.Description,
+                Library = twoFactor.Library,
+                Name = twoFactor.Name,
+                Parameters = parameters,
+                Picture = twoFactor.Picture,
+                UpdateDateTime = twoFactor.UpdateDateTime,
+                Version = twoFactor.Version
+            };
+        }
+
         public static ProjectConnectorResponse ToDto(this ProjectConnectorAggregate connector)
         {
             if (connector == null)
@@ -49,7 +77,8 @@ namespace SimpleIdentityServer.Module.Feed.Host.Extensions
                 ProjectName = project.ProjectName,
                 Version = project.Version,
                 Units = project.Units == null ? new List<ProjectUnitResponse>() : project.Units.Select(u => u.ToDto()),
-                Connectors = project.Connectors == null ? new List<ProjectConnectorResponse>() : project.Connectors.Select(u => u.ToDto())
+                Connectors = project.Connectors == null ? new List<ProjectConnectorResponse>() : project.Connectors.Select(u => u.ToDto()),
+                TwoFactors = project.TwoFactorAuthenticators == null ? new List<ProjectTwoFactorAuthenticator>() : project.TwoFactorAuthenticators.Select(u => u.ToDto())
             };
         }
 

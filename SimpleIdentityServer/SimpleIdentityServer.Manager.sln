@@ -55,6 +55,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Loggin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.OAuth2Introspection", "..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.OAuth2Introspection\SimpleIdentityServer.OAuth2Introspection.csproj", "{41510F08-5A6D-43B6-AC8C-06FFBD56504D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.AccessToken.Store.InMemory", "..\IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.AccessToken.Store.InMemory\SimpleIdentityServer.AccessToken.Store.InMemory.csproj", "{F35160B2-C879-41C2-B092-971DBFAE02CA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Client", "..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Client\SimpleIdentityServer.Client.csproj", "{CF6118F1-99DA-4419-8CC3-71E55E95C1E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -164,6 +168,18 @@ Global
 		{41510F08-5A6D-43B6-AC8C-06FFBD56504D}.Fake|Any CPU.Build.0 = Debug|Any CPU
 		{41510F08-5A6D-43B6-AC8C-06FFBD56504D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41510F08-5A6D-43B6-AC8C-06FFBD56504D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F35160B2-C879-41C2-B092-971DBFAE02CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F35160B2-C879-41C2-B092-971DBFAE02CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F35160B2-C879-41C2-B092-971DBFAE02CA}.Fake|Any CPU.ActiveCfg = Debug|Any CPU
+		{F35160B2-C879-41C2-B092-971DBFAE02CA}.Fake|Any CPU.Build.0 = Debug|Any CPU
+		{F35160B2-C879-41C2-B092-971DBFAE02CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F35160B2-C879-41C2-B092-971DBFAE02CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF6118F1-99DA-4419-8CC3-71E55E95C1E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF6118F1-99DA-4419-8CC3-71E55E95C1E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF6118F1-99DA-4419-8CC3-71E55E95C1E7}.Fake|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF6118F1-99DA-4419-8CC3-71E55E95C1E7}.Fake|Any CPU.Build.0 = Debug|Any CPU
+		{CF6118F1-99DA-4419-8CC3-71E55E95C1E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF6118F1-99DA-4419-8CC3-71E55E95C1E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -191,6 +207,8 @@ Global
 		{E2D5BB26-26DC-48C8-AE33-EB2790858C2A} = {D3274B2A-7992-412D-A2BC-CD2DDA51F24E}
 		{D814D34C-E226-450C-95EA-528CCED67A26} = {D3274B2A-7992-412D-A2BC-CD2DDA51F24E}
 		{41510F08-5A6D-43B6-AC8C-06FFBD56504D} = {D3274B2A-7992-412D-A2BC-CD2DDA51F24E}
+		{F35160B2-C879-41C2-B092-971DBFAE02CA} = {D3274B2A-7992-412D-A2BC-CD2DDA51F24E}
+		{CF6118F1-99DA-4419-8CC3-71E55E95C1E7} = {D3274B2A-7992-412D-A2BC-CD2DDA51F24E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EA28E198-EBC9-4C87-B84F-439D80617DC3}

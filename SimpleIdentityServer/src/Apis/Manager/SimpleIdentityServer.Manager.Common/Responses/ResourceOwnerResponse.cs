@@ -15,27 +15,12 @@
 #endregion
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace SimpleIdentityServer.Manager.Common.Responses
 {
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum TwoFactorAuthentications
-    {
-        [JsonProperty(Constants.TwoFactorAuthenticationNames.None)]
-        [EnumMember(Value = Constants.TwoFactorAuthenticationNames.None)]
-        None,
-        [JsonProperty(Constants.TwoFactorAuthenticationNames.Email)]
-        [EnumMember(Value = Constants.TwoFactorAuthenticationNames.Email)]
-        Email,
-        [JsonProperty(Constants.TwoFactorAuthenticationNames.Sms)]
-        [EnumMember(Value = Constants.TwoFactorAuthenticationNames.Sms)]
-        Sms
-    }
-
     [DataContract]
     public class ResourceOwnerResponse
     {
@@ -53,7 +38,7 @@ namespace SimpleIdentityServer.Manager.Common.Responses
 
         [JsonProperty(Constants.ResourceOwnerResponseNames.TwoFactorAuthentication)]
         [DataMember(Name = Constants.ResourceOwnerResponseNames.TwoFactorAuthentication)]
-        public TwoFactorAuthentications TwoFactorAuthentication { get; set; }
+        public string TwoFactorAuthentication { get; set; }
 
         [JsonProperty(Constants.ResourceOwnerResponseNames.Claims)]
         [DataMember(Name = Constants.ResourceOwnerResponseNames.Claims)]

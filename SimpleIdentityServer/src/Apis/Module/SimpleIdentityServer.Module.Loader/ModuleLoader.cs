@@ -30,12 +30,15 @@ namespace SimpleIdentityServer.Module.Loader
     {
         void Initialize();
         void WatchConfigurationFileChanges();
-        Task RestorePackages();
+        Task RestoreUnits();
         Task RestoreConnectors();
+        Task RestoreTwoFactors();
         IEnumerable<ModuleUIDescriptor> GetModuleUIDescriptors();
-        void LoadModules();
+        void LoadUnits();
         void LoadConnectors();
+        void LoadTwoFactors();
         void ConfigureModuleServices(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env);
+        void ConfigureTwoFactors(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env);
         void ConfigureModuleAuthentication(AuthenticationBuilder localAuthBuilder);
         void ConfigureConnectorAuthentication(AuthenticationBuilder localAuthBuilder);
         void ConfigureModuleAuthorization(AuthorizationOptions authorizationOptions);
@@ -44,13 +47,15 @@ namespace SimpleIdentityServer.Module.Loader
         void CheckConfigurationFile();
         IEnumerable<LoadedModule> GetModules();
         IEnumerable<LoadedConnector> GetConnectors();
+        IEnumerable<LoadedTwoFactor> GetTwoFactors();
         event EventHandler Initialized;
-        event EventHandler<IntEventArgs> PackageRestored;
+        event EventHandler<IntEventArgs> UnitsRestored;
         event EventHandler ModulesLoaded;
         event EventHandler<StrEventArgs> ModuleInstalled;
         event EventHandler<StrEventArgs> ModuleCannotBeInstalled;
         event EventHandler ConnectorsLoaded;
         event EventHandler ConnectorsChanged;
+        event EventHandler TwoFactorsLoaded;
     }
 
     public class StrEventArgs : EventArgs
@@ -97,6 +102,18 @@ namespace SimpleIdentityServer.Module.Loader
         public ProjectConnectorResponse Connector { get; private set; }
     }
 
+    public class LoadedTwoFactor
+    {
+        public LoadedTwoFactor(IModule instance, ProjectTwoFactorAuthenticator twoFactor)
+        {
+            Instance = instance;
+            TwoFactor = twoFactor;
+        }
+
+        public IModule Instance { get; private set; }
+        public ProjectTwoFactorAuthenticator TwoFactor { get; private set; }
+    }
+
     internal sealed class ModuleLoader : IModuleLoader
     {
         private FileSystemWatcher _watcher;
@@ -107,13 +124,15 @@ namespace SimpleIdentityServer.Module.Loader
         private readonly ModuleLoaderOptions _options;
         private string _modulePath;
         private const string _configFile = "config.json";
-        private const string _configTemplateFile = "config.template.config";
+        private const string _configTemplateFile = "config.template.json";
         private ICollection<LoadedModule> _modules;
         private ICollection<LoadedConnector> _connectors;
+        private ICollection<LoadedTwoFactor> _twoFactors;
         private bool _isInitialized = false;
-        private bool _isPackagesRestored = false;
+        private bool _isUnitsRestored = false;
         private bool _isConfigTemplateRestored = false;
-        private bool _isConnectorsRestore = false;
+        private bool _isConnectorsRestored = false;
+        private bool _isTwoFactorsRestored = false;
         private DateTime _lastWriteTime;
         private ProjectResponse _projectConfiguration;
 
@@ -140,10 +159,11 @@ namespace SimpleIdentityServer.Module.Loader
         }
 
         public event EventHandler Initialized;
-        public event EventHandler<IntEventArgs> PackageRestored;
+        public event EventHandler<IntEventArgs> UnitsRestored;
         public event EventHandler<IntEventArgs> ConnectorsRestored;
         public event EventHandler ConnectorsChanged;
         public event EventHandler ModulesLoaded;
+        public event EventHandler TwoFactorsLoaded;
         public event EventHandler ConnectorsLoaded;
         public event EventHandler<StrEventArgs> ModuleInstalled;
         public event EventHandler<StrEventArgs> ModuleCannotBeInstalled;
@@ -279,10 +299,10 @@ namespace SimpleIdentityServer.Module.Loader
         }
 
         /// <summary>
-        /// Restore the packages.
+        /// Restore the units.
         /// </summary>
         /// <returns></returns>
-        public async Task RestorePackages()
+        public async Task RestoreUnits()
         {
             if (!_isInitialized)
             {
@@ -311,10 +331,10 @@ namespace SimpleIdentityServer.Module.Loader
 
             watch.Stop();
             Trace.WriteLine($"Finish to restore the packages in {watch.ElapsedMilliseconds} ms");
-            _isPackagesRestored = true;
-            if (PackageRestored != null)
+            _isUnitsRestored = true;
+            if (UnitsRestored != null)
             {
-                PackageRestored(this, new IntEventArgs(watch.ElapsedMilliseconds));
+                UnitsRestored(this, new IntEventArgs(watch.ElapsedMilliseconds));
             }
         }
 
@@ -329,9 +349,9 @@ namespace SimpleIdentityServer.Module.Loader
                 throw new ModuleLoaderInternalException("the loader is not initialized");
             }
 
-            if (!_isPackagesRestored)
+            if (!_isUnitsRestored)
             {
-                throw new ModuleLoaderInternalException("the packages are not restored");
+                throw new ModuleLoaderInternalException("the units are not restored");
             }
 
             if (!_isConfigTemplateRestored)
@@ -339,7 +359,7 @@ namespace SimpleIdentityServer.Module.Loader
                 throw new ModuleLoaderInternalException("the config template is not restored");
             }
 
-            _isConnectorsRestore = false;
+            _isConnectorsRestored = false;
             var watch = Stopwatch.StartNew();
             if (_projectConfiguration.Connectors != null)
             {
@@ -356,22 +376,63 @@ namespace SimpleIdentityServer.Module.Loader
                 ConnectorsRestored(this, new IntEventArgs(watch.ElapsedMilliseconds));
             }
 
-            _isConnectorsRestore = true;
+            _isConnectorsRestored = true;
         }
 
         /// <summary>
-        /// Load the modules.
+        /// Restore the two factors.
         /// </summary>
-        public void LoadModules()
+        /// <returns></returns>
+        public async Task RestoreTwoFactors()
         {
             if (!_isInitialized)
             {
                 throw new ModuleLoaderInternalException("the loader is not initialized");
             }
 
-            if (!_isPackagesRestored)
+            if (!_isUnitsRestored)
             {
-                throw new ModuleLoaderInternalException("the packages are not restored");
+                throw new ModuleLoaderInternalException("the units are not restored");
+            }
+
+            if (!_isConfigTemplateRestored)
+            {
+                throw new ModuleLoaderInternalException("the config template is not restored");
+            }
+
+            _isTwoFactorsRestored = false;
+            var watch = Stopwatch.StartNew();
+            if (_projectConfiguration.TwoFactors != null)
+            {
+                foreach (var twoFactor in _projectConfiguration.TwoFactors)
+                {
+                    await RestorePackages(twoFactor.Library, twoFactor.Version);
+                }
+            }
+
+            watch.Stop();
+            Trace.WriteLine($"Finish to restore the two factors in {watch.ElapsedMilliseconds} ms");
+            if (ConnectorsRestored != null)
+            {
+                ConnectorsRestored(this, new IntEventArgs(watch.ElapsedMilliseconds));
+            }
+
+            _isTwoFactorsRestored = true;
+        }
+
+        /// <summary>
+        /// Load the units.
+        /// </summary>
+        public void LoadUnits()
+        {
+            if (!_isInitialized)
+            {
+                throw new ModuleLoaderInternalException("the loader is not initialized");
+            }
+
+            if (!_isUnitsRestored)
+            {
+                throw new ModuleLoaderInternalException("the units are not restored");
             }
 
             if (!_isConfigTemplateRestored)
@@ -415,12 +476,12 @@ namespace SimpleIdentityServer.Module.Loader
                 throw new ModuleLoaderInternalException("the loader is not initialized");
             }
 
-            if (!_isPackagesRestored)
+            if (!_isUnitsRestored)
             {
-                throw new ModuleLoaderInternalException("the packages are not restored");
+                throw new ModuleLoaderInternalException("the units are not restored");
             }
 
-            if (!_isConnectorsRestore)
+            if (!_isConnectorsRestored)
             {
                 throw new ModuleLoaderInternalException("the connectors are not restored");
             }
@@ -454,6 +515,54 @@ namespace SimpleIdentityServer.Module.Loader
         }
 
         /// <summary>
+        /// Load the two factors.
+        /// </summary>
+        public void LoadTwoFactors()
+        {
+            if (!_isInitialized)
+            {
+                throw new ModuleLoaderInternalException("the loader is not initialized");
+            }
+
+            if (!_isUnitsRestored)
+            {
+                throw new ModuleLoaderInternalException("the units are not restored");
+            }
+
+            if (!_isTwoFactorsRestored)
+            {
+                throw new ModuleLoaderInternalException("the connectors are not restored");
+            }
+
+            if (!_isConfigTemplateRestored)
+            {
+                throw new ModuleLoaderInternalException("the config template is not restored");
+            }
+
+            _twoFactors = new List<LoadedTwoFactor>();
+            if (_projectConfiguration.TwoFactors == null || !_projectConfiguration.TwoFactors.Any())
+            {
+                return;
+            }
+
+            foreach (var twoFactor in _projectConfiguration.TwoFactors)
+            {
+                if (string.IsNullOrWhiteSpace(twoFactor.Library) || string.IsNullOrWhiteSpace(twoFactor.Version))
+                {
+                    continue;
+                }
+
+                var instance = LoadLibrary<IModule>(twoFactor.Library, twoFactor.Version);
+                _twoFactors.Add(new LoadedTwoFactor(instance, twoFactor));
+            }
+
+            if (TwoFactorsLoaded != null)
+            {
+                TwoFactorsLoaded(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
         /// Returns the list of loaded modules.
         /// </summary>
         /// <returns></returns>
@@ -469,6 +578,15 @@ namespace SimpleIdentityServer.Module.Loader
         public IEnumerable<LoadedConnector> GetConnectors()
         {
             return _connectors;
+        }
+
+        /// <summary>
+        /// Returns the list of loaded two factors.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<LoadedTwoFactor> GetTwoFactors()
+        {
+            return _twoFactors;
         }
 
         /// <summary>
@@ -496,6 +614,21 @@ namespace SimpleIdentityServer.Module.Loader
                 foreach (var loadedModule in _modules)
                 {
                     loadedModule.Instance.ConfigureServices(services, mvcBuilder, env, loadedModule.Unit.Parameters, moduleUiDescriptors);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Configure the two factors
+        /// </summary>
+        public void ConfigureTwoFactors(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env)
+        {
+            if (_twoFactors != null)
+            {
+                var moduleUiDescriptors = GetModuleUIDescriptors();
+                foreach (var twoFactor in _twoFactors)
+                {
+                    twoFactor.Instance.ConfigureServices(services, mvcBuilder, env, twoFactor.TwoFactor.Parameters, moduleUiDescriptors);
                 }
             }
         }

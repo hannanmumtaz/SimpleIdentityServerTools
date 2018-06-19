@@ -23,6 +23,7 @@ namespace SimpleIdentityServer.Module.Feed.EF
         public virtual DbSet<ConnectorScope> ConnectorScopes { get; set; }
         public virtual DbSet<ConnectorClaimRule> ConnectorClaimRules { get; set; }
         public virtual DbSet<ConnectorClaim> ConnectorClaims { get; set; }
+        public virtual DbSet<TwoFactorAuthenticator> TwoFactors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,6 +35,7 @@ namespace SimpleIdentityServer.Module.Feed.EF
                 .AddConnectorScopeMapping()
                 .AddConnectorClaimRuleMapping()
                 .AddConnectorClaimMapping()
+                .AddTwoFactorAuthenticatorMapping()
                 .AddConnectorMapping();
             base.OnModelCreating(modelBuilder);
         }

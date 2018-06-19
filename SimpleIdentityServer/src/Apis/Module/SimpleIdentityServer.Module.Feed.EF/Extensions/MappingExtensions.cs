@@ -28,6 +28,27 @@ namespace SimpleIdentityServer.Module.Feed.EF.Extensions
             };
         }
 
+        public static ProjectTwoFactorAuthenticatorAggregate ToDomain(this TwoFactorAuthenticator twoFactorAuthenticator)
+        {
+            if (twoFactorAuthenticator == null)
+            {
+                throw new ArgumentNullException(nameof(twoFactorAuthenticator));
+            }
+
+            return new ProjectTwoFactorAuthenticatorAggregate
+            {
+                Id = twoFactorAuthenticator.Description,
+                Description = twoFactorAuthenticator.Description,
+                Library = twoFactorAuthenticator.Library,
+                Name = twoFactorAuthenticator.Name,
+                Picture = twoFactorAuthenticator.Picture,
+                CreateDateTime = twoFactorAuthenticator.CreateDateTime,
+                UpdateDateTime = twoFactorAuthenticator.UpdateDateTime,
+                Version = twoFactorAuthenticator.Version,
+                Parameters = string.IsNullOrWhiteSpace(twoFactorAuthenticator.Parameters) ? new string[0] : twoFactorAuthenticator.Parameters.Split(',')
+            };
+        }
+
         public static ProjectAggregate ToDomain(this Project project)
         {
             if (project == null)
@@ -41,7 +62,8 @@ namespace SimpleIdentityServer.Module.Feed.EF.Extensions
                 ProjectName = project.ProjectName,
                 Version = project.Version,
                 Units = project.Units == null ? new List<ProjectUnitAggregate>() : project.Units.Select(u => u.ToDomain()),
-                Connectors = project.Connectors == null ? new List<ProjectConnectorAggregate>() : project.Connectors.Select(u => u.ToDomain())
+                Connectors = project.Connectors == null ? new List<ProjectConnectorAggregate>() : project.Connectors.Select(u => u.ToDomain()),
+                TwoFactorAuthenticators = project.TwoFactorAuthenticators == null ? new List<ProjectTwoFactorAuthenticatorAggregate>() : project.TwoFactorAuthenticators.Select(u => u.ToDomain())
             };
         }
 

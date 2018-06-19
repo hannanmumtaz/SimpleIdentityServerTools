@@ -9,5 +9,6 @@ namespace SimpleIdentityServer.Module.Feed.EF.Models
         public string ProjectName { get; set; }
         public virtual ICollection<ProjectUnit> Units { get; set; }
         public virtual ICollection<Connector> Connectors { get; set; }
+        public virtual ICollection<TwoFactorAuthenticator> TwoFactorAuthenticators { get; set; }
     }
 }

@@ -14,7 +14,7 @@
       ]
     },
     {
-      "name": "parametesrapi",
+      "name": "parametersrapi",
       "packages": [
         {
           "lib": "SimpleIdentityServer.Parameter.Host",
@@ -75,7 +75,7 @@
       "name": "umarepository",
       "packages": [
         {
-          "lib": "SimpleIdentityServer.Uma.EF.SqlServer",
+          "lib": "SimpleIdentityServer.Uma.EF.InMemory",
           "version": "3.0.0-rc7",
           "category": "store",
           "parameters": {

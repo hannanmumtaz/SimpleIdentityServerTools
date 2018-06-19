@@ -47,6 +47,26 @@ namespace SimpleIdentityServer.Module.Feed.Common.Responses
         public DateTime UpdateDateTime { get; set; }
     }
 
+    public class ProjectTwoFactorAuthenticator
+    {
+        [DataMember(Name = Constants.ProjectTwoFactorAuthenticatorNames.Name)]
+        public string Name { get; set; }
+        [DataMember(Name = Constants.ProjectTwoFactorAuthenticatorNames.Description)]
+        public string Description { get; set; }
+        [DataMember(Name = Constants.ProjectTwoFactorAuthenticatorNames.Picture)]
+        public string Picture { get; set; }
+        [DataMember(Name = Constants.ProjectTwoFactorAuthenticatorNames.Library)]
+        public string Library { get; set; }
+        [DataMember(Name = Constants.ProjectTwoFactorAuthenticatorNames.Version)]
+        public string Version { get; set; }
+        [DataMember(Name = Constants.ProjectTwoFactorAuthenticatorNames.Parameters)]
+        public IDictionary<string, string> Parameters { get; set; }
+        [DataMember(Name = Constants.ProjectTwoFactorAuthenticatorNames.CreateDateTime)]
+        public DateTime CreateDateTime { get; set; }
+        [DataMember(Name = Constants.ProjectTwoFactorAuthenticatorNames.UpdateDateTime)]
+        public DateTime UpdateDateTime { get; set; }
+    }
+
     [DataContract]
     public class ProjectResponse
     {
@@ -60,5 +80,7 @@ namespace SimpleIdentityServer.Module.Feed.Common.Responses
         public IEnumerable<ProjectUnitResponse> Units { get; set; }
         [DataMember(Name = Constants.ProjectResponseNames.Connectors)]
         public IEnumerable<ProjectConnectorResponse> Connectors { get; set; }
+        [DataMember(Name = Constants.ProjectResponseNames.TwoFactors)]
+        public IEnumerable<ProjectTwoFactorAuthenticator> TwoFactors { get; set; }
     }
 }

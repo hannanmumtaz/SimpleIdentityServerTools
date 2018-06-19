@@ -24,6 +24,10 @@ namespace SimpleIdentityServer.Module.Feed.EF.Mappings
                 .HasMany(u => u.Connectors)
                 .WithOne(u => u.Project)
                 .HasForeignKey(u => u.ProjectId);
+            modelBuilder.Entity<Project>()
+                .HasMany(u => u.TwoFactorAuthenticators)
+                .WithOne(u => u.Project)
+                .HasForeignKey(u => u.ProjectId);
             return modelBuilder;
         }
     }

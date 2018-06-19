@@ -4,5 +4,6 @@
     {
         public const string CookieName = "SimpleIdServer-Startup";
         public const string ExternalCookieName = "External-SimpleIdServer";
+        public const string TwoFactorCookieName = "SimpleIdentityServer-TwoFactorAuth";
     }
 }

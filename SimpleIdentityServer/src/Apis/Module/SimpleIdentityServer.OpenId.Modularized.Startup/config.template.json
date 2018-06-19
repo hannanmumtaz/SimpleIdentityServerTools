@@ -1,0 +1,272 @@
+{
+  "id": "OpenIdProvider_3.0.0-rc7",
+  "version": "3.0.0-rc7",
+  "name": "OpenIdProvider",
+  "units": [
+    {
+      "name": "accesstokenstore",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.AccessToken.Store.InMemory",
+          "version": "3.0.0-rc7",
+          "category": "store",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "authentication",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.OAuth2Introspection",
+          "version": "3.0.0-rc7",
+          "category": "introspect",
+          "parameters": {
+            "OauthIntrospectClientId": "",
+            "OauthIntrospectClientSecret": "",
+            "OauthIntrospectAuthUrl": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "oautheventstore",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.EventStore.InMemory",
+          "version": "3.0.0-rc7",
+          "category": "store",
+          "parameters": {}
+        },
+        {
+          "lib": "SimpleIdentityServer.EventStore.Sqlite",
+          "version": "3.0.0-rc7",
+          "category": "store",
+          "parameters": { "EventStoreConnectionString": "" }
+        },
+        {
+          "lib": "SimpleIdentityServer.EventStore.Postgre",
+          "version": "3.0.0-rc7",
+          "category": "store",
+          "parameters": { "EventStoreConnectionString": "" }
+        },
+        {
+          "lib": "SimpleIdentityServer.EventStore.SqlServer",
+          "version": "3.0.0-rc7",
+          "category": "store",
+          "parameters": { "EventStoreConnectionString": "" }
+        },
+        {
+          "lib": "SimpleIdentityServer.EventStore.Handler",
+          "version": "3.0.0-rc7",
+          "category": "handler",
+          "parameters": { "EventStoreHandlerType": "" }
+        },
+        {
+          "lib": "SimpleBus.InMemory",
+          "version": "3.0.0-rc7",
+          "category": "bus",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "oauthrepository",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.EF.SqlServer",
+          "version": "3.0.0-rc7",
+          "category": "store",
+          "parameters": { "OAuthConnectionString": "" }
+        },
+        {
+          "lib": "SimpleIdentityServer.EF.Postgre",
+          "version": "3.0.0-rc7",
+          "category": "store",
+          "parameters": { "OAuthConnectionString": "" }
+        },
+        {
+          "lib": "SimpleIdentityServer.EF.Sqlite",
+          "version": "3.0.0-rc7",
+          "category": "store",
+          "parameters": { "OAuthConnectionString": "" }
+        },
+        {
+          "lib": "SimpleIdentityServer.EF.InMemory",
+          "version": "3.0.0-rc7",
+          "category": "store",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "oauthstorage",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Store.InMemory",
+          "version": "3.0.0-rc7",
+          "category": "cache",
+          "parameters": {}
+        },
+        {
+          "lib": "SimpleIdentityServer.Store.Redis",
+          "version": "3.0.0-rc7",
+          "category": "cache",
+          "parameters": {
+            "OauthRedisStorageConfiguration": "",
+            "OauthRedisStorageInstanceName": "",
+            "OauthRedisStoragePort": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "openidapi",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Host",
+          "version": "3.0.0-rc7",
+          "category": "host",
+          "parameters": {
+            "OpenIdCookieName": "",
+            "OpenIdExternalCookieName": "",
+            "ScimEndpoint": "",
+            "ScimEndpointEnabled": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "openidui",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Shell",
+          "version": "3.0.0-rc7",
+          "category": "shell",
+          "parameters": {}
+        },
+        {
+          "lib": "SimpleIdentityServer.Authenticate.Basic",
+          "version": "3.0.0-rc7",
+          "category": "authenticate",
+          "parameters": {
+            "ClientId": "",
+            "ClientSecret": "",
+            "AuthorizationWellKnownConfiguration": "",
+            "BaseScimUrl": "",
+            "IsScimResourceAutomaticallyCreated": "",
+            "ClaimsIncludedInUserCreation": ""
+          }
+        },
+        {
+          "lib": "SimpleIdentityServer.UserManagement",
+          "version": "3.0.0-rc7",
+          "category": "usermanagement",
+          "parameters": {
+            "CreateScimResourceWhenAccountIsAdded": "",
+            "ClientId": "",
+            "ClientSecret": "",
+            "AuthorizationWellKnownConfiguration": "",
+            "ScimBaseUrl": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "parametersrapi",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Parameter.Host",
+          "version": "3.0.0-rc7",
+          "category": "host",
+          "parameters": {}
+        }
+      ]
+    }
+  ],
+  "connectors": [
+    {
+      "name": "Facebook",
+      "description": "Refer to this url https://developers.facebook.com to create a new client",
+      "picture": "https://blog.addthiscdn.com/wp-content/uploads/2015/11/logo-facebook.png",
+      "lib": "SimpleIdentityServer.Connectors.Facebook",
+      "version": "3.0.0-rc7",
+      "parameters": {
+        "ClientId": "",
+        "ClientSecret": "",
+        "Scopes": ""
+      },
+      "create_datetime": "2018-06-19T10:54:06.2503395Z",
+      "update_datetime": "2018-06-19T10:54:06.2503395Z"
+    },
+    {
+      "name": "MicrosoftAccount",
+      "description": "Refer to this url http://go.microsoft.com/fwlink/?LinkID=144070 to create a new client",
+      "picture": "https://is2-ssl.mzstatic.com/image/thumb/Purple128/v4/ad/c7/ce/adc7ce3b-f989-9147-0066-b79383ecc05b/contsched.gvqizhnn.png/1200x630bb.png",
+      "lib": "SimpleIdentityServer.Connectors.MicrosoftAccount",
+      "version": "3.0.0-rc7",
+      "parameters": {
+        "ClientId": "",
+        "ClientSecret": "",
+        "Scopes": ""
+      },
+      "create_datetime": "2018-06-19T10:54:06.2533308Z",
+      "update_datetime": "2018-06-19T10:54:06.2533308Z"
+    },
+    {
+      "name": "Google",
+      "description": "Refer to this url https://console.developers.google.com/apis/credentials to create a new client",
+      "picture": "https://cdn.icon-icons.com/icons2/1222/PNG/512/1492616990-1-google-search-logo-engine-service-suits_83412.png",
+      "lib": "SimpleIdentityServer.Connectors.Google",
+      "version": "3.0.0-rc7",
+      "parameters": {
+        "ClientId": "",
+        "ClientSecret": "",
+        "Scopes": ""
+      },
+      "create_datetime": "2018-06-19T10:54:06.2533308Z",
+      "update_datetime": "2018-06-19T10:54:06.2533308Z"
+    },
+    {
+      "name": "Twitter",
+      "description": "Refer to this url https://apps.twitter.com/ to create a new client",
+      "picture": "https://png.icons8.com/color/1600/twitter-squared.png",
+      "lib": "SimpleIdentityServer.Connectors.Twitter",
+      "version": "3.0.0-rc7",
+      "parameters": {
+        "ClientId": "",
+        "ClientSecret": "",
+        "Scopes": ""
+      },
+      "create_datetime": "2018-06-19T10:54:06.2533308Z",
+      "update_datetime": "2018-06-19T10:54:06.2533308Z"
+    },
+    {
+      "name": "WsFederation",
+      "description": "Configure WSFederation",
+      "picture": "https://www.midwinter.com.au/wp-content/uploads/2013/04/blue-icon-security.png",
+      "lib": "SimpleIdentityServer.Connectors.WsFederation",
+      "version": "3.0.0-rc7",
+      "parameters": {},
+      "create_datetime": "2018-06-19T10:54:06.2533308Z",
+      "update_datetime": "2018-06-19T10:54:06.2533308Z"
+    }
+  ],
+  "two_factors": [
+    {
+      "Name": "SMS",
+      "Description": "SMS two factor authenticator",
+      "Picture": "https://png.icons8.com/metro/1600/sms.png",
+      "Library": "SimpleIdentityServer.TwoFactorAuthentication.Twilio",
+      "Version": "3.0.0-rc7",
+      "Parameters": {
+        "TwilioAccountSid": "",
+        "TwilioAuthToken": "",
+        "TwilioFromNumber": "",
+        "TwilioMessage": ""
+      },
+      "CreateDateTime": "2018-06-19T10:54:06.3366947Z",
+      "UpdateDateTime": "2018-06-19T10:54:06.3366947Z"
+    }
+  ]
+}

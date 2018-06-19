@@ -243,6 +243,8 @@ class Layout extends Component {
         }
 
         var evt = window.addEventListener("message", function (e) {
+            console.log(e);
+            console.log('SESSION CHANGED');
             if (e.data !== 'unchanged') {
                 AppDispatcher.dispatch({
                     actionName: Constants.events.USER_LOGGED_OUT
@@ -259,7 +261,7 @@ class Layout extends Component {
             } else {
                 session += "tmp";
             }
-
+            
             var win = self._sessionFrame.contentWindow;
             // TODO : Externalize the client_id & openid url.
             win.postMessage(message, "http://localhost:60000");
@@ -469,6 +471,10 @@ class Layout extends Component {
                     {/* CONNECTORS */}
                     {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
                         <MenuItem key="/connectors" selected={pathName.indexOf('/connectors') !== -1} onClick={() => self.navigate('/connectors')}>{t('connectorsMenuItem')}</MenuItem>
+                    ))}
+                    {/* TWO FACTORS */}
+                    {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
+                        <MenuItem key="/twofactors" selected={pathName.indexOf('/twofactors') !== -1} onClick={() => self.navigate('/twofactors')}>{t('twofactorsMenuItem')}</MenuItem>
                     ))}
                     {/* Logs */}         
                     {!process.env.IS_LOG_DISABLED && this.state.isLoggedIn  && (

@@ -25,7 +25,8 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             {
                 NugetSources = new List<string>
                 {
-                    @"d:\sidfeeds\",
+                    @"d:\sidfeeds\core\",
+                    @"d:\sidfeeds\tools\",
                     "https://api.nuget.org/v3/index.json",
                     "https://www.myget.org/F/advance-ict/api/v3/index.json"
                 },
@@ -35,16 +36,22 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
                 NugetRetryAfterMs = 1000
             });
             _moduleLoader.ModuleInstalled += ModuleInstalled;
-            _moduleLoader.PackageRestored += PackageRestored;
-            _moduleLoader.ModulesLoaded += ModulesLoaded;
+            _moduleLoader.UnitsRestored += UnitsRestored;
+
+            _moduleLoader.ModulesLoaded += HandleModulesLoaded;
             _moduleLoader.ConnectorsLoaded += HandleConnectorsLoaded;
+            _moduleLoader.TwoFactorsLoaded += HandleTwoFactorsLoaded;
+
             _moduleLoader.ModuleCannotBeInstalled += ModuleCannotBeInstalled;
             _moduleLoader.ConnectorsChanged += HandleConnectorsChanged;
+
             _moduleLoader.Initialize();
-            _moduleLoader.RestorePackages().Wait();
+            _moduleLoader.RestoreUnits().Wait();
             _moduleLoader.RestoreConnectors().Wait();
-            _moduleLoader.LoadModules();
+            _moduleLoader.RestoreTwoFactors().Wait();
+            _moduleLoader.LoadUnits();
             _moduleLoader.LoadConnectors();
+            _moduleLoader.LoadTwoFactors();
             _moduleLoader.WatchConfigurationFileChanges();
         }
 
@@ -59,6 +66,8 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             var mvcBuilder = services.AddMvc();
             var externalAuthBuilder = services.AddAuthentication(Constants.ExternalCookieName)
                 .AddCookie(Constants.ExternalCookieName);
+            var twoFactorAuthBuilder = services.AddAuthentication(Constants.TwoFactorCookieName)
+                .AddCookie(Constants.TwoFactorCookieName);
             var authBuilder = services.AddAuthentication(Constants.CookieName)
                 .AddCookie(Constants.CookieName, opts =>
                 {
@@ -71,6 +80,7 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
                 _moduleLoader.ConfigureModuleAuthorization(opts);
             });
             _moduleLoader.ConfigureModuleServices(services, mvcBuilder, _env);
+            _moduleLoader.ConfigureTwoFactors(services, mvcBuilder, _env);
         }
 
         private void ConfigureLogging(IServiceCollection services)
@@ -134,6 +144,11 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             Console.WriteLine("The connectors are loaded");
         }
 
+        private void HandleTwoFactorsLoaded(object sender, EventArgs e)
+        {
+            Console.WriteLine("The two factors are loaded");
+        }
+
         private static void ModuleCannotBeInstalled(object sender, StrEventArgs e)
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -146,12 +161,12 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             Console.WriteLine($"The nuget package {e.Value} is installed");
         }
 
-        private static void PackageRestored(object sender, IntEventArgs e)
+        private static void UnitsRestored(object sender, IntEventArgs e)
         {
-            Console.WriteLine($"Finish to restore the packages in {e.Value}");
+            Console.WriteLine($"Finish to restore the units in {e.Value}");
         }
 
-        private static void ModulesLoaded(object sender, EventArgs e)
+        private static void HandleModulesLoaded(object sender, EventArgs e)
         {
             Console.WriteLine("The modules are loaded");
         }

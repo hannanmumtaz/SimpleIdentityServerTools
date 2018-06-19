@@ -21,6 +21,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
             AddUnits(dbContext);
             AddProjectUnits(dbContext);
             AddConnectors(dbContext);
+            AddTwoFactors(dbContext);
             try
             {
                 dbContext.SaveChanges();
@@ -195,7 +196,31 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                         Parameters = "",
                         CreateDateTime = DateTime.UtcNow,
                         UpdateDateTime = DateTime.UtcNow,
+						Picture = "https://www.midwinter.com.au/wp-content/uploads/2013/04/blue-icon-security.png",
                         IsSocial = false
+                    }
+                });
+            }
+        }
+
+        private static void AddTwoFactors(ModuleFeedDbContext dbContext)
+        {
+            if (!dbContext.TwoFactors.Any())
+            {
+                dbContext.TwoFactors.AddRange(new[]
+                {
+                    new TwoFactorAuthenticator
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        Description= "SMS two factor authenticator",
+                        Name = "SMS",
+                        Picture = "https://png.icons8.com/metro/1600/sms.png",
+                        Library = "SimpleIdentityServer.TwoFactorAuthentication.Twilio",
+                        Version = "3.0.0-rc7",
+                        Parameters = "TwilioAccountSid,TwilioAuthToken,TwilioFromNumber,TwilioMessage",
+                        CreateDateTime = DateTime.UtcNow,
+                        UpdateDateTime = DateTime.UtcNow
                     }
                 });
             }
@@ -353,6 +378,20 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             }
                         }
                     },
+                    new Unit
+                    {
+                        UnitName = "accesstokenstore",
+                        Packages = new []
+                        {
+                            new UnitPackage
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Library = "SimpleIdentityServer.AccessToken.Store.InMemory",
+                                Version = "3.0.0-rc7",
+                                CategoryId = "store"
+                            }
+                        }
+                    },
                     // OPENID
                     new Unit
                     {
@@ -446,14 +485,16 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Authenticate.Basic",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "authenticate"
+                                CategoryId = "authenticate",
+                                Parameters = "ClientId,ClientSecret,AuthorizationWellKnownConfiguration,BaseScimUrl,IsScimResourceAutomaticallyCreated,ClaimsIncludedInUserCreation"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.UserManagement",
                                 Version = "3.0.0-rc7",
-                                CategoryId = "usermanagement"
+                                CategoryId = "usermanagement",
+                                Parameters = "CreateScimResourceWhenAccountIsAdded,ClientId,ClientSecret,AuthorizationWellKnownConfiguration,ScimBaseUrl"
                             }
                         }
                     },
@@ -788,6 +829,11 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     {
                         ProjectId = "OpenIdProvider_3.0.0-rc7",
                         UnitId = "parametersrapi"
+                    },
+                    new ProjectUnit
+                    {
+                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        UnitId = "accesstokenstore"
                     },
                     // EVENT STORE.
                     new ProjectUnit

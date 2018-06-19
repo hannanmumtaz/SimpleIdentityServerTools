@@ -25,6 +25,7 @@ import ViewScimResource from './viewScimResource';
 import Settings from './settings';
 import ViewSetting from './viewSetting';
 import Connectors from './connectors';
+import TwoFactors from './twoFactors';
 
 exports.Dashboard = Dashboard;
 exports.About = About;
@@ -53,3 +54,4 @@ exports.ViewScimResource = ViewScimResource;
 exports.Settings = Settings;
 exports.ViewSetting = ViewSetting;
 exports.Connectors = Connectors;
+exports.TwoFactors = TwoFactors;

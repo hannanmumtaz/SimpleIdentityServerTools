@@ -14,7 +14,7 @@
       ]
     },
     {
-      "name": "parametesrapi",
+      "name": "parametersrapi",
       "packages": [
         {
           "lib": "SimpleIdentityServer.Parameter.Host",

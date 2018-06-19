@@ -34,6 +34,7 @@ namespace SimpleIdentityServer.Module.Feed.EF.Repositories
                 {
                     var project = await context.Projects
                         .Include(a => a.Connectors)
+                        .Include(a => a.TwoFactorAuthenticators)
                         .Include(a => a.Units).ThenInclude(a => a.Unit).ThenInclude(a => a.Packages).ThenInclude(a => a.Category)
                         .FirstOrDefaultAsync(p => p.Id == id).ConfigureAwait(false);
                     if (project == null)
@@ -54,6 +55,7 @@ namespace SimpleIdentityServer.Module.Feed.EF.Repositories
                 {
                     var projects = await context.Projects
                         .Include(a => a.Connectors)
+                        .Include(a => a.TwoFactorAuthenticators)
                         .Include(a => a.Units).ThenInclude(a => a.Unit).ThenInclude(a => a.Packages).ThenInclude(a => a.Category)
                         .ToListAsync().ConfigureAwait(false);
                     return projects == null ? new List<ProjectAggregate>() : projects.Select(p => p.ToDomain());
@@ -74,6 +76,7 @@ namespace SimpleIdentityServer.Module.Feed.EF.Repositories
                 {
                     IQueryable<Project> projects = context.Projects
                         .Include(a => a.Connectors)
+                        .Include(a => a.TwoFactorAuthenticators)
                         .Include(a => a.Units).ThenInclude(a => a.Unit).ThenInclude(a => a.Packages).ThenInclude(a => a.Category);
                     if (parameter.ProjectNames != null)
                     {

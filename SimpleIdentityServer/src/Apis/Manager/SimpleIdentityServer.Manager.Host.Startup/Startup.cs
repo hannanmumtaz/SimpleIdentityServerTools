@@ -21,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
+using SimpleIdentityServer.AccessToken.Store.InMemory;
 using SimpleIdentityServer.EF.SqlServer;
 using SimpleIdentityServer.Manager.Host.Extensions;
 using SimpleIdentityServer.OAuth2Introspection;
@@ -55,6 +56,7 @@ namespace SimpleIdentityServer.Manager.Host.Startup
             ConfigureOauthRepositorySqlServer(services);
             ConfigureCaching(services);
             ConfigureLogging(services);
+            services.AddInMemoryAccessTokenStore();
             // 3. Configure the manager
             services.AddSimpleIdentityServerManager(_options);
             // 4. Configure the authentication.

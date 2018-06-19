@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.Core.Api.Registration.Actions;
-using SimpleIdentityServer.Core.WebSite.Account.Actions;
+using SimpleIdentityServer.Core.WebSite.User.Actions;
 using SimpleIdentityServer.Manager.Core.Api.Claims;
 using SimpleIdentityServer.Manager.Core.Api.Claims.Actions;
 using SimpleIdentityServer.Manager.Core.Api.Clients;
@@ -65,7 +65,7 @@ namespace SimpleIdentityServer.Manager.Core
             serviceCollection.AddTransient<IResourceOwnerActions, ResourceOwnerActions>();
             serviceCollection.AddTransient<IDeleteResourceOwnerAction, DeleteResourceOwnerAction>();
             serviceCollection.AddTransient<IRegisterClientAction, RegisterClientAction>();
-            serviceCollection.AddTransient<IAddResourceOwnerAction, AddResourceOwnerAction>();
+            serviceCollection.AddTransient<IAddUserOperation, AddUserOperation>();
             serviceCollection.AddTransient<IAddScopeOperation, AddScopeOperation>();
             serviceCollection.AddTransient<IUpdateScopeOperation, UpdateScopeOperation>();
             serviceCollection.AddTransient<IManageActions, ManageActions>();
