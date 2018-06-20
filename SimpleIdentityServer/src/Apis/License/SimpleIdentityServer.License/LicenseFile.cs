@@ -12,7 +12,7 @@ namespace SimpleIdentityServer.License
         public string Type { get; set; }
         [DataMember(Name = "issue_datetime")]
         public DateTime IssueDateTime { get; set; }
-        [DataMember(Name = "nb_expiration_days")]
-        public int NbExpirationDays { get; set; }
+        [DataMember(Name = "expiration_datetime")]
+        public DateTime ExpirationDateTime { get; set; }
     }
 }
