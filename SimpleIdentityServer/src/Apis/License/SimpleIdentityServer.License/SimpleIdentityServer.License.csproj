@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>SimpleIdentityServer.License Class Library</Description>
+    <Authors>thierry habart</Authors>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <AssemblyName>SimpleIdentityServer.License</AssemblyName>
+    <PackageId>SimpleIdentityServer.License</PackageId>
+    <RootNamespace>SimpleIdentityServer.License</RootNamespace>
+  </PropertyGroup>
+</Project>
