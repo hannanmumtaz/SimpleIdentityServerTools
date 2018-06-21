@@ -198,7 +198,7 @@ namespace SimpleIdentityServer.Module.Loader.Tests
             var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
 
             // ACT
-            var ex = await Assert.ThrowsAsync<ModuleLoaderInternalException>(() => moduleLoader.RestorePackages());
+            var ex = await Assert.ThrowsAsync<ModuleLoaderInternalException>(() => moduleLoader.RestoreUnits());
 
             // ASSERT
             Assert.NotNull(ex);
@@ -229,7 +229,7 @@ namespace SimpleIdentityServer.Module.Loader.Tests
             // ACT
             var moduleLoader = new ModuleLoader(nugetClientMock.Object, moduleFeedClientFactoryMock.Object, options);
             moduleLoader.Initialize();
-            var exception = await Assert.ThrowsAsync<ModuleLoaderInternalException>(() => moduleLoader.RestorePackages());
+            var exception = await Assert.ThrowsAsync<ModuleLoaderInternalException>(() => moduleLoader.RestoreUnits());
 
             // ASSERTS
             Assert.NotNull(exception);
