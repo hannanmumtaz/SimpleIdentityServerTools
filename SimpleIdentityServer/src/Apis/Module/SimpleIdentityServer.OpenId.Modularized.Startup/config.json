@@ -71,10 +71,10 @@
       "name": "oauthrepository",
       "packages": [
         {
-          "lib": "SimpleIdentityServer.EF.SqlServer",
+          "lib": "SimpleIdentityServer.EF.Postgre",
           "version": "3.0.0-rc7",
           "category": "store",
-          "parameters": { "OAuthConnectionString": "Data Source=.;Initial Catalog=SimpleIdentityServer;Integrated Security=True;" }
+          "parameters": { "OAuthConnectionString": "User ID=rocheidserver;Password=password;Host=localhost;Port=5432;Database=idserver;Pooling=true;" }
         }
       ]
     },
@@ -91,7 +91,13 @@
           "lib": "SimpleIdentityServer.Authenticate.Basic",
           "version": "3.0.0-rc7",
           "category": "authenticate",
-          "parameters": null
+          "parameters": {
+            "ClientId": "RocheIdServer",
+            "ClientSecret": "5QNQ/h=',q'Du9cH",
+            "AuthorizationWellKnownConfiguration": "http://localhost:60004/.well-known/uma2-configuration",
+            "BaseScimUrl": "http://localhost:60001",
+            "IsScimResourceAutomaticallyCreated": "true"
+          }
         },
         {
           "lib": "SimpleIdentityServer.UserManagement",
@@ -127,20 +133,6 @@
   ],
   "connectors": [
     {
-      "name": "MicrosoftAccount",
-      "description": null,
-      "picture": null,
-      "lib": "SimpleIdentityServer.Connectors.MicrosoftAccount",
-      "version": "3.0.0-rc7",
-      "parameters": {
-        "ClientId": "59b073ec-cd5e-4616-bf6d-7a78312fc4a8",
-        "ClientSecret": "ztoteL629-[)bpDUZECJ93;",
-        "Scopes": ""
-      },
-      "create_datetime": "0001-01-01T00:00:00",
-      "update_datetime": "0001-01-01T00:00:00"
-    },
-    {
       "name": "Google",
       "description": null,
       "picture": null,
@@ -154,50 +146,20 @@
       "create_datetime": "0001-01-01T00:00:00",
       "update_datetime": "0001-01-01T00:00:00"
     },
-    {
-      "name": "Twitter",
-      "description": null,
-      "picture": null,
-      "lib": "SimpleIdentityServer.Connectors.Twitter",
-      "version": "3.0.0-rc7",
-      "parameters": {
-        "ClientId": "OPQvbec7mJdlR9CJKSd3TCXQf",
-        "ClientSecret": "sLAVJSplAxgyVsnT39fUyoWifug9ys0HuvlgRyrJilK4o5gFoY",
-        "Scopes": ""
-      },
-      "create_datetime": "0001-01-01T00:00:00",
-      "update_datetime": "0001-01-01T00:00:00"
-    },
-	{
-		"name":"Facebook",
-		"description":null,
-		"picture":null,
-		"lib":"SimpleIdentityServer.Connectors.Facebook",
-		"version":"3.0.0-rc7",
-		"parameters": {
-			"ClientId":"569242033233529",
-			"ClientSecret":"12e0f33817634c0a650c0121d05e53eb",
-			"Scopes":"public_profile;email"
-		},
-		"create_datetime":"0001-01-01T00:00:00",
-		"update_datetime":"0001-01-01T00:00:00"
-	}
+	  {
+		  "name":"Facebook",
+		  "description":null,
+		  "picture":null,
+		  "lib":"SimpleIdentityServer.Connectors.Facebook",
+		  "version":"3.0.0-rc7",
+		  "parameters": {
+			  "ClientId":"569242033233529",
+			  "ClientSecret":"12e0f33817634c0a650c0121d05e53eb",
+			  "Scopes":"public_profile;email"
+		  },
+		  "create_datetime":"0001-01-01T00:00:00",
+		  "update_datetime":"0001-01-01T00:00:00"
+	  }
   ],
-  "two_factors": [
-    {
-      "Name": "SMS",
-      "Description": "SMS two factor authenticator",
-      "Picture": "https://png.icons8.com/metro/1600/sms.png",
-      "Library": "SimpleIdentityServer.TwoFactorAuthentication.Twilio",
-      "Version": "3.0.0-rc7",
-      "Parameters": {
-        "TwilioAccountSid": "sid",
-        "TwilioAuthToken": "token",
-        "TwilioFromNumber": "fromnumber",
-        "TwilioMessage": "message {0}"
-      },
-      "CreateDateTime": "2018-06-19T10:54:06.3366947Z",
-      "UpdateDateTime": "2018-06-19T10:54:06.3366947Z"
-    }
-  ]
+  "two_factors": []
 }
