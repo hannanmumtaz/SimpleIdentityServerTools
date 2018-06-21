@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyModel;
 using Newtonsoft.Json;
 using SimpleIdentityServer.Connectors.Common;
 using SimpleIdentityServer.Module.Feed.Client;
@@ -710,7 +711,7 @@ namespace SimpleIdentityServer.Module.Loader
 
         private T LoadLibrary<T>(string library, string version)
         {
-            var packagePath = Path.Combine(_modulePath, $"{library}.{version}\\lib");
+            var packagePath = Path.Combine(_modulePath, $"{library}.{version}", "lib");
             if (!Directory.Exists(packagePath))
             {
                 throw new ModuleLoaderInternalException($"The module {library}.{version} cannot be loaded");
@@ -734,7 +735,9 @@ namespace SimpleIdentityServer.Module.Loader
                 throw new ModuleLoaderInternalException($"The module {library}.{version} cannot be loaded");
             }
 
+            Console.WriteLine("TRYING TO LOAD THE DLL " + dllPath);
             var assm = Assembly.LoadFile(dllPath);
+            Console.WriteLine("DLL IS LOADED " + dllPath);
             var modules = assm.GetExportedTypes().Where(t => typeof(T).IsAssignableFrom(t));
             if (modules == null || !modules.Any() || modules.Count() != 1)
             {
@@ -863,6 +866,7 @@ namespace SimpleIdentityServer.Module.Loader
                 splittedVersion = splittedVersion.Take(3);
             }
 
+            // TOPO : TRYING TO LOAD SIMPLEIDSERVER.CORE.COMMON INSTEAD OF SIMPLEIDENTITY.CORE
             var version = string.Join(".", splittedVersion);
             var subVersion = string.Join(".", splittedVersion.Take(2));
             var baseVersion = splittedVersion.ElementAt(0);
@@ -884,36 +888,39 @@ namespace SimpleIdentityServer.Module.Loader
                 }
             }            
 
-            var libPath = Path.Combine(moduleDirectories.First(), "lib");
-            if (!Directory.Exists(libPath))
+            foreach(var moduleDirectory in moduleDirectories)
             {
-                return null;
-            }
-
-            var fkDirectories = Directory.GetDirectories(libPath);
-            var dllPath = string.Empty;
-            if (fkDirectories.Count() == 1)
-            {
-                dllPath  = Path.Combine(fkDirectories.First(), $"{packageName}.dll");
-            }
-            else
-            {
-                var supportedFrameworks = GetSupportedFrameworks();
-                var filteredFkDirectories = fkDirectories.Where(fkdir => supportedFrameworks.Any(sfk =>
+                var libPath = Path.Combine(moduleDirectory, "lib");
+                if (!Directory.Exists(libPath))
                 {
-                    var dirInfo = new DirectoryInfo(fkdir);
-                    return sfk == dirInfo.Name;
-                })).OrderByDescending(s => s);
-                if (filteredFkDirectories != null && filteredFkDirectories.Any())
-                {
-                    dllPath = Path.Combine(filteredFkDirectories.First(), $"{packageName}.dll");
+                    continue;
                 }
-            }
 
-            if (!string.IsNullOrWhiteSpace(dllPath) && File.Exists(dllPath))
-            {
-                var assm = Assembly.LoadFrom(dllPath);
-                return assm;
+                var fkDirectories = Directory.GetDirectories(libPath);
+                var dllPath = string.Empty;
+                if (fkDirectories.Count() == 1)
+                {
+                    dllPath = Path.Combine(fkDirectories.First(), $"{packageName}.dll");
+                }
+                else
+                {
+                    var supportedFrameworks = GetSupportedFrameworks();
+                    var filteredFkDirectories = fkDirectories.Where(fkdir => supportedFrameworks.Any(sfk =>
+                    {
+                        var dirInfo = new DirectoryInfo(fkdir);
+                        return sfk == dirInfo.Name;
+                    })).OrderByDescending(s => s);
+                    if (filteredFkDirectories != null && filteredFkDirectories.Any())
+                    {
+                        dllPath = Path.Combine(filteredFkDirectories.First(), $"{packageName}.dll");
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(dllPath) && File.Exists(dllPath))
+                {
+                    var assm = Assembly.LoadFrom(dllPath);
+                    return assm;
+                }
             }
 
             return null;
