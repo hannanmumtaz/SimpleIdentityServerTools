@@ -206,7 +206,8 @@ namespace SimpleIdentityServer.Module.Loader
                 throw new ModuleLoaderConfigurationException("The ModuleFeedUri parameter must be specified");
             }
 
-            var configurationFilePath = Path.Combine(Directory.GetCurrentDirectory(), _configFile);
+            var currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var configurationFilePath = Path.Combine(currentDirectory, _configFile);
             if (!File.Exists(configurationFilePath))
             {
                 throw new FileNotFoundException(configurationFilePath);
@@ -236,10 +237,11 @@ namespace SimpleIdentityServer.Module.Loader
                 throw new ModuleLoaderInternalException("The configuration file is already watched");
             }
             
+            var currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             _watcher = new FileSystemWatcher
             {
                 NotifyFilter = NotifyFilters.LastWrite,
-                Path = Directory.GetCurrentDirectory(),
+                Path = currentDirectory,
                 Filter = "*.json"
             };
             _watcher.Changed += HandleFileChanged;
@@ -252,8 +254,9 @@ namespace SimpleIdentityServer.Module.Loader
         /// <returns></returns>
         public void CheckConfigurationFile()
         {
+            var currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             var errorMessages = new List<string>();
-            var configTemplate = JsonConvert.DeserializeObject<ProjectResponse>(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), _configTemplateFile)));
+            var configTemplate = JsonConvert.DeserializeObject<ProjectResponse>(File.ReadAllText(Path.Combine(currentDirectory, _configTemplateFile)));
             if (configTemplate.Id != _projectConfiguration.Id)
             {
                 errorMessages.Add("The config identifier is not the same than the one in the configuration template file");
@@ -762,8 +765,8 @@ namespace SimpleIdentityServer.Module.Loader
                 {
                     try
                     {
-
-                        var json = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), _configFile));
+                        var currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                        var json = File.ReadAllText(Path.Combine(currentDirectory, _configFile));
                         var projectConfiguration = JsonConvert.DeserializeObject<ProjectResponse>(json);
                         var projectConfigurationConnectors = projectConfiguration.Connectors == null ? new List<ProjectConnectorResponse>() : projectConfiguration.Connectors;
                         var localProjectConfigurationConnectors = _projectConfiguration.Connectors == null ? new List<ProjectConnectorResponse>() : _projectConfiguration.Connectors;
@@ -791,7 +794,8 @@ namespace SimpleIdentityServer.Module.Loader
         /// <returns></returns>
         private async Task RestoreTemplateConfigurationFile()
         {
-            var templateConfigurationFile = Path.Combine(Directory.GetCurrentDirectory(), _configTemplateFile);
+            var currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var templateConfigurationFile = Path.Combine(currentDirectory, _configTemplateFile);
             if (File.Exists(templateConfigurationFile))
             {
                 _isConfigTemplateRestored = true;
