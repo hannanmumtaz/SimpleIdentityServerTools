@@ -19,20 +19,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Certificates\LokitCA.cer">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="Certificates\certificate_prk.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Certificates\LokitCA.pvk">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="Certificates\certificate_prk.pvk">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Certificates\SimpleIdServer.cer">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="Certificates\certificate_puk.cer">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Certificates\SimpleIdServer.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Certificates\SimpleIdServer.pvk">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Certificates\" />
   </ItemGroup>
 </Project>

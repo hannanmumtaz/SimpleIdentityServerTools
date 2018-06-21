@@ -1,8 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.IO;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using Xunit;
 
 namespace SimpleIdentityServer.License.Tests
@@ -10,29 +7,27 @@ namespace SimpleIdentityServer.License.Tests
     public class LicenseGeneratorFixture
     {
         [Fact]
-        public void WhenGenerateCertificate()
+        public void When_Generate_License_Then_File_Is_Generated()
         {
-            var sidPfx = Path.Combine(Directory.GetCurrentDirectory(), "Certificates", "SimpleIdServer.pfx"); // contains private key
-            var sidCer = Path.Combine(Directory.GetCurrentDirectory(), "Certificates", "SimpleIdServer.cer"); // contains public key
-            var sidPfxCertificate = new X509Certificate2(sidPfx);
-            var sidCerCertificate = new X509Certificate2(sidCer);
-            var publicKey = sidCerCertificate.PublicKey;
-            var licenseFile = new LicenseFile
-            {
-                Organisation = "Roche",
-                IssueDateTime = DateTime.UtcNow,
-                ExpirationDateTime = DateTime.UtcNow.AddDays(30),
-                Type = "commercial"
-            };
-            var json = JsonConvert.SerializeObject(licenseFile);
-            var payload = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
-
-            // ENCODE THE LICENSE FILE INTO BASE64
-            // CALCULATE THE SIGNATURE WITH THE PRIVATE KEY AND CONCATENATE THE RESULT TO THE LICENSE FILE
-            // SIGN WITH THE PRIVATE KEY
-            // CHECK THE SIGNATURE WITH THE PUBLIC KEY
-            // 
+            var directory = Path.Combine(Directory.GetCurrentDirectory(), "Certificates");
+            Environment.SetEnvironmentVariable("SID_LICENSE", directory);
+            var builder = new LicenseGeneratorBuilder();
+            builder.New().SetOrganisation("organisation")
+                .SetIssueDateTime(DateTime.UtcNow)
+                .SetExpirationDateTime(DateTime.UtcNow.AddDays(30))
+                .SetType("commercial")
+                .Save();
             string s = "";
+        }
+
+        [Fact]
+        public void When_Trying_To_GetLicense_File_Then_Informations_Are_Returned()
+        {
+            var directory = Path.Combine(Directory.GetCurrentDirectory(), "Certificates");
+            Environment.SetEnvironmentVariable("SID_LICENSE", directory);
+            var loader = new LicenseLoader();
+            var license = loader.TryGetLicense();
+            var t = "";
         }
     }
 }
