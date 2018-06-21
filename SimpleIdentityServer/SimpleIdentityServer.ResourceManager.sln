@@ -179,6 +179,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Parame
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Parameter.Common", "src\Apis\Parameter\SimpleIdentityServer.Parameter.Common\SimpleIdentityServer.Parameter.Common.csproj", "{A8D098DF-8A23-41C7-A0C7-E81622D00008}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.License", "src\Apis\License\SimpleIdentityServer.License\SimpleIdentityServer.License.csproj", "{A348D73B-9892-4EF1-8966-A9A91D2A08CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -465,6 +467,10 @@ Global
 		{A8D098DF-8A23-41C7-A0C7-E81622D00008}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8D098DF-8A23-41C7-A0C7-E81622D00008}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8D098DF-8A23-41C7-A0C7-E81622D00008}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A348D73B-9892-4EF1-8966-A9A91D2A08CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A348D73B-9892-4EF1-8966-A9A91D2A08CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A348D73B-9892-4EF1-8966-A9A91D2A08CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A348D73B-9892-4EF1-8966-A9A91D2A08CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -552,6 +558,7 @@ Global
 		{0236DC8A-90BC-4FA8-B53D-887EAC749B2E} = {4EC3C9B3-7417-4BF9-A9A0-3259BD6A0D5B}
 		{0B6445C1-5AFE-4E8A-BC8C-6F199A4FA87B} = {0236DC8A-90BC-4FA8-B53D-887EAC749B2E}
 		{A8D098DF-8A23-41C7-A0C7-E81622D00008} = {0236DC8A-90BC-4FA8-B53D-887EAC749B2E}
+		{A348D73B-9892-4EF1-8966-A9A91D2A08CB} = {4EC3C9B3-7417-4BF9-A9A0-3259BD6A0D5B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E1AD5C7-B8BE-4890-9985-F2BDCAD9425F}

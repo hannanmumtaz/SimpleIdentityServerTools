@@ -1,10 +1,5 @@
-# SimpleIdentityServer.Tools
+## SimpleIdentityServer tools
 
-## Modularization
+## Licensing
 
-### How to launch the modularized applications ?
-
-1. Add the environment variable SID_MODULE and set its value with the path where you wish to download all the dependencies.
-2. Create a directory d:\sidfeeds\
-3. Launch the command file : generate-nugetpkgs.cmd
-4. Navigate to the directory SimpleIdentityServer\ and launch the command file : launch-modularized.cmd
+SimpleIdentityServer Tools is licensed under the RPL1.5 license. More details can be found [here](LICENSE.md)

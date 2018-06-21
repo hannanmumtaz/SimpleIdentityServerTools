@@ -18,6 +18,8 @@ using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.Core;
 using SimpleIdentityServer.Core.Jwt;
 using SimpleIdentityServer.Core.Services;
+using SimpleIdentityServer.License;
+using SimpleIdentityServer.License.Exceptions;
 using SimpleIdentityServer.Logging;
 using SimpleIdentityServer.Manager.Core;
 using SimpleIdentityServer.Manager.Host.Services;
@@ -52,6 +54,13 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
             else
             {
                 serviceCollection.AddSingleton(managerOptions.AuthenticateResourceOwnerService);
+            }
+
+            var loader = new LicenseLoader();
+            var license = loader.TryGetLicense();
+            if (license.ExpirationDateTime < DateTime.UtcNow)
+            {
+                throw new LicenseExpiredException();
             }
 
             // 1. Add the dependencies needed to enable CORS

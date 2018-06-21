@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Logging\SimpleIdentityServer.Logging.csproj" />
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Lib\WebApiContrib\WebApiContrib.Core.Concurrency\WebApiContrib.Core.Concurrency.csproj" />
+    <ProjectReference Include="..\..\License\SimpleIdentityServer.License\SimpleIdentityServer.License.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Manager.Common\SimpleIdentityServer.Manager.Common.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Manager.Core\SimpleIdentityServer.Manager.Core.csproj" />
   </ItemGroup>

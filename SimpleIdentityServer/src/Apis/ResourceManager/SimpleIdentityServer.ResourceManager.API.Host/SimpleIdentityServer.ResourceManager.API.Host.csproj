@@ -22,6 +22,7 @@
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.UserInfoIntrospection\SimpleIdentityServer.UserInfoIntrospection.csproj" />
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\Uma\SimpleIdentityServer.Uma.Client\SimpleIdentityServer.Uma.Client.csproj" />
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Lib\WebApiContrib\WebApiContrib.Core.Storage\WebApiContrib.Core.Storage.csproj" />
+    <ProjectReference Include="..\..\License\SimpleIdentityServer.License\SimpleIdentityServer.License.csproj" />
     <ProjectReference Include="..\..\Manager\SimpleIdentityServer.Manager.Client\SimpleIdentityServer.Manager.Client.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.ResourceManager.Common\SimpleIdentityServer.ResourceManager.Common.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.ResourceManager.Core\SimpleIdentityServer.ResourceManager.Core.csproj" />
