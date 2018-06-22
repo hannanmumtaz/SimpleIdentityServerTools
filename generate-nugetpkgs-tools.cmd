@@ -26,3 +26,21 @@ dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Parameter\
 REM COMMON
 dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Common.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Common.Dtos /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+
+REM MANAGER
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Manager\SimpleIdentityServer.Manager.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Manager\SimpleIdentityServer.Manager.Common /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Manager\SimpleIdentityServer.Manager.Core /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Manager\SimpleIdentityServer.Manager.Host /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+
+REM RESOURCE MANAGER
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.API.Host /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.Common /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.Core /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.EF /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.EF.InMemory /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.EF.Postgre /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.EF.Sqlite /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.EF.SqlServer /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+
