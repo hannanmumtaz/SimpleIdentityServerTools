@@ -21,21 +21,27 @@ namespace SimpleIdentityServer.License.Helpers
                 throw new ArgumentNullException(nameof(licenseFile));
             }
 
-            if (!certificate.HasPrivateKey || certificate.PrivateKey == null || !(certificate.PrivateKey is RSACryptoServiceProvider))
+            if (!certificate.HasPrivateKey || certificate.PrivateKey == null)
             {
                 throw new NoPrivateKeyException();
             }
 
             var jsonObj = JsonConvert.SerializeObject(licenseFile);
             var jsonb64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(jsonObj));
-            var privateKey = (RSACryptoServiceProvider)certificate.PrivateKey;
             byte[] hashPayload;
             using (var shaMg = SHA1Managed.Create())
             {
                 hashPayload = shaMg.ComputeHash(Encoding.UTF8.GetBytes(jsonb64));
             }
 
-            var signature = privateKey.SignHash(hashPayload, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+            byte[] signature;
+#if NET
+            var privateKey = (RSACryptoServiceProvider)certificate.PrivateKey;
+            signature = privateKey.SignHash(hashPayload, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+#else
+            var privateKey = (RSA)certificate.PrivateKey;
+            signature = privateKey.SignHash(hashPayload, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+#endif
             var b64Signature = Convert.ToBase64String(signature);
             return $"{jsonb64}.{b64Signature}";
         }
@@ -56,7 +62,7 @@ namespace SimpleIdentityServer.License.Helpers
                 throw new ArgumentNullException(nameof(signature));
             }
 
-            if (certificate.PublicKey == null || !(certificate.PublicKey.Key is RSACryptoServiceProvider))
+            if (certificate.PublicKey == null)
             {
                 throw new NoPublicKeyException();
             }
@@ -67,8 +73,13 @@ namespace SimpleIdentityServer.License.Helpers
                 hashPayload = shaMg.ComputeHash(Encoding.UTF8.GetBytes(jsonb64));
             }
 
+#if NET
             var publicKey = (RSACryptoServiceProvider)certificate.PublicKey.Key;
             return publicKey.VerifyHash(hashPayload, Convert.FromBase64String(signature), HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+#else
+            var publicKey = (RSA)certificate.PublicKey.Key;
+            return publicKey.VerifyHash(hashPayload, Convert.FromBase64String(signature), HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+#endif
         }
     }
 }
