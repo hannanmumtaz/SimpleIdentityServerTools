@@ -16,6 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.Core;
+using SimpleIdentityServer.Core.Extensions;
 using SimpleIdentityServer.Core.Jwt;
 using SimpleIdentityServer.Core.Services;
 using SimpleIdentityServer.License;
@@ -24,6 +25,7 @@ using SimpleIdentityServer.Logging;
 using SimpleIdentityServer.Manager.Core;
 using SimpleIdentityServer.Manager.Host.Services;
 using System;
+using System.Linq;
 
 namespace SimpleIdentityServer.Manager.Host.Extensions
 {
@@ -75,7 +77,25 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
             // 4. Add authorization policies
             serviceCollection.AddAuthorization(options =>
             {
-                options.AddPolicy("manager", policy => policy.RequireClaim("scope", "manager"));
+                options.AddPolicy("manager", policy =>
+                {
+                    policy.RequireAssertion(p =>
+                    {
+                        if (p.User == null || p.User.Identity == null || !p.User.Identity.IsAuthenticated)
+                        {
+                            return false;
+                        }
+
+                        var claimRole = p.User.Claims.FirstOrDefault(c => c.Type == "role");
+                        var claimScope = p.User.Claims.FirstOrDefault(c => c.Type == "scope");
+                        if (claimRole == null && claimScope == null)
+                        {
+                            return false;
+                        }
+
+                        return claimRole != null && claimRole.Value == "administrator" || claimScope != null && claimScope.Value == "manager";
+                    });
+                });
             });
             // 5. Add JWT parsers.
             serviceCollection.AddSimpleIdentityServerJwt();

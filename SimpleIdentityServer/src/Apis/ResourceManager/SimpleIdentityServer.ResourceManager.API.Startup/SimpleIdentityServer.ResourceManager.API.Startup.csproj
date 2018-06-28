@@ -35,8 +35,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.UserInfoIntrospection\SimpleIdentityServer.UserInfoIntrospection.csproj" />
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Lib\WebApiContrib\WebApiContrib.Core.Storage.InMemory\WebApiContrib.Core.Storage.InMemory.csproj" />
-    <ProjectReference Include="..\SimpleIdentityServer.ResourceManager.API.Host\SimpleIdentityServer.ResourceManager.API.Host.csproj" />
-    <ProjectReference Include="..\SimpleIdentityServer.ResourceManager.EF.InMemory\SimpleIdentityServer.ResourceManager.EF.InMemory.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,11 +6,6 @@
     <AssemblyName>SimpleIdentityServer.ResourceManager.Core.Tests</AssemblyName>
     <PackageId>SimpleIdentityServer.ResourceManager.Core.Tests</PackageId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.Core\SimpleIdentityServer.ResourceManager.Core.csproj" />
-    <ProjectReference Include="..\..\src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.EF.InMemory\SimpleIdentityServer.ResourceManager.EF.InMemory.csproj" />
-  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.1" />
