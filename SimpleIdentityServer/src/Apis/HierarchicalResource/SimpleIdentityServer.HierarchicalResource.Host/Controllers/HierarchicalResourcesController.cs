@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SimpleIdentityServer.ResourceManager.Common.Responses;
+using SimpleIdentityServer.HierarchicalResource.Common.Responses;
 
 namespace SimpleIdentityServer.HierarchicalResource.Host.Controllers
 {

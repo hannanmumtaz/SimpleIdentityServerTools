@@ -1,5 +1,5 @@
 ﻿using SimpleIdentityServer.HierarchicalResource.Core.Models;
-using SimpleIdentityServer.ResourceManager.Common.Responses;
+using SimpleIdentityServer.HierarchicalResource.Common.Responses;
 using System;
 
 namespace SimpleIdentityServer.HierarchicalResource.Host.Extensions
