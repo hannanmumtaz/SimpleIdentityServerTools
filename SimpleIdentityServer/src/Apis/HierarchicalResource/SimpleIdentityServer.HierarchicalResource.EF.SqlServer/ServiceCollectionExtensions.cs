@@ -18,7 +18,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.SqlServer
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            serviceCollection.AddProfileRepositories();
+            serviceCollection.AddHierarchicalResourceRepositories();
             serviceCollection.AddEntityFrameworkSqlServer()
                 .AddDbContext<HierarchicalResourceDbContext>(options =>
                     options.UseSqlServer(connectionString));

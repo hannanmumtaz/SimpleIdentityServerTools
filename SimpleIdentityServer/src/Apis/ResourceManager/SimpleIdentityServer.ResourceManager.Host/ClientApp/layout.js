@@ -151,7 +151,7 @@ class Layout extends Component {
             var authEndpoints = endpoints.filter(function(endpoint) { return endpoint.type === 0; });
             var openidEndpoints = endpoints.filter(function(endpoint) { return endpoint.type === 1; });
             var scimEndpoints = endpoints.filter(function(endpoint) { return endpoint.type === 2; });
-            ProfileService.get().then(function(profile) {
+            ProfileService.getMineProfile().then(function(profile) {
                 self.setState({
                     authEndpoints: authEndpoints,
                     openidEndpoints: openidEndpoints,
@@ -243,8 +243,6 @@ class Layout extends Component {
         }
 
         var evt = window.addEventListener("message", function (e) {
-            console.log(e);
-            console.log('SESSION CHANGED');
             if (e.data !== 'unchanged') {
                 AppDispatcher.dispatch({
                     actionName: Constants.events.USER_LOGGED_OUT
@@ -304,7 +302,7 @@ class Layout extends Component {
         self.setState({
             isLoading: true
         });
-        ProfileService.update(request).then(function() {
+        ProfileService.updateMineProfile(request).then(function() {
             self.setState({
                 isLoading: false,
                 isDrawerDisplayed: false

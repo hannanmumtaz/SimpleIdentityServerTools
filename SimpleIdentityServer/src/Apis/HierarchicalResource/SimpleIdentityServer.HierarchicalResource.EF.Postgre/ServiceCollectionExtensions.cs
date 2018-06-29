@@ -18,7 +18,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Postgre
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            serviceCollection.AddProfileRepositories();
+            serviceCollection.AddHierarchicalResourceRepositories();
             serviceCollection.AddEntityFrameworkNpgsql()
                 .AddDbContext<HierarchicalResourceDbContext>(options =>
                     options.UseNpgsql(connectionString));

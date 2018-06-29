@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleIdentityServer.Client;
 using SimpleIdentityServer.Core.Jwt;
-using SimpleIdentityServer.ResourceManager.Client;
+using SimpleIdentityServer.HierarchicalResource.Client;
 using SimpleIdentityServer.ResourceManager.Resolver;
 using SimpleIdentityServer.Uma.Authentication;
 using SimpleIdentityServer.Uma.Client;
@@ -63,7 +63,7 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc
                     ClientSecret = "tmp"
                 }
             };
-            services.AddResourceManagerResolver(_resourceManagerResolverOptions);
+            services.AddHierarchicalResourceResolver(_resourceManagerResolverOptions);
             services.AddUmaFilter(umaFilterOptions);
             services.AddAuthentication(Constants.CookieName)
                 .AddCookie(Constants.CookieName);

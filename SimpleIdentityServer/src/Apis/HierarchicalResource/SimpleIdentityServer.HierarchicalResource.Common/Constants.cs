@@ -1,4 +1,4 @@
-﻿namespace SimpleIdentityServer.ResourceManager.Common
+﻿namespace SimpleIdentityServer.HierarchicalResource.Common
 {
     internal static class Constants
     {

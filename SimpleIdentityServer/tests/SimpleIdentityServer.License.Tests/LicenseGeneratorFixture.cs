@@ -19,7 +19,7 @@ namespace SimpleIdentityServer.License.Tests
                 .Save();
             string s = "";
         }
-
+	
         [Fact]
         public void When_Trying_To_GetLicense_File_Then_Informations_Are_Returned()
         {

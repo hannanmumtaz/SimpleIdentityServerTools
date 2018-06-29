@@ -24,6 +24,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\IdServer\SimpleIdentityServer\src\Lib\WebApiContrib\WebApiContrib.Core.Storage.InMemory\WebApiContrib.Core.Storage.InMemory.csproj" />
+    <ProjectReference Include="..\..\src\Apis\HierarchicalResource\SimpleIdentityServer.HierarchicalResource.Resolver\SimpleIdentityServer.HierarchicalResource.Resolver.csproj" />
+    <ProjectReference Include="..\..\src\Apis\Uma\SimpleIdentityServer.Uma.Authentication\SimpleIdentityServer.Uma.Authentication.csproj" />
+    <ProjectReference Include="..\Uma\SimpleIdentityServer.Uma.Authentication\SimpleIdentityServer.Uma.Authentication.csproj" />
+    <ProjectReference Include="..\HierarchicalResource\SimpleIdentityServer.HierarchicalResource.Resolver\SimpleIdentityServer.HierarchicalResource.Resolver.csproj" />
   </ItemGroup>
   
   <ItemGroup>

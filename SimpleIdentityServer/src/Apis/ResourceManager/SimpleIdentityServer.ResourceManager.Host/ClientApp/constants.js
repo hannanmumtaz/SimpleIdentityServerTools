@@ -10,5 +10,8 @@
         SESSION_CREATED: 'SESSION_CREATED',
         SESSION_UPDATED: 'SESSION_UPDATED',
         DISPLAY_MESSAGE: 'DISPLAY_MESSAGE'
-    }
+    },
+    openidManagerBaseUrl: 'http://localhost:60003',
+    profileBaseUrl: 'http://localhost:60005',
+
 };

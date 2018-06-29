@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace SimpleIdentityServer.ResourceManager.Common.Responses
+namespace SimpleIdentityServer.HierarchicalResource.Common.Responses
 {
     [DataContract]
     public class AssetResponse

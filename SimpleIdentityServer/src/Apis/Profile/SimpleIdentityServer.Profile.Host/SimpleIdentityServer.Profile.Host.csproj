@@ -24,6 +24,7 @@
   </ItemGroup>
     
   <ItemGroup>
+    <ProjectReference Include="..\..\License\SimpleIdentityServer.License\SimpleIdentityServer.License.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Profile.Core\SimpleIdentityServer.Profile.Core.csproj" />
   </ItemGroup>
 </Project>

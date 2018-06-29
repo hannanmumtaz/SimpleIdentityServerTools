@@ -14,7 +14,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.InMemory
                 throw new ArgumentNullException(nameof(serviceCollection));
             }
 
-            serviceCollection.AddProfileRepositories();
+            serviceCollection.AddHierarchicalResourceRepositories();
             serviceCollection.AddEntityFrameworkInMemoryDatabase()
                 .AddDbContext<HierarchicalResourceDbContext>(options => options.UseInMemoryDatabase().ConfigureWarnings(warnings => warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning)));
             return serviceCollection;

@@ -18,7 +18,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Sqlite
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            serviceCollection.AddProfileRepositories();
+            serviceCollection.AddHierarchicalResourceRepositories();
             serviceCollection.AddEntityFrameworkSqlite()
                 .AddDbContext<HierarchicalResourceDbContext>(options =>
                     options.UseSqlite(connectionString));

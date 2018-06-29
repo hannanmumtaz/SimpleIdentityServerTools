@@ -4,14 +4,14 @@ import SessionService from './sessionService';
 
 module.exports = {
     /**
-    * Update the profile.
+    * Update mine profile.
     */
-    update: function(request) {
+    updateMineProfile: function(request) {
         return new Promise(function (resolve, reject) {
             var data = JSON.stringify(request);
             var session = SessionService.getSession();
             $.ajax({
-                url: Constants.apiUrl + '/profile',
+                url: Constants.profileBaseUrl + '/profiles/.me',
                 method: "PUT",
                 data: data,
                 contentType: 'application/json',
@@ -26,13 +26,13 @@ module.exports = {
         });        
     },
     /**
-    * Get the profile.
+    * Get mine profile.
     */
-    get: function(id) {
+    getMineProfile: function(id) {
         return new Promise(function (resolve, reject) {
             var session = SessionService.getSession();
             $.ajax({
-                url: Constants.apiUrl + '/profile',
+                url: Constants.profileBaseUrl + '/profiles/.me',
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer "+ session.token

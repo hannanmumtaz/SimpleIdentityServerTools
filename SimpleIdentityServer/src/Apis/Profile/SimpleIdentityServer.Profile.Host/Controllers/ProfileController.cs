@@ -1,27 +1,26 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SimpleIdentityServer.Core.Extensions;
+using SimpleIdentityServer.Profile.Core.Api.Profile;
 using SimpleIdentityServer.Profile.Host.DTOs;
 using SimpleIdentityServer.Profile.Host.Extensions;
-using SimpleIdentityServer.Profile.Core.Api.Profile;
 using System;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.Profile.Host.Controllers
 {
-    [Route(Constants.RouteNames.ProfileController)]
-    public class ProfileController : Controller
+    [Route(Constants.RouteNames.ProfilesController)]
+    public class ProfilesController : Controller
     {
         private readonly IProfileActions _profileActions;
 
-        public ProfileController(IProfileActions profileActions)
+        public ProfilesController(IProfileActions profileActions)
         {
             _profileActions = profileActions;
         }
 
-        [Authorize("connected")]
-        [HttpGet]
+        [Authorize("my_profile")]
+        [HttpGet(".me")]
         public async Task<IActionResult> Get()
         {
             var subject = User.GetSubject();
@@ -41,8 +40,8 @@ namespace SimpleIdentityServer.Profile.Host.Controllers
             }
         }
 
-        [Authorize("connected")]
-        [HttpPut]
+        [Authorize("my_profile")]
+        [HttpPut(".me")]
         public async Task<IActionResult> Update([FromBody] ProfileResponse profile)
         {
             if (profile == null)

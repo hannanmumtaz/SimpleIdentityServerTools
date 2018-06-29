@@ -7,7 +7,7 @@ module.exports = {
 	*/
 	getAll: function() {
 		return new Promise(function(resolve, reject) {
-			$.get(Constants.apiUrl + '/endpoints').then(function(data) {
+			$.get(Constants.profileBaseUrl + '/endpoints').then(function(data) {
 				resolve(data);
 			}).fail(function(e) {
 				reject(e);
@@ -19,7 +19,7 @@ module.exports = {
 	*/
 	get: function(id) {
 		return new Promise(function(resolve, reject) {
-			$.get(Constants.apiUrl + '/endpoints/'+id).then(function(data) {
+			$.get(Constants.profileBaseUrl + '/endpoints/'+id).then(function(data) {
 				resolve(data);
 			}).fail(function(e) {
 				reject(e);

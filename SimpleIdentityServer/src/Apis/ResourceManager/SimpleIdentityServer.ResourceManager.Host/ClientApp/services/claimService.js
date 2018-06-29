@@ -11,7 +11,7 @@ module.exports = {
             var data = JSON.stringify(request);
             var session = SessionService.getSession();
             $.ajax({
-                url: Constants.apiUrl + '/claims/.search',
+                url: Constants.openidManagerBaseUrl + '/api/claims/.search',
                 method: "POST",
                 data: data,
                 contentType: 'application/json',
@@ -32,7 +32,7 @@ module.exports = {
 		return new Promise(function(resolve, reject) {
             var session = SessionService.getSession();
 			$.ajax({
-				url: Constants.apiUrl + '/claims/' +id,
+				url: Constants.openidManagerBaseUrl + '/api/claims/' +id,
                 method: "GET",
                 headers: {
                 	"Authorization": "Bearer "+ session.token
@@ -52,7 +52,7 @@ module.exports = {
             var data = JSON.stringify(request);
             var session = SessionService.getSession();
             $.ajax({
-                url: Constants.apiUrl + '/claims',
+                url: Constants.openidManagerBaseUrl + '/api/claims',
                 method: "POST",
                 data: data,
                 contentType: 'application/json',
@@ -73,7 +73,7 @@ module.exports = {
         return new Promise(function (resolve, reject) {
             var session = SessionService.getSession();
             $.ajax({
-                url: Constants.apiUrl + '/claims/' + id,
+                url: Constants.openidManagerBaseUrl + '/api/claims/' + id,
                 method: "DELETE",
                 headers: {
                     "Authorization": "Bearer "+ session.token

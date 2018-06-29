@@ -10,6 +10,7 @@
         {
             public const string ElFinterController = "elfinder";
             public const string HierarchicalResourcesController = "hierarchicalresources";
+            public const string ConfigurationController = "configuration";
         }
 
         public static class ProfileResponseNames
