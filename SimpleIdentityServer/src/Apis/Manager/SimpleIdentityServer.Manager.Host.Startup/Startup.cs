@@ -61,17 +61,14 @@ namespace SimpleIdentityServer.Manager.Host.Startup
             // 3. Configure the manager
             services.AddSimpleIdentityServerManager(_options);
             // 4. Configure the authentication.
-	    /*
             services.AddAuthentication(OAuth2IntrospectionOptions.AuthenticationScheme)
-                .AddOAuth2Introspection(opts =>
+		        .AddOAuth2Introspection(opts =>
                 {
                     opts.ClientId = Configuration["Auth:ClientId"];
                     opts.ClientSecret = Configuration["Auth:ClientSecret"];
                     opts.WellKnownConfigurationUrl = Configuration["Auth:WellKnownConfiguration"];
-                });
-	     */
-            services.AddAuthentication(UserInfoIntrospectionOptions.AuthenticationScheme)
-                .AddUserInfoIntrospection(opts =>
+                })
+		        .AddUserInfoIntrospection(opts =>
                 {
                     opts.WellKnownConfigurationUrl = "http://localhost:60000/.well-known/openid-configuration";
                 });

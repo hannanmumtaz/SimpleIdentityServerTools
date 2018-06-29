@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { translate } from 'react-i18next';
 import { ClaimService } from '../services';
 import { NavLink, withRouter } from "react-router-dom";
+import { SessionStore } from '../stores';
 import moment from 'moment';
 
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
@@ -385,8 +386,14 @@ class Claims extends Component {
         </div>);
     }
 
-    componentDidMount() {        
-        this.refreshData();
+    componentDidMount() { 
+        var self = this;
+        SessionStore.addChangeListener(function() {
+            self.refreshData();
+        });
+        if (SessionStore.getSession().selectedOpenid) {
+            self.refreshData();
+        }
     }
 }
 

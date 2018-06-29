@@ -31,7 +31,7 @@ namespace SimpleIdentityServer.Profile.EF.Repositories
             {
                 using (var context = serviceScope.ServiceProvider.GetService<ProfileDbContext>())
                 {
-                    var idProvider = await context.Endpoints.Include(e => e.Manager).FirstOrDefaultAsync(a => a.Url == url);
+                    var idProvider = await context.Endpoints.FirstOrDefaultAsync(a => a.Url == url);
                     if (idProvider == null)
                     {
                         return null;
@@ -67,14 +67,7 @@ namespace SimpleIdentityServer.Profile.EF.Repositories
                                     Url = idProvider.Url,
                                     Type = (int)idProvider.Type,
                                     Order = idProvider.Order,
-                                    Manager = new EndpointManager
-                                    {
-                                        AuthUrl = idProvider.AuthUrl,
-                                        SourceUrl = idProvider.Url,
-                                        ClientId = idProvider.ClientId,
-                                        ClientSecret = idProvider.ClientSecret,
-                                        ManagerUrl = idProvider.ManagerUrl
-                                    }
+                                    ManagerUrl = idProvider.ManagerUrl
                                 };
 
                                 context.Endpoints.Add(record);
@@ -101,7 +94,7 @@ namespace SimpleIdentityServer.Profile.EF.Repositories
             {
                 using (var context = serviceScope.ServiceProvider.GetService<ProfileDbContext>())
                 {
-                    var idProviders = await context.Endpoints.Include(e => e.Manager).ToListAsync().ConfigureAwait(false);
+                    var idProviders = await context.Endpoints.ToListAsync().ConfigureAwait(false);
                     if (idProviders == null)
                     {
                         return null;
@@ -123,7 +116,7 @@ namespace SimpleIdentityServer.Profile.EF.Repositories
             {
                 using (var context = serviceScope.ServiceProvider.GetService<ProfileDbContext>())
                 {
-                    IQueryable<Endpoint> endpoints = context.Endpoints.Include(e => e.Manager);
+                    IQueryable<Endpoint> endpoints = context.Endpoints;
                     if (parameter.Type != null)
                     {
                         endpoints = endpoints.Where(e => e.Type == (int)parameter.Type.Value);
@@ -179,11 +172,8 @@ namespace SimpleIdentityServer.Profile.EF.Repositories
                 Url = idProvider.Url,
                 Name = idProvider.Name,
                 Type = (EndpointTypes)idProvider.Type,
-                ClientId = idProvider.Manager != null ? idProvider.Manager.ClientId : null,
-                ClientSecret = idProvider.Manager != null ? idProvider.Manager.ClientSecret : null,
-                ManagerUrl = idProvider.Manager != null ? idProvider.Manager.ManagerUrl : null,
-                AuthUrl = idProvider.Manager != null ? idProvider.Manager.AuthUrl : null,
-                Order = idProvider.Order
+                Order = idProvider.Order,
+                ManagerUrl = idProvider.ManagerUrl
             };
         }
     }

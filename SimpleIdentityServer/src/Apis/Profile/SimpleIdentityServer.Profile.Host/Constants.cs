@@ -5,7 +5,7 @@
         public static class RouteNames
         {
             public const string ProfilesController = "profiles";
-	    public const string EndpointsController = "endpoints";
+	        public const string EndpointsController = "endpoints";
         }
 
         public static class ProfileResponseNames
@@ -22,6 +22,7 @@
             public const string Description = "description";
             public const string Type = "type";
             public const string CreateDateTime = "create_datetime";
+            public const string ManagerUrl = "manager_url";
         }
 
         public static class ElFinderIdProviderResponseNames

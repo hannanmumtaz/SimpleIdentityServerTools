@@ -19,8 +19,7 @@ namespace SimpleIdentityServer.Profile.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddEndpointManagerMapping()
-                .AddEndpointMapping()
+            modelBuilder.AddEndpointMapping()
                 .AddProfileMapping();
             base.OnModelCreating(modelBuilder);
         }

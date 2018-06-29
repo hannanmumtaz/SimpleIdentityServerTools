@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { translate } from 'react-i18next';
 import { ClientService } from '../../services';
 import { withRouter, NavLink } from 'react-router-dom';
+import { SessionStore } from '../../stores';
 import ChipsSelector from './chipsSelector';
 import moment from 'moment';
 
@@ -407,8 +408,14 @@ class ClientComponent extends Component {
         </div>);
     }
 
-    componentDidMount() {        
-        this.refreshData();
+    componentDidMount() {
+        var self = this;
+        SessionStore.addChangeListener(function() {
+            self.refreshData();
+        });
+        if (SessionStore.getSession().selectedOpenid) {
+            self.refreshData();
+        }
     }
 }
 

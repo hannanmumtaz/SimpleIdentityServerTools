@@ -32,13 +32,7 @@ namespace SimpleIdentityServer.Profile.Startup.Extensions
                         Name = "simpleidserver",
                         Url = "http://localhost:60000/.well-known/openid-configuration",
                         Type = (int)EndpointTypes.OPENID,
-                        Manager = new EndpointManager
-                        {
-                            AuthUrl = "http://localhost:60004/.well-known/uma2-configuration",
-                            ClientId = "ResourceServer",
-                            ClientSecret = "LW46am54neU/[=Su",
-                            ManagerUrl = "http://localhost:60003/.well-known/openidmanager-configuration"
-                        },
+                        ManagerUrl = "http://localhost:60003/.well-known/openidmanager-configuration",
                         Order = 1
                     },
                     new Endpoint
@@ -48,14 +42,8 @@ namespace SimpleIdentityServer.Profile.Startup.Extensions
                         Name = "authserver",
                         Url = "http://localhost:60004/.well-known/uma2-configuration",
                         Type = (int)EndpointTypes.AUTH,
-                        Order = 1,
-                        Manager = new EndpointManager
-                        {
-                            AuthUrl = "http://localhost:60004/.well-known/uma2-configuration",
-                            ClientId = "ResourceServer",
-                            ClientSecret = "LW46am54neU/[=Su",
-                            ManagerUrl = "http://localhost:60007/.well-known/openidmanager-configuration"
-                        }
+                        ManagerUrl = "http://localhost:60007/.well-known/openidmanager-configuration",
+                        Order = 1
                     },
                     new Endpoint
                     {
@@ -64,14 +52,8 @@ namespace SimpleIdentityServer.Profile.Startup.Extensions
                         Name = "scimserver",
                         Url = "http://localhost:60001",
                         Type = (int)EndpointTypes.SCIM,
-                        Order = 1,
-                        Manager = new EndpointManager
-                        {
-                            AuthUrl = "http://localhost:60004/.well-known/uma2-configuration",
-                            ClientId = "ResourceServer",
-                            ClientSecret = "LW46am54neU/[=Su",
-                            ManagerUrl = "http://localhost:60004/.well-known/uma2-configuration"
-                        }
+                        ManagerUrl = "http://localhost:60004/.well-known/uma2-configuration",
+                        Order = 1
                     },
                     new Endpoint
                     {
@@ -80,13 +62,7 @@ namespace SimpleIdentityServer.Profile.Startup.Extensions
                         Name = "fakesimpleidserver",
                         Url = "http://fake:60000/.well-known/openid-configuration",
                         Type = (int)EndpointTypes.OPENID,
-                        Manager = new EndpointManager
-                        {
-                            AuthUrl = "http://fake:60004/.well-known/uma2-configuration",
-                            ClientId = "ResourceServer",
-                            ClientSecret = "LW46am54neU/[=Su",
-                            ManagerUrl = "http://fake:60003/.well-known/openidmanager-configuration"
-                        },
+                        ManagerUrl = "http://fake:60003/.well-known/openidmanager-configuration",
                         Order = 2
                     },
                     new Endpoint
@@ -95,15 +71,9 @@ namespace SimpleIdentityServer.Profile.Startup.Extensions
                         Description = "fake authorization server",
                         Name = "fakeauthserver",
                         Url = "http://fake:60004/.well-known/uma2-configuration",
+                        ManagerUrl = "http://fake:60004/.well-known/uma2-configuration",
                         Type = (int)EndpointTypes.AUTH,
-                        Order = 1,
-                        Manager = new EndpointManager
-                        {
-                            AuthUrl = "http://fake:60004/.well-known/uma2-configuration",
-                            ClientId = "ResourceServer",
-                            ClientSecret = "LW46am54neU/[=Su",
-                            ManagerUrl = "http://fake:60004/.well-known/uma2-configuration"
-                        }
+                        Order = 1
                     },
                     new Endpoint
                     {

@@ -79,6 +79,7 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
             {
                 options.AddPolicy("manager", policy =>
                 {
+                    policy.AddAuthenticationSchemes("UserInfoIntrospection");
                     policy.RequireAssertion(p =>
                     {
                         if (p.User == null || p.User.Identity == null || !p.User.Identity.IsAuthenticated)

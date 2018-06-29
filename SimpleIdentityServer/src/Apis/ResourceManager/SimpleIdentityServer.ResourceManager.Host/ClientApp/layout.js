@@ -76,7 +76,7 @@ class Layout extends Component {
         this.displayMessage = this.displayMessage.bind(this);
         var pathName = this.props.location.pathname;
         this.state = {
-            isManageOpenidServerOpened: pathName.indexOf('/claims') !== -1 || pathName.indexOf('/resourceowners') !== -1 || pathName.indexOf('/openidclients') !== -1 || pathName.indexOf('/openidscopes') !== -1,
+            isManageOpenidServerOpened: pathName.indexOf('/claims') !== -1 || pathName.indexOf('/resourceowners') !== -1 || pathName.indexOf('/openid') !== -1,
             isManageAuthServersOpened: pathName.indexOf('/authclients') !== -1 || pathName.indexOf('/authScopes') !== -1 || pathName.indexOf('/resources') !== -1,
             isScimOpened: pathName.indexOf('/scimSchemas') !== -1 || pathName.indexOf('/scimResources') !== -1,
             isLoggedIn: false,
@@ -152,50 +152,55 @@ class Layout extends Component {
             var openidEndpoints = endpoints.filter(function(endpoint) { return endpoint.type === 1; });
             var scimEndpoints = endpoints.filter(function(endpoint) { return endpoint.type === 2; });
             ProfileService.getMineProfile().then(function(profile) {
+                var selectedOpenid = openidEndpoints.filter(function(endpoint) { return endpoint.url === profile['openid_url'] })[0];
                 self.setState({
                     authEndpoints: authEndpoints,
                     openidEndpoints: openidEndpoints,
                     scimEndpoints: scimEndpoints,
-                    selectedOpenid: profile.openid_url,
-                    selectedAuth: profile.auth_url,
-                    selectedScim: profile.scim_url,
+                    selectedOpenid: profile['openid_url'],
+                    selectedAuth: profile['auth_url'],
+                    selectedScim: profile['scim_url'],
                     isLoading: false
                 });
                 AppDispatcher.dispatch({
                     actionName: Constants.events.SESSION_CREATED,
-                    data: profile
+                    data: {
+                        selectedOpenid: openidEndpoints.filter(function(endpoint) { return endpoint.url === profile['openid_url'] })[0],
+                        selectedAuth: authEndpoints.filter(function(endpoint) { return endpoint.url === profile['auth_url'] })[0],
+                        selectedScim: scimEndpoints.filter(function(endpoint) { return endpoint.url === profile['scim_url'] })[0]
+                    }
                 });
             }).catch(function() {
                 var selectedOpenid = null;
                 var selectedAuth = null;
                 var selectedScim = null;
                 if (authEndpoints.length > 0) {
-                    selectedAuth = authEndpoints[0].url;
+                    selectedAuth = authEndpoints[0];
                 }
 
                 if (openidEndpoints.length > 0) {
-                    selectedOpenid = openidEndpoints[0].url;
+                    selectedOpenid = openidEndpoints[0];
                 }
 
                 if (scimEndpoints.length > 0) {
-                    selectedScim = scimEndpoints[0].url;
+                    selectedScim = scimEndpoints[0];
                 }
 
                 self.setState({
                     authEndpoints: authEndpoints,
                     openidEndpoints: openidEndpoints,
                     scimEndpoints: scimEndpoints,
-                    selectedOpenid: selectedOpenid,
-                    selectedAuth: selectedAuth,
-                    selectedScim: selectedScim,
+                    selectedOpenid: selectedOpenid.url,
+                    selectedAuth: selectedAuth.url,
+                    selectedScim: selectedScim.url,
                     isLoading: false
                 });
                 AppDispatcher.dispatch({
                     actionName: Constants.events.SESSION_CREATED,
                     data: {
-                        openid_url: selectedOpenid,
-                        auth_url: selectedAuth,
-                        scim_url: selectedScim
+                        selectedOpenid: selectedOpenid,
+                        selectedAuth: selectedAuth,
+                        selectedScim: selectedScim
                     }
                 });
             });
@@ -407,11 +412,11 @@ class Layout extends Component {
                                     <ListItemIcon><Face /></ListItemIcon>
                                     {t('resourceOwners')}
                                 </MenuItem>
-                                <MenuItem key='/openidclients' selected={pathName.indexOf('/openidclients') !== -1} className={classes.nested} onClick={() => self.navigate('/openidclients')}>
+                                <MenuItem key='/openid/clients' selected={pathName.indexOf('/openid/clients') !== -1} className={classes.nested} onClick={() => self.navigate('/openid/clients')}>
                                     <ListItemIcon><Language /></ListItemIcon>
                                     {t('openidclients')}
                                 </MenuItem>
-                                <MenuItem key='/openidscopes' selected={pathName.indexOf('/openidscopes') !== -1} className={classes.nested} onClick={() => self.navigate('/openidscopes')}>
+                                <MenuItem key='/openid/scopes' selected={pathName.indexOf('/openid/scopes') !== -1} className={classes.nested} onClick={() => self.navigate('/openid/scopes')}>
                                     <ListItemIcon><Label /></ListItemIcon>
                                     {t('openidScopes')}
                                 </MenuItem>

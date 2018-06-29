@@ -133,6 +133,7 @@ namespace SimpleIdentityServer.Profile.Host.Controllers
             jObj.Add(Constants.EndpointNames.Name, endpoint.Name);
             jObj.Add(Constants.EndpointNames.Type, (int)endpoint.Type);
             jObj.Add(Constants.EndpointNames.Url, endpoint.Url);
+            jObj.Add(Constants.EndpointNames.ManagerUrl, endpoint.ManagerUrl);
             return jObj;
         }
     }

@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Constants from '../constants';
 import SessionService from './sessionService';
+import { SessionStore } from '../stores';
 
 module.exports = {
 	/**
@@ -10,17 +11,21 @@ module.exports = {
         return new Promise(function (resolve, reject) {
             var data = JSON.stringify(request);
             var session = SessionService.getSession();
-            $.ajax({
-                url: Constants.apiUrl + '/resourceowners/.search',
-                method: "POST",
-                data: data,
-                contentType: 'application/json',
-                headers: {
-                	"Authorization": "Bearer "+ session.token
-                }
-            }).then(function (data) {
-                resolve(data);
-            }).fail(function (e) {
+            $.get(SessionStore.getSession().selectedOpenid['manager_url']).then(function(configuration) {                
+                $.ajax({
+                    url: configuration['resourceowners_endpoint'] + '/.search',
+                    method: "POST",
+                    data: data,
+                    contentType: 'application/json',
+                    headers: {
+                        "Authorization": "Bearer "+ session.token
+                    }
+                }).then(function (data) {
+                    resolve(data);
+                }).fail(function (e) {
+                    reject(e);
+                });
+            }).fail(function(e) {
                 reject(e);
             });
 		});
@@ -31,17 +36,21 @@ module.exports = {
 	get: function(id) {
 		return new Promise(function(resolve, reject) {
             var session = SessionService.getSession();
-			$.ajax({
-				url: Constants.apiUrl + '/resourceowners/' + id,
-                method: "GET",
-                headers: {
-                	"Authorization": "Bearer "+ session.token
-                }
-			}).then(function(data) {
-				resolve(data);
-			}).fail(function(e) {
-				reject(e);
-			});
+            $.get(SessionStore.getSession().selectedOpenid['manager_url']).then(function(configuration) { 
+                $.ajax({
+                    url: configuration['resourceowners_endpoint'] + '/' + id,
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer "+ session.token
+                    }
+                }).then(function(data) {
+                    resolve(data);
+                }).fail(function(e) {
+                    reject(e);
+                });                
+            }).fail(function(e) {
+                reject(e);
+            });
 		});
 	},
 	/**
@@ -50,17 +59,21 @@ module.exports = {
 	delete: function(id) {
 		return new Promise(function(resolve, reject) {
             var session = SessionService.getSession();
-			$.ajax({
-				url: Constants.apiUrl + '/resourceowners/' + id,
-                method: "DELETE",
-                headers: {
-                	"Authorization": "Bearer "+ session.token
-                }
-			}).then(function(data) {
-				resolve(data);
-			}).fail(function(e) {
-				reject(e);
-			});
+            $.get(SessionStore.getSession().selectedOpenid['manager_url']).then(function(configuration) { 
+                $.ajax({
+                    url: configuration['resourceowners_endpoint'] + '/' + id,
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": "Bearer "+ session.token
+                    }
+                }).then(function(data) {
+                    resolve(data);
+                }).fail(function(e) {
+                    reject(e);
+                });             
+            }).fail(function(e) {
+                reject(e);
+            });
 		});
 	},
     /**
@@ -70,17 +83,21 @@ module.exports = {
         return new Promise(function (resolve, reject) {
             var data = JSON.stringify(request);
             var session = SessionService.getSession();
-            $.ajax({
-				url: Constants.apiUrl + '/resourceowners',
-                method: "POST",
-                data: data,
-                contentType: 'application/json',
-                headers: {
-                    "Authorization": "Bearer "+ session.token
-                }
-            }).then(function (data) {
-                resolve(data);
-            }).fail(function (e) {
+            $.get(SessionStore.getSession().selectedOpenid['manager_url']).then(function(configuration) {                
+                $.ajax({
+                    url: configuration['resourceowners_endpoint'],
+                    method: "POST",
+                    data: data,
+                    contentType: 'application/json',
+                    headers: {
+                        "Authorization": "Bearer "+ session.token
+                    }
+                }).then(function (data) {
+                    resolve(data);
+                }).fail(function (e) {
+                    reject(e);
+                });
+            }).fail(function(e) {
                 reject(e);
             });
         });
@@ -92,17 +109,21 @@ module.exports = {
         return new Promise(function (resolve, reject) {
             var data = JSON.stringify(request);
             var session = SessionService.getSession();
-            $.ajax({
-                url: Constants.apiUrl + '/resourceowners',
-                method: "PUT",
-                data: data,
-                contentType: 'application/json',
-                headers: {
-                    "Authorization": "Bearer "+ session.token
-                }
-            }).then(function (data) {
-                resolve(data);
-            }).fail(function (e) {
+            $.get(SessionStore.getSession().selectedOpenid['manager_url']).then(function(configuration) { 
+                $.ajax({
+                    url: configuration['resourceowners_endpoint'],
+                    method: "PUT",
+                    data: data,
+                    contentType: 'application/json',
+                    headers: {
+                        "Authorization": "Bearer "+ session.token
+                    }
+                }).then(function (data) {
+                    resolve(data);
+                }).fail(function (e) {
+                    reject(e);
+                });                
+            }).fail(function(e) {
                 reject(e);
             });
         });
