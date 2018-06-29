@@ -4,9 +4,9 @@ using SimpleIdentityServer.HierarchicalResource.EF.Models;
 
 namespace SimpleIdentityServer.HierarchicalResource.EF
 {
-    public class ResourceManagerDbContext : DbContext
+    public class HierarchicalResourceDbContext : DbContext
     {
-        public ResourceManagerDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
+        public HierarchicalResourceDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
         {
             try
             {

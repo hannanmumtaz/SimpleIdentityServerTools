@@ -29,7 +29,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Repositories
 
             using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                using (var context = serviceScope.ServiceProvider.GetService<ResourceManagerDbContext>())
+                using (var context = serviceScope.ServiceProvider.GetService<HierarchicalResourceDbContext>())
                 {
                     IQueryable<Asset> assets = context.Assets
                         .Include(a => a.AuthPolicies)
@@ -77,7 +77,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Repositories
 
             using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                using (var context = serviceScope.ServiceProvider.GetService<ResourceManagerDbContext>())
+                using (var context = serviceScope.ServiceProvider.GetService<HierarchicalResourceDbContext>())
                 {
                     var asset = await context.Assets
                         .Include(a => a.Parent)
@@ -104,7 +104,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Repositories
 
             using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                using (var context = serviceScope.ServiceProvider.GetService<ResourceManagerDbContext>())
+                using (var context = serviceScope.ServiceProvider.GetService<HierarchicalResourceDbContext>())
                 {
                     IQueryable<Asset> assets = context.Assets
                         .Include(a => a.AuthPolicies);
@@ -143,7 +143,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Repositories
 
             using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                using (var context = serviceScope.ServiceProvider.GetService<ResourceManagerDbContext>())
+                using (var context = serviceScope.ServiceProvider.GetService<HierarchicalResourceDbContext>())
                 {
                     var asset = await context.Assets.Include(a => a.Parent).ThenInclude(a => a.Children).ThenInclude(a => a.Children).FirstOrDefaultAsync(a => a.Hash == hash).ConfigureAwait(false);
                     if (asset == null)
@@ -172,7 +172,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Repositories
 
             using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                using (var context = serviceScope.ServiceProvider.GetService<ResourceManagerDbContext>())
+                using (var context = serviceScope.ServiceProvider.GetService<HierarchicalResourceDbContext>())
                 {
                     var asset = await context.Assets.Include(a => a.Children).FirstOrDefaultAsync(a => a.Hash == hash).ConfigureAwait(false);
                     if (asset == null)
@@ -211,7 +211,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Repositories
 
             using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                using (var context = serviceScope.ServiceProvider.GetService<ResourceManagerDbContext>())
+                using (var context = serviceScope.ServiceProvider.GetService<HierarchicalResourceDbContext>())
                 {
                     using (var transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                     {
@@ -261,7 +261,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Repositories
 
             using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                using (var context = serviceScope.ServiceProvider.GetService<ResourceManagerDbContext>())
+                using (var context = serviceScope.ServiceProvider.GetService<HierarchicalResourceDbContext>())
                 {
                     using (var transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                     {
@@ -293,7 +293,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Repositories
 
             using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                using (var context = serviceScope.ServiceProvider.GetService<ResourceManagerDbContext>())
+                using (var context = serviceScope.ServiceProvider.GetService<HierarchicalResourceDbContext>())
                 {
                     using (var transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                     {

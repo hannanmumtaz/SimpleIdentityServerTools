@@ -8,19 +8,7 @@
 
         public static class RouteNames
         {
-            public const string ElFinterController = "elfinder";
-            public const string EndpointsController = "endpoints";
-            public const string ConfigurationController = "configuration";
-            public const string ClientsController = "clients";
-            public const string ScopesController = "scopes";
-            public const string ResourceOwnersController = "resourceowners";
-            public const string ResourcesController = "resources";
-            public const string HierarchicalResourcesController = "hierarchicalresources";
             public const string ProfileController = "profile";
-            public const string ClaimsController = "claims";
-            public const string AuthPoliciesController = "authpolicies";
-            public const string ScimController = "scim";
-            public const string ParametersController = "parameters";
         }
 
         public static class ProfileResponseNames

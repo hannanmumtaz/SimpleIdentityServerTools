@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleIdentityServer.Core.Extensions;
-using SimpleIdentityServer.ResourceManager.API.Host.DTOs;
-using SimpleIdentityServer.ResourceManager.API.Host.Extensions;
-using SimpleIdentityServer.ResourceManager.Core.Api.Profile;
+using SimpleIdentityServer.Profile.Host.DTOs;
+using SimpleIdentityServer.Profile.Host.Extensions;
+using SimpleIdentityServer.Profile.Core.Api.Profile;
 using System;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace SimpleIdentityServer.ResourceManager.API.Host.Controllers
+namespace SimpleIdentityServer.Profile.Host.Controllers
 {
     [Route(Constants.RouteNames.ProfileController)]
     public class ProfileController : Controller
