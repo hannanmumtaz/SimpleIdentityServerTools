@@ -5,6 +5,7 @@ import { ResourceOwnerService, ClaimService } from '../services';
 import AppDispatcher from '../appDispatcher';
 import Constants from '../constants';
 import Save from '@material-ui/icons/Save';
+import { SessionStore } from '../stores';
 
 import { CircularProgress, IconButton, Select, MenuItem, Checkbox, Typography, Grid } from 'material-ui';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter } from 'material-ui/Table';
@@ -18,7 +19,7 @@ const styles = theme => ({
   }
 });
 
-class ViewUser extends Component {
+class ViewResourceOwner extends Component {
     constructor(props) {
         super(props);
         this.refreshData = this.refreshData.bind(this);
@@ -224,13 +225,23 @@ class ViewUser extends Component {
     }
 
     componentDidMount() {
-    	var self = this;
-    	self.setState({
-    		login: self.props.match.params.id
-    	}, function() {
-    		self.refreshData();
-    	});
+        var self = this;
+        SessionStore.addChangeListener(function() {
+            self.setState({
+                login: self.props.match.params.id
+            }, function() {
+                self.refreshData();
+            });
+        });
+        
+        if (SessionStore.getSession().selectedOpenid) {
+            self.setState({
+                login: self.props.match.params.id
+            }, function() {
+                self.refreshData();
+            });
+        }
     }
 }
 
-export default translate('common', { wait: process && !process.release })(withStyles(styles)(ViewUser));
+export default translate('common', { wait: process && !process.release })(withStyles(styles)(ViewResourceOwner));

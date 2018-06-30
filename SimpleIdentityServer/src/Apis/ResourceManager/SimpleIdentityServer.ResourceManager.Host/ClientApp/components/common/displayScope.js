@@ -77,18 +77,14 @@ class DisplayScope extends Component {
         var self = this;
         const { t } = self.props;
         var profile = SessionStore.getSession();
-        if (!profile.openid_url) {
-            return;
-        }
-
-        var type = self.state.type;
+        var type = self.props.type;
         var url = '';
         switch(type) {
             case "openid":
-                url = profile.openid_url;
+                url = profile.selectedOpenid.url;
             break;
             case "auth":
-                url = profile.auth_url;
+                url = profile.selectedAuth.url;
             break;
             default:
                 return;
@@ -173,7 +169,10 @@ class DisplayScope extends Component {
         SessionStore.addChangeListener(function() {
             self.refreshData();
         });
-        self.refreshData();
+
+        if (SessionStore.getSession().selectedOpenid) {
+            self.refreshData();
+        }
     }
 }
 

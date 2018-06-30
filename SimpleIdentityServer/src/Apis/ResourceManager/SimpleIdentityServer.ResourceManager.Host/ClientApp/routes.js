@@ -4,8 +4,8 @@ import { SessionService } from './services';
 
 import Layout from './layout';
 import { Login, About, Logs, Resources, ViewAggregate, ViewLog,
- OAuthClients, OpenidClients, OAuthScopes, OpenidScopes, ResourceOwners, ViewResource, ViewOpenidClient, ViewScope,
- AddScope, Dashboard, ViewUser, Claims, ViewClaim, ScimSchemas, ScimResources, ViewScimSchema, ViewScimAttribute,
+ Clients, Scopes, ResourceOwners, ViewResource, ViewClient, ViewScope,
+ AddScope, Dashboard, ViewResourceOwner, Claims, ViewClaim, ScimSchemas, ScimResources, ViewScimSchema, ViewScimAttribute,
  ViewScimResource, Settings, ViewSetting, Connectors, TwoFactors } from './components';
 
 export const routes = (<Layout>
@@ -14,16 +14,15 @@ export const routes = (<Layout>
     <Route exact path='/login' component={Login} />
     { !process.env.IS_LOG_DISABLED && (<Route exact path='/logs/:action?/:subaction?' component={Logs} />) }
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/dashboard' exact path='/dashboard' component={Dashboard} />) }
-    { !process.env.IS_MANAGE_DISABLED && (<Route key='/authclients' exact path='/authclients' component={OAuthClients} />) }
-    { !process.env.IS_MANAGE_DISABLED && (<Route key='/authscopes' exact path='/authscopes' component={OAuthScopes} />) }
-    { !process.env.IS_MANAGE_DISABLED && (<Route key='/openid/clients' exact path='/openid/clients' component={OpenidClients} />) }
-    { !process.env.IS_MANAGE_DISABLED && (<Route key='/openid/clients/:id/:action?' exact path='/openid/clients/:id/:action?' component={ViewOpenidClient} />)}
-    { !process.env.IS_MANAGE_DISABLED && (<Route key='/openid/scopes' exact path='/openid/scopes' component={OpenidScopes} />) }
+    { /* OPENID */ }
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/resourceowners' exact path='/resourceowners' component={ResourceOwners} />) }
+    { !process.env.IS_MANAGE_DISABLED && (<Route key='/resourceowners/:id' exact path='/resourceowners/:id' component={ViewResourceOwner} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/claims' exact path='/claims' component={Claims} />) }
-    { !process.env.IS_MANAGE_DISABLED && (<Route key='/viewScope/:type/:id' exact path='/viewScope/:type/:id' component={ViewScope} />)}
-    { !process.env.IS_MANAGE_DISABLED && (<Route key='/addScope/:type' exact path='/addScope/:type' component={AddScope} />)}
-    { !process.env.IS_MANAGE_DISABLED && (<Route key='/viewUser/:id' exact path='/viewUser/:id' component={ViewUser} />)}
+    { /* OPENID + OAUTH */}
+    { !process.env.IS_MANAGE_DISABLED && (<Route key='/:type/clients' exact path='/:type/clients' component={Clients} />) }
+    { !process.env.IS_MANAGE_DISABLED && (<Route key='/:type/clients/:id/:action?' exact path='/:type/clients/:id/:action?' component={ViewClient} />)}    
+    { !process.env.IS_MANAGE_DISABLED && (<Route key='/:type/scopes' exact path='/:type/scopes' component={Scopes} />) }
+    { !process.env.IS_MANAGE_DISABLED && (<Route key='/:type/scopes/:id' exact path='/:type/scopes/:id' component={ViewScope} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/viewClaim/:id' exact path='/viewClaim/:id' component={ViewClaim} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/scimSchemas' exact path='/scimSchemas' component={ScimSchemas} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/scimSchemas/:id' exact path='/scimSchemas/:id' component={ViewScimSchema} />)}

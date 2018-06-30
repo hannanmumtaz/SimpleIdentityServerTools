@@ -44,29 +44,21 @@ class GeneralSettingsTab extends Component {
     /**
     * Refresh the data.
     */
-    refreshData() {        
+    refreshData() {      
         var self = this;
         self.setState({
             isLoading: true
         });
         const { t } = self.props;
         var profile = SessionStore.getSession();
-        if (!profile.openid_url) {
-            self.setState({
-                isLoading: false
-            });
-            return;
-        }
-
-
         var type = self.props.type;
         var url = '';
         switch(type) {
             case "openid":
-                url = profile.openid_url;
+                url = profile.selectedOpenid.url;
             break;
             case "auth":
-                url = profile.auth_url;
+                url = profile.selectedAuth.url;
             break;
             default:
                 return;
@@ -114,7 +106,7 @@ class GeneralSettingsTab extends Component {
             });
             AppDispatcher.dispatch({
                 actionName: Constants.events.DISPLAY_MESSAGE,
-                data: t('openidConfigurationCannotBeRetrieved')
+                data: t('wellKnownConfigurationCannotBeRetrieved')
             });
         });
     }
@@ -286,7 +278,10 @@ class GeneralSettingsTab extends Component {
         SessionStore.addChangeListener(function() {
            self.refreshData();
         });
-        self.refreshData();
+
+        if (SessionStore.getSession().selectedOpenid) {
+           self.refreshData();
+        }
     }
 }
 

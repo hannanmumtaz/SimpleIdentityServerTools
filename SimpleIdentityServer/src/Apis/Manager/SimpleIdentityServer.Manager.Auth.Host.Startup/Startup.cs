@@ -23,6 +23,7 @@ using Serilog;
 using Serilog.Events;
 using SimpleIdentityServer.Manager.Host.Extensions;
 using SimpleIdentityServer.OAuth2Introspection;
+using SimpleIdentityServer.UserInfoIntrospection;
 using System;
 using SimpleIdentityServer.EF.SqlServer;
 using WebApiContrib.Core.Concurrency;
@@ -57,11 +58,15 @@ namespace SimpleIdentityServer.Manager.Auth.Host.Startup
             services.AddSimpleIdentityServerManager(_options);
             // 4. Configure the authentication.
             services.AddAuthentication(OAuth2IntrospectionOptions.AuthenticationScheme)
-                .AddOAuth2Introspection(opts =>
+		        .AddOAuth2Introspection(opts =>
                 {
                     opts.ClientId = Configuration["Auth:ClientId"];
                     opts.ClientSecret = Configuration["Auth:ClientSecret"];
                     opts.WellKnownConfigurationUrl = Configuration["Auth:WellKnownConfiguration"];
+                })
+		        .AddUserInfoIntrospection(opts =>
+                {
+                    opts.WellKnownConfigurationUrl = "http://localhost:60000/.well-known/openid-configuration";
                 });
         }
 

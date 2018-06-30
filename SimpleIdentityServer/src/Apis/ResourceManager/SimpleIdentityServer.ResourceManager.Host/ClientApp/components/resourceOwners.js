@@ -308,7 +308,7 @@ class ResourceOwners extends Component {
                         <TableCell>{record.name}</TableCell>
                         <TableCell>{moment(record.update_datetime).format('LLLL')}</TableCell>
                         <TableCell>
-                            <IconButton onClick={ () => self.props.history.push('/viewUser/' + record.login) }><Visibility /></IconButton>
+                            <IconButton onClick={ () => self.props.history.push('/resourceowners/' + record.login) }><Visibility /></IconButton>
                         </TableCell>
                     </TableRow>
                 ));

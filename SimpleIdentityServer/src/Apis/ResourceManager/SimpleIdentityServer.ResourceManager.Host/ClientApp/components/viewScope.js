@@ -10,6 +10,7 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 import Save from '@material-ui/icons/Save';
 import AppDispatcher from '../appDispatcher';
 import Constants from '../constants';
+import { SessionStore } from '../stores';
 
 class ViewScope extends Component {
     constructor(props) {
@@ -36,7 +37,7 @@ class ViewScope extends Component {
             self.setState({
                 isLoading: false
             });
-            self.props.history.push(self.state.type === "openid" ? "/openidscopes" : "/authscopes");
+            self.props.history.push(self.state.type === "openid" ? "/openid/scopes" : "/auth/scopes");
             AppDispatcher.dispatch({
                 actionName: Constants.events.DISPLAY_MESSAGE,
                 data: t('scopeUpdated')
@@ -88,7 +89,7 @@ class ViewScope extends Component {
                     <Grid item md={7} sm={12}>                        
                         <ul className="breadcrumb float-md-right">
                             <li className="breadcrumb-item"><NavLink to="/">{t('websiteTitle')}</NavLink></li>
-                            <li className="breadcrumb-item"><NavLink to={self.state.type === "openid" ? "/openidscopes" : "/authscopes"}>{t('scopes')}</NavLink></li>
+                            <li className="breadcrumb-item"><NavLink to={self.state.type === "openid" ? "/openid/scopes" : "/auth/scopes"}>{t('scopes')}</NavLink></li>
                             <li className="breadcrumb-item">{t('scope')}</li>
                         </ul>
                     </Grid>
@@ -114,12 +115,23 @@ class ViewScope extends Component {
 
     componentDidMount() {
         var self = this;
-        self.setState({
-            id: self.props.match.params.id,
-            type: self.props.match.params.type
-        }, function() {
-            self.refreshData();
+        SessionStore.addChangeListener(function() {        
+            self.setState({
+                id: self.props.match.params.id,
+                type: self.props.match.params.type
+            }, function() {
+                self.refreshData();
+            });
         });
+
+        if (SessionStore.getSession().selectedOpenid) {
+            self.setState({
+                id: self.props.match.params.id,
+                type: self.props.match.params.type
+            }, function() {
+                self.refreshData();
+            });
+        }
     }
 }
 

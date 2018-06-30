@@ -77,7 +77,7 @@ class Layout extends Component {
         var pathName = this.props.location.pathname;
         this.state = {
             isManageOpenidServerOpened: pathName.indexOf('/claims') !== -1 || pathName.indexOf('/resourceowners') !== -1 || pathName.indexOf('/openid') !== -1,
-            isManageAuthServersOpened: pathName.indexOf('/authclients') !== -1 || pathName.indexOf('/authScopes') !== -1 || pathName.indexOf('/resources') !== -1,
+            isManageAuthServersOpened: pathName.indexOf('/auth') !== -1 ||  pathName.indexOf('/resources') !== -1,
             isScimOpened: pathName.indexOf('/scimSchemas') !== -1 || pathName.indexOf('/scimResources') !== -1,
             isLoggedIn: false,
             isOauthDisplayed: false,
@@ -433,11 +433,11 @@ class Layout extends Component {
                     {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
                         <Collapse in={this.state.isManageAuthServersOpened}>
                             <List>
-                                <MenuItem key='/authclients' selected={pathName.indexOf('/authclients') !== -1} className={classes.nested} onClick={() => self.navigate('/authclients')}>
+                                <MenuItem key='/authclients' selected={pathName.indexOf('/auth/clients') !== -1} className={classes.nested} onClick={() => self.navigate('/auth/clients')}>
                                     <ListItemIcon><Language /></ListItemIcon>
                                     {t('oauthClients')}
                                 </MenuItem>
-                                <MenuItem key='/authScopes' selected={pathName.indexOf('/authScopes') !== -1} className={classes.nested} onClick={() => self.navigate('/authScopes')}>
+                                <MenuItem key='/authScopes' selected={pathName.indexOf('/auth/scopes') !== -1} className={classes.nested} onClick={() => self.navigate('/auth/scopes')}>
                                     <ListItemIcon><Label /></ListItemIcon>
                                     {t('authscopes')}
                                 </MenuItem>

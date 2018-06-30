@@ -9,8 +9,9 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 import Save from '@material-ui/icons/Save';
 import AppDispatcher from '../appDispatcher';
 import Constants from '../constants';
+import { SessionStore } from '../stores';
 
-class ViewOpenidClient extends Component {
+class ViewClient extends Component {
     constructor(props) {
         super(props);
         this.handleTabChange = this.handleTabChange.bind(this);
@@ -103,7 +104,7 @@ class ViewOpenidClient extends Component {
                     <Grid item md={7} sm={12}>                        
                         <ul className="breadcrumb float-md-right">
                             <li className="breadcrumb-item"><NavLink to="/">{t('websiteTitle')}</NavLink></li>
-                            <li className="breadcrumb-item"><NavLink to={self.state.type ==="openid" ? "/openidclients" : "/authclients"}>{t('clients')}</NavLink></li>
+                            <li className="breadcrumb-item"><NavLink to={self.state.type ==="openid" ? "/openid/clients" : "/auth/clients"}>{t('clients')}</NavLink></li>
                             <li className="breadcrumb-item">{t('client')}</li>
                         </ul>
                     </Grid>
@@ -122,8 +123,8 @@ class ViewOpenidClient extends Component {
                     { self.state.isLoading ? (<CircularProgress />) : (
                         <div>
                             <Tabs indicatorColor="primary" value={self.state.tabIndex} onChange={self.handleTabChange}>
-                                <Tab label={t('clientGeneralSettings')} component={Link}  to={"/viewClient/" + self.state.type + "/" + self.state.id} />
-                                <Tab label={t('clientScopes')} component={Link}  to={"/viewClient/" + self.state.type + "/" + self.state.id + "/scopes"} />
+                                <Tab label={t('clientGeneralSettings')} component={Link}  to={"/" + self.state.type + "/clients/" + self.state.id} />
+                                <Tab label={t('clientScopes')} component={Link}  to={"/" + self.state.type + "/clients/" + self.state.id + "/scopes"} />
                             </Tabs>
                             { self.state.tabIndex === 0 && (<GeneralSettingsTab isReadonly={true} type={self.state.type} client={self.state.client} />) }
                             { self.state.tabIndex === 1 && (<ScopesTab allowedScopes={self.state.client.allowed_scopes} type={self.state.type} client={self.state.client} />) }
@@ -141,15 +142,28 @@ class ViewOpenidClient extends Component {
             tabIndex = 1;
         }
 
-        self.setState({
-            id: self.props.match.params.id,
-            type: 'auth',
-            tabIndex: tabIndex,
-            isDisplayed: true
-        }, function() {
-            self.refreshData();
+        SessionStore.addChangeListener(function() {
+            self.setState({
+                id: self.props.match.params.id,
+                type: self.props.match.params.type,
+                tabIndex: tabIndex,
+                isDisplayed: true
+            }, function() {
+                self.refreshData();
+            });
         });
+        
+        if (SessionStore.getSession().selectedOpenid) {
+            self.setState({
+                id: self.props.match.params.id,
+                type: self.props.match.params.type,
+                tabIndex: tabIndex,
+                isDisplayed: true
+            }, function() {
+                self.refreshData();
+            });
+        }
     }
 }
 
-export default translate('common', { wait: process && !process.release })(ViewOpenidClient);
+export default translate('common', { wait: process && !process.release })(ViewClient);
