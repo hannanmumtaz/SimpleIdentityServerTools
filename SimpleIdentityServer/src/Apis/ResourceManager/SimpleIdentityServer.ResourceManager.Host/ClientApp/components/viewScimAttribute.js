@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import { translate } from 'react-i18next';
 import { NavLink, Link } from 'react-router-dom';
+import { SessionStore } from '../stores';
 import { TextField , Button, Grid, IconButton, Checkbox, CircularProgress } from 'material-ui';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
 import Input, { InputLabel } from 'material-ui/Input';
@@ -120,8 +121,8 @@ class ViewScimAttribute extends Component {
                     <Grid item md={7} sm={12}>                        
                         <ul className="breadcrumb float-md-right">
                             <li className="breadcrumb-item"><NavLink to="/">{t('websiteTitle')}</NavLink></li>
-                            <li className="breadcrumb-item"><NavLink to="/scimSchemas">{t('scimSchemas')}</NavLink></li>
-                            <li className="breadcrumb-item"><NavLink to={("/scimSchemas/" + self.state.id)}>{t('scimSchema')}</NavLink></li>
+                            <li className="breadcrumb-item"><NavLink to="/scim/schemas">{t('scimSchemas')}</NavLink></li>
+                            <li className="breadcrumb-item"><NavLink to={("/scim/schemas/" + self.state.id)}>{t('scimSchema')}</NavLink></li>
                             <li className="breadcrumb-item">{t('scimSchemaAttribute')}</li>
                         </ul>
                     </Grid>
@@ -200,12 +201,23 @@ class ViewScimAttribute extends Component {
 
     componentDidMount() {
         var self = this;
-        self.setState({
-            id: self.props.match.params.id,
-            attr: self.props.match.params.attr
-        }, function() {
-            self.refresh();
+        SessionStore.addChangeListener(function() {
+            self.setState({
+                id: self.props.match.params.id,
+                attr: self.props.match.params.attr
+            }, function() {
+                self.refresh();
+            });
         });
+        
+        if (SessionStore.getSession().selectedOpenid) {
+            self.setState({
+                id: self.props.match.params.id,
+                attr: self.props.match.params.attr
+            }, function() {
+                self.refresh();
+            });
+        }
     }
 }
 

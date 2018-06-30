@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Constants from '../constants';
 import SessionService from './sessionService';
+import { SessionStore } from '../stores';
 
 module.exports = {
     /**
@@ -10,7 +11,7 @@ module.exports = {
         return new Promise(function (resolve, reject) {
             var session = SessionService.getSession();
             $.ajax({
-                url: Constants.apiUrl + '/scim/schemas',
+                url: SessionStore.getSession().selectedScim.url + '/schemas',
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer "+ session.token
@@ -30,7 +31,7 @@ module.exports = {
             var data = JSON.stringify(request);
             var session = SessionService.getSession();
             $.ajax({
-                url: Constants.apiUrl + '/scim/users/.search',
+                url: SessionStore.getSession().selectedScim.url + '/users/.search',
                 method: "POST",
                 data: data,
                 contentType: 'application/json',
@@ -51,7 +52,7 @@ module.exports = {
         return new Promise(function (resolve, reject) {
             var session = SessionService.getSession();
             $.ajax({
-                url: Constants.apiUrl + '/scim/users/' + resourceId,
+                url: SessionStore.getSession().selectedScim.url + '/users/' + resourceId,
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer "+ session.token
@@ -71,7 +72,7 @@ module.exports = {
             var data = JSON.stringify(request);
             var session = SessionService.getSession();
             $.ajax({
-                url: Constants.apiUrl + '/scim/groups/.search',
+                url: SessionStore.getSession().selectedScim.url + '/groups/.search',
                 method: "POST",
                 data: data,
                 contentType: 'application/json',
@@ -92,7 +93,7 @@ module.exports = {
         return new Promise(function (resolve, reject) {
             var session = SessionService.getSession();
             $.ajax({
-                url: Constants.apiUrl + '/scim/groups/' + resourceId,
+                url: SessionStore.getSession().selectedScim.url + '/groups/' + resourceId,
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer "+ session.token

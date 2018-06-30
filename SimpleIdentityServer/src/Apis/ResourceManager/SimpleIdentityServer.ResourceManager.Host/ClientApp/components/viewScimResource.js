@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import { translate } from 'react-i18next';
 import { withStyles } from 'material-ui/styles';
+import { SessionStore } from '../stores';
 import { TextField , Button, Grid, IconButton, CircularProgress } from 'material-ui';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
 import { FormControl, FormHelperText } from 'material-ui/Form';
@@ -46,14 +47,9 @@ class ViewScimResource extends Component {
         }
 
         opt.then(function(result) {
-            var resource = {};
-            if (result.content) {
-                resource = result.content;
-            }
-
             self.setState({
                 isLoading: false,
-                resource: resource
+                resource: result
             });
         }).catch(function() {
             AppDispatcher.dispatch({
@@ -92,14 +88,14 @@ class ViewScimResource extends Component {
                     <Grid item md={7} sm={12}>                        
                         <ul className="breadcrumb float-md-right">
                             <li className="breadcrumb-item"><NavLink to="/">{t('websiteTitle')}</NavLink></li>
-                            <li className="breadcrumb-item"><NavLink to="/scimResources">{t('scimResources')}</NavLink></li>
+                            <li className="breadcrumb-item"><NavLink to="/scim/resources">{t('scimResources')}</NavLink></li>
                             <li className="breadcrumb-item">{t('scimResource')}</li>
                         </ul>
                     </Grid>
                 </Grid>
             </div>
             <div className="card">
-                { self.state.isUsersLoading ? ( <CircularProgress /> ) : (
+                { self.state.isLoading ? ( <CircularProgress /> ) : (
                     <div>
                         <div className="header">
                             <h4 style={{display: "inline-block"}}>{t('scimResource')}</h4>
@@ -120,12 +116,23 @@ class ViewScimResource extends Component {
             type = 'user';
         }
 
-        self.setState({            
-            id: self.props.match.params.id,
-            type: type
-        }, function() {
-            self.refresh();
+        SessionStore.addChangeListener(function() {
+            self.setState({            
+                id: self.props.match.params.id,
+                type: type
+            }, function() {
+                self.refresh();
+            });
         });
+
+        if (SessionStore.getSession().selectedOpenid) {  
+            self.setState({            
+                id: self.props.match.params.id,
+                type: type
+            }, function() {
+                self.refresh();
+            });
+        }
     }
 }
 

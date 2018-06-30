@@ -5,6 +5,7 @@ import { ScimService } from '../services';
 import { withRouter } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import { translate } from 'react-i18next';
+import { SessionStore } from '../stores';
 import { TextField , Button, Grid, IconButton, CircularProgress } from 'material-ui';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
 import Visibility from '@material-ui/icons/Visibility'; 
@@ -44,8 +45,8 @@ class ScimResources extends Component {
         var userRequest = { startIndex: startIndexUser, count: self.state.pageSizeUser};
         ScimService.searchUsers(userRequest).then(function(result) {
             var users = [];
-            if (result.content && result.content.Resources) {
-                users = result.content.Resources;
+            if (result.Resources) {
+                users = result.Resources;
             }
 
             self.setState({
@@ -76,8 +77,8 @@ class ScimResources extends Component {
         var groupRequest = { startIndex: startIndexGroup, count: self.state.pageSizeGroup };
         ScimService.searchGroups(groupRequest).then(function(result) {
             var groups = [];
-            if (result.content && result.content.Resources) {
-                groups = result.content.Resources;
+            if (result.Resources) {
+                groups = result.Resources;
             }
 
             self.setState({
@@ -144,13 +145,13 @@ class ScimResources extends Component {
                         <TableCell>{user.id}</TableCell>
                         <TableCell>{JSON.stringify(user.meta)}</TableCell>
                         <TableCell>
-                            <IconButton onClick={ () => self.props.history.push('/scimResources/user/' + user.id) }><Visibility /></IconButton>
+                            <IconButton onClick={ () => self.props.history.push('/scim/resources/user/' + user.id) }><Visibility /></IconButton>
                         </TableCell>
                     </TableRow>
                 );
             });
         }
-
+        
         if (self.state.groups) {
             self.state.groups.forEach(function(group) {
                 groupRows.push(
@@ -158,7 +159,7 @@ class ScimResources extends Component {
                         <TableCell>{group.id}</TableCell>
                         <TableCell>{JSON.stringify(user.meta)}</TableCell>
                         <TableCell>
-                            <IconButton onClick={ () => self.props.history.push('/scimResources/group/' + group.id) }><Visibility /></IconButton>
+                            <IconButton onClick={ () => self.props.history.push('/scim/resources/group/' + group.id) }><Visibility /></IconButton>
                         </TableCell>
                     </TableRow>
                 );
@@ -239,8 +240,15 @@ class ScimResources extends Component {
 
     componentDidMount() {
         var self = this;
-        self.refreshUsers();
-        self.refreshGroups();
+        SessionStore.addChangeListener(function() {        
+            self.refreshUsers();
+            self.refreshGroups();
+        });
+
+        if (SessionStore.getSession().selectedOpenid) {        
+            self.refreshUsers();
+            self.refreshGroups();
+        }
     }
 }
 

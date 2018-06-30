@@ -3,6 +3,7 @@ import { WebsiteService, SessionService, ScimService } from '../services';
 import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
 import { NavLink, Link } from 'react-router-dom';
+import { SessionStore } from '../stores';
 import { TextField , Button, Grid, IconButton, CircularProgress } from 'material-ui';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
 import Visibility from '@material-ui/icons/Visibility';
@@ -66,7 +67,7 @@ class ScimSchemas extends Component {
                         <TableCell>{schema.name}</TableCell>
                         <TableCell>{schema.nbAttributes}</TableCell>
                         <TableCell>
-                            <IconButton onClick={ () => self.props.history.push('/scimSchemas/' + schema.name) }><Visibility /></IconButton>
+                            <IconButton onClick={ () => self.props.history.push('/scim/schemas/' + schema.name) }><Visibility /></IconButton>
                         </TableCell>
                     </TableRow>
                 );
@@ -113,9 +114,15 @@ class ScimSchemas extends Component {
         </div>);
     }
 
-    componentDidMount() {
+    componentDidMount() {     
         var self = this;
-        self.refresh();
+        SessionStore.addChangeListener(function() {
+            self.refresh();
+        });
+
+        if (SessionStore.getSession().selectedOpenid) {
+            self.refresh();
+        }
     }
 }
 

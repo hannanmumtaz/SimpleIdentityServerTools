@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import { translate } from 'react-i18next';
 import { NavLink, Link } from 'react-router-dom';
+import { SessionStore } from '../stores';
 import { TextField , Button, Grid, IconButton, Checkbox, CircularProgress } from 'material-ui';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
 import Input, { InputLabel } from 'material-ui/Input';
@@ -90,7 +91,7 @@ class ViewScimSchema extends Component {
                         <TableCell>{<Checkbox color="primary" checked={attribute.required} disabled={true} />}</TableCell>
                         <TableCell>{<Checkbox color="primary" checked={attribute.multiValued} disabled={true} />}</TableCell>
                         <TableCell>
-                            <IconButton onClick={ () => self.props.history.push('/scimSchemas/' + self.state.id + '/' + attribute.name) }><Visibility /></IconButton>
+                            <IconButton onClick={ () => self.props.history.push('/scim/schemas/' + self.state.id + '/' + attribute.name) }><Visibility /></IconButton>
                         </TableCell>
                     </TableRow>
                 );
@@ -107,7 +108,7 @@ class ViewScimSchema extends Component {
                     <Grid item md={7} sm={12}>                        
                         <ul className="breadcrumb float-md-right">
                             <li className="breadcrumb-item"><NavLink to="/">{t('websiteTitle')}</NavLink></li>
-                            <li className="breadcrumb-item"><NavLink to="/scimSchemas">{t('scimSchemas')}</NavLink></li>
+                            <li className="breadcrumb-item"><NavLink to="/scim/schemas">{t('scimSchemas')}</NavLink></li>
                             <li className="breadcrumb-item">{t('scimSchema')}</li>
                         </ul>
                     </Grid>
@@ -174,13 +175,24 @@ class ViewScimSchema extends Component {
         </div>);
     }
 
-    componentDidMount() {
+    componentDidMount() {     
         var self = this;
-        self.setState({
-            id: self.props.match.params.id
-        }, function() {
-            self.refresh();
+        SessionStore.addChangeListener(function() {
+            self.setState({
+                id: self.props.match.params.id
+            }, function() {
+                self.refresh();
+            });
         });
+
+        if (SessionStore.getSession().selectedOpenid) {            
+            self.setState({
+                id: self.props.match.params.id
+            }, function() {
+                self.refresh();
+            });
+        }
+
     }
 }
 

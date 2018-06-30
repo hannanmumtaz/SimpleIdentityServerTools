@@ -78,7 +78,7 @@ class Layout extends Component {
         this.state = {
             isManageOpenidServerOpened: pathName.indexOf('/claims') !== -1 || pathName.indexOf('/resourceowners') !== -1 || pathName.indexOf('/openid') !== -1,
             isManageAuthServersOpened: pathName.indexOf('/auth') !== -1 ||  pathName.indexOf('/resources') !== -1,
-            isScimOpened: pathName.indexOf('/scimSchemas') !== -1 || pathName.indexOf('/scimResources') !== -1,
+            isScimOpened: pathName.indexOf('/scim') !== -1,
             isLoggedIn: false,
             isOauthDisplayed: false,
             isScimDisplayed: false,
@@ -458,10 +458,10 @@ class Layout extends Component {
                     {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
                         <Collapse in={this.state.isScimOpened}>
                             <List>
-                                <MenuItem key='/scimSchemas' selected={pathName.indexOf('/scimSchemas') !== -1} className={classes.nested} onClick={() => self.navigate('/scimSchemas')}>
+                                <MenuItem key='/scim/schemas' selected={pathName.indexOf('/scim/schemas') !== -1} className={classes.nested} onClick={() => self.navigate('/scim/schemas')}>
                                     {t('scimSchemas')}
                                 </MenuItem>
-                                <MenuItem key='/scimResources' selected={pathName.indexOf('/scimResources') !== -1} className={classes.nested} onClick={() => self.navigate('/scimResources')}>
+                                <MenuItem key='/scim/resources' selected={pathName.indexOf('/scim/resources') !== -1} className={classes.nested} onClick={() => self.navigate('/scim/resources')}>
                                     {t('scimResources')}
                                 </MenuItem>
                             </List>
