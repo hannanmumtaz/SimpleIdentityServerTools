@@ -27,6 +27,8 @@ export const routes = (<Layout>
     { /* AUTH */}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/auth/clients' exact path='/auth/clients' component={AuthClients} />) }
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/auth/scopes' exact path='/auth/scopes' component={AuthScopes} />) }
+    { !process.env.IS_RESOURCES_DISABLED && (<Route exact path='/resources/:action?' component={Resources} />)}
+    { !process.env.IS_RESOURCES_DISABLED && (<Route exact path='/resources/:id/edit' component={ViewResource} />)}
     { /* SCIM */}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/scim/schemas' exact path='/scim/schemas' component={ScimSchemas} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/scim/schemas/:id' exact path='/scim/schemas/:id' component={ViewScimSchema} />)}
@@ -39,8 +41,6 @@ export const routes = (<Layout>
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/settings/:id' exact path='/settings/:id' component={ViewSetting} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/twofactors' exact path='/twofactors' component={TwoFactors} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/connectors' exact path='/connectors' component={Connectors} />)}
-    { !process.env.IS_RESOURCES_DISABLED && (<Route exact path='/resources/:action?' component={Resources} />)}
-    { !process.env.IS_RESOURCES_DISABLED && (<Route exact path='/resource/:id' component={ViewResource} />)}
     { !process.env.IS_LOG_DISABLED && (<Route exact path="/viewaggregate/:id" component={ViewAggregate} /> )}
     { !process.env.IS_LOG_DISABLED && (<Route exact path="/viewlog/:id" component={ViewLog} /> )}
 </Layout>);

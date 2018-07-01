@@ -14,6 +14,7 @@ import MoreVert from '@material-ui/icons/MoreVert';
 import Visibility from '@material-ui/icons/Visibility';
 import AppDispatcher from '../../appDispatcher';
 import Constants from '../../constants';
+import { SessionStore } from '../../stores';
 
 class Resources extends Component {
     constructor(props) {
@@ -241,7 +242,7 @@ class Resources extends Component {
                         <TableCell>{record.type}</TableCell>
                         <TableCell>{record.scopes}</TableCell>
                         <TableCell>
-                            <IconButton onClick={ () => self.props.history.push('/resource/' + record.id) }><Visibility /></IconButton>
+                            <IconButton onClick={ () => self.props.history.push('/resources/' + record.id + '/edit') }><Visibility /></IconButton>
                         </TableCell>
                     </TableRow>
                 );
@@ -329,7 +330,14 @@ class Resources extends Component {
     }
 
     componentDidMount() {
-        this.refreshData();
+        var self = this;
+        SessionStore.addChangeListener(function() {
+            self.refreshData();
+        });
+
+        if (SessionStore.getSession().selectedOpenid) {
+            self.refreshData();
+        }
     }
 }
 

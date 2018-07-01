@@ -511,7 +511,6 @@ class ViewResource extends Component {
             };
         });
         var chipsOptions = { type: 'select', values: values };
-        console.log(chipsOptions);
         return (<div className="block">
             <Dialog open={self.state.isAuthPolicyModalOpened} onClose={this.handleCloseAuthPolicyRuleModal}>
                 <DialogTitle>{t('addAuthRulePolicy')}</DialogTitle>
@@ -651,15 +650,25 @@ class ViewResource extends Component {
 
     componentDidMount() {
         var self = this;
-        self.setState({
-            id:  self.props.match.params.id
-        }, () => {
-            SessionStore.addChangeListener(function() {
+        SessionStore.addChangeListener(function() {
+            self.setState({
+                id: self.props.match.params.id
+            }, function() {
+                self.refreshClaims();
+                self.refreshData();
                 self.refreshClaims();
             });
-            self.refreshData();
-            self.refreshClaims();
         });
+
+        if (SessionStore.getSession().selectedOpenid) {
+            self.setState({
+                id: self.props.match.params.id
+            }, function() {
+                self.refreshClaims();
+                self.refreshData();
+                self.refreshClaims();
+            });
+        }
     }
 }
 
