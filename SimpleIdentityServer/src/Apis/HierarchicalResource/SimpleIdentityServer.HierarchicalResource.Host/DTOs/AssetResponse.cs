@@ -138,11 +138,11 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.DTOs
         /// <summary>
         /// Gets or sets the policy id.
         /// </summary>
-        public IEnumerable<string> PolicyIds { get; private set; }
+        public IEnumerable<string> PolicyIds { get; set; }
         /// <summary>
         /// Gets or sets the resource id.
         /// </summary>
-        public string ResourceId { get; private set; }
+        public string ResourceId { get; set; }
 
         public JObject GetJson()
         {

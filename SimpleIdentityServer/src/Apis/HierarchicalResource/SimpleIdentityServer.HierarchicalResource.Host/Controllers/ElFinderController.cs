@@ -511,7 +511,6 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.Controllers
                 return new ErrorResponse(Constants.ElFinderErrors.ErrTrgFolderNotFound).GetJson();
             }
 
-
             var assets = await _assetRepository.Search(new SearchAssetsParameter
             {
                 HashLst = elFinderParameter.Targets
@@ -773,8 +772,16 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.Controllers
         {
             var children = await _assetRepository.GetAllChildren(asset.Hash);
             Rename(asset, asset.Name.Split('_').First() + "_" + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture), children);
+            asset.ResourceId = null;
+            asset.AuthPolicyIds = null;
             var newAssets = new List<AssetAggregate> { asset };
             newAssets.AddRange(children);
+            foreach(var child in children)
+            {
+                child.ResourceId = null;
+                child.AuthPolicyIds = null;
+            }
+
             if (!await _assetRepository.Add(newAssets))
             {
                 return new KeyValuePair<bool, IEnumerable<AssetAggregate>>(false, null);
