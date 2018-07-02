@@ -8,6 +8,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Models
         public string Hash { get; set; }
         public string ResourceParentHash { get; set; }
         public string ResourceId { get; set; }
+        public string PolicyIds { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
         public string MimeType { get; set; }
@@ -18,6 +19,5 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Models
         public DateTime CreateDateTime { get; set; }
         public virtual Asset Parent { get; set; }
         public virtual ICollection<Asset> Children { get; set; }
-        public virtual ICollection<AssetAuthPolicy> AuthPolicies { get; set; }
     }
 }

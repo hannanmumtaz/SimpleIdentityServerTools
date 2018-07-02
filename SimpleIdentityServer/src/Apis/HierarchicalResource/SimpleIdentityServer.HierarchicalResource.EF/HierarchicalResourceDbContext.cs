@@ -16,12 +16,10 @@ namespace SimpleIdentityServer.HierarchicalResource.EF
         }
 
         public virtual DbSet<Asset> Assets { get; set; }
-        public virtual DbSet<AssetAuthPolicy> AssetAuthPolicies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddAssetMapping()
-                .AddAssetAuthPolicyMapping();
+            modelBuilder.AddAssetMapping();
             base.OnModelCreating(modelBuilder);
         }
     }

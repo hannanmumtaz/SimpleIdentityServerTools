@@ -17,11 +17,8 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.DTOs
         Paste,
         Ls,
         Search,
-        Perms,
-        MkPerm,
-        OpenIdClients,
-        GetResource,
-        PatchResource
+        UmaResource,
+        UmaPolicies
     }
     
     internal sealed class DeserializedElFinderParameter
@@ -63,15 +60,12 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.DTOs
             { Constants.ElFinderCommands.Paste, ElFinderCommands.Paste },
             { Constants.ElFinderCommands.Ls, ElFinderCommands.Ls },
             { Constants.ElFinderCommands.Search, ElFinderCommands.Search },
-            { Constants.ElFinderCommands.Perms, ElFinderCommands.Perms },
-            { Constants.ElFinderCommands.MkPerm, ElFinderCommands.MkPerm },
-            { Constants.ElFinderCommands.OpenIdClients, ElFinderCommands.OpenIdClients },
-            { Constants.ElFinderCommands.GetResource, ElFinderCommands.GetResource },
-            { Constants.ElFinderCommands.PatchResource, ElFinderCommands.PatchResource }
+            { Constants.ElFinderCommands.UmaResource, ElFinderCommands.UmaResource },
+            { Constants.ElFinderCommands.UmaPolicies, ElFinderCommands.UmaPolicies }
         };
 
         private ElFinderParameter(ElFinderCommands command, string target, IEnumerable<string> targets, bool tree, 
-            bool init, string name, string current, string source, string destination, bool cut, string q, JArray rules, IEnumerable<string> scopes)
+            bool init, string name, string current, string source, string destination, bool cut, string q, string resourceId, IEnumerable<string> authPolicyIds)
         {
             Command = command;
             Target = target;
@@ -83,8 +77,8 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.DTOs
             Destination = destination;
             Cut = cut;
             Q = q;
-            Rules = rules;
-            Scopes = scopes;
+            ResourceId = resourceId;
+            AuthPolicyIds = authPolicyIds;
         }
 
         public ElFinderCommands Command { get; private set; }
@@ -98,8 +92,8 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.DTOs
         public string Destination { get; private set; }
         public bool Cut { get; private set; }
         public string Q { get; private set; }
-        public IEnumerable<string> Scopes { get; set; }
-        public JArray Rules { get; private set; }
+        public string ResourceId { get; set; }
+        public IEnumerable<string> AuthPolicyIds { get; private set; }
 
         public static DeserializedElFinderParameter Deserialize(JObject json)
         {
@@ -185,26 +179,26 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.DTOs
                 }
             }
 
-            JToken jtRules;
-            json.TryGetValue(Constants.ElFinderDtoNames.Rules, out jtRules);
+            JToken jtResourceId;
+            json.TryGetValue(Constants.ElFinderDtoNames.ResourceId, out jtResourceId);
 
-            JToken jScopes;
-            var scopes = new List<string>();
-            if (json.TryGetValue(Constants.ElFinderDtoNames.Scopes, out jScopes))
+            JToken jtAuthPolicyIds;
+            var authPolicyIds = new List<string>();
+            if(json.TryGetValue(Constants.ElFinderDtoNames.AuthPolicyIds, out jtAuthPolicyIds))
             {
-                var jArrScopes = jScopes as JArray;
-                if (jArrScopes != null)
+                var jArrAuthPolicyIds = jtAuthPolicyIds as JArray;
+                if (jArrAuthPolicyIds != null)
                 {
-                    foreach(var scope  in jArrScopes)
+                    foreach(var record in jArrAuthPolicyIds)
                     {
-                        scopes.Add(scope.ToString());
+                        authPolicyIds.Add(record.ToString());
                     }
                 }
             }
 
             return new DeserializedElFinderParameter(new ElFinderParameter(_mappingStrToEnumCmd[cmdStr], jtTarget == null ? null : jtTarget.ToString(), targets,
                 tree == 1, init == 1, name, jtCurrent == null ? null : jtCurrent.ToString(), jtSource == null ? null : jtSource.ToString(), jtDestination == null ? null : jtDestination.ToString(),
-                cut == 1, jtQ == null ? null : jtQ.ToString(), jtRules == null ? null : jtRules as JArray, scopes));
+                cut == 1, jtQ == null ? null : jtQ.ToString(), jtResourceId == null ? null : jtResourceId.ToString(), authPolicyIds));
         }
     }
 }

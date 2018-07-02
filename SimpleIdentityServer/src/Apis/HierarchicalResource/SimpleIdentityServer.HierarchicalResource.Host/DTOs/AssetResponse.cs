@@ -1,22 +1,21 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 
 namespace SimpleIdentityServer.HierarchicalResource.Host.DTOs
 {
     internal sealed class AssetSecurity
     {
-        public AssetSecurity(bool read, bool write, bool locked, bool hasSecurity)
+        public AssetSecurity(bool read, bool write, bool locked)
         {
             Read = read;
             Write = write;
             Locked = locked;
-            HasSecurity = hasSecurity;
         }
 
         public bool Read { get; private set; }
         public bool Write { get; private set; }
         public bool Locked { get; private set; }
-        public bool HasSecurity { get; private set; }
     }
 
     internal sealed class AssetResponse // https://github.com/Studio-42/elFinder/wiki/Client-Server-API-2.0#information-about-filedirectory
@@ -27,7 +26,7 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.DTOs
             Hash = hash;
         }
 
-        public static AssetResponse Create(string name, string hash, string volumeId, bool containsChildren, string pHash, string mimeType, AssetSecurity assetSecurity)
+        public static AssetResponse Create(string name, string hash, string volumeId, bool containsChildren, string pHash, string mimeType, string resourceId, IEnumerable<string> policyIds, AssetSecurity assetSecurity)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -59,10 +58,11 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.DTOs
             result.Read = (assetSecurity.Read) ? 1 : 0;
             result.Write = (assetSecurity.Write) ? 1 : 0;
             result.Locked = (assetSecurity.Locked) ? 1 : 0;
-            result.HasSecurity = (assetSecurity.HasSecurity) ? 1 : 0;
             result.VolumeId = volumeId;
             result.Phash = pHash;
             result.Mime = mimeType;
+            result.ResourceId = resourceId;
+            result.PolicyIds = policyIds;
             return result;
         }
 
@@ -116,10 +116,6 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.DTOs
         /// </summary>
         public int Locked { get; private set; }
         /// <summary>
-        /// (Number) has authorization policies.
-        /// </summary>
-        public int HasSecurity { get; set; }
-        /// <summary>
         /// (String) Only for images. Thumbnail file name, if file do not have thumbnail yet, but it can be generated than it must have value "1"
         /// </summary>
         public string Tmb { get; private set; }
@@ -139,6 +135,14 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.DTOs
         /// (String) Volume id. For root dir only.
         /// </summary>
         public string VolumeId { get; private set; }
+        /// <summary>
+        /// Gets or sets the policy id.
+        /// </summary>
+        public IEnumerable<string> PolicyIds { get; private set; }
+        /// <summary>
+        /// Gets or sets the resource id.
+        /// </summary>
+        public string ResourceId { get; private set; }
 
         public JObject GetJson()
         {
@@ -148,11 +152,21 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.DTOs
             result.Add(Constants.ElFinderCwdResponseNames.Dirs, Dirs);
             result.Add(Constants.ElFinderCwdResponseNames.Read, Read);
             result.Add(Constants.ElFinderCwdResponseNames.Write, Write);
-            result.Add(Constants.ElFinderCwdResponseNames.HasSecurity, HasSecurity);
             result.Add(Constants.ElFinderCwdResponseNames.Locked, Locked);
             result.Add(Constants.ElFinderCwdResponseNames.Phash, Phash);
             result.Add(Constants.ElFinderCwdResponseNames.VolumeId, VolumeId);
             result.Add(Constants.ElFinderCwdResponseNames.Mime, Mime);
+            result.Add(Constants.ElFinderCwdResponseNames.ResourceId, ResourceId);
+            var jArrPolicyId = new JArray();
+            if (PolicyIds != null)
+            {
+                foreach(var policyId in PolicyIds)
+                {
+                    jArrPolicyId.Add(policyId);
+                }
+            }
+
+            result.Add(Constants.ElFinderCwdResponseNames.PolicyIds, jArrPolicyId);
             return result;
         }
     }

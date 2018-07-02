@@ -32,8 +32,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Repositories
                 using (var context = serviceScope.ServiceProvider.GetService<HierarchicalResourceDbContext>())
                 {
                     IQueryable<Asset> assets = context.Assets
-                        .Include(a => a.AuthPolicies)
-                        .Include(a => a.Children).ThenInclude(a => a.AuthPolicies)
+                        .Include(a => a.Children)
                         .Include(a => a.Parent);
                     if (parameter.HashLst != null && parameter.HashLst.Any())
                     {
@@ -81,9 +80,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Repositories
                 {
                     var asset = await context.Assets
                         .Include(a => a.Parent)
-                        .Include(a => a.AuthPolicies)
                         .Include(a => a.Children).ThenInclude(a => a.Children)
-                        .Include(a => a.Children).ThenInclude(a => a.AuthPolicies)
                         .FirstOrDefaultAsync(a => a.Hash == hash).ConfigureAwait(false);
                     if (asset == null)
                     {
@@ -106,8 +103,7 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Repositories
             {
                 using (var context = serviceScope.ServiceProvider.GetService<HierarchicalResourceDbContext>())
                 {
-                    IQueryable<Asset> assets = context.Assets
-                        .Include(a => a.AuthPolicies);
+                    IQueryable<Asset> assets = context.Assets;
                     if (includeChildren)
                     {
                         assets = assets.Where(a => pathLst.Any(p => a.Path.StartsWith(p)));
@@ -231,7 +227,8 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Repositories
                                     ResourceParentHash = asset.ResourceParentHash,
                                     Path = asset.Path,
                                     MimeType = asset.MimeType,
-                                    ResourceId = asset.ResourceId
+                                    ResourceId = asset.ResourceId,
+                                    PolicyIds = asset.AuthPolicyIds == null ? string.Empty : string.Join(",", asset.AuthPolicyIds)
                                 };
 
                                 context.Assets.Add(record);
@@ -312,20 +309,8 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Repositories
                                 record.CanRead = asset.CanRead;
                                 record.CanWrite = asset.CanWrite;
                                 record.IsLocked = asset.IsLocked;
-                                context.AssetAuthPolicies.RemoveRange(context.AssetAuthPolicies.Where(a => a.AssetHash == record.Hash));
-                                record.AuthPolicies = new List<AssetAuthPolicy>();
-                                if (asset.AuthorizationPolicies != null)
-                                {
-                                    foreach (var authPolicy in asset.AuthorizationPolicies)
-                                    {
-                                        record.AuthPolicies.Add(new AssetAuthPolicy
-                                        {
-                                            AssetHash = record.Hash,
-                                            AuthPolicyId = authPolicy.AuthPolicyId
-                                        });
-                                    }
-                                }
-
+                                record.ResourceId = asset.ResourceId;
+                                record.PolicyIds = asset.AuthPolicyIds == null ? string.Empty : string.Join(",", asset.AuthPolicyIds);
                             }
 
                             await context.SaveChangesAsync().ConfigureAwait(false);
@@ -350,15 +335,12 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Repositories
                 Hash = asset.Hash,
                 ResourceId = asset.ResourceId,
                 ResourceParentHash = asset.ResourceParentHash,
+                AuthPolicyIds = string.IsNullOrWhiteSpace(asset.PolicyIds) ? new string[0] : asset.PolicyIds.Split(','),
                 CreatedAt = asset.CreateDateTime,
                 Path = asset.Path,
                 Name = asset.Name,
                 CanRead = asset.CanRead,
                 CanWrite = asset.CanWrite,
-                AuthorizationPolicies = asset.AuthPolicies == null ? new List<AssetAggregateAuthPolicy>() : asset.AuthPolicies.Select(ap => new AssetAggregateAuthPolicy
-                {
-                    AuthPolicyId = ap.AuthPolicyId
-                }).ToList(),
                 IsLocked = asset.IsLocked,
                 MimeType=  asset.MimeType,
                 IsDefaultWorkingDirectory = asset.IsDefaultWorkingDirectory,

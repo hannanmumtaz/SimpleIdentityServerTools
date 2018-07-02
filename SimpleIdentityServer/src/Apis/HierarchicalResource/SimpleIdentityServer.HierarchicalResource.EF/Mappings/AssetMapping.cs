@@ -15,11 +15,6 @@ namespace SimpleIdentityServer.HierarchicalResource.EF.Mappings
                 .WithOne(s => s.Parent)
                 .HasForeignKey(s => s.ResourceParentHash)
                 .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Asset>()
-                .HasMany(s => s.AuthPolicies)
-                .WithOne(s => s.Asset)
-                .HasForeignKey(s => s.AssetHash)
-                .OnDelete(DeleteBehavior.Cascade);
             return modelBuilder;
         }
     }

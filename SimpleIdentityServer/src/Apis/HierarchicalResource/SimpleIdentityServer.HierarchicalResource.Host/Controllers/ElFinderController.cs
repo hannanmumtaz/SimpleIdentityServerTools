@@ -70,16 +70,10 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.Controllers
                     return new OkObjectResult(await ExecuteLs(deserializedParameter.ElFinderParameter));
                 case ElFinderCommands.Search:
                     return new OkObjectResult(await ExecuteSearch(deserializedParameter.ElFinderParameter));
-                    /*
-                    case ElFinderCommands.Perms:
-                        return new OkObjectResult(await ExecutePerms(deserializedParameter.ElFinderParameter));
-                    case ElFinderCommands.MkPerm:
-                        return new OkObjectResult(await ExecuteMkPerm(deserializedParameter.ElFinderParameter));
-                    case ElFinderCommands.GetResource:
-                        return new OkObjectResult(await ExecuteGetResource(deserializedParameter.ElFinderParameter));
-                    case ElFinderCommands.PatchResource:
-                        return new OkObjectResult(await ExecutePatchResource(deserializedParameter.ElFinderParameter));
-                    */
+                case ElFinderCommands.UmaResource:
+                    return new OkObjectResult(await ExecuteUmaResource(deserializedParameter.ElFinderParameter));
+                case ElFinderCommands.UmaPolicies:
+                    return new OkObjectResult(await ExecuteUmaAuthPolicies(deserializedParameter.ElFinderParameter));
             }
 
             return new OkResult();
@@ -634,21 +628,21 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.Controllers
             return jObj;
         }
 
-        #endregion
-
-        #region UMA commands
-
         /// <summary>
-        /// Get the permissions of the target / UMA resource.
+        /// Update the UMA resource.
         /// </summary>
         /// <param name="elFinderParameter"></param>
         /// <returns></returns>
-        /*
-        private async Task<JObject> ExecutePerms(ElFinderParameter elFinderParameter)
+        private async Task<JObject> ExecuteUmaResource(ElFinderParameter elFinderParameter)
         {
             if (string.IsNullOrWhiteSpace(elFinderParameter.Target))
             {
                 return new ErrorResponse(string.Format(Constants.Errors.ErrParamNotSpecified, Constants.ElFinderDtoNames.Target)).GetJson();
+            }
+
+            if (string.IsNullOrWhiteSpace(elFinderParameter.ResourceId))
+            {
+                return new ErrorResponse(string.Format(Constants.Errors.ErrParamNotSpecified, Constants.ElFinderDtoNames.ResourceId)).GetJson();
             }
 
             var asset = await _assetRepository.Get(elFinderParameter.Target);
@@ -657,284 +651,22 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.Controllers
                 return new ErrorResponse(Constants.ElFinderErrors.ErrTrgFolderNotFound).GetJson();
             }
 
-            if (string.IsNullOrWhiteSpace(asset.ResourceId))
-            {
-                return new ErrorResponse(Constants.ElFinderErrors.ErrNoResource).GetJson();
-            }
-
-            var authWellKnownConfigurationUrl = GetWellKnownAuthConfigurationUrl();
-            var grantedToken = await GetToken(_resourceManagerAccessToken, _scopes);
-            var resourceInformation = await _identityServerUmaClientFactory.GetResourceSetClient().GetByResolution(asset.ResourceId, authWellKnownConfigurationUrl, grantedToken.AccessToken);
-            if (resourceInformation == null)
-            {
-                return new ErrorResponse(Constants.ElFinderErrors.ErrNoResource).GetJson();
-            }
-            var permissions = new JArray();
-            if (resourceInformation.Scopes != null)
-            {
-                foreach (var scope in resourceInformation.Scopes)
-                {
-                    permissions.Add(scope);
-                }
-            }
-
-            var idProviders = await _endpointRepository.Search(new SearchEndpointsParameter { Type = EndpointTypes.OPENID });
-            var jArrIdProviders = new JArray();
-            foreach (var idProvider in idProviders)
-            {
-                var jObjIdProvider = new JObject();
-                jObjIdProvider.Add(Constants.ElFinderIdProviderResponseNames.Url, idProvider.Url);
-                jObjIdProvider.Add(Constants.ElFinderIdProviderResponseNames.Description, idProvider.Description);
-                jObjIdProvider.Add(Constants.ElFinderIdProviderResponseNames.Name, idProvider.Name);
-                jArrIdProviders.Add(jObjIdProvider);
-            }
-
-            var result = new JObject();
-            result.Add(Constants.ElFinderResponseNames.Permissions, permissions);
-            result.Add(Constants.ElFinderResponseNames.IdProviders, jArrIdProviders);
-            if (asset.AuthorizationPolicies !=  null && asset.AuthorizationPolicies.Any())
-            {
-                var authorizationPolicy = asset.AuthorizationPolicies.First().AuthPolicyId;
-                var policyResponse = await _identityServerUmaClientFactory.GetPolicyClient().GetByResolution(authorizationPolicy, authWellKnownConfigurationUrl, grantedToken.AccessToken);
-                var jArrPolicyRules = new JArray();
-                if (policyResponse != null)
-                {
-                    foreach (var policyRule in policyResponse.Rules)
-                    {
-                        var record = new JObject();
-                        record.Add(Constants.ElFinderAuthPolRuleNames.OpenIdClients, new JArray(policyRule.ClientIdsAllowed));
-                        record.Add(Constants.ElFinderAuthPolRuleNames.Id, policyRule.Id);
-                        record.Add(Constants.ElFinderAuthPolRuleNames.Permissions, new JArray(policyRule.Scopes));
-                        var claims = new JArray();
-                        foreach (var cl in policyRule.Claims)
-                        {
-                            var claim = new JObject();
-                            claim.Add(Constants.ElFinderClaimNames.Type, cl.Type);
-                            claim.Add(Constants.ElFinderClaimNames.Value, cl.Value);
-                            claims.Add(claim);
-                        }
-
-                        record.Add(Constants.ElFinderAuthPolRuleNames.OpenIdClaims, claims);
-                        jArrPolicyRules.Add(record);
-                    }
-                }
-
-                result.Add(Constants.ElFinderResponseNames.AuthRules, jArrPolicyRules);
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Create a permission.
-        /// </summary>
-        /// <param name="elFinderParameter"></param>
-        /// <returns></returns>
-        private async Task<JObject> ExecuteMkPerm(ElFinderParameter elFinderParameter)
-        {
-            if (string.IsNullOrWhiteSpace(elFinderParameter.Target))
-            {
-                return new ErrorResponse(string.Format(Constants.Errors.ErrParamNotSpecified, Constants.ElFinderDtoNames.Target)).GetJson();
-            }
-
-            if (elFinderParameter.Rules == null)
-            {
-                return new ErrorResponse(string.Format(Constants.Errors.ErrParamNotSpecified, Constants.ElFinderDtoNames.Rules)).GetJson();
-            }
-
-            var asset = await _assetRepository.Get(elFinderParameter.Target);
-            if (asset == null)
-            {
-                return new ErrorResponse(Constants.ElFinderErrors.ErrTrgFolderNotFound).GetJson();
-            }
-
-            if (string.IsNullOrWhiteSpace(asset.ResourceId))
-            {
-                return new ErrorResponse(Constants.ElFinderErrors.ErrNoResource).GetJson();
-            }
-
-            var authPolRules = new List<AddAuthRuleParameter>();
-            foreach (JObject rule in elFinderParameter.Rules) // Extract the rules.
-            {
-                var record = new AddAuthRuleParameter();
-                JToken jtRuleId;
-                if (rule.TryGetValue(Constants.ElFinderAuthPolRuleNames.Id, out jtRuleId))
-                {
-                    record.RuleId = jtRuleId.ToString();
-                }
-
-                JToken jtScopes;
-                if (rule.TryGetValue(Constants.ElFinderAuthPolRuleNames.Permissions, out jtScopes))
-                {
-                    var jtScopesArr = jtScopes as JArray;
-                    if (jtScopesArr != null)
-                    {
-                        record.OpenIdScopes = jtScopesArr.ToObject<List<string>>();
-                    }
-                }
-
-                JToken jtOpenIdClients;
-                if (rule.TryGetValue(Constants.ElFinderAuthPolRuleNames.OpenIdClients, out jtOpenIdClients))
-                {
-                    var jtOpenIdClientsArr = jtOpenIdClients as JArray;
-                    if (jtOpenIdClientsArr != null)
-                    {
-                        record.OpenIdClients = jtOpenIdClientsArr.ToObject<List<string>>();
-                    }
-                }
-
-                JToken jtClaims;
-                if (rule.TryGetValue(Constants.ElFinderAuthPolRuleNames.OpenIdClaims, out jtClaims))
-                {
-                    var jtClaimsArr = jtClaims as JArray;
-                    var claims = new List<AddAuthRuleClaimParameter>();
-                    foreach(JObject jtClaim in jtClaims)
-                    {
-                        var rec = new AddAuthRuleClaimParameter
-                        {
-                            Type = jtClaim.GetValue(Constants.ElFinderClaimNames.Type).ToString(),
-                            Value = jtClaim.GetValue(Constants.ElFinderClaimNames.Value).ToString()
-                        };
-
-                        claims.Add(rec);
-                    }
-
-                    record.Claims = claims;
-                }
-
-                authPolRules.Add(record);
-            }
-            
-            var authWellKnownConfigurationUrl = GetWellKnownAuthConfigurationUrl();
-            var grantedToken = await GetToken(_resourceManagerAccessToken, _scopes);
-            if ((asset.AuthorizationPolicies == null || !asset.AuthorizationPolicies.Any()) && authPolRules.Any()) // Add an authorization policy.
-            {
-                AddPolicyResponse addPolicyResponse = await _identityServerUmaClientFactory.GetPolicyClient().AddByResolution(new PostPolicy
-                {
-                    ResourceSetIds = new List<string> { asset.ResourceId },
-                    Rules = authPolRules.Select(apr =>
-                        new PostPolicyRule
-                        {
-                            ClientIdsAllowed = apr.OpenIdClients.ToList(),
-                            Scopes = apr.OpenIdScopes.ToList(),
-                            Claims = apr.Claims == null ? null : apr.Claims.Select(c => new PostClaim
-                            {
-                                Type = c.Type,
-                                Value = c.Value
-                            }).ToList(),
-                            Script = string.Empty,
-                            IsResourceOwnerConsentNeeded = false
-                        }
-                    ).ToList()
-                }, authWellKnownConfigurationUrl, grantedToken.AccessToken);
-                asset.AuthorizationPolicies.Add(new AssetAggregateAuthPolicy
-                {
-                    AuthPolicyId = addPolicyResponse.PolicyId
-                });
-                var lstAssets = new List<AssetAggregate> { asset };
-                if (!await _assetRepository.Update(lstAssets))
-                {
-                    return new ErrorResponse(Constants.ElFinderErrors.ErrUpdateResource).GetJson();
-                }
-            }
-            else if (asset.AuthorizationPolicies != null && asset.AuthorizationPolicies.Any() && authPolRules.Any())// Update the authorization policy.
-            {
-                var authPolicy = asset.AuthorizationPolicies.First();
-                await _identityServerUmaClientFactory.GetPolicyClient().UpdateByResolution(new PutPolicy
-                {
-                    PolicyId = authPolicy.AuthPolicyId,
-                    Rules = authPolRules.Select(apr => 
-                        new PutPolicyRule
-                        {
-                            Id = apr.RuleId,
-                            ClientIdsAllowed = apr.OpenIdClients.ToList(),
-                            Scopes = apr.OpenIdScopes.ToList(),
-                            Claims = apr.Claims == null ? null : apr.Claims.Select(c => new PostClaim
-                            {
-                                Type = c.Type,
-                                Value = c.Value
-                            }).ToList(),
-                            Script = string.Empty,
-                            IsResourceOwnerConsentNeeded = false
-                        }
-                    ).ToList()
-                }, authWellKnownConfigurationUrl, grantedToken.AccessToken);
-            }
-            else // Delete the authorization policy.
-            {
-                var authPolicy = asset.AuthorizationPolicies.First();
-                await _identityServerUmaClientFactory.GetPolicyClient().DeleteByResolution(
-                    authPolicy.AuthPolicyId, authWellKnownConfigurationUrl, grantedToken.AccessToken);
-                asset.AuthorizationPolicies.Clear();
-                var lstAssets = new List<AssetAggregate> { asset };
-                if (!await _assetRepository.Update(lstAssets))
-                {
-                    return new ErrorResponse(Constants.ElFinderErrors.ErrUpdateResource).GetJson();
-                }
-            }
-            
+            asset.ResourceId = elFinderParameter.ResourceId;
+            await _assetRepository.Update(new[] { asset });
             var jObj = new JObject();
             return jObj;
         }
 
-        /// <summary>
-        /// Get the resource information.
-        /// </summary>
-        /// <param name="elFinderParameter"></param>
-        /// <returns></returns>
-        private async Task<JObject> ExecuteGetResource(ElFinderParameter elFinderParameter)
+        private async Task<JObject> ExecuteUmaAuthPolicies(ElFinderParameter elFinderParameter)
         {
             if (string.IsNullOrWhiteSpace(elFinderParameter.Target))
             {
                 return new ErrorResponse(string.Format(Constants.Errors.ErrParamNotSpecified, Constants.ElFinderDtoNames.Target)).GetJson();
             }
 
-            var asset = await _assetRepository.Get(elFinderParameter.Target);
-            if (asset == null)
+            if (string.IsNullOrWhiteSpace(elFinderParameter.ResourceId))
             {
-                return new ErrorResponse(Constants.ElFinderErrors.ErrTrgFolderNotFound).GetJson();
-            }
-            
-            var umaWellKnownConfigurationUrl = GetWellKnownAuthConfigurationUrl();
-            if (string.IsNullOrWhiteSpace(asset.ResourceId))
-            {
-                var jObj = new JObject();
-                jObj.Add(Constants.ElFinderResponseNames.Resource, string.Empty);
-                return jObj;
-            }
-
-            var grantedToken = await GetToken(_resourceManagerAccessToken, _scopes);
-            var resourceInformation = await _identityServerUmaClientFactory.GetResourceSetClient().GetByResolution(asset.ResourceId, umaWellKnownConfigurationUrl, grantedToken.AccessToken);
-            var content = new JObject();
-            content.Add(Constants.ElFinderResourceNames.Id, resourceInformation.Id);
-            content.Add(Constants.ElFinderResourceNames.IconUri, resourceInformation.IconUri);
-            content.Add(Constants.ElFinderResourceNames.Name, resourceInformation.Name);
-            var scopes = new JArray();
-            if (resourceInformation.Scopes != null)
-            {
-                foreach(var scope in resourceInformation.Scopes)
-                {
-                    scopes.Add(scope);
-                }
-            }
-
-            content.Add(Constants.ElFinderResourceNames.Scopes, scopes);
-            content.Add(Constants.ElFinderResourceNames.Type, resourceInformation.Type);
-            var result = new JObject();
-            result.Add(Constants.ElFinderResponseNames.Resource, content);
-            return result;
-        }
-
-        /// <summary>
-        /// Patch the resource.
-        /// </summary>
-        /// <param name="elFinderParameter"></param>
-        /// <returns></returns>
-        private async Task<JObject> ExecutePatchResource(ElFinderParameter elFinderParameter)
-        {
-            if (string.IsNullOrWhiteSpace(elFinderParameter.Target))
-            {
-                return new ErrorResponse(string.Format(Constants.Errors.ErrParamNotSpecified, Constants.ElFinderDtoNames.Target)).GetJson();
+                return new ErrorResponse(string.Format(Constants.Errors.ErrParamNotSpecified, Constants.ElFinderDtoNames.ResourceId)).GetJson();
             }
 
             var asset = await _assetRepository.Get(elFinderParameter.Target);
@@ -943,55 +675,13 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.Controllers
                 return new ErrorResponse(Constants.ElFinderErrors.ErrTrgFolderNotFound).GetJson();
             }
 
-            var umaWellKnownConfigurationUrl = GetWellKnownAuthConfigurationUrl();
-            var grantedToken = await GetToken(_resourceManagerAccessToken, _scopes);
-            if (string.IsNullOrWhiteSpace(asset.ResourceId))
-            {
-                var addedResource = await _identityServerUmaClientFactory.GetResourceSetClient().AddByResolution(new PostResourceSet
-                {
-                    Name = asset.Name,
-                    Scopes = elFinderParameter.Scopes.ToList()
-                }, umaWellKnownConfigurationUrl, grantedToken.AccessToken);
-                asset.ResourceId = addedResource.Id;
-                if (!await _assetRepository.Update(new[] { asset }))
-                {
-                    return new ErrorResponse(Constants.ElFinderErrors.ErrCreateResource).GetJson();
-                }
-
-                return new JObject();
-            }
-
-            await _identityServerUmaClientFactory.GetResourceSetClient().UpdateByResolution(new PutResourceSet
-            {
-                Id = asset.ResourceId,
-                Name = asset.Name,
-                Scopes = elFinderParameter.Scopes.ToList()
-            }, umaWellKnownConfigurationUrl, grantedToken.AccessToken);
-            return new JObject();
+            asset.AuthPolicyIds = elFinderParameter.AuthPolicyIds;
+            await _assetRepository.Update(new[] { asset });
+            var jObj = new JObject();
+            return jObj;
         }
-        */
 
         #endregion
-
-        /*
-        private async Task Remove(AssetAggregate asset)
-        {
-            if (asset == null)
-            {
-                throw new ArgumentNullException(nameof(asset));
-            }
-
-            var tasks = new List<Task<bool>>();
-            var authWellKnownConfigurationUrl = GetWellKnownAuthConfigurationUrl();
-            var grantedToken = await GetToken(_resourceManagerAccessToken, _scopes);
-            if (!string.IsNullOrWhiteSpace(asset.ResourceId))
-            {
-                tasks.Add(_identityServerUmaClientFactory.GetResourceSetClient().DeleteByResolution(asset.ResourceId, authWellKnownConfigurationUrl, grantedToken.AccessToken));
-            }
-
-            await Task.WhenAll(tasks);
-        }
-        */
 
         private async Task<PasteOperation> Copy(AssetAggregate asset, AssetAggregate source, AssetAggregate target, bool isCut = false)
         {
@@ -1140,9 +830,9 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.Controllers
             {
                 throw new ArgumentNullException(nameof(asset));
             }
-
+            
             return AssetResponse.Create(asset.Name, asset.Hash, Constants.VolumeId + "_", asset.Children.Any(), asset.ResourceParentHash,
-                asset.MimeType, new AssetSecurity(asset.CanRead, asset.CanWrite, asset.IsLocked, asset.AuthorizationPolicies != null && asset.AuthorizationPolicies.Any())).GetJson();
+                asset.MimeType, asset.ResourceId, asset.AuthPolicyIds, new AssetSecurity(asset.CanRead, asset.CanWrite, asset.IsLocked)).GetJson();
         }
 
         private string GetWellKnownAuthConfigurationUrl()

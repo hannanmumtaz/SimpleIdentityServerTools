@@ -77,8 +77,8 @@
             public const string Destination = "dst";
             public const string Cut = "cut";
             public const string Q = "q";
-            public const string Rules = "rules";
-            public const string Scopes = "scopes";
+            public const string ResourceId = "resource_id";
+            public const string AuthPolicyIds = "authpolicy_ids";
         }
 
         public static class ElFinderResponseNames
@@ -137,6 +137,8 @@
             public const string Thash = "thash";
             public const string Dim = "dim";
             public const string VolumeId = "volumeid";
+            public const string ResourceId = "resource_id";
+            public const string PolicyIds = "policy_ids";
         }
 
         public static class ElFinderResourceNames
@@ -239,11 +241,8 @@
             public const string Ls = "ls";
             public const string Search = "search";
             public const string Access = "access";
-            public const string Perms = "perms";
-            public const string MkPerm = "mkperm";
-            public const string OpenIdClients = "openidclients";
-            public const string GetResource = "getresource";
-            public const string PatchResource = "patchresource";
+            public const string UmaResource = "umaResource";
+            public const string UmaPolicies = "umaPolicies";
         }
     }
 }
