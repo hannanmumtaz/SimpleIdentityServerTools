@@ -172,7 +172,7 @@ class ViewResource extends Component {
             currentAuthPolicy: a,
             currentAuthRulePolicy: b,
             addAuthRulePolicy: false
-        });        
+        });    
     }
 
     /**
@@ -400,11 +400,7 @@ class ViewResource extends Component {
     refreshClaims() {
         var self = this;
         var profile = SessionStore.getSession();
-        if (!profile.openid_url) {
-            return;
-        }
-
-        $.get(profile.openid_url).then(function(r) {
+        $.get(profile.selectedOpenid.url).then(function(r) {
             var claimsSupported = r['claims_supported'];
             self.setState({
                 supportedClaims: claimsSupported,
