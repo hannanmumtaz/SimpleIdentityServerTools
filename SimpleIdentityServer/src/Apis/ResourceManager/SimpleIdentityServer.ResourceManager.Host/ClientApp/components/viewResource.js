@@ -302,7 +302,7 @@ class ViewResource extends Component {
 
         self.setState({
             isLoading: true
-        });
+        })
         var opts = [ ResourceService.update(resourceRequest) ];
         insertAuthPolicyRequest.forEach(function(rec) {
             opts.push(AuthPolicyService.add(rec));

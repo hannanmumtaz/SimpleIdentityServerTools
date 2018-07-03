@@ -1,6 +1,6 @@
 /*!
  * elFinder - file manager for web
- * Version 2.1.12 (2018-04-24)
+ * Version 2.1.12 (2018-07-03)
  * http://elfinder.org
  * 
  * Copyright 2009-2018, Studio 42
@@ -4971,7 +4971,7 @@ elFinder.prototype = {
 	 */
 	perms2class : function(o) {
 		var c = '';
-		if (o.has_security) {
+		if (o.resource_id) {
 			c = 'elfinder-ro';
 		}
 
@@ -5627,9 +5627,7 @@ elFinder.prototype._options = {
 		'open', 'opendir', 'reload', 'home', 'up', 'back', 'forward', 'getfile', 'quicklook',
 		'download', 'rm', 'duplicate', 'rename', 'mkdir', 'mkfile', 'copy',
 		'cut', 'paste', 'search', 'info', 'view', 'help',
-		'resize', 'sort', 'places', 'chmod', 'permissions',
-		'clientinfo', 'authpolicy', 'addclient', 'removeclient', 'rmresource', 'resourceinfo', 'rmpolicy',
-		'rmscope', 'scopeinfo', 'accessinfo', 'rmuser', 'userinfo', 'mkuser', 'mkscope', 'protectresource'
+		'resize', 'sort', 'places', 'chmod', 'permissions', 'protectresource'
 	],
 
 	/**
@@ -5656,18 +5654,6 @@ elFinder.prototype._options = {
 		// 		return [ { pattern: 'ctrl+e ctrl+down numpad_enter' + (fm.OS != 'mac' && ' enter') } ];
 		// 	}
 		// },
-		clientinfo: {
-			editUrl: 'http://localhost/clients/{client_id}'
-		},
-		userinfo: {
-			editUrl: 'http://localhost/userinfo/{user_id}'
-		},
-		resourceinfo: {
-			resourceUrl: '/#{hash}'
-		},
-    authpolicy: {
-    	resourceUrl: '/#{hash}'
-    },
 		// "getfile" command options.
 		getfile : {
 			onlyURL  : false,
@@ -8234,7 +8220,7 @@ $.fn.elfindercwd = function(fm, options) {
 					return f.perm? fm.formatFileMode(f.perm, 'both') : '';
 				},
 				marker : function(f) {
-					return (f.alias || f.mime == 'symlink-broken' ? symlinkTpl : '')+(!f.read || !f.write || f.has_security ? permsTpl : '')+(f.locked ? lockTpl : '');
+					return (f.alias || f.mime == 'symlink-broken' ? symlinkTpl : '')+(!f.read || !f.write || f.resource_id ? permsTpl : '')+(f.locked ? lockTpl : '');
 				},
 				tooltip : function(f) {
 					var title = fm.formatDate(f) + (f.size > 0 ? ' ('+fm.formatSize(f.size)+')' : ''),
@@ -12483,115 +12469,6 @@ elFinder.prototype.commands.accessinfo = function() {
 
 
 /*
- * File: \js\commands\addclient.js
- */
-
-'use strict';
-
-elFinder.prototype.commands.addclient = function() {
-  var fm = this.fm,
-    clientsHash = 'assets_openid_clients';
-  this.tpl = {
-    main : '<div class="ui-helper-clearfix elfinder-info-title">' +
-      '<strong style="display:inline-block; padding-right:2px;">Create a client</strong>'+
-      '</div>{content}',
-    content : '<table class="elfinder-info-tb"><tbody>' +
-      '<tr><td>Redirect Uris</td><td><input type="text" name="redirect_uris" /></td></tr>' +
-      '<tr><td><i>concatenated list <br/> of redirect uris<br/> separated by ","</i></td></tr>' +
-      '<tr><td><button type="button" class="create-client">Add</button></td></tr>' +
-      '</table>'
-  },
-  this.getstate= function(sel) {
-    var sel = this.files(sel);
-    var result = !this._disabled && sel.length == 1 && sel[0].hash === clientsHash ? 0 : -1;
-    return result;
-  };
-  this.exec = function(hashes) {
-    var file = this.files(hashes)[0],
-      id = fm.namespace+'-addclient-'+file.hash,
-      view = this.tpl.main,
-      content = this.tpl.content,
-      reqs = [],
-			dfrd = $.Deferred()
-        .done(function(data){
-          fm.exec('reload', file.hash);
-        }),
-      dialog = fm.getUI().find('#'+id),
-      opts = {
-        title : 'Create client',
-        width: 'auto',
-        open: function() {
-          var self = this;
-          $(self).find('input[name="redirect_uris"]').focus();
-          $(self).find('input[name="redirect_uris"]').keydown(function(e) {
-            e.stopImmediatePropagation();
-          });
-          $(self).find('.create-client').on('click', function() {
-            var redirectUris = $(self).find('input[name="redirect_uris"]')
-              .val()
-              .split(',');
-            fm.notify({
-              type: 'addclient',
-              msg: 'Add clients',
-              cnt: 1,
-              hideCnt: true
-            });
-            reqs.push(fm.request({
-              data: { cmd: 'mkclient',
-                redirect_uris: redirectUris
-              },
-              preventDefault: true
-            }).done(function(newClient) {
-              fm.notify({
-                type: 'addclient',
-                cnt: -1
-              });
-              dfrd.resolve();
-              $(self).elfinderdialog('close');
-              fm.dialog('<p style="color: green;">Your client has been created.</p><p>Don\'t forget to register the client secret : <b>'+newClient.client_secret+'</b></p>', {
-          				cssClass  : 'elfinder-dialog-error',
-          				title     : 'Result',
-          				resizable : false,
-          				destroyOnClose : true,
-          				buttons   : {
-                    Close: function() { $(this).elfinderdialog('close'); }
-                  }
-          		});
-            }).fail(function() {
-              fm.notify({
-                type: 'addclient',
-                cnt: -1
-              });
-              fm.trigger('error', {error : 'invalid redirect uris'});
-            }));
-          });
-        },
-        close: function() {
-          $(this).elfinderdialog('destroy');
-          $.each(reqs, function(i, req) {
-            var xhr = (req && req.xhr)? req.xhr : null;
-            if (xhr && xhr.state() == 'pending') {
-              xhr.quiet = true;
-              xhr.abort();
-            }
-          });
-        }
-      },
-      displayCreateModalWindow = function() {
-        view = view.replace('{content}', content);
-        dialog = fm.dialog(view, opts);
-      };
-
-    if (this.getstate([file.hash]) < 0) {
-      return;
-    }
-
-    displayCreateModalWindow();
-  }
-};
-
-
-/*
  * File: \js\commands\archive.js
  */
 
@@ -12682,132 +12559,6 @@ elFinder.prototype.commands.archive = function() {
 		return dfrd;
 	}
 
-};
-
-
-/*
- * File: \js\commands\authpolicy.js
- */
-
-'use strict';
-
-elFinder.prototype.commands.authpolicy = function() {
-  var fm = this.fm,
-    authPolicyHash = 'assets_uma_authorization_policies';
-  this.shortcuts = [{
-    pattern     : 'f3'
-  }];
-  this.tpl = {
-    main : '<div class="ui-helper-clearfix elfinder-info-title">' +
-      '<img class="elfinder-clientinfo-logo" src="img/policy.png" />' +
-      '<strong>Authorization policy</strong></div>{content}',
-    content : '<table class="elfinder-info-tb" style="table-layout:fixed;" id="authorization-policy"><tbody>' +
-      '<tr><td>Resources</td><td></td></tr>' +
-      '<tr><td colspan="2"><ul class="list">{resources}</ul></td></tr>' +
-      '<tr><td>Rules</td></tr>' +
-      '<tr><td colspan="2"><ul class="list">{rules}</ul></td></tr>' +
-      '</tbody></table>'
-  };
-  this.getstate = function(sel) {
-    var sel = this.files(sel);
-    var result = !this._disabled && sel.length == 1 && sel[0].phash && sel[0].phash === authPolicyHash ? 0 : -1;
-    return result;
-  };
-  this.exec = function(hashes) {
-    var file = this.files(hashes)[0],
-      id = fm.namespace+'-clientinfo-'+file.hash,
-      view = this.tpl.main,
-      content = this.tpl.content,
-      options = this.options,
-      reqs = [],
-      dialog = fm.getUI().find('#'+id),
-      opts = {
-        title : 'Authorization policy',
-        width: 'auto',
-        close: function() {
-          $(this).elfinderdialog('destroy');
-          $.each(reqs, function(i, req) {
-            var xhr = (req && req.xhr)? req.xhr : null;
-            if (xhr && xhr.state() == 'pending') {
-              xhr.quiet = true;
-              xhr.abort();
-            }
-          });
-        }
-      },
-      constructResources = function(data) {
-        var content = "";
-        if (data && data.length > 0) {
-          data.forEach(d => {
-            content += "<li class='elfinder-white-box'><label><a href='"+options.resourceUrl.replace('{hash}', 'elf_'+d.hash)+"' target='_blank'>"+d.name+"</a></label></li>";
-          });
-        }
-        else {
-          content = "no resource"
-        }
-
-        return content;
-      },
-      constructRules = function(rules) {
-        var content = "";
-        if (rules && rules.length > 0) {
-          rules.forEach(rule => {
-            var clients = rule.clients && rule.clients.length > 0 ? rule.clients.join(',') : "no client";
-            var claims = rule.claims && rule.claims.length > 0 ? $.map(rule.claims, function(c) {
-              return c.type + ":"+c.value
-            }).join(','): "no claim";
-            var permissions = rule.scopes && rule.scopes.length > 0 ? rule.scopes.join(',') : "no permission";
-            content += "<li class='elfinder-white-box'><table><tbody>"+
-            "<tr><td>Clients</td><td>"+clients+"</td></tr>"+
-            "<tr><td>Claims</td><td>"+claims+"</td></tr>"+
-            "<tr><td>Permissions</td><td>"+permissions+"</td></tr>"+
-            "</tbody></table></li>";
-          });
-        }
-        else {
-          content = "no rule"
-        }
-
-        return content;
-      },
-      displayAuthPolicy = function(data) {
-        content = content.replace('{resources}', constructResources(data.resources));
-        content = content.replace('{rules}', constructRules(data.rules));
-        view = view.replace('{content}', content);
-        dialog = fm.dialog(view, opts);
-        dialog.addClass('dialog-size');
-        dialog.attr('id', id);
-      };
-
-    if (this.getstate([file.hash]) < 0) {
-      return;
-    }
-
-    if (dialog.length) {
-      dialog.elfinderdialog('toTop');
-			return $.Deferred().resolve();
-    }
-
-    // display loading spinner
-    fm.notify({
-      type: 'authpolicy',
-      msg: 'Get authorization policy',
-      cnt: 1,
-      hideCnt: true
-    });
-
-    reqs.push(fm.request({
-      cmd: 'authpolicy',
-      target: file.hash.replace(authPolicyHash + '_','')
-    }).done(function(data) {
-      displayAuthPolicy(data);
-      fm.notify({
-        type: 'authpolicy',
-        cnt: -1
-      });
-    }));
-    // authpolicy
-  }
 };
 
 
@@ -13132,120 +12883,6 @@ elFinder.prototype.commands.chmod = function() {
 		return dfrd;
 	};
 };
-
-
-/*
- * File: \js\commands\clientinfo.js
- */
-
-'use strict';
-
-elFinder.prototype.commands.clientinfo = function() {
-  var fm = this.fm,
-    clientsHash = 'assets_openid_clients';
-  this.shortcuts = [{
-		pattern     : 'f4'
-  }];
-  this.tpl = {
-    main : '<div class="ui-helper-clearfix elfinder-info-title">'+
-      '<img class="elfinder-clientinfo-logo" src="{logoUri}" />' +
-      '<strong>Client information (<a href="{editUrl}" target="_blank">Edit</a>)</strong>'+
-      '<span class="elfinder-info-kind">{title}</span></div>{content}',
-    content: '<table class="elfinder-info-tb"><tbody>'+
-      '<tr><td>Identifier</td><td>{clientId}</td></tr>'+
-      '<tr><td>Secret</td><td>{clientSecret}</td></tr>'+
-      '<tr><td>Callback URIs</td><td>{callbackUrls}</td></tr>'+
-      '</tbody></table>'
-  };
-  this.getstate = function(sel) {
-    var sel = this.files(sel);
-    var result = !this._disabled && sel.length == 1 && sel[0].phash && sel[0].phash === clientsHash ? 0 : -1;
-    return result;
-  };
-  this.exec = function(hashes) {
-    var file = this.files(hashes)[0],
-      id = fm.namespace+'-clientinfo-'+file.hash,
-      reqs = [],
-      options = this.options,
-      dialog = fm.getUI().find('#'+id),
-      view = this.tpl.main,
-      content = this.tpl.content,
-      opts = {
-        title : 'Client Information',
-        width: 'auto',
-        close: function() {
-          $(this).elfinderdialog('destroy');
-          $.each(reqs, function(i, req) {
-            var xhr = (req && req.xhr)? req.xhr : null;
-            if (xhr && xhr.state() == 'pending') {
-              xhr.quiet = true;
-              xhr.abort();
-            }
-          });
-        },
-        open: function() {
-        }
-      },
-      displayClientInfo = function(data) {
-        var callbackUrls = "no callback urls";
-        if (data.redirect_uris && data.redirect_uris.length > 0) {
-          callbackUrls = data.redirect_uris.join(',');
-        }
-
-		var secret = "<no shared secret>";
-		if (data.secrets && data.secrets.length > 0) {
-			data.secrets.forEach(function(s) {
-				if (s.type == "SharedSecret") {
-					secret = s.value;
-				}
-			});
-		}
-		
-        content = content.replace('{clientId}', data.client_id);
-        content = content.replace('{clientSecret}', secret);
-        content = content.replace('{callbackUrls}', callbackUrls);
-        view = view.replace('{title}', file.name);
-        view = view.replace('{editUrl}', options.editUrl.replace('{client_id}', data.client_id));
-        var logoUri = data.logo_uri;
-        if (!logoUri) {
-          logoUri = 'img/unknown.png';
-        }
-        view = view.replace('{logoUri}', logoUri);
-        view = view.replace('{content}', content);
-        dialog = fm.dialog(view, opts);
-        dialog.addClass('dialog-size');
-        dialog.attr('id', id);
-      };
-
-    if (this.getstate([file.hash]) < 0) {
-      return;
-    }
-
-    if (dialog.length) {
-			dialog.elfinderdialog('toTop');
-			return $.Deferred().resolve();
-		}
-
-    // display loading spinner
-    fm.notify({
-      type: 'clientinformation',
-      msg: 'Get client information',
-      cnt: 1,
-      hideCnt: true
-    });
-
-    reqs.push(fm.request({
-      cmd: 'clientinfo',
-      target: file.hash.replace(clientsHash + '_','')
-    }).done(function(data) {
-      displayClientInfo(data);
-      fm.notify({
-        type: 'clientinformation',
-        cnt: -1
-      });
-    }));
-  }
-}
 
 
 /*
@@ -14989,307 +14626,6 @@ elFinder.prototype.commands.mkfile = function() {
 
 
 /*
- * File: \js\commands\mkscope.js
- */
-
-'use strict';
-
-elFinder.prototype.commands.mkscope = function() {
-  var fm = this.fm,
-    scopesHash = 'assets_openid_scopes';
-  this.tpl = {
-    main : '<div class="ui-helper-clearfix elfinder-info-title">' +
-      '</div>{content}',
-    content : '<table class="elfinder-info-tb"><tbody>' +
-      '<tr><td>Name</td><td><input type="text" name="name" /></td></tr>' +
-      '<tr><td>Type</td><td><select name="type" id="choose-type"><option value="0">Resource</option><option value="1">Resource owner</option></select></td></tr>' +
-      '<tr class="claims" style="display:none;"><td>Claim types</td><td><input type="text" id="claim-type"/><button type="button" id="add-claim">Add</button></td></tr>' +
-      '<tr class="claims" style="display:none;"><td colspan="2"><ul id="claim-types" class="list"></ul></td></tr>' +
-      '<tr><td><button type="button" id="save-scope">Save</button></td></tr>' +
-      '</table>'
-  },
-  this.getstate= function(sel) {
-    var sel = this.files(sel);
-    var result = !this._disabled && sel.length == 1 && sel[0].hash === scopesHash ? 0 : -1;
-    return result;
-  };
-  this.exec = function(hashes) {
-    var file = this.files(hashes)[0],
-      id = fm.namespace+'-add-scope-'+file.hash,
-      dialog = fm.getUI().find('#'+id),
-      view = this.tpl.main,
-      content = this.tpl.content,
-      reqs = [],
-			dfrd = $.Deferred()
-        .done(function(data){
-          fm.exec('reload', file.hash);
-        }),
-      opts = {
-        title : 'Create scope',
-        width: 'auto',
-        close: function() {
-          $(this).elfinderdialog('destroy');
-          $.each(reqs, function(i, req) {
-            var xhr = (req && req.xhr)? req.xhr : null;
-            if (xhr && xhr.state() == 'pending') {
-              xhr.quiet = true;
-              xhr.abort();
-            }
-          });
-        },
-        open: function() {
-          var self = this;
-          $(self).find("input[name='name']").focus();
-          // Ignore delete button
-          $(self).find("input").keydown(function(e) {
-            e.stopImmediatePropagation();
-          });
-          // Display claims or not
-          $(self).find('#choose-type').on('change', function() {
-            var valueSelected = this.value;
-            if (valueSelected == 0) {
-              $(self).find('.claims').hide();
-            } else {
-              $(self).find('.claims').show();
-            }
-          });
-          // Add claim types
-          $(self).find('#add-claim').on('click', function() {
-            var claimType = $(self).find('#claim-type').val();
-            $(self).find('#claim-types').append("<li class='elfinder-white-box'><label>"+claimType+"</label><a href='#'>(Remove)</a></li>");
-            $(self).find('#claim-types a').on('click', function(e) {
-              e.preventDefault();
-              $(this).parent().remove();
-            });
-          });
-          // Save scope
-          $(self).find("#save-scope").on('click', function() {
-            var request = {
-              name: $(self).find("input[name='name']").val(),
-              type: $(self).find("#choose-type").val(),
-              target: file.hash,
-              cmd: 'mkscope'
-            };
-
-            if (request.type === '1') {
-              request.claims = $.map($(self).find('#claim-types li label'), function(n) {
-                return $(n).text();
-              });
-            }
-
-            fm.notify({
-              type: 'mkscope',
-              msg: 'Add scope',
-              cnt: 1,
-              hideCnt: true
-            });
-            reqs.push(fm.request({
-              data: request,
-              preventDefault: true
-            }).done(function() {
-              fm.notify({
-                type: 'mkscope',
-                cnt: -1
-              });
-              dfrd.resolve();
-              $(self).elfinderdialog('close');
-            }).fail(function() {
-              fm.trigger('error', {error : 'the scope cannot be saved'});
-              fm.notify({
-                type: 'mkscope',
-                cnt: -1
-              });
-            }));
-          });
-        }
-      },
-      displayCreateModalWindow = function() {
-        view = view.replace('{content}', content);
-        dialog = fm.dialog(view, opts);
-      };
-
-    if (this.getstate([file.hash]) < 0) {
-      return;
-    }
-
-    displayCreateModalWindow();
-  }
-};
-
-
-/*
- * File: \js\commands\mkuser.js
- */
-
-'use strict';
-
-elFinder.prototype.commands.mkuser = function() {
-  var fm = this.fm,
-    resourceOwnersHash = 'assets_resourceowners';
-  this.tpl = {
-    main : '<div class="ui-helper-clearfix elfinder-info-title">' +
-      '<strong style="display:inline-block; padding-right:2px;">Create resource owner</strong>'+
-      '</div>{content}',
-    content : '<table class="elfinder-info-tb"><tbody>' +
-      '<tr><td>Login</td><td><input type="text" name="username" /></td></tr>' +
-      '<tr><td>Password</td><td><input type="password" name="password" /></td></tr>' +
-      '<tr><td><button type="button" class="create-ro">Add</button></td></tr>' +
-      '</table>'
-  },
-  this.getstate= function(sel) {
-    var sel = this.files(sel);
-    var result = !this._disabled && sel.length == 1 && sel[0].hash === resourceOwnersHash ? 0 : -1;
-    return result;
-  };
-  this.exec = function(hashes) {
-    var file = this.files(hashes)[0],
-      id = fm.namespace+'-addro-'+file.hash,
-      dialog = fm.getUI().find('#'+id),
-      view = this.tpl.main,
-      content = this.tpl.content,
-      reqs = [],
-			dfrd = $.Deferred()
-        .done(function(data){
-          fm.exec('reload', file.hash);
-        }),
-      opts = {
-        title : 'Create user',
-        width: 'auto',
-        close: function() {
-          $(this).elfinderdialog('destroy');
-          $.each(reqs, function(i, req) {
-            var xhr = (req && req.xhr)? req.xhr : null;
-            if (xhr && xhr.state() == 'pending') {
-              xhr.quiet = true;
-              xhr.abort();
-            }
-          });
-        },
-        open: function() {
-          var self = this;
-          $(self).find("input[name='username']").focus();
-          // Ignore delete button
-          $(self).find("input").keydown(function(e) {
-            e.stopImmediatePropagation();
-          });
-          $(self).find(".create-ro").on('click', function() {
-            var request = {
-              sub: $(self).find("input[name='username']").val(),
-              password: $(self).find("input[name='password']").val(),
-              cmd: 'mkuser',
-              target: file.hash
-            };
-
-            fm.notify({
-              type: 'mkuser',
-              msg: 'Add user',
-              cnt: 1,
-              hideCnt: true
-            });
-            reqs.push(fm.request({
-              data: request,
-              preventDefault: true
-            }).done(function(data) {
-              fm.notify({
-                type: 'mkuser',
-                cnt: -1
-              });
-              dfrd.resolve(data);
-              $(self).elfinderdialog('close');
-            }).fail(function() {
-              fm.trigger('error', {error : 'the user cannot be saved'});
-              fm.notify({
-                type: 'mkuser',
-                cnt: -1
-              });
-            }));
-          });
-        }
-      },
-      displayCreateModalWindow = function() {
-        view = view.replace('{content}', content);
-        dialog = fm.dialog(view, opts);
-      };
-
-    if (this.getstate([file.hash]) < 0) {
-      return;
-    }
-
-    displayCreateModalWindow();
-    /*
-    var file = this.files(hashes)[0],
-      id = fm.namespace+'-addclient-'+file.hash,
-      view = this.tpl.main,
-      content = this.tpl.content,
-      reqs = [],
-			dfrd = $.Deferred()
-        .done(function(data){
-          fm.exec('reload', file.hash);
-        }),
-      dialog = fm.getUI().find('#'+id),
-      opts = {
-        title : 'Create client',
-        width: 'auto',
-        open: function() {
-          var self = this;
-          $(self).find('input[name="redirect_uris"]').keydown(function(e) {
-            e.stopImmediatePropagation();
-          });
-          $(self).find('.create-client').on('click', function() {
-            var redirectUris = $(self).find('input[name="redirect_uris"]')
-              .val()
-              .split(',');
-            fm.notify({
-              type: 'addclient',
-              msg: 'Add clients',
-              cnt: 1,
-              hideCnt: true
-            });
-            reqs.push(fm.request({
-              data: { cmd: 'mkclient',
-                redirect_uris: redirectUris
-              },
-              preventDefault: true
-            }).done(function() {
-              fm.notify({
-                type: 'addclient',
-                cnt: -1
-              });
-              dfrd.resolve();
-              $(self).elfinderdialog('close');
-            }).fail(function() {
-              fm.notify({
-                type: 'addclient',
-                cnt: -1
-              });
-              fm.trigger('error', {error : 'invalid redirect uris'});
-            }));
-          });
-        },
-        close: function() {
-          $(this).elfinderdialog('destroy');
-          $.each(reqs, function(i, req) {
-            var xhr = (req && req.xhr)? req.xhr : null;
-            if (xhr && xhr.state() == 'pending') {
-              xhr.quiet = true;
-              xhr.abort();
-            }
-          });
-        }
-      },
-      displayCreateModalWindow = function() {
-        view = view.replace('{content}', content);
-        dialog = fm.dialog(view, opts);
-      };
-
-    if (this.getstate([file.hash]) < 0) {
-      return;
-    }*/
-  }
-};
-
-
-/*
  * File: \js\commands\netmount.js
  */
 
@@ -16092,11 +15428,12 @@ elFinder.prototype.commands.paste = function() {
 elFinder.prototype.commands.permissions = function() {
   var fm = this.fm,
     spclass = 'elfinder-dialog-notify',
-    clientsKey = 'openidclients',
+    clientsKey = 'clients',
     idProvidersKey = 'idproviders',
-    permissionsKey = 'permissions',
-    openIdClaimsKey = 'openidclaims',
-    providerUrlKey = 'provider';
+    permissionsKey = 'scopes',
+    openIdClaimsKey = 'claims',
+    providerUrlKey = 'provider',
+    authIdKey = 'authId';
   this.shortcuts = [{
 		pattern     : 'ctrl+p'
   }];
@@ -16176,32 +15513,79 @@ elFinder.prototype.commands.permissions = function() {
               }
             });
 
+            var request = {
+              rules: rules
+            };
+
             fm.notify({
               type: 'addpermissions',
               msg: 'Update the permissions',
               cnt: 1,
               hideCnt: true
             });
-            reqs.push(fm.request({
-              data: {
-                cmd: 'mkperm',
-                target: file.hash,
-                rules: rules
-              },
-              preventDefault: true
-            }).done(function(data) {
-              fm.notify({
-                type: 'addpermissions',
-                cnt: -1
+            if (information[authIdKey]) { // Update the authorization policy.        
+              request['id'] = information[authIdKey];
+              $.get(fm.options.authUrl).then(function(configuration) {
+                $.ajax({
+                  method: 'PUT',
+                  url: configuration['policies_endpoint'],
+                  data: JSON.stringify(request),
+                  contentType: 'application/json',         
+                  headers: {
+                    "Authorization": "Bearer "+ fm.options.getIdToken()
+                  }
+                }).then(function() {
+                  fm.notify({
+                    type: 'addpermissions',
+                    cnt: -1
+                  });
+                  dfrd.resolve();
+                }).fail(function() {            
+                  fm.trigger('error', {error : 'the permissions cannot be saved'});
+                  fm.notify({
+                    type: 'addpermissions',
+                    cnt: -1
+                  });
+                });
+              }).fail(function() {                
+                fm.trigger('error', {error : 'the permissions cannot be saved'});
+                fm.notify({
+                  type: 'addpermissions',
+                  cnt: -1
+                });
               });
-              dfrd.resolve(data);
-            }).fail(function() {
-              fm.trigger('error', {error : 'the permission cannot be saved'});
-              fm.notify({
-                type: 'addpermissions',
-                cnt: -1
+            } else { // Add an authorization policy.
+              request['resource_set_ids'] = [ file['resource_id'] ];              
+              $.get(fm.options.authUrl).then(function(configuration) {
+                $.ajax({
+                  method: 'POST',
+                  url: configuration['policies_endpoint'],
+                  data: JSON.stringify(request),
+                  contentType: 'application/json',        
+                  headers: {
+                    "Authorization": "Bearer "+ fm.options.getIdToken()
+                  }
+                }).then(function() {
+                  fm.notify({
+                    type: 'addpermissions',
+                    cnt: -1
+                  });
+                  dfrd.resolve();
+                }).fail(function() {            
+                  fm.trigger('error', {error : 'the permissions cannot be saved'});
+                  fm.notify({
+                    type: 'addpermissions',
+                    cnt: -1
+                  });
+                });
+              }).fail(function() {                
+                fm.trigger('error', {error : 'the permissions cannot be saved'});
+                fm.notify({
+                  type: 'addpermissions',
+                  cnt: -1
+                });
               });
-            }));
+            }
           });
         }
 			},
@@ -16661,7 +16045,10 @@ elFinder.prototype.commands.permissions = function() {
 			return $.Deferred().resolve();
 		}
 
-    // display loading spinner
+    if (!file['resource_id']) {
+      fm.trigger('error', {error : 'theResourceMustBeFirstCreated'});
+      return;
+    }
     fm.notify({
       type: 'permissions',
       msg: 'Get permissions',
@@ -16669,22 +16056,66 @@ elFinder.prototype.commands.permissions = function() {
       hideCnt: true
     });
 
-    reqs.push(fm.request({
-      data: { cmd: 'perms', target: file.hash },
-      preventDefault: true
-    }).done(function(data) {
-      displayView(data);
-      fm.notify({
-        type: 'permissions',
-        cnt: -1
+    $.get(fm.options.authUrl).then(function(configuration) {
+      var getResource = function() {
+        return $.ajax({
+          method: 'GET',
+          url: configuration['resource_registration_endpoint'] + '/' + file['resource_id'],
+          headers: {
+            "Authorization": "Bearer "+ fm.options.getIdToken()
+          }
+        });
+      };
+      var getAuthPolicies = function() {
+        var policyId = file['policy_ids'][0];
+        var request = { resource_ids : [ file['resource_id'] ], count: 1 };
+        return $.ajax({
+          method: 'POST',
+          url: configuration['policies_endpoint'] + '/.search',
+          data: JSON.stringify(request),
+          contentType: 'application/json',
+          headers: {
+            "Authorization": "Bearer "+ fm.options.getIdToken()
+          }
+        });
+      };
+      var getEndpoints = function() {
+        return $.ajax({
+          method: 'GET',
+          url: fm.options.profileUrl + '/endpoints',          
+          headers: {
+            "Authorization": "Bearer "+ fm.options.getIdToken()
+          }
+        });
+      };
+      $.when(getResource(), getAuthPolicies(), getEndpoints()).done(function(resource, authPolicies, endpoints) {
+        // NOTE : Manage only the first authorization policy.
+        resource = resource[0];
+        authPolicies = authPolicies[0];
+        console.log(authPolicies);
+        endpoints = endpoints[0];
+        var res = {
+          authrules: []
+        };
+        res[permissionsKey] = resource.scopes;
+        res[idProvidersKey] = endpoints.filter(function(e) { return e.type === 1 ;});
+        if (authPolicies.content && authPolicies.content.length > 0 && authPolicies.content[0].rules) {
+          res['authrules'] = authPolicies.content[0].rules;
+          res[authIdKey] = authPolicies.content[0].id;
+        }
+
+        displayView(res);
+        fm.notify({
+          type: 'permissions',
+          cnt: -1
+        });
+      }).fail(function() {
+        fm.notify({
+          type: 'permissions',
+          cnt: -1
+        });
       });
-    }).fail(function() {
-      fm.trigger('error', {error : 'theResourceMustBeFirstCreated'});
-      fm.notify({
-        type: 'permissions',
-        cnt: -1
-      });
-    }));
+    });
   }
 }
 
@@ -16755,7 +16186,8 @@ elFinder.prototype.commands.protectresource = function() {
       view = this.tpl.main,
       content = this.tpl.content,
       dfrd     = $.Deferred()
-        .done(function(data) {
+        .done(function(data) {          
+          fm.exec('reload', file.hash);
           dialog.elfinderdialog('close');
       }),
       opts = {
@@ -16795,39 +16227,106 @@ elFinder.prototype.commands.protectresource = function() {
           elt.find('.assigned-scopes').append(child);
           refreshRemovableEvtHandlers(elt);
         });
-        elt.find('.patch-resource').click(function() {
-          var scopes = elt.find('.assigned-scopes .elfinder-white-box').children('label');
-          var assignedScopes = [];
-          scopes.each(function() {
-            assignedScopes.push($(this).html());
-          });
-
+        elt.find('.update-resource').click(function() { // Update the UMA resource.
           fm.notify({
             type: 'updateresource',
-            msg: 'Update the resource informations',
+            msg: 'Update UMA resource',
             cnt: 1,
             hideCnt: true
           });
-          reqs.push(fm.request({
-              data: {
-                cmd: 'patchresource',
-                target: file.hash,
-                scopes: assignedScopes
+          $.get(fm.options.authUrl).then(function(configuration) {
+            var scopes = elt.find('.assigned-scopes .elfinder-white-box').children('label');
+            var assignedScopes = [];
+            scopes.each(function() {
+              assignedScopes.push($(this).html());
+            });
+            var request = { _id: file['resource_id'], name: file.hash, type: 'hierarchy', scopes: assignedScopes };
+            $.ajax({
+              method: 'PUT',
+              url: configuration['resource_registration_endpoint'],
+              contentType: 'application/json',       
+              headers: {
+                "Authorization": "Bearer "+ fm.options.getIdToken()
               },
-              preventDefault: true
-            }).done(function(data) {
+              data: JSON.stringify(request)
+            }).then(function(r) {  
+              dfrd.resolve();
               fm.notify({
                 type: 'updateresource',
                 cnt: -1
               });
-              dfrd.resolve(data);
             }).fail(function() {
-              fm.trigger('error', {error : 'The information cannot be saved'});
+              fm.trigger('error', {error : 'UMA resource cannot be updated'});
               fm.notify({
                 type: 'updateresource',
                 cnt: -1
               });
-            }));
+            });
+          }).fail(function() {
+            fm.trigger('error', {error : 'UMA resource cannot be updated'});
+            fm.notify({
+              type: 'updateresource',
+              cnt: -1
+            });
+          });
+        });
+        elt.find('.create-resource').click(function() { // Create the UMA resource.
+          fm.notify({
+            type: 'createresource',
+            msg: 'Create UMA resource',
+            cnt: 1,
+            hideCnt: true
+          });
+          $.get(fm.options.authUrl).then(function(configuration) {
+            var scopes = elt.find('.assigned-scopes .elfinder-white-box').children('label');
+            var assignedScopes = [];
+            scopes.each(function() {
+              assignedScopes.push($(this).html());
+            });
+            var request = { name: file.hash, type: 'hierarchy', scopes: assignedScopes };
+            $.ajax({
+              method: 'POST',
+              url: configuration['resource_registration_endpoint'],
+              contentType: 'application/json',    
+              headers: {
+                "Authorization": "Bearer "+ fm.options.getIdToken()
+              },
+              data: JSON.stringify(request)
+            }).then(function(authResult) { 
+              reqs.push(fm.request({
+                data: {
+                  cmd: 'umaResource',
+                  target: file.hash,
+                  resource_id: authResult['_id']
+                },
+                preventDefault: true
+              }).done(function(data) {
+                dfrd.resolve(data);
+                fm.notify({
+                  type: 'createresource',
+                  cnt: -1
+                });
+              }).fail(function() {
+                fm.trigger('error', {error : 'UMA resource cannot be created'});
+                fm.notify({
+                  type: 'createresource',
+                  cnt: -1
+                });
+              }));
+            }).fail(function(e) {
+              fm.trigger('error', {error : 'UMA resource cannot be created'});
+              fm.notify({
+                type: 'createresource',
+                cnt: -1
+              });
+            });
+          }).fail(function() {
+            fm.trigger('error', {error : 'UMA resource cannot be created'});
+            fm.notify({
+              type: 'createresource',
+              cnt: -1
+            });
+          });
         });
         refreshRemovableEvtHandlers(elt);
       },
@@ -16872,13 +16371,13 @@ elFinder.prototype.commands.protectresource = function() {
           "<button class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only'><span class='ui-button-text'>Add</span></button>"+
         "</form>";
         var assignedScopes = "";
-        if (data.resource && data.resource.scopes) {
-          assignedScopes = getRemovableScopes(data.resource.scopes);
+        if (data.scopes) {
+          assignedScopes = getRemovableScopes(data.scopes);
         }
 
         var information = "";
-        if (data.resource && data.resource.id) {
-          information = "<div><span>reosurceId : "+data.resource.id+"</span></div>";
+        if (data['_id']) {
+          information = "<div><span>resourceId : "+ data['_id'] +"</span></div>";
         }
 
         tableBody = tableBody.replace('{information}', information);
@@ -16886,10 +16385,10 @@ elFinder.prototype.commands.protectresource = function() {
         tableBody = tableBody.replace('{assignedScopes}', assignedScopes);
 
         // Display the buttons.
-        if (!data.resource && !data.resource.id) {
-          content = content.replace('{buttons}', "<button class='create-resource ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only'><span class='ui-button-text patch-resource'>Create</span></button>");
+        if (!data['_id']) {
+          content = content.replace('{buttons}', "<button class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only'><span class='ui-button-text create-resource'>Create</span></button>");
         } else {
-          content = content.replace('{buttons}', "<button class='update-resource ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only'><span class='ui-button-text patch-resource'>Update</span></button>");
+          content = content.replace('{buttons}', "<button class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only'><span class='ui-button-text update-resource'>Update</span></button>");
         }
 
 
@@ -16915,23 +16414,36 @@ elFinder.prototype.commands.protectresource = function() {
       cnt: 1,
       hideCnt: true
     });
-    reqs.push(fm.request({
-      cmd: 'getresource',
-      target: file.hash
-    }).done(function(data) {
-      displayResourceInformations(data);
+
+    if (file && file['resource_id']) {      
+      $.get(this.fm.options.authUrl).then(function(configuration) {
+        $.ajax({
+          method: 'GET', 
+          headers: {
+            "Authorization": "Bearer "+ fm.options.getIdToken()
+          },
+          url: configuration['resource_registration_endpoint'] + '/' + file['resource_id']
+        }).then(function(data) {
+          fm.notify({
+            type: 'protectresource',
+            cnt: -1
+          });
+          displayResourceInformations(data);
+        }).fail(function(e) {
+          fm.trigger('error', {error : 'Uma information cannot be retrieved'});
+          fm.notify({
+            type: 'protectresource',
+            cnt: -1
+          });
+        });
+      });
+    } else {
+      displayResourceInformations({});
       fm.notify({
         type: 'protectresource',
         cnt: -1
       });
-    }).fail(function(e) {
-      console.log(e);
-      fm.trigger('error', {error : 'Information cannot be retrieved'});
-      fm.notify({
-        type: 'protectresource',
-        cnt: -1
-      });
-    }));
+    }
   };
 };
 
@@ -18180,79 +17692,6 @@ elFinder.prototype.commands.reload = function() {
 
 
 /*
- * File: \js\commands\removeclient.js
- */
-
-'use strict';
-
-elFinder.prototype.commands.removeclient = function() {
-  var fm = this.fm,
-    clientsHash = 'assets_openid_clients';
-  this.getstate= function(sel) {
-    var sel = this.files(sel);
-		sel = sel || fm.selected();
-		return !this._disabled && sel.length && $.map(sel, function(h) { return h && h.phash && h.phash === clientsHash ? h : null }).length == sel.length
-			? 0 : -1;
-  };
-  this.exec = function(hashes) {
-    var files = this.files(hashes);
-    var text = 'Do-you want to remove the client';
-    if (files.length > 1) {
-      text = 'Do-you want to remove the {'+files.length+'} clients ?';
-    }
-
-    var self = this,
-      reqs = [],
-      dfrd = $.Deferred()
-        .done(function(data){
-          fm.exec('reload', files[0].phash);
-        }),
-      opts = {
-        title: 'Remove',
-        text : [ text ],
-        accept: {
-          label: 'btnYes',
-          callback: function() {
-            fm.notify({
-              type: 'removeclient',
-              msg: 'Remove client(s)',
-              cnt: 1,
-              hideCnt: true
-            });
-            var clientIds = [];
-            files.forEach(file => clientIds.push(file.hash.replace(clientsHash + '_', '')));
-            fm.request({
-              data: {
-                cmd: 'rmclient',
-                client_ids : clientIds
-              },
-              preventDefault: true
-            }).done(function() {
-              fm.notify({
-                type: 'removeclient',
-                cnt: -1
-              });
-              dfrd.resolve();
-            }).fail(function() {
-              fm.notify({
-                type: 'removeclient',
-                cnt: -1
-              });
-              fm.trigger('error', {error : 'error occured while trying to delete the client(s)'});
-            });
-          }
-        },
-        cancel: {
-          label: 'btnCancel',
-          callback: function() { }
-        }
-      }
-    fm.confirm(opts);
-  }
-};
-
-
-/*
  * File: \js\commands\rename.js
  */
 
@@ -19373,219 +18812,6 @@ elFinder.prototype.commands.resize = function() {
 
 
 /*
- * File: \js\commands\resourceinfo.js
- */
-
-'use strict';
-
-elFinder.prototype.commands.resourceinfo = function() {
-  var fm = this.fm,
-    umaResourcesHash = 'assets_uma_resources';
-  this.tpl = {
-    main : '<div class="ui-helper-clearfix elfinder-info-title">'+
-      '<img class="elfinder-clientinfo-logo" src="{logoUri}" />' +
-      '<strong>Resource</strong>'+
-      '<span class="elfinder-info-kind">{title}</span> {url}</div>{content}',
-    content: '<table class="elfinder-info-tb" id="scopes-resource"><tbody>'+
-      '<tr><td>Scopes</td><td><input type="text" id="scope-value" /><button id="add-scope">Add</button></td></tr>'+
-      '<tr><td colspan="2"><ul class="list" id="scope-list">{scopes}</ul></td></tr>'+
-      '<tr><td>Parents</td></tr>'+
-      '<tr><td colspan="2"><ul class="list">{policies}</ul></td></tr>'+
-      '<tr><td><button id="update">Update</button></td></tr>' +
-      '</tbody></table>'
-  };
-  this.getstate = function(sel) {
-    var sel = this.files(sel);
-    var result = !this._disabled && sel.length == 1 && sel[0].phash && sel[0].phash === umaResourcesHash ? 0 : -1;
-    return result;
-  };
-  this.exec = function(hashes) {
-    var file = this.files(hashes)[0],
-      id = fm.namespace+'-umaresource-'+file.hash,
-      reqs = [],
-      resourceSet = {},
-      options = this.options,
-      dialog = fm.getUI().find('#'+id),
-      view = this.tpl.main,
-      content = this.tpl.content,
-      dfrd = $.Deferred()
-        .done(function(data){
-          fm.exec('reload', file.phash);
-        }),
-      opts = {
-        title : 'Resource',
-        width: 'auto',
-        close: function() {
-          $(this).elfinderdialog('destroy');
-          $.each(reqs, function(i, req) {
-            var xhr = (req && req.xhr)? req.xhr : null;
-            if (xhr && xhr.state() == 'pending') {
-              xhr.quiet = true;
-              xhr.abort();
-            }
-          });
-        },
-        open: function() {
-          var self = this;
-          // Stop propgation
-          $(self).find("#scope-value").keydown(function(e) {
-            e.stopImmediatePropagation();
-          });
-          // Add a scope
-          $(self).find("#add-scope").on('click', function() {
-            var scope = $(self).find("#scope-value").val();
-            $(self).find("#scope-list").append(contructTiles([
-              scope
-            ]));
-            refreshRemovableResource();
-          });
-          // Update the resource
-          $(self).find("#update").on('click', function() {
-            var scopeElts = $(self).find('.scope').children('label');
-            var scopes = [];
-            scopeElts.each(function() {
-              scopes.push($(this).html());
-            });
-
-            var request = {
-              _id: resourceSet._id,
-              name: resourceSet.name,
-              uri: resourceSet.uri,
-              type: resourceSet.type,
-              scopes: scopes,
-              icon_uri: resourceSet.icon_uri,
-              cmd: 'updateresource'
-            };
-
-            fm.notify({
-              type: 'updateresource',
-              msg: 'Update resource',
-              cnt: 1,
-              hideCnt: true
-            });
-            reqs.push(fm.request({
-              data: request,
-              preventDefault: true
-            }).done(function() {
-              fm.notify({
-                type: 'updateresource',
-                cnt: -1
-              });
-              dfrd.resolve();
-              $(self).elfinderdialog('close');
-            }).fail(function(e) {
-              fm.trigger('error', {error : 'Resource cannot be updated'});
-              fm.notify({
-                type: 'updateresource',
-                cnt: -1
-              });
-            }));
-          });
-
-          refreshRemovableResource();
-        }
-      },
-      refreshRemovableResource = function() {
-        $(dialog).find('.remove-scope').on('click', function(e) {
-          e.preventDefault();
-          $(e.currentTarget).parent().remove();
-        });
-      },
-      contructTiles = function(data) {
-        var content = "";
-        if (data && data.length > 0) {
-          data.forEach(d => {
-            content += "<li class='elfinder-white-box scope'><label>"+d+"</label> (<a href='#' class='remove-scope'>Remove</a>)</li>";
-          });
-        } else {
-          content = "no scope";
-        }
-
-        return content;
-      },
-      constructParents = function(data) {
-        var content = "";
-        if (data && data.length > 0) {
-          data.forEach(d => {
-            content += "<li class='elfinder-white-box'><label><a href='#elf_"+d.hash+"' target='_blank'>"+d.name+"</a></label>";
-            if (d.hasAuthorizationPolicy) {
-              content += " (contains authorization policy)"
-            }
-
-            content += "</li>";
-          });
-        }
-        else {
-          content = "no parent"
-        }
-
-        return content;
-      },
-      displayResource = function(data) {
-        var scopes = "no scopes";
-        if (data.scopes && data.scopes.length > 0) {
-          scopes = contructTiles(data.scopes);
-        }
-
-        content = content.replace('{scopes}', scopes);
-        var iconUri = data.icon_uri;
-        if (!iconUri) {
-          iconUri = 'img/unknown_resource.png';
-        }
-
-        view = view.replace('{logoUri}', iconUri);
-        view = view.replace('{title}', data.name);
-        view = view.replace('{content}', content);
-        if (data.path) {
-          view = view.replace('{url}', '(<a href="'+options.resourceUrl.replace('{hash}', data.uri)+'" target="_blank">'+data.path+'</a>)');
-        } else {
-          view = view.replace('{url}', '');
-        }
-
-        view = view.replace('{policies}', constructParents(data.parents));
-        dialog = fm.dialog(view, opts);
-        dialog.attr('id', id);
-        resourceSet = data;
-      };
-
-    if (this.getstate([file.hash]) < 0) {
-      return;
-    }
-
-    if (dialog.length) {
-			dialog.elfinderdialog('toTop');
-			return $.Deferred().resolve();
-		}
-
-    // display loading spinner
-    fm.notify({
-      type: 'resourceinfo',
-      msg: 'Get resource information',
-      cnt: 1,
-      hideCnt: true
-    });
-
-    reqs.push(fm.request({
-      cmd: 'resourceinfo',
-      resource_id: file.hash.replace(umaResourcesHash + '_','')
-    }).done(function(data) {
-      displayResource(data);
-      fm.notify({
-        type: 'resourceinfo',
-        cnt: -1
-      });
-    }).fail(function() {
-      fm.trigger('error', {error : 'resource information cannot be retrieved'});
-      fm.notify({
-        type: 'resourceinfo',
-        cnt: -1
-      });
-    }));
-  }
-}
-
-
-/*
  * File: \js\commands\rm.js
  */
 
@@ -19717,508 +18943,6 @@ elFinder.prototype.commands.rm = function() {
 		return dfrd;
 	}
 
-};
-
-
-/*
- * File: \js\commands\rmpolicy.js
- */
-
-'use strict';
-
-elFinder.prototype.commands.rmpolicy = function() {
-  var fm = this.fm,
-    authPoliciesHash = 'assets_uma_authorization_policies';
-  this.getstate= function(sel) {
-    var sel = this.files(sel);
-		sel = sel || fm.selected();
-		return !this._disabled && sel.length && $.map(sel, function(h) { return h && h.phash && h.phash === authPoliciesHash ? h : null }).length == sel.length
-			? 0 : -1;
-  };
-  this.exec = function(hashes) {
-    var files = this.files(hashes);
-    var text = 'Do-you want to remove the authorization policy';
-    if (files.length > 1) {
-      text = 'Do-you want to remove the {'+files.length+'} authorization policies ?';
-    }
-
-    var self = this,
-      reqs = [],
-      dfrd = $.Deferred()
-        .done(function(data){
-          fm.exec('reload', files[0].phash);
-        }),
-      opts = {
-        title: 'Remove',
-        text : [text],
-        accept: {
-          label: 'btnYes',
-          callback: function() {
-            fm.notify({
-              type: 'rmpolicy',
-              msg: 'Remove authorization policy(ies)',
-              cnt: 1,
-              hideCnt: true
-            });
-            var authPolicyIds = [];
-            files.forEach(file => authPolicyIds.push(file.hash.replace(authPoliciesHash + '_', '')));
-            fm.request({
-              data: {
-                cmd: 'rmpolicy',
-                policy_ids : authPolicyIds
-              },
-              preventDefault: true
-            }).done(function() {
-              fm.notify({
-                type: 'rmpolicy',
-                cnt: -1
-              });
-              dfrd.resolve();
-            }).fail(function() {
-              fm.notify({
-                type: 'rmpolicy',
-                cnt: -1
-              });
-              fm.trigger('error', {error : 'error occured while trying to delete the authorization policy(ies)'});
-            });
-          }
-        },
-        cancel: {
-          label: 'btnCancel',
-          callback: function() { }
-        }
-      }
-    fm.confirm(opts);
-  }
-};
-
-
-/*
- * File: \js\commands\rmresource.js
- */
-
-'use strict';
-
-elFinder.prototype.commands.rmresource = function() {
-  var fm = this.fm,
-    umaResourceHash = 'assets_uma_resources';
-  this.getstate= function(sel) {
-    var sel = this.files(sel);
-		sel = sel || fm.selected();
-		return !this._disabled && sel.length && $.map(sel, function(h) { return h && h.phash && h.phash === umaResourceHash ? h : null }).length == sel.length
-			? 0 : -1;
-  };
-  this.exec = function(hashes) {
-    var files = this.files(hashes);
-    var text = 'Do-you want to remove the resource';
-    if (files.length > 1) {
-      text = 'Do-you want to remove the {'+files.length+'} resources ?';
-    }
-
-    var self = this,
-      files = this.files(hashes),
-      reqs = [],
-      dfrd = $.Deferred()
-        .done(function(data){
-          fm.exec('reload', files[0].phash);
-        }),
-      opts = {
-        title: 'Delete',
-        text : [text],
-        accept: {
-          label: 'btnYes',
-          callback: function() {
-            fm.notify({
-              type: 'rmresource',
-              msg: 'Remove resource(s)',
-              cnt: 1,
-              hideCnt: true
-            });
-            var resourceIds = [];
-            files.forEach(file => resourceIds.push(file.hash.replace(umaResourceHash + '_', '')));
-            fm.request({
-              data: {
-                cmd: 'rmresource',
-                resource_ids : resourceIds
-              },
-              preventDefault: true
-            }).done(function() {
-              fm.notify({
-                type: 'rmresource',
-                cnt: -1
-              });
-              dfrd.resolve();
-            }).fail(function() {
-              fm.notify({
-                type: 'rmresource',
-                cnt: -1
-              });
-              fm.trigger('error', {error : 'error occured while trying to delete the resource(s)'});
-            });
-          }
-        },
-        cancel: {
-          label: 'btnCancel',
-          callback: function() { }
-        }
-      }
-    fm.confirm(opts);
-  }
-};
-
-
-/*
- * File: \js\commands\rmscope.js
- */
-
-'use strict';
-
-elFinder.prototype.commands.rmscope = function() {
-  var fm = this.fm,
-    scopesHash = 'assets_openid_scopes';
-  this.getstate= function(sel) {
-    var sel = this.files(sel);
-		sel = sel || fm.selected();
-		return !this._disabled && sel.length && $.map(sel, function(h) { return h && h.phash && h.phash === scopesHash ? h : null }).length == sel.length
-			? 0 : -1;
-  };
-  this.exec = function(hashes) {
-    var files = this.files(hashes);
-    var text = 'Do-you want to remove the scope';
-    if (files.length > 1) {
-      text = 'Do-you want to remove the {'+files.length+'} scopes ?';
-    }
-
-    var self = this,
-      file = this.files(hashes)[0],
-      reqs = [],
-      dfrd = $.Deferred()
-        .done(function(data){
-          fm.exec('reload', files[0].phash);
-        }),
-      opts = {
-        title: 'Remove',
-        text : [text],
-        accept: {
-          label: 'btnYes',
-          callback: function() {
-            fm.notify({
-              type: 'rmscope',
-              msg: 'Remove resource(s)',
-              cnt: 1,
-              hideCnt: true
-            });
-            var scopes = [];
-            files.forEach(file => scopes.push(file.hash.replace(scopesHash + '_', '')));
-            fm.request({
-              data: {
-                cmd: 'rmscope',
-                scopes : scopes
-              },
-              preventDefault: true
-            }).done(function() {
-              fm.notify({
-                type: 'rmscope',
-                cnt: -1
-              });
-              dfrd.resolve();
-            }).fail(function() {
-              fm.notify({
-                type: 'rmscope',
-                cnt: -1
-              });
-              fm.trigger('error', {error : 'error occured while trying to delete the scope(s)'});
-            });
-          }
-        },
-        cancel: {
-          label: 'btnCancel',
-          callback: function() { }
-        }
-      }
-    fm.confirm(opts);
-  }
-};
-
-
-/*
- * File: \js\commands\rmuser.js
- */
-
-'use strict';
-
-elFinder.prototype.commands.rmuser = function() {
-    var fm = this.fm,
-      resourceOwnersHash = 'assets_resourceowners';
-    this.getstate= function(sel) {
-      var sel = this.files(sel);
-      sel = sel || fm.selected();
-      return !this._disabled && sel.length && $.map(sel, function(h) { return h && h.phash && h.phash === resourceOwnersHash ? h : null }).length == sel.length
-        ? 0 : -1;
-    };
-    this.exec = function(hashes) {
-      var files = this.files(hashes);
-      var text = 'Do-you want to remove the resource owner';
-      if (files.length > 1) {
-        text = 'Do-you want to remove the {'+files.length+'} resource owners ?';
-      }
-
-      var self = this,
-        file = this.files(hashes)[0],
-        reqs = [],
-        dfrd = $.Deferred()
-          .done(function(data){
-            fm.exec('reload', files[0].phash);
-          }),
-        opts = {
-          title: 'Remove',
-          text : [text],
-          accept: {
-            label: 'btnYes',
-            callback: function() {
-              fm.notify({
-                type: 'rmuser',
-                msg: 'Remove resource owner (s)',
-                cnt: 1,
-                hideCnt: true
-              });
-              var resourceOwners = [];
-              files.forEach(file => resourceOwners.push(file.hash.replace(resourceOwnersHash + '_', '')));
-              fm.request({
-                data: {
-                  cmd: 'rmro',
-                  ros : resourceOwners
-                },
-                preventDefault: true
-              }).done(function() {
-                fm.notify({
-                  type: 'rmuser',
-                  cnt: -1
-                });
-                dfrd.resolve();
-              }).fail(function() {
-                fm.notify({
-                  type: 'rmuser',
-                  cnt: -1
-                });
-                fm.trigger('error', {error : 'error occured while trying to delete the resource owner(s)'});
-              });
-            }
-          },
-          cancel: {
-            label: 'btnCancel',
-            callback: function() { }
-          }
-        }
-
-      fm.confirm(opts);
-    };
-};
-
-
-/*
- * File: \js\commands\scopeinfo.js
- */
-
-'use strict';
-
-elFinder.prototype.commands.scopeinfo = function() {
-  var fm = this.fm,
-    openidScopesHash = 'assets_openid_scopes';
-  this.tpl = {
-    main : '<div class="ui-helper-clearfix elfinder-info-title">'+
-      '<img class="elfinder-clientinfo-logo" src="img/scope.png" />' +
-      '<strong>Scope</strong>'+
-      '<span class="elfinder-info-kind">{title}</span></div>{content}',
-    content: '<table class="elfinder-info-tb"><tbody>'+
-      '<tr><td>Open id scope</td><td><input type="checkbox" id="is-openid" {isOpenIdScope} readonly/></td></tr>'+
-      '<tr><td>Displayed in the consent screen</td><td><input type="checkbox" id="is-displayed-in-consent" {isDisplayInConsent} readonly/></td></tr>'+
-      '<tr><td>Exposed in the contrat</td><td><input type="checkbox" id="is-exposed" {isExposed} readonly/></td></tr>'+
-      '<tr><td>Type</td><td><select name="type" id="choose-type"><option value="0">Resource</option><option value="1">Resource owner</option></select></td></tr>' +
-      '<tr class="claims" style="display:none;"><td>Claim types</td><td><input type="text" id="claim-type"/><button type="button" id="add-claim">Add</button></td></tr>' +
-      '<tr class="claims" style="display:none;"><td colspan="2"><ul id="claim-types" class="list">{claims}</ul></td></tr>' +
-      '<tr><td colspan="2"><button type="button" id="save-scope">Save</button></td></tr>' +
-      '</tbody></table>'
-  };
-  this.getstate= function(sel) {
-    var sel = this.files(sel);
-    var result = !this._disabled && sel.length == 1 && sel[0].phash === openidScopesHash ? 0 : -1;
-    return result;
-  };
-  this.exec = function(hashes) {
-    var file = this.files(hashes)[0],
-      id = fm.namespace+'-scopeinfo-'+file.hash,
-      reqs = [],
-      options = this.options,
-      dialog = fm.getUI().find('#'+id),
-      view = this.tpl.main,
-      content = this.tpl.content,
-      dfrd = $.Deferred()
-        .done(function(data){
-          fm.exec('reload', file.phash);
-        }),
-      scope = {},
-      opts = {
-        title : 'Scope',
-        width: 'auto',
-        close: function() {
-          $(this).elfinderdialog('destroy');
-          $.each(reqs, function(i, req) {
-            var xhr = (req && req.xhr)? req.xhr : null;
-            if (xhr && xhr.state() == 'pending') {
-              xhr.quiet = true;
-              xhr.abort();
-            }
-          });
-        },
-        open: function() {
-          var self = this;
-          // Select type
-          $(self).find("#choose-type").val(scope.type);
-          if (scope.type === 1) {
-            $(self).find('.claims').show();
-          }
-
-          // Refresh event handlers
-          $(self).find('#claim-types a').on('click', function(e) {
-            e.preventDefault();
-            $(this).parent().remove();
-          });
-          // Display claims or not
-          $(self).find('#choose-type').on('change', function() {
-            var valueSelected = this.value;
-            if (valueSelected == 0) {
-              $(self).find('.claims').hide();
-            } else {
-              $(self).find('.claims').show();
-            }
-          });
-          // Add claim types
-          $(self).find('#add-claim').on('click', function() {
-            var claimType = $(self).find('#claim-type').val();
-            $(self).find('#claim-types').append("<li class='elfinder-white-box'><label>"+claimType+"</label><a href='#'>(Remove)</a></li>");
-            $(self).find('#claim-types a').on('click', function(e) {
-              e.preventDefault();
-              $(this).parent().remove();
-            });
-          });
-          // Save scope
-          $(self).find("#save-scope").on('click', function() {
-            scope.target = file.hash;
-            scope.cmd = 'updatescope';
-            scope.type = $(self).find("#choose-type").val();
-            scope.is_displayed_in_consent = $(self).find('#is-displayed-in-consent').is(':checked');;
-            scope.is_exposed = $(self).find('#is-exposed').is(':checked');
-            scope.is_openid_scope = $(self).find('#is-openid').is(':checked');
-            scope.claims = [];
-            if (scope.type === '1') {
-              scope.claims = $.map($(self).find('#claim-types li label'), function(n) {
-                return $(n).text();
-              });
-            }
-
-
-            fm.notify({
-              type: 'updatescope',
-              msg: 'Update scope',
-              cnt: 1,
-              hideCnt: true
-            });
-            reqs.push(fm.request({
-              data: scope,
-              preventDefault: true
-            }).done(function() {
-              fm.notify({
-                type: 'updatescope',
-                cnt: -1
-              });
-              dfrd.resolve();
-              $(self).elfinderdialog('close');
-            }).fail(function() {
-              fm.trigger('error', {error : 'the scope cannot be updated'});
-              fm.notify({
-                type: 'updatescope',
-                cnt: -1
-              });
-            }));
-          });
-        }
-      },
-      contructTiles = function(data) {
-        var content = "";
-        if (data) {
-          data.forEach(d => {
-            content += "<div class='elfinder-white-box'><label>"+d+"</label></div>";
-          });
-        }
-        return content;
-      },
-      /**
-      * Construct removable tiles
-      */
-      constructRemovableTile = function(data) {
-        var content = "";
-        if (data) {
-          data.forEach(d => {
-            content += "<li class='elfinder-white-box'><label>"+d+"</label><a href='#'>(Remove)</a></li>";
-          });
-        }
-        return content;
-      },
-      displayScope = function(data) {
-        var check = function(b, name) {
-          if (b) {
-            content = content.replace(name, 'checked');
-          } else {
-            content = content.replace(name, '');
-          }
-        };
-
-        check(data.is_openid_scope, '{isOpenIdScope}');
-        check(data.is_displayed_in_consent, '{isDisplayInConsent}');
-        check(data.is_exposed, '{isExposed}');
-        view = view.replace('{title}', data.name);
-        view = view.replace('{content}', content);
-        view = view.replace('{claims}', constructRemovableTile(data.claims));
-        dialog = fm.dialog(view, opts);
-        dialog.attr('id', id);
-        scope = data;
-      };
-
-    if (this.getstate([file.hash]) < 0) {
-      return;
-    }
-
-    if (dialog.length) {
-			dialog.elfinderdialog('toTop');
-			return $.Deferred().resolve();
-		}
-
-    // display loading spinner
-    fm.notify({
-      type: 'scopeinfo',
-      msg: 'Get scope',
-      cnt: 1,
-      hideCnt: true
-    });
-
-    reqs.push(fm.request({
-      cmd: 'scope',
-      name: file.name
-    }).done(function(data) {
-      displayScope(data);
-      fm.notify({
-        type: 'scopeinfo',
-        cnt: -1
-      });
-    }).fail(function() {
-      fm.trigger('error', {error : 'scope cannot be retrieved'});
-      fm.notify({
-        type: 'scopeinfo',
-        cnt: -1
-      });
-    }));
-  };
 };
 
 
@@ -20682,225 +19406,6 @@ elFinder.prototype.commands.upload = function() {
 		return dfrd;
 	};
 
-};
-
-
-/*
- * File: \js\commands\userinfo.js
- */
-
-'use strict';
-
-elFinder.prototype.commands.userinfo = function() {
-  var fm = this.fm,
-    resourceOwnersHash = 'assets_resourceowners';
-  this.tpl = {
-    main : '<div class="ui-helper-clearfix elfinder-info-title">'+
-      '<img class="elfinder-clientinfo-logo" src="{picture}" />' +
-      '<strong>Resource owner ( <a href="{editUrl}" target="_blank">Details</a> )</strong> '+
-      '<span class="elfinder-info-kind">{title}</span></div>{content}',
-    content: '<table class="elfinder-info-tb"><tbody>'+
-      '<tr><td>Add role</td><td><input type="text" class="role" /><button class="add-role">Add</button></td></tr>'+
-      '<tr><td>Roles</td><td style="width:300px;"><ul class="assigned-roles list">{roles}</ul></td></tr>'+
-      '<tr><td><button class="update">Update</button></td></tr>' +
-      '</tbody></table>'
-  };
-  this.getstate = function(sel) {
-    var sel = this.files(sel);
-    var result = !this._disabled && sel.length == 1 && sel[0].phash && sel[0].phash === resourceOwnersHash ? 0 : -1;
-    return result;
-  };
-  this.exec = function(hashes) {
-    var file = this.files(hashes)[0],
-      id = fm.namespace+'-userinfo-'+file.hash,
-      resourceowner = {},
-      reqs = [],
-      options = this.options,
-      dialog = fm.getUI().find('#'+id),
-      view = this.tpl.main,
-      content = this.tpl.content,
-      dfrd = $.Deferred()
-        .done(function(data){
-          fm.exec('reload', file.phash);
-        }),
-      opts = {
-        title : 'User information',
-        width: 'auto',
-        close: function() {
-          $(this).elfinderdialog('destroy');
-          $.each(reqs, function(i, req) {
-            var xhr = (req && req.xhr)? req.xhr : null;
-            if (xhr && xhr.state() == 'pending') {
-              xhr.quiet = true;
-              xhr.abort();
-            }
-          });
-        },
-        open: function() {
-          var self = this;
-          $(self).find('.role').keydown(function(e) {
-  					e.stopImmediatePropagation();
-          });
-          $(self).find(".add-role").on("click", function() {
-            var role = $(self).find('.role').val();
-            addRole(role, self);
-          });
-          $(self).find(".update").on("click", function() {
-            var roles = $(self).find('.elfinder-white-box').children('label');
-            var indexes = [];
-            resourceowner.claims.forEach(function(c, index) {
-              if (c.key === 'role') {
-                indexes.push(index);
-              }
-            });
-
-            var length = resourceowner.claims.length;
-            for(var i = length - 1; i >= 0; i--)
-            {
-              if (indexes.indexOf(i) > -1 && resourceowner.claims[i].key === 'role')
-              {
-                resourceowner.claims.splice(i, 1);
-              }
-            }
-
-            roles.each(function() {
-              var val = $(this).html();
-              resourceowner.claims.push({ key: 'role', value: val });
-            });
-            fm.notify({
-              type: 'updateuser',
-              msg: 'Update user information',
-              cnt: 1,
-              hideCnt: true
-            });
-            reqs.push(fm.request({
-              data: {
-                cmd: 'updatero',
-                user: resourceowner
-              },
-              preventDefault: true
-            }).done(function() {
-              fm.notify({
-                type: 'updateuser',
-                cnt: -1
-              });
-              dfrd.resolve();
-              $(self).elfinderdialog('close');
-            }).fail(function() {
-              fm.trigger('error', {error : 'User cannot be updated'});
-              fm.notify({
-                type: 'updatero',
-                cnt: -1
-              });
-            }));
-          });
-          refreshEventHandler(self);
-        }
-      },
-      addRole = function(role, self) {
-        var assignedRoles = $(self).find('.assigned-roles');
-        if (assignedRoles.children().length === 0) {
-          assignedRoles.html('');
-        }
-
-        var child = constructRemovableTiles([role]);
-        assignedRoles.append(child);
-        refreshEventHandler(self);
-      },
-      refreshEventHandler = function(self) {
-        $(self).find('.can-be-removed').on('click', function(e) {
-          e.preventDefault();
-          var currentTarget = e.currentTarget;
-          if ($(currentTarget).parent().children().length === 1) {
-            $(currentTarget).parent().html('No roles');
-          } else {
-            $(currentTarget).remove();
-          }
-        });
-      },
-      constructRemovableTiles = function(data) {
-          var content = "";
-          data.forEach(d => {
-            content += "<li class='elfinder-white-box can-be-removed'><label>"+d+"</label><a href='#'>(Remove)</a></li>";
-          });
-          return content;
-      },
-      displayUser = function(user) {
-        var picture = user.picture;
-        if (!picture) {
-          picture = 'img/unknown.png';
-        }
-
-        if (!user.claims) {
-          user.claims = [];
-        }
-
-        var rolesStr = 'No roles';
-        if (user.claims.length > 0)
-        {
-          var roles = [];
-          user.claims.forEach(function(record) {
-            if (record.key === 'role')
-            {
-              roles.push(record.value);
-            }
-          });
-          if (roles.length > 0)
-          {
-            rolesStr = constructRemovableTiles(roles);
-          }
-        }
-
-        if (user.is_localaccount) {
-          content = content.replace('{roles}', rolesStr);
-        }
-        else {
-          content = '<table class="elfinder-info-tb"><tbody><tr><td>Not a local account</td></tr></tbody></table>';
-        }
-
-        view = view.replace('{picture}', picture);
-        view = view.replace('{title}', user.login);
-        view = view.replace('{content}', content);
-        view = view.replace('{editUrl}', options.editUrl.replace('{user_id}', user.login));
-        dialog = fm.dialog(view, opts);
-        resourceowner = user;
-        dialog.attr('id', id);
-      };
-
-    if (this.getstate([file.hash]) < 0) {
-      return;
-    }
-
-    if (dialog.length) {
-      dialog.elfinderdialog('toTop');
-      return $.Deferred().resolve();
-    }
-
-    fm.notify({
-      type: 'userinfo',
-      msg: 'Get user information',
-      cnt: 1,
-      hideCnt: true
-    });
-
-    var id = file.hash.replace(resourceOwnersHash + '_', '');
-    reqs.push(fm.request({
-      cmd: 'ro',
-      id: id
-    }).done(function(data) {
-      displayUser(data);
-      fm.notify({
-        type: 'userinfo',
-        cnt: -1
-      });
-    }).fail(function() {
-      fm.trigger('error', {error : 'User information cannot be retrieved'});
-      fm.notify({
-        type: 'userinfo',
-        cnt: -1
-      });
-    }));
-  };
 };
 
 

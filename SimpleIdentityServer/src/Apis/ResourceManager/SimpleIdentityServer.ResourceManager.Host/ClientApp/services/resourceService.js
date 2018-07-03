@@ -39,7 +39,7 @@ module.exports = {
             var session = SessionService.getSession();
             var url = SessionStore.getSession().selectedAuth['url'];
             $.get(url).then(function(configuration) {
-                var data = JSON.stringify({ resource_ids : [ id ], count: 1 });
+                var data = JSON.stringify({ resource_ids : [ id ], count: 10000 });
                 $.ajax({
                     url: configuration['policies_endpoint'] + '/.search',
                     method: "POST",

@@ -13,5 +13,5 @@
     },
     openidManagerBaseUrl: 'http://localhost:60003',
     profileBaseUrl: 'http://localhost:60005',
-
+    hierarchicalResourcesBaseUrl: 'http://localhost:60006'
 };

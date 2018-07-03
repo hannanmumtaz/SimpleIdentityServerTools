@@ -53,7 +53,7 @@ class Login extends Component {
             isLoading: true
         });
         // TODO : Resolve this url.
-        var url = "http://localhost:60000/authorization?scope=openid role profile&state=75BCNvRlEGHpQRCT&redirect_uri=http://localhost:64950/callback&response_type=id_token token&client_id=ResourceManagerClientId&nonce=nonce&response_mode=query";
+        var url = "http://localhost:60000/authorization?scope=openid role profile&state=75BCNvRlEGHpQRCT&redirect_uri=http://localhost:64950/callback&response_type=id_token token&client_id=ResourceManagerClientId&nonce=nonce&response_mode=query&amr_values=pwd";
         var w = window.open(url, '_blank');        
         var interval = setInterval(function () {
             if (w.closed) {

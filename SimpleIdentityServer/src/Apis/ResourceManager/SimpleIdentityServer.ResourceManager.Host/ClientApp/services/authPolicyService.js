@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Constants from '../constants';
 import SessionService from './sessionService';
+import { SessionStore } from '../stores';
 
 module.exports = {
 	/**
@@ -10,17 +11,22 @@ module.exports = {
         return new Promise(function (resolve, reject) {
             var data = JSON.stringify(request);
             var session = SessionService.getSession();
-            $.ajax({
-                url: Constants.apiUrl + '/authpolicies',
-                method: "PUT",
-                data: data,
-                contentType: 'application/json',
-                headers: {
-                    "Authorization": "Bearer "+ session.token
-                }
-            }).then(function (data) {
-                resolve(data);
-            }).fail(function (e) {
+            var url = SessionStore.getSession().selectedAuth['url'];
+            $.get(url).then(function(configuration) {
+                $.ajax({
+                    url: configuration['policies_endpoint'],
+                    method: "PUT",
+                    data: data,
+                    contentType: 'application/json',
+                    headers: {
+                        "Authorization": "Bearer "+ session.token
+                    }
+                }).then(function (data) {
+                    resolve(data);
+                }).fail(function (e) {
+                    reject(e);
+                });
+            }).fail(function(e) {
                 reject(e);
             });
 		});
@@ -32,17 +38,23 @@ module.exports = {
         return new Promise(function (resolve, reject) {
             var data = JSON.stringify(request);
             var session = SessionService.getSession();
-            $.ajax({
-                url: Constants.apiUrl + '/authpolicies',
-                method: "POST",
-                data: data,
-                contentType: 'application/json',
-                headers: {
-                    "Authorization": "Bearer "+ session.token
-                }
-            }).then(function (data) {
-                resolve(data);
-            }).fail(function (e) {
+            var url = SessionStore.getSession().selectedAuth['url'];
+            console.log(url);
+            $.get(url).then(function(configuration) {
+                $.ajax({
+                    url: configuration['policies_endpoint'],
+                    method: "POST",
+                    data: data,
+                    contentType: 'application/json',
+                    headers: {
+                        "Authorization": "Bearer "+ session.token
+                    }
+                }).then(function (data) {
+                    resolve(data);
+                }).fail(function (e) {
+                    reject(e);
+                });
+            }).fail(function(e) {
                 reject(e);
             });
         });     
@@ -53,15 +65,20 @@ module.exports = {
     delete: function(id) {
         return new Promise(function (resolve, reject) {
             var session = SessionService.getSession();
-            $.ajax({
-                url: Constants.apiUrl + '/authpolicies/' + id,
-                method: "DELETE",
-                headers: {
-                    "Authorization": "Bearer "+ session.token
-                }
-            }).then(function (data) {
-                resolve(data);
-            }).fail(function (e) {
+            var url = SessionStore.getSession().selectedAuth['url'];
+            $.get(url).then(function(configuration) {
+                $.ajax({
+                    url: configuration['policies_endpoint'] + '/' + id,
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": "Bearer "+ session.token
+                    }
+                }).then(function (data) {
+                    resolve(data);
+                }).fail(function (e) {
+                    reject(e);
+                });
+            }).fail(function(e) {
                 reject(e);
             });
         });

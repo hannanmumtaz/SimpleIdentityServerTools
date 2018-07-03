@@ -7,8 +7,43 @@ window.jQuery = $;
 jQuery = $;
 require('jquery-ui-dist/jquery-ui.js');
 require('../../../elfinder/js/elfinder.full.js');
+import { SessionStore } from '../../stores';
+import { SessionService } from '../../services';
 
 class HierarchicalResources extends Component {
+    constructor(props) {
+        super(props);
+        this.display = this.display.bind(this);
+    }
+
+    display() {        
+        var authUrl = SessionStore.getSession().selectedAuth['url'];
+        $(this.refs.elfinder).elfinder({
+            url : Constants.hierarchicalResourcesBaseUrl + '/elfinder',
+            authUrl: authUrl,
+            profileUrl: Constants.profileBaseUrl,
+            getIdToken: function() {
+                return SessionService.getSession().token;
+            },
+            contextmenu: {
+                cwd    : ['reload', 'back', '|', 'mkdir', 'mkfile', 'paste', '|', 'sort', '|', 'info'],
+                navbar : ['open', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'rm', '|', 'permissions' ],
+                files: ['getfile', '|', 'mkdir', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'rm', '|', 'rename', '|', 'permissions', 'protectresource' ]
+            },
+            uiOptions: {
+                toolbar: [
+                    ['back', 'forward'],
+                    ['mkdir', 'mkfile'],
+                    ['rm'],
+                    ['rename'],
+                    ['search'],
+                    ['view', 'sort'],
+                    ['protectresource', 'permissions']
+                ]
+            }
+        });
+    }
+
     render() {
         var self = this;
         const { t } = self.props;
@@ -25,42 +60,15 @@ class HierarchicalResources extends Component {
     }
 
     componentDidMount() {
-    	$(this.refs.elfinder).elfinder({
-				url : Constants.apiUrl + '/elfinder',
+        var self = this;
+        SessionStore.addChangeListener(function() {
+            self.display();
+        });
 
-				// Callback when a file is double-clicked
-				getFileCallback : function(file) {
-					// ...
-				},
-        contextmenu: {
-						cwd    : ['reload', 'back', '|', 'mkdir', 'mkfile', 'paste', 'addclient', 'mkuser', 'mkscope', '|', 'sort', '|', 'info'],
-						navbar : ['open', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'rm', 'removeclient', 'rmpolicy', 'rmresource',  'rmscope', 'rmuser', '|', 'clientinfo',  'resourceinfo', 'authpolicy', 'scopeinfo', 'accessinfo', 'permissions', 'userinfo', 'umaresource' ],
-            files: ['getfile', '|', 'mkdir', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'rm', 'removeclient', 'rmpolicy', 'rmscope', 'rmresource', 'rmuser', '|', 'rename', '|', 'clientinfo',  'resourceinfo', 'authpolicy', 'scopeinfo', 'accessinfo', 'info', 'permissions', 'userinfo', 'protectresource' ]
-        },
-				stores: [ 'openIdStore' ],
-        uiOptions: {
-          toolbar: [
-            ['back', 'forward'],
-			      ['mkdir', 'mkfile'],
-			      ['rm'],
-			      ['rename'],
-			      ['search'],
-			      ['view', 'sort'],
-            ['protectresource', 'permissions']
-          ]
-        },
-				commandsOptions: {
-					clientinfo: {
-						editUrl: 'https://{client_id}'
-					},
-					authpolicy: {
-						editUrl: 'http://{authpolicy_id}'
-					},
-					resourceinfo: {
-						editUrl: 'http://{resource_id}'
-					}
-				}
-			});
+        if (SessionStore.getSession().selectedOpenid) {
+            self.display();
+        }
+
     }
 }
 
