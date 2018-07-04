@@ -79,6 +79,7 @@ class Layout extends Component {
             isManageOpenidServerOpened: pathName.indexOf('/claims') !== -1 || pathName.indexOf('/resourceowners') !== -1 || pathName.indexOf('/openid') !== -1,
             isManageAuthServersOpened: pathName.indexOf('/auth') !== -1 ||  pathName.indexOf('/resources') !== -1,
             isScimOpened: pathName.indexOf('/scim') !== -1,
+            isSettingsOpened: pathName.indexOf('/units') !== -1 || pathName.indexOf('/connectors') !== -1 || pathName.indexOf('/twofactors') !== -1,
             isLoggedIn: false,
             isOauthDisplayed: false,
             isScimDisplayed: false,
@@ -469,15 +470,19 @@ class Layout extends Component {
                     ))}
                     {/* SETTINGS */}
                     {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
-                        <MenuItem key="/settings" selected={pathName.indexOf('/settings') !== -1} onClick={() => self.navigate('/settings')}>{t('settingsMenuItem')}</MenuItem>
+                        <MenuItem onClick={() => self.toggleValue('isSettingsOpened')}>
+                            { this.state.isSettingsOpened ? (<ListItemIcon><ExpandLess /></ListItemIcon>) : (<ListItemIcon><ExpandMore /></ListItemIcon>) }
+                            {t('settings')}
+                        </MenuItem>
                     ))}
-                    {/* CONNECTORS */}
                     {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
-                        <MenuItem key="/connectors" selected={pathName.indexOf('/connectors') !== -1} onClick={() => self.navigate('/connectors')}>{t('connectorsMenuItem')}</MenuItem>
-                    ))}
-                    {/* TWO FACTORS */}
-                    {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
-                        <MenuItem key="/twofactors" selected={pathName.indexOf('/twofactors') !== -1} onClick={() => self.navigate('/twofactors')}>{t('twofactorsMenuItem')}</MenuItem>
+                        <Collapse in={this.state.isSettingsOpened}>
+                            <List>
+                                <MenuItem key="/units" selected={pathName.indexOf('/units') !== -1} className={classes.nested} onClick={() => self.navigate('/units')}>{t('unitsModuleItem')}</MenuItem>
+                                <MenuItem key="/connectors" selected={pathName.indexOf('/connectors') !== -1} className={classes.nested} onClick={() => self.navigate('/connectors')}>{t('connectorsMenuItem')}</MenuItem>
+                                <MenuItem key="/twofactors" selected={pathName.indexOf('/twofactors') !== -1} className={classes.nested} onClick={() => self.navigate('/twofactors')}>{t('twofactorsMenuItem')}</MenuItem>
+                            </List>
+                        </Collapse>
                     ))}
                     {/* Logs */}         
                     {!process.env.IS_LOG_DISABLED && this.state.isLoggedIn  && (

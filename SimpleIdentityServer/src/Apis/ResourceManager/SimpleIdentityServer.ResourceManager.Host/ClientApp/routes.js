@@ -37,8 +37,8 @@ export const routes = (<Layout>
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/scim/resources/:type/:id' exact path='/scim/resources/:type/:id' component={ViewScimResource} />)}
 
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/viewClaim/:id' exact path='/viewClaim/:id' component={ViewClaim} />)}
-    { !process.env.IS_MANAGE_DISABLED && (<Route key='/settings' exact path='/settings' component={Settings} />)}
-    { !process.env.IS_MANAGE_DISABLED && (<Route key='/settings/:id' exact path='/settings/:id' component={ViewSetting} />)}
+    { !process.env.IS_MANAGE_DISABLED && (<Route key='/units' exact path='/units' component={Settings} />)}
+    { !process.env.IS_MANAGE_DISABLED && (<Route key='/units/:id' exact path='/units/:id' component={ViewSetting} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/twofactors' exact path='/twofactors' component={TwoFactors} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/connectors' exact path='/connectors' component={Connectors} />)}
     { !process.env.IS_LOG_DISABLED && (<Route exact path="/viewaggregate/:id" component={ViewAggregate} /> )}

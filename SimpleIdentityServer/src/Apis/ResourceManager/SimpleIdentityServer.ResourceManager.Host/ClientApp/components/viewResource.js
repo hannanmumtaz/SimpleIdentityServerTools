@@ -579,28 +579,34 @@ class ViewResource extends Component {
                                     </div>
                                 </div>
                                 <div className="body">
-                                    {/* Id */}
-                                    <FormControl className={classes.margin} fullWidth={true}>
-                                        <InputLabel>{t('resourceId')}</InputLabel>
-                                        <Input value={self.state.resourceId}  disabled={true}  />
-                                        <FormHelperText>{t('resourceIdDescription')}</FormHelperText>
-                                    </FormControl>
-                                    {/* Name */}
-                                    <FormControl className={classes.margin} fullWidth={true}>
-                                        <InputLabel htmlFor="resourceName">{t('resourceName')}</InputLabel>
-                                        <Input id="resourceName" value={self.state.resourceName} name="resourceName" onChange={self.handleProperty}  />
-                                        <FormHelperText>{t('resourceNameDescription')}</FormHelperText>
-                                    </FormControl>
-                                    {/* Type */}
-                                    <FormControl className={classes.margin} fullWidth={true}>
-                                        <InputLabel htmlFor="resourceType">{t('resourceType')}</InputLabel>
-                                        <Input id="resourceType" value={self.state.resourceType} name="resourceType" onChange={self.handleProperty}  />
-                                        <FormHelperText>{t('resourceTypeDescription')}</FormHelperText>
-                                    </FormControl>
-                                    {/* Scopes */}
-                                    <div className={classes.margin}>
-                                        <ChipsSelector label={t('resourceScopes')} properties={self.state.resourceScopes} />
-                                    </div>
+                                    <Grid container spacing={40}>
+                                        <Grid item md={6} sm={12}>
+                                            {/* Id */}
+                                            <FormControl className={classes.margin} fullWidth={true}>
+                                                <InputLabel>{t('resourceId')}</InputLabel>
+                                                <Input value={self.state.resourceId}  disabled={true}  />
+                                                <FormHelperText>{t('resourceIdDescription')}</FormHelperText>
+                                            </FormControl>
+                                            {/* Type */}
+                                            <FormControl className={classes.margin} fullWidth={true}>
+                                                <InputLabel htmlFor="resourceType">{t('resourceType')}</InputLabel>
+                                                <Input id="resourceType" value={self.state.resourceType} name="resourceType" onChange={self.handleProperty}  />
+                                                <FormHelperText>{t('resourceTypeDescription')}</FormHelperText>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item md={6} sm={12}>
+                                            {/* Name */}
+                                            <FormControl className={classes.margin} fullWidth={true}>
+                                                <InputLabel htmlFor="resourceName">{t('resourceName')}</InputLabel>
+                                                <Input id="resourceName" value={self.state.resourceName} name="resourceName" onChange={self.handleProperty}  />
+                                                <FormHelperText>{t('resourceNameDescription')}</FormHelperText>
+                                            </FormControl>
+                                            {/* Scopes */}
+                                            <div className={classes.margin}>
+                                                <ChipsSelector label={t('resourceScopes')} properties={self.state.resourceScopes} />
+                                            </div>
+                                        </Grid>
+                                    </Grid>
                                 </div>
                             </div>
                         )}

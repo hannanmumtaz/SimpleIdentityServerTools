@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { ChipsSelector } from '../common';
 
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination } from 'material-ui/Table';
-import { Popover, IconButton, Menu, MenuItem, Checkbox, TextField, Select, Avatar, CircularProgress, Button } from 'material-ui';
+import { Popover, Hidden, IconButton, Menu, MenuItem, Checkbox, TextField, Select, Avatar, CircularProgress, List, ListItem, Button } from 'material-ui';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import Input, { InputLabel } from 'material-ui/Input';
 import { FormControl, FormHelperText } from 'material-ui/Form';
@@ -238,7 +238,6 @@ class Resources extends Component {
                     <TableRow key={record.id}>
                         <TableCell><Checkbox color="primary" checked={record.isSelected} onChange={(e) => self.handleRowClick(e, record)} /></TableCell>
                         <TableCell>{record.id}</TableCell>
-                        <TableCell>{record.name}</TableCell>
                         <TableCell>{record.type}</TableCell>
                         <TableCell>{record.scopes}</TableCell>
                         <TableCell>
@@ -298,29 +297,27 @@ class Resources extends Component {
                     <div className="body">
                         { this.state.isLoading ? (<CircularProgress />) : (
                             <div>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell></TableCell>
-                                            <TableCell>{t('resourceId')}</TableCell>
-                                            <TableCell>{t('resourceName')}</TableCell>
-                                            <TableCell>{t('resourceType')}</TableCell>
-                                            <TableCell>{t('resourceScopes')}</TableCell>
-                                            <TableCell></TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
-                                            <TableCell></TableCell>
-                                            <TableCell></TableCell>
-                                            <TableCell></TableCell>
-                                            <TableCell></TableCell>
-                                            <TableCell></TableCell>
-                                        </TableRow>
-                                        {rows}
-                                    </TableBody>
-                                </Table>
+                                <Hidden only={['xs', 'sm']}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
+                                                <TableCell>{t('resourceId')}</TableCell>
+                                                <TableCell>{t('resourceType')}</TableCell>
+                                                <TableCell>{t('resourceScopes')}</TableCell>
+                                                <TableCell></TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {rows}
+                                        </TableBody>
+                                    </Table>
+                                </Hidden>
+                                <Hidden only={['lg', 'xl', 'md']}>
+                                    <List>
+                                        <ListItem>coucu</ListItem>
+                                    </List>
+                                </Hidden>
                                 <TablePagination component="div" count={self.state.count} rowsPerPage={self.state.pageSize} page={this.state.page} onChangePage={self.handleChangePage} onChangeRowsPerPage={self.handleChangeRowsPage} />
                             </div>
                         )}
