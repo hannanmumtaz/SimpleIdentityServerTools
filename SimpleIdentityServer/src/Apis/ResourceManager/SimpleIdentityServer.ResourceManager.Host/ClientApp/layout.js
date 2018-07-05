@@ -375,6 +375,7 @@ class Layout extends Component {
             });
         }
 
+        console.log(process.env);
         var pathName = self.props.location.pathname;
         var drawer = (
                 <List>
@@ -392,17 +393,17 @@ class Layout extends Component {
                     {/* About menu item */}
                     <MenuItem key="/about" selected={pathName === '/about' || pathName === '/'} onClick={() => self.navigate('/about')}>{t('aboutMenuItem')}</MenuItem>
                     {/* Dashboard menu item */}                        
-                    {(self.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
+                    {(self.state.isLoggedIn && (
                         <MenuItem key="/dashboard" selected={pathName === '/dashboard'} onClick={() => self.navigate('/dashboard')}>{t('dashboardMenuItem')}</MenuItem>
                     ))}
                     {/* Openid menu item */}                        
-                    {(self.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
+                    {(self.state.isLoggedIn && (
                         <MenuItem onClick={() => self.toggleValue('isManageOpenidServerOpened')}>
                             { this.state.isManageOpenidServerOpened ? (<ListItemIcon><ExpandLess /></ListItemIcon>) : (<ListItemIcon><ExpandMore /></ListItemIcon>) }
                             {t('manageOpenidServers')}
                         </MenuItem>
                     ))}
-                    {(self.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
+                    {(self.state.isLoggedIn && (
                         <Collapse in={this.state.isManageOpenidServerOpened}>
                             <List>
                                 <MenuItem key='/claims' selected={pathName.indexOf('/claims') !== -1} className={classes.nested} onClick={() => self.navigate('/claims')}>
@@ -425,13 +426,13 @@ class Layout extends Component {
                         </Collapse>   
                     ))}       
                     {/* Authorization server */}
-                    {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
+                    {(this.state.isLoggedIn && (
                         <MenuItem onClick={() => self.toggleValue('isManageAuthServersOpened')}>
                             { this.state.isManageAuthServersOpened ? (<ListItemIcon><ExpandLess /></ListItemIcon>) : (<ListItemIcon><ExpandMore /></ListItemIcon>) }
                             {t('manageAuthServers')}
                         </MenuItem>
                     ))}
-                    {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
+                    {(this.state.isLoggedIn && (
                         <Collapse in={this.state.isManageAuthServersOpened}>
                             <List>
                                 <MenuItem key='/authclients' selected={pathName.indexOf('/auth/clients') !== -1} className={classes.nested} onClick={() => self.navigate('/auth/clients')}>
@@ -442,21 +443,23 @@ class Layout extends Component {
                                     <ListItemIcon><Label /></ListItemIcon>
                                     {t('authscopes')}
                                 </MenuItem>
-                                <MenuItem key='/resources' selected={pathName.indexOf('/resources') !== -1} className={classes.nested} onClick={() => self.navigate('/resources')}>
-                                    <ListItemIcon><Lock /></ListItemIcon>
-                                    {t('resources')}
-                                </MenuItem>
+                                {(process.env.IS_COMMERCIAL && (
+                                    <MenuItem key='/resources' selected={pathName.indexOf('/resources') !== -1} className={classes.nested} onClick={() => self.navigate('/resources')}>
+                                        <ListItemIcon><Lock /></ListItemIcon>
+                                        {t('resources')}
+                                    </MenuItem>
+                                ))}
                             </List>
                         </Collapse>
                     ))}
                     {/* SCIM server */}
-                    {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
+                    {(this.state.isLoggedIn && process.env.IS_COMMERCIAL && (
                         <MenuItem onClick={() => self.toggleValue('isScimOpened')}>
                             { this.state.isScimOpened ? (<ListItemIcon><ExpandLess /></ListItemIcon>) : (<ListItemIcon><ExpandMore /></ListItemIcon>) }
                             {t('manageScimServers')}
                         </MenuItem>
                     ))}
-                    {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
+                    {this.state.isLoggedIn && process.env.IS_COMMERCIAL && (
                         <Collapse in={this.state.isScimOpened}>
                             <List>
                                 <MenuItem key='/scim/schemas' selected={pathName.indexOf('/scim/schemas') !== -1} className={classes.nested} onClick={() => self.navigate('/scim/schemas')}>
@@ -467,15 +470,15 @@ class Layout extends Component {
                                 </MenuItem>
                             </List>
                         </Collapse>
-                    ))}
+                    )}
                     {/* SETTINGS */}
-                    {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
+                    {(this.state.isLoggedIn && process.env.IS_COMMERCIAL && (
                         <MenuItem onClick={() => self.toggleValue('isSettingsOpened')}>
                             { this.state.isSettingsOpened ? (<ListItemIcon><ExpandLess /></ListItemIcon>) : (<ListItemIcon><ExpandMore /></ListItemIcon>) }
                             {t('settings')}
                         </MenuItem>
                     ))}
-                    {(this.state.isLoggedIn && !process.env.IS_MANAGE_DISABLED && (
+                    {(this.state.isLoggedIn && process.env.IS_COMMERCIAL && (
                         <Collapse in={this.state.isSettingsOpened}>
                             <List>
                                 <MenuItem key="/units" selected={pathName.indexOf('/units') !== -1} className={classes.nested} onClick={() => self.navigate('/units')}>{t('unitsModuleItem')}</MenuItem>
@@ -485,7 +488,7 @@ class Layout extends Component {
                         </Collapse>
                     ))}
                     {/* Logs */}         
-                    {!process.env.IS_LOG_DISABLED && this.state.isLoggedIn  && (
+                    {this.state.isLoggedIn && process.env.IS_COMMERCIAL && (
                        <MenuItem key='logs' selected={pathName.indexOf('/logs') !== -1} onClick={() => self.navigate('/logs')}>
                             {t('logsMenuItem')}
                         </MenuItem>

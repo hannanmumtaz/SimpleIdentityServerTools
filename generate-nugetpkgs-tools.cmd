@@ -30,6 +30,7 @@ dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Common\Sim
 REM MANAGER
 dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Manager\SimpleIdentityServer.Manager.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Manager\SimpleIdentityServer.Manager.Common /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Manager\SimpleIdentityServer.Manager.Logging /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Manager\SimpleIdentityServer.Manager.Core /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Manager\SimpleIdentityServer.Manager.Host /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 
@@ -44,3 +45,12 @@ dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\ResourceMa
 dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.EF.Sqlite /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\ResourceManager\SimpleIdentityServer.ResourceManager.EF.SqlServer /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 
+
+REM EVENT STORE
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\EventStore\SimpleIdentityServer.EventStore.Core /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\EventStore\SimpleIdentityServer.EventStore.EF /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\EventStore\SimpleIdentityServer.EventStore.Host /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\EventStore\SimpleIdentityServer.EventStore.InMemory /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\EventStore\SimpleIdentityServer.EventStore.Postgre /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\EventStore\SimpleIdentityServer.EventStore.Sqlite /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\EventStore\SimpleIdentityServer.EventStore.SqlServer /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%

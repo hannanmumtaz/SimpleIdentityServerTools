@@ -15,7 +15,7 @@
 #endregion
 
 using Moq;
-using SimpleIdentityServer.Logging;
+using SimpleIdentityServer.Manager.Logging;
 using SimpleIdentityServer.Manager.Core.Api.Clients.Actions;
 using SimpleIdentityServer.Manager.Core.Api.Manage.Actions;
 using System.Threading.Tasks;

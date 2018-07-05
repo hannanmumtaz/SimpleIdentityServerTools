@@ -14,7 +14,7 @@
 // limitations under the License.
 #endregion
 
-using SimpleIdentityServer.Logging;
+using SimpleIdentityServer.Manager.Logging;
 
 namespace SimpleIdentityServer.Manager.Host.Middleware
 {

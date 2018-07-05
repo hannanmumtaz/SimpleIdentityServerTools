@@ -5,21 +5,6 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 var config = (env) => {
   const isDevBuild = !(env && env.prod);
-  var baseUrl = process.env.BASE_URL;
-  var evtUrl = process.env.EVT_SOURCE_URL;
-  var apiUrl = process.env.API_URL;
-  if (!baseUrl) {
-	baseUrl = '"http://localhost:64950"';
-  }
-  
-  if (!evtUrl) {
-	evtUrl = '"http://localhost:60002"';
-  }
-  
-  if (!apiUrl) {
-      apiUrl = '"http://localhost:60005"';
-  }
-  
   return [{	  
       context: __dirname + "/ClientApp",
       entry: { 'main': __dirname + "/ClientApp/main.js" },
@@ -31,16 +16,7 @@ var config = (env) => {
 	  plugins: [
 		new webpack.DefinePlugin({
 			'process.env': {
-				'IS_LOG_DISABLED' : process.env.IS_LOG_DISABLED,
-				'IS_TOOLS_DISABLED': process.env.IS_TOOLS_DISABLED,
-				'IS_RESOURCES_DISABLED': process.env.IS_RESOURCES_DISABLED,
-				'IS_CONNECTIONS_DISABLED': process.env.IS_CONNECTIONS_DISABLED,
-				'IS_SETTINGS_DISABLED': process.env.IS_SETTINGS_DISABLED,
-				'IS_CACHE_DISABLED': process.env.IS_CACHE_DISABLED,
-				'IS_MANAGE_DISABLED': process.env.IS_MANAGE_DISABLED,
-				'BASE_URL': baseUrl,
-				'EVT_SOURCE_URL': evtUrl,
-				'API_URL': apiUrl
+				'IS_COMMERCIAL' : true
 			}
 		})
 	  ],

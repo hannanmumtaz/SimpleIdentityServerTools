@@ -15,7 +15,7 @@
 #endregion
 
 using SimpleIdentityServer.Core.Common.Repositories;
-using SimpleIdentityServer.Logging;
+using SimpleIdentityServer.Manager.Logging;
 using SimpleIdentityServer.Manager.Core.Errors;
 using SimpleIdentityServer.Manager.Core.Exceptions;
 using System;

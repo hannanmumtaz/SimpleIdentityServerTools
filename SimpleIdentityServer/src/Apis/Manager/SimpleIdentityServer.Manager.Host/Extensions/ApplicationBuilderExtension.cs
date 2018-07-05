@@ -16,7 +16,7 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
-using SimpleIdentityServer.Logging;
+using SimpleIdentityServer.Manager.Logging;
 using SimpleIdentityServer.Manager.Host.Middleware;
 using System;
 

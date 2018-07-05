@@ -16,12 +16,14 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.Core;
+using SimpleIdentityServer.OAuth.Logging;
 using SimpleIdentityServer.Core.Extensions;
 using SimpleIdentityServer.Core.Jwt;
 using SimpleIdentityServer.Core.Services;
 using SimpleIdentityServer.License;
 using SimpleIdentityServer.License.Exceptions;
 using SimpleIdentityServer.Logging;
+using SimpleIdentityServer.Manager.Logging;
 using SimpleIdentityServer.Manager.Core;
 using SimpleIdentityServer.Manager.Host.Services;
 using System;
@@ -79,7 +81,7 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
             {
                 options.AddPolicy("manager", policy =>
                 {
-                    policy.AddAuthenticationSchemes("UserInfoIntrospection");
+					policy.AddAuthenticationSchemes("UserInfoIntrospection", "OAuth2Introspection");
                     policy.RequireAssertion(p =>
                     {
                         if (p.User == null || p.User.Identity == null || !p.User.Identity.IsAuthenticated)
@@ -102,9 +104,9 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
             serviceCollection.AddSimpleIdentityServerJwt();
             // 6. Add the dependencies needed to run MVC
             serviceCollection.AddMvc();
-            // 7. Configure Serilog
-            serviceCollection.AddTransient<IManagerEventSource, ManagerEventSource>();
-            serviceCollection.AddTransient<ISimpleIdentityServerEventSource, SimpleIdentityServerEventSource>();
+			serviceCollection.AddTechnicalLogging();
+			serviceCollection.AddManagerLogging();
+			serviceCollection.AddOAuthLogging();
         }
     }
 }

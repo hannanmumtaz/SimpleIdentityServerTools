@@ -5,6 +5,7 @@ REM COMMON
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Module /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.AccessToken.Store /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.AccessToken.Store.InMemory /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Logging /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 
 REM UMA
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Uma\SimpleIdentityServer.Uma.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
@@ -18,11 +19,14 @@ dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Um
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Uma\SimpleIdentityServer.Uma.Host /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Uma\SimpleIdentityServer.Uma.Store.Redis /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Uma\SimpleIdentityServer.Uma.Store.InMemory /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Uma\SimpleIdentityServer.Uma.Logging /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 
 REM SIMPLEIDSERVER
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.UserManagement /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Shell /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Authenticate.Basic /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Authenticate.LoginPassword /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Authenticate.SMS /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Core /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Core.Common /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
@@ -32,10 +36,11 @@ dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Si
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.EF.Postgre /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.EF.Sqlite /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.EF.SqlServer /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.EventStore.Handler /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Handler /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.OpenId.Events /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.OAuth.Events /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.OpenId.Logging /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.OAuth.Logging /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Host /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Logging /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.OAuth2Introspection /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Store /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Store.Redis /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
@@ -47,6 +52,7 @@ dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Si
 
 REM SCIM
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Events /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Common /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Core /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Db.EF /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
@@ -54,18 +60,7 @@ dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Sc
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Db.EF.Postgre /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Db.EF.Sqlite /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Db.EF.SqlServer /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.EventStore.Handler /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Handler /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Host /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-
-REM EVENT STORE
-dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\EventStore\SimpleIdentityServer.EventStore.Core /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\EventStore\SimpleIdentityServer.EventStore.EF /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\EventStore\SimpleIdentityServer.EventStore.Host /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\EventStore\SimpleIdentityServer.EventStore.InMemory /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\EventStore\SimpleIdentityServer.EventStore.Postgre /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\EventStore\SimpleIdentityServer.EventStore.Sqlite /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\EventStore\SimpleIdentityServer.EventStore.SqlServer /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 
 REM LIB
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Lib\System.Security.Cryptography.Algorithms.Extensions /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
