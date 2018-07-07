@@ -1,25 +1,14 @@
 {
-  "id": "OpenIdProvider_3.0.0-rc7",
-  "version": "3.0.0-rc7",
+  "id": "OpenIdProvider_3.0.0-rc8",
+  "version": "3.0.0-rc8",
   "name": "OpenIdProvider",
   "units": [
-    {
-      "name": "accesstokenstore",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.AccessToken.Store.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": {}
-        }
-      ]
-    },
     {
       "name": "openidapi",
       "packages": [
         {
           "lib": "SimpleIdentityServer.Host",
-          "version": "3.0.0-rc7",
+          "version": "3.0.0-rc8",
           "category": "host",
           "parameters": {
             "OpenIdCookieName": "SimpleIdServer-Startup",
@@ -31,28 +20,13 @@
       ]
     },
     {
-      "name": "authentication",
+      "name": "oauthrepository",
       "packages": [
         {
-          "lib": "SimpleIdentityServer.OAuth2Introspection",
-          "version": "3.0.0-rc7",
-          "category": "introspect",
-          "parameters": {
-            "OauthIntrospectClientId": "OpenId",
-            "OauthIntrospectClientSecret": "z4Bp!:B@rFw4Xs+]",
-            "OauthIntrospectAuthUrl": "http://localhost:60004/.well-known/uma2-configuration"
-          }
-        }
-      ]
-    },
-    {
-      "name": "parametersrapi",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.Parameter.Host",
-          "version": "3.0.0-rc7",
-          "category": "host",
-          "parameters": null
+          "lib": "SimpleIdentityServer.EF.InMemory",
+          "version": "3.0.0-rc8",
+          "category": "store",
+          "parameters": {}
         }
       ]
     },
@@ -61,105 +35,26 @@
       "packages": [
         {
           "lib": "SimpleIdentityServer.Store.InMemory",
-          "version": "3.0.0-rc7",
+          "version": "3.0.0-rc8",
           "category": "cache",
-          "parameters": null
+          "parameters": {}
         }
       ]
     },
     {
-      "name": "oauthrepository",
+      "name": "events",
       "packages": [
-        {
-          "lib": "SimpleIdentityServer.EF.Postgre",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "OAuthConnectionString": "User ID=rocheidserver;Password=password;Host=localhost;Port=5432;Database=idserver;Pooling=true;" }
-        }
-      ]
-    },
-    {
-      "name": "openidui",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.Shell",
-          "version": "3.0.0-rc7",
-          "category": "shell",
-          "parameters": null
-        },
-        {
-          "lib": "SimpleIdentityServer.Authenticate.Basic",
-          "version": "3.0.0-rc7",
-          "category": "authenticate",
-          "parameters": {
-            "ClientId": "RocheIdServer",
-            "ClientSecret": "5QNQ/h=',q'Du9cH",
-            "AuthorizationWellKnownConfiguration": "http://localhost:60004/.well-known/uma2-configuration",
-            "BaseScimUrl": "http://localhost:60001",
-            "IsScimResourceAutomaticallyCreated": "true"
-          }
-        },
-        {
-          "lib": "SimpleIdentityServer.UserManagement",
-          "version": "3.0.0-rc7",
-          "category": "usermanagement",
-          "parameters": null
-        }
-      ]
-    },
-    {
-      "name": "oautheventstore",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.EventStore.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": null
-        },
-        {
-          "lib": "SimpleIdentityServer.EventStore.Handler",
-          "version": "3.0.0-rc7",
-          "category": "handler",
-          "parameters": { "EventStoreHandlerType": "openid" }
-        },
         {
           "lib": "SimpleBus.InMemory",
-          "version": "3.0.0-rc7",
+          "version": "3.0.0-rc8",
           "category": "bus",
-          "parameters": null
+          "parameters": {
+            "ServerName": "openid"
+          }
         }
       ]
     }
   ],
-  "connectors": [
-    {
-      "name": "Google",
-      "description": null,
-      "picture": null,
-      "lib": "SimpleIdentityServer.Connectors.Google",
-      "version": "3.0.0-rc7",
-      "parameters": {
-        "ClientId": "95661687994-e6q0p6vjn3023au4fhd5tr1luug576cf.apps.googleusercontent.com",
-        "ClientSecret": "ujmskvOp0NRFIRQahmIS_T1_",
-        "Scopes": ""
-      },
-      "create_datetime": "0001-01-01T00:00:00",
-      "update_datetime": "0001-01-01T00:00:00"
-    },
-	  {
-		  "name":"Facebook",
-		  "description":null,
-		  "picture":null,
-		  "lib":"SimpleIdentityServer.Connectors.Facebook",
-		  "version":"3.0.0-rc7",
-		  "parameters": {
-			  "ClientId":"569242033233529",
-			  "ClientSecret":"12e0f33817634c0a650c0121d05e53eb",
-			  "Scopes":"public_profile;email"
-		  },
-		  "create_datetime":"0001-01-01T00:00:00",
-		  "update_datetime":"0001-01-01T00:00:00"
-	  }
-  ],
+  "connectors": [],
   "two_factors": []
 }

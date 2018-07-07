@@ -1,131 +1,14 @@
 {
-  "id": "OpenIdProvider_3.0.0-rc7",
-  "version": "3.0.0-rc7",
+  "id": "OpenIdProvider_3.0.0-rc8",
+  "version": "3.0.0-rc8",
   "name": "OpenIdProvider",
   "units": [
-    {
-      "name": "accesstokenstore",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.AccessToken.Store.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "authentication",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.OAuth2Introspection",
-          "version": "3.0.0-rc7",
-          "category": "introspect",
-          "parameters": {
-            "OauthIntrospectClientId": "",
-            "OauthIntrospectClientSecret": "",
-            "OauthIntrospectAuthUrl": ""
-          }
-        }
-      ]
-    },
-    {
-      "name": "oautheventstore",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.EventStore.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": {}
-        },
-        {
-          "lib": "SimpleIdentityServer.EventStore.Sqlite",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "EventStoreConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.EventStore.Postgre",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "EventStoreConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.EventStore.SqlServer",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "EventStoreConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.EventStore.Handler",
-          "version": "3.0.0-rc7",
-          "category": "handler",
-          "parameters": { "EventStoreHandlerType": "" }
-        },
-        {
-          "lib": "SimpleBus.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "bus",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "oauthrepository",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.EF.SqlServer",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "OAuthConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.EF.Postgre",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "OAuthConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.EF.Sqlite",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "OAuthConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.EF.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "oauthstorage",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.Store.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "cache",
-          "parameters": {}
-        },
-        {
-          "lib": "SimpleIdentityServer.Store.Redis",
-          "version": "3.0.0-rc7",
-          "category": "cache",
-          "parameters": {
-            "OauthRedisStorageConfiguration": "",
-            "OauthRedisStorageInstanceName": "",
-            "OauthRedisStoragePort": ""
-          }
-        }
-      ]
-    },
     {
       "name": "openidapi",
       "packages": [
         {
           "lib": "SimpleIdentityServer.Host",
-          "version": "3.0.0-rc7",
+          "version": "3.0.0-rc8",
           "category": "host",
           "parameters": {
             "OpenIdCookieName": "",
@@ -137,49 +20,37 @@
       ]
     },
     {
-      "name": "openidui",
+      "name": "oauthrepository",
       "packages": [
         {
-          "lib": "SimpleIdentityServer.Shell",
-          "version": "3.0.0-rc7",
-          "category": "shell",
+          "lib": "SimpleIdentityServer.EF.InMemory",
+          "version": "3.0.0-rc8",
+          "category": "store",
           "parameters": {}
-        },
-        {
-          "lib": "SimpleIdentityServer.Authenticate.Basic",
-          "version": "3.0.0-rc7",
-          "category": "authenticate",
-          "parameters": {
-            "ClientId": "",
-            "ClientSecret": "",
-            "AuthorizationWellKnownConfiguration": "",
-            "BaseScimUrl": "",
-            "IsScimResourceAutomaticallyCreated": "",
-            "ClaimsIncludedInUserCreation": ""
-          }
-        },
-        {
-          "lib": "SimpleIdentityServer.UserManagement",
-          "version": "3.0.0-rc7",
-          "category": "usermanagement",
-          "parameters": {
-            "CreateScimResourceWhenAccountIsAdded": "",
-            "ClientId": "",
-            "ClientSecret": "",
-            "AuthorizationWellKnownConfiguration": "",
-            "ScimBaseUrl": ""
-          }
         }
       ]
     },
     {
-      "name": "parametersrapi",
+      "name": "oauthstorage",
       "packages": [
         {
-          "lib": "SimpleIdentityServer.Parameter.Host",
-          "version": "3.0.0-rc7",
-          "category": "host",
+          "lib": "SimpleIdentityServer.Store.InMemory",
+          "version": "3.0.0-rc8",
+          "category": "cache",
           "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "events",
+      "packages": [
+        {
+          "lib": "SimpleBus.InMemory",
+          "version": "3.0.0-rc8",
+          "category": "bus",
+          "parameters": {
+            "ServerName": ""
+          }
         }
       ]
     }

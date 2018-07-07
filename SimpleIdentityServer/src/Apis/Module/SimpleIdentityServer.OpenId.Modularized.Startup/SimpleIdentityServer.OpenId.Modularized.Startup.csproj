@@ -32,8 +32,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="1.0.0" />
     <PackageReference Include="Serilog.Sinks.ColoredConsole" Version="2.0.0" />
-    <PackageReference Include="SimpleIdentityServer.Module" Version="3.0.0-rc7" />
-    <PackageReference Include="SimpleIdentityServer.Module.Loader" Version="3.0.0-rc7" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,11 +45,26 @@
   </ItemGroup> 
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.EF.InMemory\SimpleIdentityServer.EF.InMemory.csproj" />
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Host\SimpleIdentityServer.Host.csproj" />
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Store.InMemory\SimpleIdentityServer.Store.InMemory.csproj" />
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Lib\Bus\SimpleBus.InMemory\SimpleBus.InMemory.csproj" />
+    <ProjectReference Include="..\SimpleIdentityServer.Module.Loader\SimpleIdentityServer.Module.Loader.csproj" />
+  </ItemGroup> 
+
+  <ItemGroup>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Update="config.template.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup> 
+
+  <ItemGroup>
+    <Folder Include="Extensions\" />
   </ItemGroup>
 </Project>
