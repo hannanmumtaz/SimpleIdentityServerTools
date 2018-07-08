@@ -53,6 +53,23 @@
           }
         }
       ]
+    },
+    {
+      "name": "ui",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Shell",
+          "version": "3.0.0-rc8",
+          "category": "shell",
+          "parameters": {}
+        },
+        {
+          "lib": "SimpleIdentityServer.Authenticate.LoginPassword",
+          "version": "3.0.0-rc8",
+          "category": "auth",
+          "parameters": {}
+        }
+      ]
     }
   ],
   "connectors": [],

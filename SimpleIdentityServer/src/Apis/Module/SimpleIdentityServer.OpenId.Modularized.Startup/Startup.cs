@@ -93,19 +93,16 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
         {
             _app = app;
             UseSerilogLogging(loggerFactory);
-            app.UseAuthentication();
             //1 . Enable CORS.
             app.UseCors("AllowAll");
-            // 2. Use static files.
-            app.UseStaticFiles();
+            // 2. Configure the application builder.
+            _moduleLoader.ConfigureApplicationBuilder(app);
             // 3. Redirect error to custom pages.
             app.UseStatusCodePagesWithRedirects("~/Error/{0}");
-            // 4. Configure the modules.
-            // _moduleLoader.Configure(app);
-            // 5. Configure ASP.NET MVC
+            // 4. Configure ASP.NET MVC
             app.UseMvc(routes =>
             {
-                // _moduleLoader.Configure(routes);
+                _moduleLoader.ConfigureRouter(routes);
             });
 
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())

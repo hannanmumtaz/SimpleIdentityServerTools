@@ -25,6 +25,8 @@ namespace SimpleIdentityServer.Module.Loader
         void LoadTwoFactors();
         void ConfigureUnitsServices(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env);
         void ConfigureUnitsAuthorization(AuthorizationOptions authorizationOptions);
+        void ConfigureApplicationBuilder(IApplicationBuilder app);
+        void ConfigureRouter(IRouteBuilder router);
         event EventHandler UnitsLoaded;
     }
 
@@ -338,6 +340,40 @@ namespace SimpleIdentityServer.Module.Loader
                 }
             }
         }
+        
+        /// <summary>
+        /// Configure application builder.
+        /// </summary>
+        /// <param name="app"></param>
+        public void ConfigureApplicationBuilder(IApplicationBuilder app)
+        {
+            if (app == null)
+            {
+                throw new ArgumentNullException(nameof(app));
+            }
+
+            foreach (var loadedModule in _modules)
+            {
+                loadedModule.Instance.Configure(app);
+            }
+        }
+
+        /// <summary>
+        /// Configure ASP.NET MVC routing.
+        /// </summary>
+        /// <param name="routes"></param>
+        public void ConfigureRouter(IRouteBuilder router)
+        {
+            if (router == null)
+            {
+                throw new ArgumentNullException(nameof(router));
+            }
+
+            foreach (var loadedModule in _modules)
+            {
+                loadedModule.Instance.Configure(router);
+            }
+        }
 
         /// <summary>
         /// Returns the list of loaded modules.
@@ -394,22 +430,6 @@ namespace SimpleIdentityServer.Module.Loader
                 {
                     connector.Instance.Configure(localAuthBuilder, connector.Connector.Parameters);
                 }
-            }
-        }
-
-        public void Configure(IRouteBuilder routes)
-        {
-            foreach (var loadedModule in _modules)
-            {
-                loadedModule.Instance.Configure(routes);
-            }
-        }
-
-        public void Configure(IApplicationBuilder app)
-        {
-            foreach (var loadedModule in _modules)
-            {
-                loadedModule.Instance.Configure(app);
             }
         }
 

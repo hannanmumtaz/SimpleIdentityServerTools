@@ -173,6 +173,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "08. Bus", "08. Bus", "{D6D1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleBus.InMemory", "..\IdServer\SimpleIdentityServer\src\Lib\Bus\SimpleBus.InMemory\SimpleBus.InMemory.csproj", "{66049568-0411-4D45-9070-79B0913E9A67}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Authenticate.LoginPassword", "..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Authenticate.LoginPassword\SimpleIdentityServer.Authenticate.LoginPassword.csproj", "{949F4258-769F-421E-8FBB-F4F62E5856A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -459,6 +461,10 @@ Global
 		{66049568-0411-4D45-9070-79B0913E9A67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66049568-0411-4D45-9070-79B0913E9A67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66049568-0411-4D45-9070-79B0913E9A67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{949F4258-769F-421E-8FBB-F4F62E5856A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{949F4258-769F-421E-8FBB-F4F62E5856A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{949F4258-769F-421E-8FBB-F4F62E5856A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{949F4258-769F-421E-8FBB-F4F62E5856A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -545,6 +551,7 @@ Global
 		{66277D28-3FE5-43FF-9FE9-A26AB2289913} = {6AAF30A9-D0F6-47F8-9052-EDA10C4EC7C4}
 		{D6D158C7-C105-43EC-9DA9-655BB8585DD7} = {93C9091B-046A-4760-84B3-15B6701B7099}
 		{66049568-0411-4D45-9070-79B0913E9A67} = {D6D158C7-C105-43EC-9DA9-655BB8585DD7}
+		{949F4258-769F-421E-8FBB-F4F62E5856A8} = {6AAF30A9-D0F6-47F8-9052-EDA10C4EC7C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE45928A-3A95-4F4A-9EF7-E845C4BEA746}
