@@ -1,19 +1,62 @@
 {
-  "id": "ScimProvider_3.0.0-rc7",
-  "version": "3.0.0-rc7",
+  "id": "ScimProvider_3.0.0-rc8",
+  "version": "3.0.0-rc8",
   "name": "ScimProvider",
   "units": [
     {
-      "name": "authentication",
+      "name": "scimapi",
       "packages": [
         {
-          "lib": "SimpleIdentityServer.OAuth2Introspection",
-          "version": "3.0.0-rc7",
-          "category": "introspect",
+          "lib": "SimpleIdentityServer.Scim.Host",
+          "version": "3.0.0-rc8",
+          "category": "host"
+        }
+      ]
+    },
+    {
+      "name": "scimrepository",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Scim.Db.EF.InMemory",
+          "version": "3.0.0-rc8",
+          "category": "store",
+          "parameters": {}
+        },
+        {
+          "lib": "SimpleIdentityServer.Scim.Db.EF.Postgre",
+          "version": "3.0.0-rc8",
+          "category": "store",
           "parameters": {
-            "OauthIntrospectClientId": "",
-            "OauthIntrospectClientSecret": "",
-            "OauthIntrospectAuthUrl": ""
+            "ScimConnectionString": ""
+          }
+        },
+        {
+          "lib": "SimpleIdentityServer.Scim.Db.EF.Sqlite",
+          "version": "3.0.0-rc8",
+          "category": "store",
+          "parameters": {
+            "ScimConnectionString": ""
+          }
+        },
+        {
+          "lib": "SimpleIdentityServer.Scim.Db.EF.SqlServer",
+          "version": "3.0.0-rc8",
+          "category": "store",
+          "parameters": {
+            "ScimConnectionString": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "events",
+      "packages": [
+        {
+          "lib": "SimpleBus.InMemory",
+          "version": "3.0.0-rc8",
+          "category": "bus",
+          "parameters": {
+            "ServerName": "openid"
           }
         }
       ]
@@ -23,13 +66,12 @@
       "packages": [
         {
           "lib": "WebApiContrib.Core.Storage.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "cache",
-          "parameters": {}
+          "version": "3.0.0-rc8",
+          "category": "cache"
         },
         {
           "lib": "WebApiContrib.Core.Storage.Redis",
-          "version": "3.0.0-rc7",
+          "version": "3.0.0-rc8",
           "category": "cache",
           "parameters": {
             "RedisCacheInstanceName": "",
@@ -39,105 +81,10 @@
         },
         {
           "lib": "WebApiContrib.Core.Concurrency",
-          "version": "3.0.0-rc7",
-          "category": "concurrency",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "parametersrapi",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.Parameter.Host",
-          "version": "3.0.0-rc7",
-          "category": "host",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "scimeventstore",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.EventStore.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": {}
-        },
-        {
-          "lib": "SimpleIdentityServer.EventStore.Sqlite",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "EventStoreConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.EventStore.Postgre",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "EventStoreConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.EventStore.SqlServer",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "EventStoreConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.Scim.EventStore.Handler",
-          "version": "3.0.0-rc7",
-          "category": "handler",
-          "parameters": {}
-        },
-        {
-          "lib": "SimpleBus.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "bus",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "scimhost",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.Scim.Host",
-          "version": "3.0.0-rc7",
-          "category": "host",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "scimrepository",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.Scim.Db.EF.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": {}
-        },
-        {
-          "lib": "SimpleIdentityServer.Scim.Db.EF.Postgre",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "ScimConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.Scim.Db.EF.Sqlite",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "ScimConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.Scim.Db.EF.SqlServer",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "ScimConnectionString": "" }
+          "version": "3.0.0-rc8",
+          "category": "concurrency"
         }
       ]
     }
-  ],
-  "connectors": [],
-  "two_factors": []
+  ]
 }

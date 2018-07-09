@@ -1,40 +1,15 @@
 ﻿{
-  "id": "ScimProvider_3.0.0-rc7",
-  "version": "3.0.0-rc7",
+  "id": "ScimProvider_3.0.0-rc8",
+  "version": "3.0.0-rc8",
   "name": "ScimProvider",
   "units": [
     {
-      "name": "scimhost",
+      "name": "scimapi",
       "packages": [
         {
           "lib": "SimpleIdentityServer.Scim.Host",
-          "version": "3.0.0-rc7",
+          "version": "3.0.0-rc8",
           "category": "host"
-        }
-      ]
-    },
-    {
-      "name": "parametersrapi",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.Parameter.Host",
-          "version": "3.0.0-rc7",
-          "category": "host"
-        }
-      ]
-    },
-    {
-      "name": "authentication",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.OAuth2Introspection",
-          "version": "3.0.0-rc7",
-          "category": "introspect",
-          "parameters": {
-            "OauthIntrospectClientId": "Scim",
-            "OauthIntrospectClientSecret": "~V*nH{q4;qL/=8+Z",
-            "OauthIntrospectAuthUrl": "http://localhost:60004/.well-known/uma2-configuration"
-          }
         }
       ]
     },
@@ -42,36 +17,23 @@
       "name": "scimrepository",
       "packages": [
         {
-          "lib": "SimpleIdentityServer.Scim.Db.EF.SqlServer",
-          "version": "3.0.0-rc7",
+          "lib": "SimpleIdentityServer.Scim.Db.EF.InMemory",
+          "version": "3.0.0-rc8",
           "category": "store",
-          "parameters": {
-            "ScimConnectionString": "Data Source=.;Initial Catalog=ScimServer;Integrated Security=True;Pooling=False"
-          }
+          "parameters": {}
         }
       ]
     },
     {
-      "name": "scimeventstore",
+      "name": "events",
       "packages": [
         {
-          "lib": "SimpleIdentityServer.EventStore.SqlServer",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "EventStoreConnectionString": "Data Source=.;Initial Catalog=EventStore;Integrated Security=True;" }
-        },
-        {
-          "lib": "SimpleIdentityServer.Scim.EventStore.Handler",
-          "version": "3.0.0-rc7",
-          "category": "handler",
-          "parameters": {
-            "EventStoreHandlerType": "scim"
-          }
-        },
-        {
           "lib": "SimpleBus.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "bus"
+          "version": "3.0.0-rc8",
+          "category": "bus",
+          "parameters": {
+            "ServerName": "openid"
+          }
         }
       ]
     },
@@ -80,12 +42,12 @@
       "packages": [
         {
           "lib": "WebApiContrib.Core.Storage.InMemory",
-          "version": "3.0.0-rc7",
+          "version": "3.0.0-rc8",
           "category": "cache"
         },
         {
           "lib": "WebApiContrib.Core.Concurrency",
-          "version": "3.0.0-rc7",
+          "version": "3.0.0-rc8",
           "category": "concurrency"
         }
       ]

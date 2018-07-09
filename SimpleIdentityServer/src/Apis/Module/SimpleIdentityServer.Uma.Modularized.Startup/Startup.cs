@@ -20,8 +20,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleIdentityServer.Module.Loader;
+using SimpleIdentityServer.OAuth2Introspection;
+using SimpleIdentityServer.UserInfoIntrospection;
 using System;
-using System.Collections.Generic;
 
 namespace SimpleIdentityServer.Uma.Startup
 {
@@ -36,22 +37,11 @@ namespace SimpleIdentityServer.Uma.Startup
             var moduleLoaderFactory = new ModuleLoaderFactory();
             _moduleLoader = moduleLoaderFactory.BuidlerModuleLoader(new ModuleLoaderOptions
             {
-                NugetSources = new List<string>
-                {
-                    @"d:\sidfeeds\core\",
-                    @"d:\sidfeeds\tools\",
-                    "https://api.nuget.org/v3/index.json",
-                    "https://www.myget.org/F/advance-ict/api/v3/index.json"
-                },
-                ModuleFeedUri = new Uri("http://localhost:60008/configuration"),
-                ProjectName = "UmaProvider"
+                ProjectName = "UmaProvider",
+                Version = "3.0.0-rc8"
             });
-            _moduleLoader.ModuleInstalled += ModuleInstalled;
-            _moduleLoader.UnitsRestored += HandleUnitsRestored;
-            _moduleLoader.ModulesLoaded += ModulesLoaded;
-            _moduleLoader.ModuleCannotBeInstalled += ModuleCannotBeInstalled;
+            _moduleLoader.UnitsLoaded += HandleUnitsLoaded;
             _moduleLoader.Initialize();
-            _moduleLoader.RestoreUnits().Wait();
             _moduleLoader.LoadUnits();
         }
 
@@ -59,17 +49,26 @@ namespace SimpleIdentityServer.Uma.Startup
         
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(OAuth2IntrospectionOptions.AuthenticationScheme)
+                .AddOAuth2Introspection(opts =>
+                {
+                    opts.ClientId = "uma";
+                    opts.ClientSecret = "uma";
+                    opts.WellKnownConfigurationUrl = "http://localhost:60004/.well-known/uma2-configuration";
+                })
+                .AddUserInfoIntrospection(opts =>
+                {
+                    opts.WellKnownConfigurationUrl = "http://localhost:60000/.well-known/openid-configuration";
+                });
             services.AddLogging();
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
             var mvc = services.AddMvc();
-            var authBuilder = services.AddAuthentication("OAuth2Introspection");
-            _moduleLoader.ConfigureModuleServices(services, mvc, _env);
-            _moduleLoader.ConfigureModuleAuthentication(authBuilder);
+            _moduleLoader.ConfigureUnitsServices(services, mvc, _env);
             services.AddAuthorization(opts =>
             {
-                _moduleLoader.ConfigureModuleAuthorization(opts);
+                _moduleLoader.ConfigureUnitsAuthorization(opts);
             });
         }
 
@@ -78,7 +77,6 @@ namespace SimpleIdentityServer.Uma.Startup
             loggerFactory.AddConsole();
             app.UseAuthentication();
             app.UseCors("AllowAll");
-            _moduleLoader.Configure(app);
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -87,26 +85,9 @@ namespace SimpleIdentityServer.Uma.Startup
             });
         }
 
-        private static void ModuleCannotBeInstalled(object sender, StrEventArgs e)
+        private void HandleUnitsLoaded(object sender, EventArgs e)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"The nuget package {e.Value} cannot be installed");
-            Console.ForegroundColor = ConsoleColor.White;
-        }
-
-        private static void ModuleInstalled(object sender, StrEventArgs e)
-        {
-            Console.WriteLine($"The nuget package {e.Value} is installed");
-        }
-
-        private static void HandleUnitsRestored(object sender, IntEventArgs e)
-        {
-            Console.WriteLine($"Finish to restore the units in {e.Value}");
-        }
-
-        private static void ModulesLoaded(object sender, EventArgs e)
-        {
-            Console.WriteLine("The modules are loaded");
+            Console.WriteLine("the units are loaded");
         }
     }
 }

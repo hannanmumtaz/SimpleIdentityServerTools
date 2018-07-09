@@ -40,6 +40,13 @@ namespace SimpleIdentityServer.Parameter.Host.Controllers
             return new OkObjectResult(result);
         }
 
+        [HttpGet("twofactors")]
+        [Authorize("get")]
+        public IActionResult GetTwoFactors()
+        {
+            return null;
+        }
+
         [HttpPut("modules")]
         [Authorize("add")]
         public IActionResult UpdateModules([FromBody] IEnumerable<UpdateParameterRequest> updateParametersRequest)

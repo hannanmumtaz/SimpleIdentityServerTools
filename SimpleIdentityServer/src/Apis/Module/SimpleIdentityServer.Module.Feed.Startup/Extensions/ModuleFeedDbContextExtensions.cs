@@ -40,10 +40,10 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new Connector // Facebook
                     {
                         Id = Guid.NewGuid().ToString(),
-                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        ProjectId = "OpenIdProvider_3.0.0-rc8",
                         Name = "Facebook",
                         Library = "SimpleIdentityServer.Connectors.Facebook",
-                        Version = "3.0.0-rc7",
+                        Version = "3.0.0-rc8",
                         Description = "Refer to this url https://developers.facebook.com to create a new client",
                         Parameters = "ClientId,ClientSecret,Scopes",
                         CreateDateTime = DateTime.UtcNow,
@@ -101,10 +101,10 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new Connector // Microsoft account.
                     {
                         Id = Guid.NewGuid().ToString(),
-                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        ProjectId = "OpenIdProvider_3.0.0-rc8",
                         Name = "MicrosoftAccount",
                         Library = "SimpleIdentityServer.Connectors.MicrosoftAccount",
-                        Version = "3.0.0-rc7",
+                        Version = "3.0.0-rc8",
                         Description = "Refer to this url http://go.microsoft.com/fwlink/?LinkID=144070 to create a new client",
                         Parameters = "ClientId,ClientSecret,Scopes",
                         CreateDateTime = DateTime.UtcNow,
@@ -142,10 +142,10 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new Connector // Google
                     {
                         Id = Guid.NewGuid().ToString(),
-                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        ProjectId = "OpenIdProvider_3.0.0-rc8",
                         Name = "Google",
                         Library = "SimpleIdentityServer.Connectors.Google",
-                        Version = "3.0.0-rc7",
+                        Version = "3.0.0-rc8",
                         Description = "Refer to this url https://console.developers.google.com/apis/credentials to create a new client",
                         Parameters = "ClientId,ClientSecret,Scopes",
                         CreateDateTime = DateTime.UtcNow,
@@ -174,10 +174,10 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new Connector // Twitter
                     {
                         Id = Guid.NewGuid().ToString(),
-                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        ProjectId = "OpenIdProvider_3.0.0-rc8",
                         Name = "Twitter",
                         Library = "SimpleIdentityServer.Connectors.Twitter",
-                        Version = "3.0.0-rc7",
+                        Version = "3.0.0-rc8",
                         Description = "Refer to this url https://apps.twitter.com/ to create a new client",
                         Parameters = "ClientId,ClientSecret,Scopes",
                         CreateDateTime = DateTime.UtcNow,
@@ -188,10 +188,10 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new Connector // WsFederation
                     {
                         Id = Guid.NewGuid().ToString(),
-                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        ProjectId = "OpenIdProvider_3.0.0-rc8",
                         Name = "WsFederation",
                         Library = "SimpleIdentityServer.Connectors.WsFederation",
-                        Version = "3.0.0-rc7",
+                        Version = "3.0.0-rc8",
                         Description = "Configure WSFederation",
                         Parameters = "",
                         CreateDateTime = DateTime.UtcNow,
@@ -212,12 +212,12 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     new TwoFactorAuthenticator
                     {
                         Id = Guid.NewGuid().ToString(),
-                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        ProjectId = "OpenIdProvider_3.0.0-rc8",
                         Description= "SMS two factor authenticator",
                         Name = "SMS",
                         Picture = "https://png.icons8.com/metro/1600/sms.png",
                         Library = "SimpleIdentityServer.TwoFactorAuthentication.Twilio",
-                        Version = "3.0.0-rc7",
+                        Version = "3.0.0-rc8",
                         Parameters = "TwilioAccountSid,TwilioAuthToken,TwilioFromNumber,TwilioMessage",
                         CreateDateTime = DateTime.UtcNow,
                         UpdateDateTime = DateTime.UtcNow
@@ -288,26 +288,26 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                 {
                     new Project
                     {
-                        Id = "OpenIdProvider_3.0.0-rc7",
-                        Version = "3.0.0-rc7",
+                        Id = "OpenIdProvider_3.0.0-rc8",
+                        Version = "3.0.0-rc8",
                         ProjectName = "OpenIdProvider"
                     },
                     new Project
                     {
-                        Id = "EventStore_3.0.0-rc7",
-                        Version = "3.0.0-rc7",
+                        Id = "EventStore_3.0.0-rc8",
+                        Version = "3.0.0-rc8",
                         ProjectName = "EventStore"
                     },
                     new Project
                     {
-                        Id = "UmaProvider_3.0.0-rc7",
-                        Version = "3.0.0-rc7",
+                        Id = "UmaProvider_3.0.0-rc8",
+                        Version = "3.0.0-rc8",
                         ProjectName = "UmaProvider"
                     },
                     new Project
                     {
-                        Id = "ScimProvider_3.0.0-rc7",
-                        Version = "3.0.0-rc7",
+                        Id = "ScimProvider_3.0.0-rc8",
+                        Version = "3.0.0-rc8",
                         ProjectName = "ScimProvider"
                     }
                 });
@@ -329,7 +329,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.OAuth2Introspection",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "introspect",
                                 Parameters = "OauthIntrospectClientId,OauthIntrospectClientSecret,OauthIntrospectAuthUrl"
                             }
@@ -344,14 +344,14 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "WebApiContrib.Core.Storage.InMemory",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "cache"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "WebApiContrib.Core.Storage.Redis",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "cache",
                                 Parameters = "RedisCacheInstanceName,RedisCacheConfiguration,RedisCachePort"
                             },
@@ -359,7 +359,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "WebApiContrib.Core.Concurrency",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "concurrency"
                             }
                         }
@@ -373,7 +373,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Parameter.Host",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "host"
                             }
                         }
@@ -387,7 +387,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.AccessToken.Store.InMemory",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store"
                             }
                         }
@@ -402,7 +402,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Host",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "host",
                                 Parameters = "OpenIdCookieName,OpenIdExternalCookieName,ScimEndpoint,ScimEndpointEnabled"
                             }
@@ -417,14 +417,14 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Store.InMemory",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "cache"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Store.Redis",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "cache",
                                 Parameters = "OauthRedisStorageConfiguration,OauthRedisStorageInstanceName,OauthRedisStoragePort"
                             }
@@ -439,7 +439,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EF.SqlServer",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "OAuthConnectionString"
                             },
@@ -447,7 +447,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EF.Postgre",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "OAuthConnectionString"
                             },
@@ -455,7 +455,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EF.Sqlite",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "OAuthConnectionString"
                             },
@@ -463,7 +463,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EF.InMemory",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store"
                             }
                         }
@@ -477,14 +477,14 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Shell",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "shell"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Authenticate.Basic",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "authenticate",
                                 Parameters = "ClientId,ClientSecret,AuthorizationWellKnownConfiguration,BaseScimUrl,IsScimResourceAutomaticallyCreated,ClaimsIncludedInUserCreation"
                             },
@@ -492,7 +492,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.UserManagement",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "usermanagement",
                                 Parameters = "CreateScimResourceWhenAccountIsAdded,ClientId,ClientSecret,AuthorizationWellKnownConfiguration,ScimBaseUrl"
                             }
@@ -507,14 +507,14 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.InMemory",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.Sqlite",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "EventStoreConnectionString"
                             },
@@ -522,7 +522,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.Postgre",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "EventStoreConnectionString"
                             },
@@ -530,7 +530,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.SqlServer",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "EventStoreConnectionString"
                             },
@@ -538,7 +538,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.Handler",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "handler",
                                 Parameters = "EventStoreHandlerType"
                             },
@@ -546,7 +546,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleBus.InMemory",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "bus"
                             }
                         }
@@ -561,7 +561,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.Host",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "host"
                             }
                         }
@@ -575,14 +575,14 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.InMemory",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.Postgre",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "EventStoreConnectionString"
                             },
@@ -590,7 +590,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.Sqlite",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "EventStoreConnectionString"
                             },
@@ -598,7 +598,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.SqlServer",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "EventStoreConnectionString"
                             }
@@ -614,14 +614,14 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Uma.Store.InMemory",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "cache"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Uma.Store.Redis",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "cache",
                                 Parameters = "UmaRedisStorageConfiguration,UmaRedisStorageInstanceName,UmaRedisStoragePort"
                             }
@@ -636,7 +636,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Uma.EF.SqlServer",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "UmaConnectionString"
                             },
@@ -644,7 +644,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Uma.EF.Postgre",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "UmaConnectionString"
                             },
@@ -652,7 +652,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Uma.EF.Sqlite",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "UmaConnectionString"
                             },
@@ -660,7 +660,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Uma.EF.InMemory",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store"
                             }
                         }
@@ -674,7 +674,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Uma.Host",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "host"
                             }
                         }
@@ -689,7 +689,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Scim.Host",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "host"
                             }
                         }
@@ -703,14 +703,14 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Scim.Db.EF.InMemory",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Scim.Db.EF.Postgre",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "ScimConnectionString"
                             },
@@ -718,7 +718,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Scim.Db.EF.Sqlite",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "ScimConnectionString"
                             },
@@ -726,7 +726,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Scim.Db.EF.SqlServer",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "ScimConnectionString"
                             }
@@ -741,14 +741,14 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.InMemory",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.Sqlite",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "EventStoreConnectionString"
                             },
@@ -756,7 +756,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.Postgre",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "EventStoreConnectionString"
                             },
@@ -764,7 +764,7 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.EventStore.SqlServer",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "store",
                                 Parameters = "EventStoreConnectionString"
                             },
@@ -772,14 +772,14 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleIdentityServer.Scim.EventStore.Handler",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "handler"
                             },
                             new UnitPackage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Library = "SimpleBus.InMemory",
-                                Version = "3.0.0-rc7",
+                                Version = "3.0.0-rc8",
                                 CategoryId = "bus"
                             }
                         }
@@ -797,135 +797,135 @@ namespace SimpleIdentityServer.Module.Feed.Startup.Extensions
                     // OPENID
                     new ProjectUnit
                     {
-                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        ProjectId = "OpenIdProvider_3.0.0-rc8",
                         UnitId = "authentication"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        ProjectId = "OpenIdProvider_3.0.0-rc8",
                         UnitId = "openidapi"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        ProjectId = "OpenIdProvider_3.0.0-rc8",
                         UnitId = "oauthstorage"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        ProjectId = "OpenIdProvider_3.0.0-rc8",
                         UnitId = "oauthrepository"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        ProjectId = "OpenIdProvider_3.0.0-rc8",
                         UnitId = "oautheventstore"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        ProjectId = "OpenIdProvider_3.0.0-rc8",
                         UnitId = "openidui"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        ProjectId = "OpenIdProvider_3.0.0-rc8",
                         UnitId = "parametersrapi"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "OpenIdProvider_3.0.0-rc7",
+                        ProjectId = "OpenIdProvider_3.0.0-rc8",
                         UnitId = "accesstokenstore"
                     },
                     // EVENT STORE.
                     new ProjectUnit
                     {
-                        ProjectId = "EventStore_3.0.0-rc7",
+                        ProjectId = "EventStore_3.0.0-rc8",
                         UnitId = "authentication"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "EventStore_3.0.0-rc7",
+                        ProjectId = "EventStore_3.0.0-rc8",
                         UnitId = "eventstorehost"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "EventStore_3.0.0-rc7",
+                        ProjectId = "EventStore_3.0.0-rc8",
                         UnitId = "eventstorerepository"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "EventStore_3.0.0-rc7",
+                        ProjectId = "EventStore_3.0.0-rc8",
                         UnitId = "parametersrapi"
                     },
                     // UMA
                     new ProjectUnit
                     {
-                        ProjectId = "UmaProvider_3.0.0-rc7",
+                        ProjectId = "UmaProvider_3.0.0-rc8",
                         UnitId = "authentication"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "UmaProvider_3.0.0-rc7",
+                        ProjectId = "UmaProvider_3.0.0-rc8",
                         UnitId = "umahost"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "UmaProvider_3.0.0-rc7",
+                        ProjectId = "UmaProvider_3.0.0-rc8",
                         UnitId = "oauthstorage"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "UmaProvider_3.0.0-rc7",
+                        ProjectId = "UmaProvider_3.0.0-rc8",
                         UnitId = "oauthrepository"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "UmaProvider_3.0.0-rc7",
+                        ProjectId = "UmaProvider_3.0.0-rc8",
                         UnitId = "umastorage"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "UmaProvider_3.0.0-rc7",
+                        ProjectId = "UmaProvider_3.0.0-rc8",
                         UnitId = "umarepository"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "UmaProvider_3.0.0-rc7",
+                        ProjectId = "UmaProvider_3.0.0-rc8",
                         UnitId = "concurrency"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "UmaProvider_3.0.0-rc7",
+                        ProjectId = "UmaProvider_3.0.0-rc8",
                         UnitId = "parametersrapi"
                     },
                     // SCIM
                     new ProjectUnit
                     {
-                        ProjectId = "ScimProvider_3.0.0-rc7",
+                        ProjectId = "ScimProvider_3.0.0-rc8",
                         UnitId = "authentication"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "ScimProvider_3.0.0-rc7",
+                        ProjectId = "ScimProvider_3.0.0-rc8",
                         UnitId = "scimhost"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "ScimProvider_3.0.0-rc7",
+                        ProjectId = "ScimProvider_3.0.0-rc8",
                         UnitId = "concurrency"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "ScimProvider_3.0.0-rc7",
+                        ProjectId = "ScimProvider_3.0.0-rc8",
                         UnitId = "scimeventstore"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "ScimProvider_3.0.0-rc7",
+                        ProjectId = "ScimProvider_3.0.0-rc8",
                         UnitId = "scimrepository"
                     },
                     new ProjectUnit
                     {
-                        ProjectId = "ScimProvider_3.0.0-rc7",
+                        ProjectId = "ScimProvider_3.0.0-rc8",
                         UnitId = "parametersrapi"
                     }
                 });

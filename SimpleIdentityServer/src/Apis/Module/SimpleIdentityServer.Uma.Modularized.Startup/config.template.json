@@ -1,19 +1,118 @@
 {
-  "id": "UmaProvider_3.0.0-rc7",
-  "version": "3.0.0-rc7",
+  "id": "UmaProvider_3.0.0-rc8",
+  "version": "3.0.0-rc8",
   "name": "UmaProvider",
   "units": [
     {
-      "name": "authentication",
+      "name": "umaapi",
       "packages": [
         {
-          "lib": "SimpleIdentityServer.OAuth2Introspection",
-          "version": "3.0.0-rc7",
-          "category": "introspect",
+          "lib": "SimpleIdentityServer.Uma.Host",
+          "version": "3.0.0-rc8",
+          "category": "host"
+        }
+      ]
+    },
+    {
+      "name": "oauthstorage",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Store.InMemory",
+          "version": "3.0.0-rc8",
+          "category": "cache",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "oauthrepository",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.EF.InMemory",
+          "version": "3.0.0-rc8",
+          "category": "store",
+          "parameters": {}
+        },
+        {
+          "lib": "SimpleIdentityServer.EF.Postgre",
+          "version": "3.0.0-rc8",
+          "category": "store",
           "parameters": {
-            "OauthIntrospectClientId": "",
-            "OauthIntrospectClientSecret": "",
-            "OauthIntrospectAuthUrl": ""
+            "UmaConnectionString": ""
+          }
+        },
+        {
+          "lib": "SimpleIdentityServer.Uma.EF.Sqlite",
+          "version": "3.0.0-rc8",
+          "category": "store",
+          "parameters": {
+            "UmaConnectionString": ""
+          }
+        },
+        {
+          "lib": "SimpleIdentityServer.Uma.EF.SqlServer",
+          "version": "3.0.0-rc8",
+          "category": "store",
+          "parameters": {
+            "UmaConnectionString": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "umastorage",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Uma.Store.InMemory",
+          "version": "3.0.0-rc8",
+          "category": "cache"
+        }
+      ]
+    },
+    {
+      "name": "umarepository",
+      "packages": [
+        {
+          "lib": "SimpleIdentityServer.Uma.EF.InMemory",
+          "version": "3.0.0-rc8",
+          "category": "store",
+          "parameters": {}
+        },
+        {
+          "lib": "SimpleIdentityServer.Uma.EF.Postgre",
+          "version": "3.0.0-rc8",
+          "category": "store",
+          "parameters": {
+            "UmaConnectionString": ""
+          }
+        },
+        {
+          "lib": "SimpleIdentityServer.Uma.EF.Sqlite",
+          "version": "3.0.0-rc8",
+          "category": "store",
+          "parameters": {
+            "UmaConnectionString": ""
+          }
+        },
+        {
+          "lib": "SimpleIdentityServer.Uma.EF.SqlServer",
+          "version": "3.0.0-rc8",
+          "category": "store",
+          "parameters": {
+            "UmaConnectionString": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "events",
+      "packages": [
+        {
+          "lib": "SimpleBus.InMemory",
+          "version": "3.0.0-rc8",
+          "category": "bus",
+          "parameters": {
+            "ServerName": "openid"
           }
         }
       ]
@@ -23,151 +122,15 @@
       "packages": [
         {
           "lib": "WebApiContrib.Core.Storage.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "cache",
-          "parameters": {}
-        },
-        {
-          "lib": "WebApiContrib.Core.Storage.Redis",
-          "version": "3.0.0-rc7",
-          "category": "cache",
-          "parameters": {
-            "RedisCacheInstanceName": "",
-            "RedisCacheConfiguration": "",
-            "RedisCachePort": ""
-          }
+          "version": "3.0.0-rc8",
+          "category": "cache"
         },
         {
           "lib": "WebApiContrib.Core.Concurrency",
-          "version": "3.0.0-rc7",
-          "category": "concurrency",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "oauthrepository",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.EF.SqlServer",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "OAuthConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.EF.Postgre",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "OAuthConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.EF.Sqlite",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "OAuthConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.EF.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "oauthstorage",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.Store.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "cache",
-          "parameters": {}
-        },
-        {
-          "lib": "SimpleIdentityServer.Store.Redis",
-          "version": "3.0.0-rc7",
-          "category": "cache",
-          "parameters": {
-            "OauthRedisStorageConfiguration": "",
-            "OauthRedisStorageInstanceName": "",
-            "OauthRedisStoragePort": ""
-          }
-        }
-      ]
-    },
-    {
-      "name": "parametersrapi",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.Parameter.Host",
-          "version": "3.0.0-rc7",
-          "category": "host",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "umahost",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.Uma.Host",
-          "version": "3.0.0-rc7",
-          "category": "host",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "umarepository",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.Uma.EF.SqlServer",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "UmaConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.Uma.EF.Postgre",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "UmaConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.Uma.EF.Sqlite",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": { "UmaConnectionString": "" }
-        },
-        {
-          "lib": "SimpleIdentityServer.Uma.EF.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "umastorage",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.Uma.Store.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "cache",
-          "parameters": {}
-        },
-        {
-          "lib": "SimpleIdentityServer.Uma.Store.Redis",
-          "version": "3.0.0-rc7",
-          "category": "cache",
-          "parameters": {
-            "UmaRedisStorageConfiguration": "",
-            "UmaRedisStorageInstanceName": "",
-            "UmaRedisStoragePort": ""
-          }
+          "version": "3.0.0-rc8",
+          "category": "concurrency"
         }
       ]
     }
-  ],
-  "connectors": [],
-  "two_factors": []
+  ]
 }

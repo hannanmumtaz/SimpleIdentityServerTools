@@ -1,40 +1,15 @@
 ﻿{
-  "id": "UmaProvider_3.0.0-rc7",
-  "version": "3.0.0-rc7",
+  "id": "UmaProvider_3.0.0-rc8",
+  "version": "3.0.0-rc8",
   "name": "UmaProvider",
   "units": [
     {
-      "name": "umahost",
+      "name": "umaapi",
       "packages": [
         {
           "lib": "SimpleIdentityServer.Uma.Host",
-          "version": "3.0.0-rc7",
+          "version": "3.0.0-rc8",
           "category": "host"
-        }
-      ]
-    },
-    {
-      "name": "parametersrapi",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.Parameter.Host",
-          "version": "3.0.0-rc7",
-          "category": "host"
-        }
-      ]
-    },
-    {
-      "name": "authentication",
-      "packages": [
-        {
-          "lib": "SimpleIdentityServer.OAuth2Introspection",
-          "version": "3.0.0-rc7",
-          "category": "introspect",
-          "parameters": {
-            "OauthIntrospectClientId": "uma",
-            "OauthIntrospectClientSecret": "uma",
-            "OauthIntrospectAuthUrl": "http://localhost:60004/.well-known/uma2-configuration"
-          }
         }
       ]
     },
@@ -43,8 +18,9 @@
       "packages": [
         {
           "lib": "SimpleIdentityServer.Store.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "cache"
+          "version": "3.0.0-rc8",
+          "category": "cache",
+          "parameters": {}
         }
       ]
     },
@@ -52,12 +28,10 @@
       "name": "oauthrepository",
       "packages": [
         {
-          "lib": "SimpleIdentityServer.EF.SqlServer",
-          "version": "3.0.0-rc7",
+          "lib": "SimpleIdentityServer.EF.InMemory",
+          "version": "3.0.0-rc8",
           "category": "store",
-          "parameters": {
-            "OAuthConnectionString": "Data Source=.;Initial Catalog=SimpleIdServerOauthUma;Integrated Security=True;"
-          }
+          "parameters": {}
         }
       ]
     },
@@ -66,7 +40,7 @@
       "packages": [
         {
           "lib": "SimpleIdentityServer.Uma.Store.InMemory",
-          "version": "3.0.0-rc7",
+          "version": "3.0.0-rc8",
           "category": "cache"
         }
       ]
@@ -76,37 +50,22 @@
       "packages": [
         {
           "lib": "SimpleIdentityServer.Uma.EF.InMemory",
-          "version": "3.0.0-rc7",
+          "version": "3.0.0-rc8",
           "category": "store",
-          "parameters": {
-            "UmaConnectionString": "Data Source=.;Initial Catalog=SimpleIdServerUma;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
-          }
+          "parameters": {}
         }
       ]
     },
     {
-      "name": "oautheventstore",
+      "name": "events",
       "packages": [
         {
-          "lib": "SimpleIdentityServer.EventStore.SqlServer",
-          "version": "3.0.0-rc7",
-          "category": "store",
-          "parameters": {
-            "EventStoreConnectionString": "Data Source=.;Initial Catalog=EventStore;Integrated Security=True;"
-          }
-        },
-        {
-          "lib": "SimpleIdentityServer.EventStore.Handler",
-          "version": "3.0.0-rc7",
-          "category": "handler",
-          "parameters": {
-            "EventStoreHandlerType": "auth"
-          }
-        },
-        {
           "lib": "SimpleBus.InMemory",
-          "version": "3.0.0-rc7",
-          "category": "bus"
+          "version": "3.0.0-rc8",
+          "category": "bus",
+          "parameters": {
+            "ServerName": "openid"
+          }
         }
       ]
     },
@@ -115,24 +74,15 @@
       "packages": [
         {
           "lib": "WebApiContrib.Core.Storage.InMemory",
-          "version": "3.0.0-rc7",
+          "version": "3.0.0-rc8",
           "category": "cache"
         },
         {
           "lib": "WebApiContrib.Core.Concurrency",
-          "version": "3.0.0-rc7",
+          "version": "3.0.0-rc8",
           "category": "concurrency"
         }
       ]
-    }
-  ],
-  "connectors": [
-    {
-      "name": "",
-      "version": "",
-      "parameters": {
-        "":  ""
-      }
     }
   ]
 }

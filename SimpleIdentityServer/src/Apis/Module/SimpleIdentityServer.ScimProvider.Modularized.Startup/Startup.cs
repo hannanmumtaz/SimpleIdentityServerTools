@@ -19,6 +19,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleIdentityServer.Module.Loader;
+using SimpleIdentityServer.OAuth2Introspection;
+using SimpleIdentityServer.Scim.Db.EF;
+using SimpleIdentityServer.ScimProvider.Modularized.Startup.Extensions;
+using SimpleIdentityServer.UserInfoIntrospection;
 using System;
 
 namespace SimpleIdentityServer.ScimProvider.Modularized.Startup
@@ -45,17 +49,27 @@ namespace SimpleIdentityServer.ScimProvider.Modularized.Startup
         
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(OAuth2IntrospectionOptions.AuthenticationScheme)
+                .AddOAuth2Introspection(opts =>
+                {
+                    opts.ClientId = "Scim";
+                    opts.ClientSecret = "~V*nH{q4;qL/=8+Z";
+                    opts.WellKnownConfigurationUrl = "http://localhost:60004/.well-known/uma2-configuration";
+                })
+                .AddUserInfoIntrospection(opts =>
+                {
+                    opts.WellKnownConfigurationUrl = "http://localhost:60000/.well-known/openid-configuration";
+                });
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
             var mvc = services.AddMvc();
             var authBuilder = services.AddAuthentication();
             _moduleLoader.ConfigureUnitsServices(services, mvc, _env);
-            // _moduleLoader.ConfigureModuleAuthentication(authBuilder);
-            // services.AddAuthorization(opts =>
-            // {
-            //     _moduleLoader.ConfigureModuleAuthorization(opts);
-            // });
+            services.AddAuthorization(opts =>
+            {
+                _moduleLoader.ConfigureUnitsAuthorization(opts);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -70,6 +84,13 @@ namespace SimpleIdentityServer.ScimProvider.Modularized.Startup
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var scimDbContext = serviceScope.ServiceProvider.GetService<ScimDbContext>();
+                scimDbContext.Database.EnsureCreated();
+                scimDbContext.EnsureSeedData();
+            }
         }
 
         private void HandleUnitsLoaded(object sender, EventArgs e)
