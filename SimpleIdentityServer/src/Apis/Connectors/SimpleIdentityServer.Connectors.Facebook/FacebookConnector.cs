@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.Connectors.Common;
 using SimpleIdentityServer.Connectors.Common.Extensions;
 using System;

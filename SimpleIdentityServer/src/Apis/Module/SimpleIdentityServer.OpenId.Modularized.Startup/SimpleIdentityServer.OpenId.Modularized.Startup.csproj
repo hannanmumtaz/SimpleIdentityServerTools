@@ -56,6 +56,8 @@
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Lib\Bus\SimpleBus.InMemory\SimpleBus.InMemory.csproj" />
     <ProjectReference Include="..\..\Connectors\SimpleIdentityServer.Connectors.Facebook\SimpleIdentityServer.Connectors.Facebook.csproj" />
     <ProjectReference Include="..\..\Connectors\SimpleIdentityServer.Connectors.Google\SimpleIdentityServer.Connectors.Google.csproj" />
+    <ProjectReference Include="..\..\Connectors\SimpleIdentityServer.Connectors.MicrosoftAccount\SimpleIdentityServer.Connectors.MicrosoftAccount.csproj" />
+    <ProjectReference Include="..\..\Connectors\SimpleIdentityServer.Connectors.Twitter\SimpleIdentityServer.Connectors.Twitter.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Module.Loader\SimpleIdentityServer.Module.Loader.csproj" />
   </ItemGroup> 
 

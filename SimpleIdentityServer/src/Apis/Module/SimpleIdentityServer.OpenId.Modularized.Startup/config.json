@@ -106,6 +106,29 @@
         "ClientId": "636126285787-755svbmi6j75t54e00lk58fi1t1qs4c6.apps.googleusercontent.com",
         "ClientSecret": "l-3B1I0hGNc-0S4NSdkIw2yE"
       }
+    },
+    {
+      "name": "MicrosoftAccount",
+      "description": "Refer to this url http://go.microsoft.com/fwlink/?LinkID=144070 to create a new client",
+      "picture": "https://is2-ssl.mzstatic.com/image/thumb/Purple128/v4/ad/c7/ce/adc7ce3b-f989-9147-0066-b79383ecc05b/contsched.gvqizhnn.png/1200x630bb.png",
+      "lib": "SimpleIdentityServer.Connectors.MicrosoftAccount",
+      "version": "3.0.0-rc8",
+      "parameters": {
+        "ClientId": "",
+        "ClientSecret": ""
+      }
+    },
+    {
+      "name": "Twitter",
+      "description": "Refer to this url https://apps.twitter.com/ to create a new client",
+      "picture": "https://png.icons8.com/color/1600/twitter-squared.png",
+      "lib": "SimpleIdentityServer.Connectors.Twitter",
+      "version": "3.0.0-rc8",
+      "parameters": {
+        "ClientId": "",
+        "ClientSecret": "",
+        "Scopes": ""
+      }
     }
   ],
   "two_factors": [

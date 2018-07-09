@@ -24,8 +24,4 @@
   <ItemGroup>
     <ProjectReference Include="..\SimpleIdentityServer.Connectors.Common\SimpleIdentityServer.Connectors.Common.csproj" />
   </ItemGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <DefineConstants>$(DefineConstants);NETSTANDARD</DefineConstants>
-  </PropertyGroup>
 </Project>
