@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <Description>SimpleIdentityServer.Connectors.Google Class Library</Description>
     <Authors>thierry habart</Authors>
@@ -7,13 +6,11 @@
     <AssemblyName>SimpleIdentityServer.Connectors.Google</AssemblyName>
     <PackageId>SimpleIdentityServer.Connectors.Google</PackageId>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="2.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Core" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Abstractions" Version="2.0.2" />
   </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <Reference Include="System.Web" />
     <Reference Include="System.Runtime.Serialization" />
@@ -24,8 +21,4 @@
   <ItemGroup>
     <ProjectReference Include="..\SimpleIdentityServer.Connectors.Common\SimpleIdentityServer.Connectors.Common.csproj" />
   </ItemGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <DefineConstants>$(DefineConstants);NETSTANDARD</DefineConstants>
-  </PropertyGroup>
 </Project>

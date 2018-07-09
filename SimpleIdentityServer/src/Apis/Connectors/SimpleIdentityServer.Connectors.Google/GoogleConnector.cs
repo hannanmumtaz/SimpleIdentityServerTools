@@ -39,7 +39,7 @@ namespace SimpleIdentityServer.Connectors.Google
             {
                 cookieName = Constants.DEFAULT_COOKIE_NAME;
             }
-
+            
             authBuilder.AddGoogle(opts =>
                 {
                     opts.ClientId = options.TryGetStr(ClientId);

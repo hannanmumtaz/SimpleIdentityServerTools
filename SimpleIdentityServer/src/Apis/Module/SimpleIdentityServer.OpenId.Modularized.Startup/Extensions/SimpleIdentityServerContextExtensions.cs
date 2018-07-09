@@ -17,6 +17,8 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             InsertScopes(context);
             InsertTranslations(context);
             InsertJsonWebKeys(context);
+            InsertResourceOwners(context);
+            InsertClients(context);
             context.SaveChanges();
         }
 
@@ -506,7 +508,7 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
                 });
             }
         }
-        
+
         private static void InsertJsonWebKeys(SimpleIdentityServerContext context)
         {
             if (!context.JsonWebKeys.Any())
@@ -546,6 +548,751 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
                         Kty = KeyType.RSA,
                         Use = Use.Enc,
                         SerializedKey = serializedRsa,
+                    }
+                });
+            }
+        }
+
+        private static void InsertResourceOwners(SimpleIdentityServerContext context)
+        {
+            if (!context.ResourceOwners.Any())
+            {
+                context.ResourceOwners.AddRange(new[]
+                {
+                    new ResourceOwner
+                    {
+                        Id = "administrator",
+                        Claims = new List<ResourceOwnerClaim>
+                        {
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.Subject,
+                                Value = "administrator"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.Role,
+                                Value = "administrator"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.Address,
+                                Value = "{ country : 'france' }"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.BirthDate,
+                                Value = "1989-10-07"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.Email,
+                                Value = "habarthierry@hotmail.fr"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.EmailVerified,
+                                Value = "true"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.FamilyName,
+                                Value = "habart"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.Gender,
+                                Value = "M"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.GivenName,
+                                Value = "Habart Thierry"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.Locale,
+                                Value = "fr-FR"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.MiddleName,
+                                Value = "Thierry"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.NickName,
+                                Value = "Titi"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.PhoneNumber,
+                                Value = "+32485350536"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.PhoneNumberVerified,
+                                Value = "true"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.Picture,
+                                Value = "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Shiba_inu_taiki.jpg/220px-Shiba_inu_taiki.jpg"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.PreferredUserName,
+                                Value = "Thierry"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.Profile,
+                                Value = "http://localhost/profile"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.WebSite,
+                                Value = "https://github.com/thabart"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.ZoneInfo,
+                                Value = "Europe/Paris"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.ScimId,
+                                Value = "id"
+                            },
+                            new ResourceOwnerClaim
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ClaimCode = Core.Jwt.Constants.StandardResourceOwnerClaimNames.ScimLocation,
+                                Value = "http://localhost:5555/Users/id"
+                            }
+                        },
+                        Password = "5E884898DA28047151D0E56F8DC6292773603D0D6AABBDD62A11EF721D1542D8",
+                        IsLocalAccount = true,
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
+                    }
+                });
+            }
+        }
+
+        private static void InsertClients(SimpleIdentityServerContext context)
+        {
+            if (!context.Clients.Any())
+            {
+                context.Clients.AddRange(new[]
+                {
+                    // Configuration API : needs to interact with the introspection endpoint.
+                    new EF.Models.Client
+                    {
+                        ClientId = "Configuration",
+                        ClientSecrets = new List<ClientSecret>
+                        {
+                            new ClientSecret
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = SecretTypes.SharedSecret,
+                                Value = "Configuration"
+                            }
+                        },
+                        ClientName = "Configuration API",
+                        TokenEndPointAuthMethod = TokenEndPointAuthenticationMethods.client_secret_post,
+                        LogoUri = "http://img.over-blog-kiwi.com/1/47/73/14/20150513/ob_06dc4f_chiot-shiba-inu-a-vendre-prix-2015.jpg",
+                        PolicyUri = "http://openid.net",
+                        TosUri = "http://openid.net",
+                        ApplicationType = ApplicationTypes.web,
+                        RedirectionUrls = "https://configuration/callback",
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    // Open Id manager API : needs to interact with the introspection endpoint.
+                    new EF.Models.Client
+                    {
+                        ClientId = "OpenIdManager",
+                        ClientSecrets = new List<ClientSecret>
+                        {
+                            new ClientSecret
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = SecretTypes.SharedSecret,
+                                Value = "OpenIdManager"
+                            }
+                        },
+                        ClientName = "OpenId Manager API",
+                        TokenEndPointAuthMethod = TokenEndPointAuthenticationMethods.client_secret_post,
+                        LogoUri = "http://img.over-blog-kiwi.com/1/47/73/14/20150513/ob_06dc4f_chiot-shiba-inu-a-vendre-prix-2015.jpg",
+                        PolicyUri = "http://openid.net",
+                        TosUri = "http://openid.net",
+                        ApplicationType = ApplicationTypes.web,
+                        RedirectionUrls = "https://openidmanager/callback",
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    // UMA API : needs to interact with the introspection endpoint.
+                    new EF.Models.Client
+                    {
+                        ClientId = "Uma",
+                        ClientSecrets = new List<ClientSecret>
+                        {
+                            new ClientSecret
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = SecretTypes.SharedSecret,
+                                Value = "Uma"
+                            }
+                        },
+                        ClientName = "UMA API",
+                        TokenEndPointAuthMethod = TokenEndPointAuthenticationMethods.client_secret_post,
+                        LogoUri = "http://img.over-blog-kiwi.com/1/47/73/14/20150513/ob_06dc4f_chiot-shiba-inu-a-vendre-prix-2015.jpg",
+                        PolicyUri = "http://openid.net",
+                        TosUri = "http://openid.net",
+                        ApplicationType = ApplicationTypes.web,
+                        RedirectionUrls = "https://uma/callback",
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    // Anonymous client
+                    new EF.Models.Client
+                    {
+                        ClientId = Core.Constants.AnonymousClientId,
+                        ClientName = "Anonymous client",
+                        ClientSecrets = new List<ClientSecret>
+                        {
+                            new ClientSecret
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = SecretTypes.SharedSecret,
+                                Value = "Anonymous"
+                            }
+                        },
+                        TokenEndPointAuthMethod = TokenEndPointAuthenticationMethods.client_secret_post,
+                        LogoUri = "http://img.over-blog-kiwi.com/1/47/73/14/20150513/ob_06dc4f_chiot-shiba-inu-a-vendre-prix-2015.jpg",
+                        PolicyUri = "http://openid.net",
+                        TosUri = "http://openid.net",
+                        ClientScopes = new List<ClientScope>
+                        {
+                            new ClientScope
+                            {
+                                ScopeName = "openid"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "role"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "profile"
+                            }
+                        },
+                        GrantTypes = "4",
+                        ResponseTypes = "0,1,2",
+                        IdTokenSignedResponseAlg = "RS256",
+                        ApplicationType = ApplicationTypes.web,
+                        RedirectionUrls = "https://localhost:4200/callback",
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    // Website
+                    new EF.Models.Client
+                    {
+                        ClientId = "website",
+                        ClientName = "Website",
+                        ClientSecrets = new List<ClientSecret>
+                        {
+                            new ClientSecret
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = SecretTypes.SharedSecret,
+                                Value = "website"
+                            }
+                        },
+                        TokenEndPointAuthMethod = TokenEndPointAuthenticationMethods.client_secret_basic,
+                        LogoUri = "http://img.over-blog-kiwi.com/1/47/73/14/20150513/ob_06dc4f_chiot-shiba-inu-a-vendre-prix-2015.jpg",
+                        PolicyUri = "http://openid.net",
+                        TosUri = "http://openid.net",
+                        ClientScopes = new List<ClientScope>
+                        {
+                            new ClientScope
+                            {
+                                ScopeName = "openid"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "role"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "profile"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "website_api"
+                            }
+                        },
+                        GrantTypes = "4",
+                        ResponseTypes = "0,1,2",
+                        IdTokenSignedResponseAlg = "RS256",
+                        ApplicationType = ApplicationTypes.web,
+                        RedirectionUrls = "https://website/callback",
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    // Protected website
+                    new EF.Models.Client
+                    {
+                        ClientId = "ProtectedWebsite",
+                        ClientName = "ProtectedWebsite",
+                        ClientSecrets = new List<ClientSecret>
+                        {
+                            new ClientSecret
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = SecretTypes.SharedSecret,
+                                Value = "ProtectedWebsite"
+                            }
+                        },
+                        TokenEndPointAuthMethod = TokenEndPointAuthenticationMethods.client_secret_basic,
+                        LogoUri = "http://img.over-blog-kiwi.com/1/47/73/14/20150513/ob_06dc4f_chiot-shiba-inu-a-vendre-prix-2015.jpg",
+                        PolicyUri = "http://openid.net",
+                        TosUri = "http://openid.net",
+                        ClientScopes = new List<ClientScope>
+                        {
+                            new ClientScope
+                            {
+                                ScopeName = "openid"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "role"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "profile"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "website_api"
+                            }
+                        },
+                        GrantTypes = "4",
+                        ResponseTypes = "0,1,2",
+                        IdTokenSignedResponseAlg = "RS256",
+                        ApplicationType = ApplicationTypes.web,
+                        RedirectionUrls = "https://website/callback",
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    new EF.Models.Client // Medical website.
+                    {
+                        ClientId = "MedicalWebsite",
+                        ClientName = "MedicalWebsite",
+                        ClientSecrets = new List<ClientSecret>
+                        {
+                            new ClientSecret
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = SecretTypes.SharedSecret,
+                                Value = "MedicalWebsite"
+                            }
+                        },
+                        TokenEndPointAuthMethod = TokenEndPointAuthenticationMethods.client_secret_post,
+                        LogoUri = "http://img.over-blog-kiwi.com/1/47/73/14/20150513/ob_06dc4f_chiot-shiba-inu-a-vendre-prix-2015.jpg",
+                        PolicyUri = "http://openid.net",
+                        TosUri = "http://openid.net",
+                        ClientScopes = new List<ClientScope>
+                        {
+                            new ClientScope
+                            {
+                                ScopeName = "openid"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "role"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "profile"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "uma"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "uma_protection"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "uma_authorization"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "website_api"
+                            }
+                        },
+                        GrantTypes = "1,3,4",
+                        ResponseTypes = "0,1,2",
+                        IdTokenSignedResponseAlg = "RS256",
+                        ApplicationType = ApplicationTypes.web,
+                        RedirectionUrls = "https://localhost:5106/Authenticate/Callback",
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    // Manager website API
+                    new EF.Models.Client
+                    {
+                        ClientId = "ManagerWebSiteApi",
+                        ClientName = "Manager website API",
+                        ClientSecrets = new List<ClientSecret>
+                        {
+                            new ClientSecret
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = SecretTypes.SharedSecret,
+                                Value = "ManagerWebSiteApi"
+                            }
+                        },
+                        TokenEndPointAuthMethod = TokenEndPointAuthenticationMethods.client_secret_post,
+                        LogoUri = "http://img.over-blog-kiwi.com/1/47/73/14/20150513/ob_06dc4f_chiot-shiba-inu-a-vendre-prix-2015.jpg",
+                        PolicyUri = "http://openid.net",
+                        TosUri = "http://openid.net",
+                        ClientScopes = new List<ClientScope>
+                        {
+                            new ClientScope
+                            {
+                                ScopeName = "openid"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "uma_protection"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "uma_authorization"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "openid_manager"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "manage_configuration"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "display_configuration"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "configuration"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "uma"
+                            }
+                        },
+                        GrantTypes = "3",
+                        ResponseTypes = "1",
+                        IdTokenSignedResponseAlg = "RS256",
+                        ApplicationType = ApplicationTypes.web,
+                        RedirectionUrls = "https://websiteapi/callback",
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    // Resource manager website.
+                    new EF.Models.Client
+                    {
+                        ClientId = "ResourceManagerClientId",
+                        ClientName = "Resource manager website",
+                        ClientSecrets = new List<ClientSecret>
+                        {
+                            new ClientSecret
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = SecretTypes.SharedSecret,
+                                Value = "ResourceManagerClientId"
+                            }
+                        },
+                        TokenEndPointAuthMethod = TokenEndPointAuthenticationMethods.client_secret_basic,
+                        LogoUri = "http://img.over-blog-kiwi.com/1/47/73/14/20150513/ob_06dc4f_chiot-shiba-inu-a-vendre-prix-2015.jpg",
+                        PolicyUri = "http://openid.net",
+                        TosUri = "http://openid.net",
+                        ClientScopes = new List<ClientScope>
+                        {
+                            new ClientScope
+                            {
+                                ScopeName = "openid"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "role"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "profile"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "website_api"
+                            }
+                        },
+                        GrantTypes = "1,4",
+                        ResponseTypes = "0,1,2",
+                        IdTokenSignedResponseAlg = "RS256",
+                        ApplicationType = ApplicationTypes.web,
+                        RedirectionUrls = "http://localhost:64950/callback",
+                        PostLogoutRedirectUris = "http://localhost:64950/end_session",
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    // Resource manager website.
+                    new EF.Models.Client
+                    {
+                        ClientId = "OfficeAddin",
+                        ClientName = "OfficeAddin",
+                        ClientSecrets = new List<ClientSecret>
+                        {
+                            new ClientSecret
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = SecretTypes.SharedSecret,
+                                Value = "Cr8cfLttLabTvezn"
+                            }
+                        },
+                        TokenEndPointAuthMethod = TokenEndPointAuthenticationMethods.client_secret_basic,
+                        LogoUri = "http://img.over-blog-kiwi.com/1/47/73/14/20150513/ob_06dc4f_chiot-shiba-inu-a-vendre-prix-2015.jpg",
+                        PolicyUri = "http://openid.net",
+                        TosUri = "http://openid.net",
+                        ClientScopes = new List<ClientScope>
+                        {
+                            new ClientScope
+                            {
+                                ScopeName = "openid"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "role"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "profile"
+                            }
+                        },
+                        GrantTypes = "1,4",
+                        ResponseTypes = "0,1,2",
+                        IdTokenSignedResponseAlg = "RS256",
+                        ApplicationType = ApplicationTypes.web,
+                        RedirectionUrls = "http://localhost:61000/callback",
+                        PostLogoutRedirectUris = "http://localhost:61000/end_session",
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    // Visual studio extension
+                    new EF.Models.Client
+                    {
+                        ClientId = "VisualStudioExtension",
+                        ClientName = "VisualStudioExtension",
+                        ClientSecrets = new List<ClientSecret>
+                        {
+                            new ClientSecret
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = SecretTypes.SharedSecret,
+                                Value = "VisualStudioExtension"
+                            }
+                        },
+                        TokenEndPointAuthMethod = TokenEndPointAuthenticationMethods.client_secret_post,
+                        LogoUri = "http://img.over-blog-kiwi.com/1/47/73/14/20150513/ob_06dc4f_chiot-shiba-inu-a-vendre-prix-2015.jpg",
+                        PolicyUri = "http://openid.net",
+                        TosUri = "http://openid.net",
+                        ClientScopes = new List<ClientScope>
+                        {
+                            new ClientScope
+                            {
+                                ScopeName = "website_api"
+                            }
+                        },
+                        GrantTypes = "3",
+                        ResponseTypes = "1",
+                        ApplicationType = ApplicationTypes.native,
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
+
+                    },
+                    // SimpleIdentity server : needs to interact with the configuration server to retrieve his configuration
+                    new EF.Models.Client
+                    {
+                        ClientId = "SimpleIdentityServer",
+                        ClientSecrets = new List<ClientSecret>
+                        {
+                            new ClientSecret
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = SecretTypes.SharedSecret,
+                                Value = "SimpleIdentityServer"
+                            }
+                        },
+                        ClientName = "Simple Identity Server",
+                        TokenEndPointAuthMethod = TokenEndPointAuthenticationMethods.client_secret_post,
+                        LogoUri = "http://img.over-blog-kiwi.com/1/47/73/14/20150513/ob_06dc4f_chiot-shiba-inu-a-vendre-prix-2015.jpg",
+                        PolicyUri = "http://openid.net",
+                        ClientScopes = new List<ClientScope>
+                        {
+                            new ClientScope
+                            {
+                                ScopeName = "display_configuration"
+                            }
+                        },
+                        GrantTypes = "3",
+                        ResponseTypes = "1",
+                        IdTokenSignedResponseAlg = "RS256",
+                        ApplicationType = ApplicationTypes.web,
+                        RedirectionUrls = "https://simpleidserver/callback",
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    // Manager website 
+                    new EF.Models.Client
+                    {
+                        ClientId = "SampleClient",
+                        ClientName = "Sample client",
+                        ClientSecrets = new List<ClientSecret>
+                        {
+                            new ClientSecret
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = SecretTypes.SharedSecret,
+                                Value = "SampleClient"
+                            }
+                        },
+                        TokenEndPointAuthMethod = TokenEndPointAuthenticationMethods.client_secret_post,
+                        LogoUri = "http://img.over-blog-kiwi.com/1/47/73/14/20150513/ob_06dc4f_chiot-shiba-inu-a-vendre-prix-2015.jpg",
+                        ClientScopes = new List<ClientScope>
+                        {
+                            new ClientScope
+                            {
+                                ScopeName = "openid"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "uma_protection"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "uma_authorization"
+                            }
+                        },
+                        GrantTypes = "3",
+                        ResponseTypes = "1",
+                        IdTokenSignedResponseAlg = "RS256",
+                        ApplicationType = ApplicationTypes.web,
+                        RedirectionUrls = "https://sampleclient/callback",
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    // Simple Identity server test client
+                    new EF.Models.Client
+                    {
+                        ClientId = "SimpleIdServerClient",
+                        ClientName = "Simple Identity Server Client",
+                        ClientSecrets = new List<ClientSecret>
+                        {
+                            new ClientSecret
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = SecretTypes.SharedSecret,
+                                Value = "SimpleIdServerClient"
+                            }
+                        },
+                        TokenEndPointAuthMethod = TokenEndPointAuthenticationMethods.client_secret_post,
+                        LogoUri = "http://img.over-blog-kiwi.com/1/47/73/14/20150513/ob_06dc4f_chiot-shiba-inu-a-vendre-prix-2015.jpg",
+                        ClientScopes = new List<ClientScope>
+                        {
+                            new ClientScope
+                            {
+                                ScopeName = "openid"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "role"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "profile"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "address"
+                            }
+                        },
+                        GrantTypes = "1",
+                        ResponseTypes = "0,1,2",
+                        IdTokenSignedResponseAlg = "RS256",
+                        ApplicationType = ApplicationTypes.web,
+                        RedirectionUrls = "http://localhost:60000/User/Callback",
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    new EF.Models.Client // Resource manager API.
+                    {
+                        ClientId = "ResourceManagerApi",
+                        ClientName = "ResourceManagerApi",
+                        ClientSecrets = new List<ClientSecret>
+                        {
+                            new ClientSecret
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = SecretTypes.SharedSecret,
+                                Value = "ResourceManagerApi"
+                            }
+                        },
+                        TokenEndPointAuthMethod = TokenEndPointAuthenticationMethods.client_secret_post,
+                        LogoUri = "http://img.over-blog-kiwi.com/1/47/73/14/20150513/ob_06dc4f_chiot-shiba-inu-a-vendre-prix-2015.jpg",
+                        ClientScopes = new List<ClientScope>
+                        {
+                            new ClientScope
+                            {
+                                ScopeName = "openid"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "display_configuration"
+                            },
+                            new ClientScope
+                            {
+                                ScopeName = "manage_configuration"
+                            }
+                        },
+                        GrantTypes = "1", // Client credentials.
+                        ResponseTypes = "2", // id_token.
+                        IdTokenSignedResponseAlg = "RS256",
+                        ApplicationType = ApplicationTypes.native,
+                        UpdateDateTime = DateTime.UtcNow,
+                        CreateDateTime = DateTime.UtcNow
                     }
                 });
             }

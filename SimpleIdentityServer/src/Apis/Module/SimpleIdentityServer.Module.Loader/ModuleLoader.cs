@@ -25,9 +25,13 @@ namespace SimpleIdentityServer.Module.Loader
         void LoadTwoFactors();
         void ConfigureUnitsServices(IServiceCollection services, IMvcBuilder mvcBuilder, IHostingEnvironment env);
         void ConfigureUnitsAuthorization(AuthorizationOptions authorizationOptions);
+        void ConfigureConnectors(AuthenticationBuilder authBuilder);
+        void ConfigureTwoFactors(IServiceCollection services);
         void ConfigureApplicationBuilder(IApplicationBuilder app);
         void ConfigureRouter(IRouteBuilder router);
         event EventHandler UnitsLoaded;
+        event EventHandler ConnectorsLoaded;
+        event EventHandler TwoFactorsLoaded;
     }
 
     public class StrEventArgs : EventArgs
@@ -340,7 +344,51 @@ namespace SimpleIdentityServer.Module.Loader
                 }
             }
         }
-        
+
+        /// <summary>
+        /// Configure the connectors
+        /// </summary>
+        /// <param name="authBuilder"></param>
+        public void ConfigureConnectors(AuthenticationBuilder authBuilder)
+        {
+            if (authBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(authBuilder));
+            }
+
+            if (_connectors == null)
+            {
+                return;
+            }
+
+            foreach(var connector in _connectors)
+            {
+                connector.Instance.Configure(authBuilder, connector.Connector.Parameters);
+            }
+        }
+
+        /// <summary>
+        /// Configure the two factors.
+        /// </summary>
+        /// <param name="services"></param>
+        public void ConfigureTwoFactors(IServiceCollection services)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            if (_twoFactors == null)
+            {
+                return;
+            }
+
+            foreach(var twoFactor in _twoFactors)
+            {
+                twoFactor.Instance.ConfigureServices(services, null, null, twoFactor.TwoFactor.Parameters);
+            }
+        }
+
         /// <summary>
         /// Configure application builder.
         /// </summary>
@@ -437,6 +485,8 @@ namespace SimpleIdentityServer.Module.Loader
 
         private T LoadLibrary<T>(string library)
         {
+            // string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), $"{library}.dll");
+            // var assm = Assembly.LoadFrom(path);
             var assm = Assembly.Load(library);
             if (assm == null)
             {

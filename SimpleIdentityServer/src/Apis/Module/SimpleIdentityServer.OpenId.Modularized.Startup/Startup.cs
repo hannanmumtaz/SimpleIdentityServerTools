@@ -27,8 +27,12 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
                 Version = "3.0.0-rc8"
             });
             _moduleLoader.UnitsLoaded += HandleUnitsLoaded;
+            _moduleLoader.ConnectorsLoaded += HandleConnectorsLoaded;
+            _moduleLoader.TwoFactorsLoaded += HandleTwoFactorsLoaded;
             _moduleLoader.Initialize();
             _moduleLoader.LoadUnits();
+            _moduleLoader.LoadConnectors();
+            // _moduleLoader.LoadTwoFactors();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -49,19 +53,13 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
                 {
                     opts.LoginPath = "/Authenticate";
                 });
-            _moduleLoader.ConfigureUnitsServices(services, mvcBuilder, _env);
+            _moduleLoader.ConfigureUnitsServices(_services, mvcBuilder, _env);
             services.AddAuthorization(opts =>
             {
                 _moduleLoader.ConfigureUnitsAuthorization(opts);
             });
-            // _moduleLoader.ConfigureConnectorAuthentication(externalAuthBuilder);
-            // _moduleLoader.ConfigureModuleAuthentication(authBuilder);
-            // services.AddAuthorization(opts =>
-            // {
-            //     _moduleLoader.ConfigureModuleAuthorization(opts);
-            // });
-            // _moduleLoader.ConfigureModuleServices(services, mvcBuilder, _env);
-            // _moduleLoader.ConfigureTwoFactors(services, mvcBuilder, _env);
+            _moduleLoader.ConfigureConnectors(externalAuthBuilder);
+            // _moduleLoader.ConfigureTwoFactors(services);
         }
 
         private void ConfigureLogging(IServiceCollection services)
@@ -92,6 +90,7 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             ILoggerFactory loggerFactory)
         {
             _app = app;
+            app.UseAuthentication();
             UseSerilogLogging(loggerFactory);
             //1 . Enable CORS.
             app.UseCors("AllowAll");
@@ -103,6 +102,9 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             app.UseMvc(routes =>
             {
                 _moduleLoader.ConfigureRouter(routes);
+                routes.MapRoute("AuthArea",
+                    "{area:exists}/Authenticate/{action}/{id?}",
+                    new { controller = "Authenticate", action = "Index" });
             });
 
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
@@ -121,6 +123,16 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
         private void HandleUnitsLoaded(object sender, EventArgs e)
         {
             Console.WriteLine("the units are loaded");
+        }
+
+        private void HandleConnectorsLoaded(object sender, EventArgs e)
+        {
+            Console.WriteLine("the connectors are loaded");
+        }
+
+        private void HandleTwoFactorsLoaded(object sender, EventArgs e)
+        {
+            Console.WriteLine("the two factors are loaded");
         }
     }
 }

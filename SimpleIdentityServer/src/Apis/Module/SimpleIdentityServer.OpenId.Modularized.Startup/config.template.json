@@ -27,6 +27,30 @@
           "version": "3.0.0-rc8",
           "category": "store",
           "parameters": {}
+        },
+        {
+          "lib": "SimpleIdentityServer.EF.Postgre",
+          "version": "3.0.0-rc8",
+          "category": "store",
+          "parameters": {
+            "OAuthConnectionString": ""
+          }
+        },
+        {
+          "lib": "SimpleIdentityServer.EF.Sqlite",
+          "version": "3.0.0-rc8",
+          "category": "store",
+          "parameters": {
+            "OAuthConnectionString": ""
+          }
+        },
+        {
+          "lib": "SimpleIdentityServer.EF.SqlServer",
+          "version": "3.0.0-rc8",
+          "category": "store",
+          "parameters": {
+            "OAuthConnectionString": ""
+          }
         }
       ]
     },
@@ -38,6 +62,16 @@
           "version": "3.0.0-rc8",
           "category": "cache",
           "parameters": {}
+        },
+        {
+          "lib": "SimpleIdentityServer.Store.Redis",
+          "version": "3.0.0-rc8",
+          "category": "cache",
+          "parameters": {
+            "RedisConfiguration": "",
+            "RedisInstanceName": "",
+            "RedisPort": ""
+          }
         }
       ]
     },
@@ -61,6 +95,49 @@
           "lib": "SimpleIdentityServer.Shell",
           "version": "3.0.0-rc8",
           "category": "shell",
+          "parameters": {}
+        },
+        {
+          "lib": "SimpleIdentityServer.Authenticate.LoginPassword",
+          "version": "3.0.0-rc8",
+          "category": "auth",
+          "parameters": {
+            "IsScimResourceAutomaticallyCreated": "",
+            "ScimBaseUrl": "",
+            "ClaimsIncludedInUserCreation": "",
+            "ClientId": "",
+            "ClientSecret": "",
+            "AuthorizationWellKnownConfiguration": ""
+          }
+        },
+        {
+          "lib": "SimpleIdentityServer.Authenticate.SMS",
+          "version": "3.0.0-rc8",
+          "category": "auth",
+          "parameters": {
+            "IsScimResourceAutomaticallyCreated": "",
+            "ScimBaseUrl": "",
+            "ClaimsIncludedInUserCreation": "",
+            "ClientId": "",
+            "ClientSecret": "",
+            "AuthorizationWellKnownConfiguration": "",
+            "Message": "",
+            "AccountSid": "",
+            "AuthToken": "",
+            "FromNumber": ""
+          }
+        },
+        {
+          "lib": "SimpleIdentityServer.UserManagement",
+          "version": "3.0.0-rc8",
+          "category": "mgt",
+          "parameters": {
+          }
+        },
+        {
+          "lib": "SimpleIdentityServer.AccessToken.Store.InMemory",
+          "version": "3.0.0-rc8",
+          "category": "tokenstore",
           "parameters": {}
         }
       ]
@@ -149,6 +226,23 @@
       },
       "CreateDateTime": "2018-06-19T10:54:06.3366947Z",
       "UpdateDateTime": "2018-06-19T10:54:06.3366947Z"
+    },
+    {
+      "Name": "Email",
+      "Description": "Email two factor authenticator",
+      "Library": "SimpleIdentityServer.TwoFactorAuthentication.Email",
+      "Version": "3.0.0-rc8",
+      "Parametes": {
+        "EmailFromName": "",
+        "EmailFromAddress": "",
+        "EmailSubject": "",
+        "EmailBody": "",
+        "EmailSmtpHost": "",
+        "EmailSmtpPort": "",
+        "EmailSmtpUseSsl": "",
+        "EmailUserName": "",
+        "EmailPassword": ""
+      }
     }
   ]
 }

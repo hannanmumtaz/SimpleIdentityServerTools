@@ -68,10 +68,59 @@
           "version": "3.0.0-rc8",
           "category": "auth",
           "parameters": {}
+        },
+        {
+          "lib": "SimpleIdentityServer.UserManagement",
+          "version": "3.0.0-rc8",
+          "category": "mgt",
+          "parameters": {}
+        },
+        {
+          "lib": "SimpleIdentityServer.AccessToken.Store.InMemory",
+          "version": "3.0.0-rc8",
+          "category": "tokenstore",
+          "parameters": {}
         }
       ]
     }
   ],
-  "connectors": [],
-  "two_factors": []
+  "connectors": [
+    {
+      "name": "Facebook",
+      "description": "Refer to this url https://developers.facebook.com to create a new client",
+      "picture": "https://blog.addthiscdn.com/wp-content/uploads/2015/11/logo-facebook.png",
+      "lib": "SimpleIdentityServer.Connectors.Facebook",
+      "version": "3.0.0-rc8",
+      "parameters": {
+        "ClientId": "569242033233529",
+        "ClientSecret": "12e0f33817634c0a650c0121d05e53eb"
+      }
+    },
+    {
+      "name": "Google",
+      "description": "Refer to this url https://console.developers.google.com/apis/credentials to create a new client",
+      "picture": "https://cdn.icon-icons.com/icons2/1222/PNG/512/1492616990-1-google-search-logo-engine-service-suits_83412.png",
+      "lib": "SimpleIdentityServer.Connectors.Google",
+      "version": "3.0.0-rc8",
+      "parameters": {
+        "ClientId": "636126285787-755svbmi6j75t54e00lk58fi1t1qs4c6.apps.googleusercontent.com",
+        "ClientSecret": "l-3B1I0hGNc-0S4NSdkIw2yE"
+      }
+    }
+  ],
+  "two_factors": [
+    {
+      "Name": "SMS",
+      "Description": "SMS two factor authenticator",
+      "Picture": "https://png.icons8.com/metro/1600/sms.png",
+      "Library": "SimpleIdentityServer.TwoFactorAuthentication.Twilio",
+      "Version": "3.0.0-rc8",
+      "Parameters": {
+        "TwilioAccountSid": "",
+        "TwilioAuthToken": "",
+        "TwilioFromNumber": "",
+        "TwilioMessage": ""
+      }
+    }
+  ]
 }
