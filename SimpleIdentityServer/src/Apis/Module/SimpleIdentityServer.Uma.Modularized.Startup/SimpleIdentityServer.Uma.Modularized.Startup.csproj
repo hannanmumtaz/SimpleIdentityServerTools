@@ -22,8 +22,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.0.2" />
-    <PackageReference Include="SimpleIdentityServer.Module.Loader" Version="3.0.0-rc7" />
-	<PackageReference Include="SimpleIdentityServer.OAuth2Introspection" Version="3.0.0-rc7" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">

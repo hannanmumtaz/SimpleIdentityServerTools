@@ -19,9 +19,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleIdentityServer.Module.Loader;
-using SimpleIdentityServer.OAuth2Introspection;
 using System;
-using System.Collections.Generic;
 
 namespace SimpleIdentityServer.ScimProvider.Modularized.Startup
 {
@@ -37,22 +35,11 @@ namespace SimpleIdentityServer.ScimProvider.Modularized.Startup
             var moduleLoaderFactory = new ModuleLoaderFactory();
             _moduleLoader = moduleLoaderFactory.BuidlerModuleLoader(new ModuleLoaderOptions
             {
-                NugetSources = new List<string>
-                {
-                    @"d:\sidfeeds\core\",
-                    @"d:\sidfeeds\tools\",
-                    "https://api.nuget.org/v3/index.json",
-                    "https://www.myget.org/F/advance-ict/api/v3/index.json"
-                },
-                ModuleFeedUri = new Uri("http://localhost:60008/configuration"),
-                ProjectName = "ScimProvider"
+                ProjectName = "ScimProvider",
+                Version = "3.0.0-rc8"
             });
-            _moduleLoader.ModuleInstalled += ModuleInstalled;
-            _moduleLoader.UnitsRestored += HandleUnitsRestored;
-            _moduleLoader.ModulesLoaded += ModulesLoaded;
-            _moduleLoader.ModuleCannotBeInstalled += ModuleCannotBeInstalled;
+            _moduleLoader.UnitsLoaded += HandleUnitsLoaded;
             _moduleLoader.Initialize();
-            _moduleLoader.RestoreUnits().Wait();
             _moduleLoader.LoadUnits();
         }
         
@@ -63,12 +50,12 @@ namespace SimpleIdentityServer.ScimProvider.Modularized.Startup
                 .AllowAnyHeader()));
             var mvc = services.AddMvc();
             var authBuilder = services.AddAuthentication();
-            _moduleLoader.ConfigureModuleServices(services, mvc, _env);
-            _moduleLoader.ConfigureModuleAuthentication(authBuilder);
-            services.AddAuthorization(opts =>
-            {
-                _moduleLoader.ConfigureModuleAuthorization(opts);
-            });
+            _moduleLoader.ConfigureUnitsServices(services, mvc, _env);
+            // _moduleLoader.ConfigureModuleAuthentication(authBuilder);
+            // services.AddAuthorization(opts =>
+            // {
+            //     _moduleLoader.ConfigureModuleAuthorization(opts);
+            // });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -85,26 +72,9 @@ namespace SimpleIdentityServer.ScimProvider.Modularized.Startup
             });
         }
 
-        private static void ModuleCannotBeInstalled(object sender, StrEventArgs e)
+        private void HandleUnitsLoaded(object sender, EventArgs e)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"The nuget package {e.Value} cannot be installed");
-            Console.ForegroundColor = ConsoleColor.White;
-        }
-
-        private static void ModuleInstalled(object sender, StrEventArgs e)
-        {
-            Console.WriteLine($"The nuget package {e.Value} is installed");
-        }
-
-        private static void HandleUnitsRestored(object sender, IntEventArgs e)
-        {
-            Console.WriteLine($"Finish to restore the units in {e.Value}");
-        }
-
-        private static void ModulesLoaded(object sender, EventArgs e)
-        {
-            Console.WriteLine("The modules are loaded");
+            Console.WriteLine("the units are loaded");
         }
     }
 }
