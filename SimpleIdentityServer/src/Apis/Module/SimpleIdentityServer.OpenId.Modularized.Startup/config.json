@@ -114,8 +114,8 @@
       "lib": "SimpleIdentityServer.Connectors.MicrosoftAccount",
       "version": "3.0.0-rc8",
       "parameters": {
-        "ClientId": "",
-        "ClientSecret": ""
+        "ClientId": "clientid",
+        "ClientSecret": "clientsecret"
       }
     },
     {
@@ -125,8 +125,8 @@
       "lib": "SimpleIdentityServer.Connectors.Twitter",
       "version": "3.0.0-rc8",
       "parameters": {
-        "ClientId": "",
-        "ClientSecret": "",
+        "ClientId": "clientid",
+        "ClientSecret": "clientsecret",
         "Scopes": ""
       }
     }

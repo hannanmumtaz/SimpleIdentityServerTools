@@ -32,7 +32,7 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
             _moduleLoader.Initialize();
             _moduleLoader.LoadUnits();
             _moduleLoader.LoadConnectors();
-            // _moduleLoader.LoadTwoFactors();
+             _moduleLoader.LoadTwoFactors();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -59,7 +59,7 @@ namespace SimpleIdentityServer.OpenId.Modularized.Startup
                 _moduleLoader.ConfigureUnitsAuthorization(opts);
             });
             _moduleLoader.ConfigureConnectors(externalAuthBuilder);
-            // _moduleLoader.ConfigureTwoFactors(services);
+            _moduleLoader.ConfigureTwoFactors(services);
         }
 
         private void ConfigureLogging(IServiceCollection services)
