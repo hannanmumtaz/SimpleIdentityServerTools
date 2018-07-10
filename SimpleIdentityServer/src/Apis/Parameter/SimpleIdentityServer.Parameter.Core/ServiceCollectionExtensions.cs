@@ -16,11 +16,13 @@ namespace SimpleIdentityServer.Parameter.Core
             }
 
             services.AddTransient<IParameterActions, ParameterActions>();
-            services.AddTransient<IGetModulesAction, GetModulesAction>();
-            services.AddTransient<IUpdateModuleConfigurationAction, UpdateModuleConfigurationAction>();
+            services.AddTransient<IGetUnitsAction, GetUnitsAction>();
+            services.AddTransient<IGetTwoFactorsAction, GetTwoFactorsAction>();
+            services.AddTransient<IUpdateUnitsAction, UpdateUnitsAction>();
+            services.AddTransient<IUpdateConnectorsAction, UpdateConnectorsAction>();
+            services.AddTransient<IUpdateTwoFactorsAction, UpdateTwoFactorsAction>();
             services.AddTransient<IDirectoryHelper, DirectoryHelper>();
             services.AddTransient<IGetConnectorsAction, GetConnectorsAction>();
-            services.AddTransient<IUpdateConnectorsAction, UpdateConnectorsAction>();
             return services;
         }
     }

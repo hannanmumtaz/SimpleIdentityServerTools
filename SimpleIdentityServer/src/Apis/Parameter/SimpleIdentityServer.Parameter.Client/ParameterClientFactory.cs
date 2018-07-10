@@ -28,10 +28,12 @@ namespace SimpleIdentityServer.Parameter.Client
             var services = new ServiceCollection();
             services.AddCommonClient();
             services.AddTransient<IParameterClient, ParameterClient>();
-            services.AddTransient<IGetModulesAction, GetModulesAction>();
+            services.AddTransient<IGetUnitsAction, GetUnitsAction>();
             services.AddTransient<IGetConnectorsAction, GetConnectorsAction>();
-            services.AddTransient<IUpdateModulesAction, UpdateModulesAction>();
+            services.AddTransient<IGetTwoFactorsAction, GetTwoFactorsAction>();
+            services.AddTransient<IUpdateUnitsAction, UpdateUnitsAction>();
             services.AddTransient<IUpdateConnectorsAction, UpdateConnectorsAction>();
+            services.AddTransient<IUpdateTwoFactorsAction, UpdateTwoFactorsAction>();
             return services;
         }
     }

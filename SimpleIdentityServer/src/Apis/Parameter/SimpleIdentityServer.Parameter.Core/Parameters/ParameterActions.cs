@@ -7,31 +7,37 @@ namespace SimpleIdentityServer.Parameter.Core.Parameters
 {
     public interface IParameterActions
     {
-        GetModulesResponse GetModules();
+        GetModulesResponse GetUnits();
         GetConnectorsResponse GetConnectors();
+        GetTwoFactorsResponse GetTwoFactors();
         bool Update(IEnumerable<UpdateParameter> updateParameters);
         bool Update(IEnumerable<UpdateConnector> updateConnectors);
+        bool Update(IEnumerable<UpdateTwoFactor> updateTwoFactors);
     }
 
     internal sealed class ParameterActions : IParameterActions
     {
-        private readonly IGetModulesAction _getModulesAction;
+        private readonly IGetUnitsAction _getUnitsAction;
         private readonly IGetConnectorsAction _getConnectorsAction;
-        private readonly IUpdateModuleConfigurationAction _updateModuleConfigurationAction;
+        private readonly IGetTwoFactorsAction _getTwoFactorsAction;
+        private readonly IUpdateUnitsAction _updateUnitsAction;
         private readonly IUpdateConnectorsAction _updateConnectorsAction;
+        private readonly IUpdateTwoFactorsAction _updateTwoFactorsAction;
 
-        public ParameterActions(IGetModulesAction getModulesAction, IGetConnectorsAction getConnectorsAction, 
-            IUpdateModuleConfigurationAction updateModuleConfigurationAction, IUpdateConnectorsAction updateConnectorsAction)
+        public ParameterActions(IGetUnitsAction getUnitsAction, IGetConnectorsAction getConnectorsAction, IGetTwoFactorsAction getTwoFactorsAction,
+            IUpdateUnitsAction updateUnitsAction, IUpdateConnectorsAction updateConnectorsAction, IUpdateTwoFactorsAction updateTwoFactorsAction)
         {
-            _getModulesAction = getModulesAction;
+            _getUnitsAction = getUnitsAction;
             _getConnectorsAction = getConnectorsAction;
-            _updateModuleConfigurationAction = updateModuleConfigurationAction;
+            _getTwoFactorsAction = getTwoFactorsAction;
+            _updateUnitsAction = updateUnitsAction;
             _updateConnectorsAction = updateConnectorsAction;
+            _updateTwoFactorsAction = updateTwoFactorsAction;
         }
 
-        public GetModulesResponse GetModules()
+        public GetModulesResponse GetUnits()
         {
-            return _getModulesAction.Execute();
+            return _getUnitsAction.Execute();
         }
 
         public GetConnectorsResponse GetConnectors()
@@ -39,14 +45,24 @@ namespace SimpleIdentityServer.Parameter.Core.Parameters
             return _getConnectorsAction.Execute();
         }
 
+        public GetTwoFactorsResponse GetTwoFactors()
+        {
+            return _getTwoFactorsAction.Execute();
+        }
+
         public bool Update(IEnumerable<UpdateParameter> updateParameters)
         {
-            return _updateModuleConfigurationAction.Execute(updateParameters);
+            return _updateUnitsAction.Execute(updateParameters);
         }
 
         public bool Update(IEnumerable<UpdateConnector> updateConnectors)
         {
             return _updateConnectorsAction.Execute(updateConnectors);
+        }
+
+        public bool Update(IEnumerable<UpdateTwoFactor> updateTwoFactors)
+        {
+            return _updateTwoFactorsAction.Execute(updateTwoFactors);
         }
     }
 }

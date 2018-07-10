@@ -78,7 +78,7 @@ namespace SimpleIdentityServer.Parameter.Core.Tests.Parameters.Actions
         {
             _directoryHelperStub = new Mock<IDirectoryHelper>();
             _directoryHelperStub.Setup(d => d.GetCurrentDirectory()).Returns(Path.Combine(Directory.GetCurrentDirectory(), _subPath));
-            _getModulesAction = new GetModulesAction(_directoryHelperStub.Object);
+            _getModulesAction = new GetUnitsAction(_directoryHelperStub.Object);
         }
     }
 }

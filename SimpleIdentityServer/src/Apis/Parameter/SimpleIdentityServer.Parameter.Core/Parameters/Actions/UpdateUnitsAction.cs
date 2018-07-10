@@ -10,16 +10,16 @@ using System.Linq;
 
 namespace SimpleIdentityServer.Parameter.Core.Parameters.Actions
 {
-    public interface IUpdateModuleConfigurationAction
+    public interface IUpdateUnitsAction
     {
         bool Execute(IEnumerable<UpdateParameter> updateParameters);
     }
 
-    internal sealed class UpdateModuleConfigurationAction : IUpdateModuleConfigurationAction
+    internal sealed class UpdateUnitsAction : IUpdateUnitsAction
     {
         private readonly IDirectoryHelper _directoryHelper;
 
-        public UpdateModuleConfigurationAction(IDirectoryHelper directoryHelper)
+        public UpdateUnitsAction(IDirectoryHelper directoryHelper)
         {
             _directoryHelper = directoryHelper;
         }

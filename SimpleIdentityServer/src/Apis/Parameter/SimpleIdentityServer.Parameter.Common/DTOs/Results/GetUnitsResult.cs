@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace SimpleIdentityServer.Parameter.Common.DTOs.Results
 {
     [DataContract]
-    public class GetModulesResult
+    public class GetUnitsResult
     {
         [DataMember(Name = "units")]
         public IEnumerable<ProjectUnitResponse> Units { get; set; }

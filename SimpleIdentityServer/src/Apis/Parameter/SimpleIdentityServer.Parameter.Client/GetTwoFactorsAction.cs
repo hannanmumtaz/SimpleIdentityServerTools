@@ -7,21 +7,21 @@ using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.Parameter.Client
 {
-    public interface IGetModulesAction
+    public interface IGetTwoFactorsAction
     {
-        Task<GetModulesResult> Execute(string baseUrl, string accessToken = null);
+        Task<GetTwoFactorsResult> Execute(string baseUrl, string accessToken = null);
     }
 
-    internal sealed class GetModulesAction : IGetModulesAction
+    internal sealed class GetTwoFactorsAction : IGetTwoFactorsAction
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public GetModulesAction(IHttpClientFactory httpClientFactory)
+        public GetTwoFactorsAction(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<GetModulesResult> Execute(string baseUrl, string accessToken = null)
+        public async Task<GetTwoFactorsResult> Execute(string baseUrl, string accessToken = null)
         {
             if (string.IsNullOrWhiteSpace(baseUrl))
             {
@@ -32,7 +32,7 @@ namespace SimpleIdentityServer.Parameter.Client
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"{baseUrl}/parameters/modules")
+                RequestUri = new Uri($"{baseUrl}/parameters/twofactors")
             };
             if (!string.IsNullOrWhiteSpace(accessToken))
             {
@@ -42,7 +42,7 @@ namespace SimpleIdentityServer.Parameter.Client
             var httpResponse = await httpClient.SendAsync(request).ConfigureAwait(false);
             httpResponse.EnsureSuccessStatusCode();
             var json = await httpResponse.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<GetModulesResult>(json);
+            return JsonConvert.DeserializeObject<GetTwoFactorsResult>(json);
         }
     }
 }

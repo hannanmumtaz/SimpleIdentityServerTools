@@ -22,11 +22,11 @@ namespace SimpleIdentityServer.Parameter.Host.Controllers
             _parameterActions = parameterActions;
         }
 
-        [HttpGet("modules")]
+        [HttpGet("units")]
         [Authorize("get")]
-        public IActionResult GetModules()
+        public IActionResult GetUnits()
         {
-            var modules = _parameterActions.GetModules();
+            var modules = _parameterActions.GetUnits();
             var result = modules.ToDto();
             return new OkObjectResult(result);
         }
@@ -44,12 +44,14 @@ namespace SimpleIdentityServer.Parameter.Host.Controllers
         [Authorize("get")]
         public IActionResult GetTwoFactors()
         {
-            return null;
+            var twoFactors = _parameterActions.GetTwoFactors();
+            var result = twoFactors.ToDto();
+            return new OkObjectResult(result);
         }
 
-        [HttpPut("modules")]
+        [HttpPut("units")]
         [Authorize("add")]
-        public IActionResult UpdateModules([FromBody] IEnumerable<UpdateParameterRequest> updateParametersRequest)
+        public IActionResult UpdateUnits([FromBody] IEnumerable<UpdateParameterRequest> updateParametersRequest)
         {
             if (updateParametersRequest == null)
             {
@@ -99,6 +101,19 @@ namespace SimpleIdentityServer.Parameter.Host.Controllers
             }
 
             _parameterActions.Update(updateConnectorsRequest.Select(u => u.ToParameter()));
+            return new OkResult();
+        }
+        
+        [HttpPut("twofactors")]
+        [Authorize("add")]
+        public IActionResult UpdateTwoFactors([FromBody] IEnumerable<UpdateTwoFactorRequest> updateTwoFactorRequests)
+        {
+            if (updateTwoFactorRequests == null)
+            {
+                throw new ArgumentNullException(nameof(updateTwoFactorRequests));
+            }
+
+            _parameterActions.Update(updateTwoFactorRequests.Select(u => u.ToParameter()));
             return new OkResult();
         }
 

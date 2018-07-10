@@ -167,7 +167,7 @@ namespace SimpleIdentityServer.Parameter.Core.Tests.Parameters.Actions
         {
             _directoryHelperStub = new Mock<IDirectoryHelper>();
             _directoryHelperStub.Setup(d => d.GetCurrentDirectory()).Returns(Path.Combine(Directory.GetCurrentDirectory(), _subPath));
-            _updateModuleConfigurationAction = new UpdateModuleConfigurationAction(_directoryHelperStub.Object);
+            _updateModuleConfigurationAction = new UpdateUnitsAction(_directoryHelperStub.Object);
         }
     }
 }

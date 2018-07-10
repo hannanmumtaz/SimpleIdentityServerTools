@@ -36,7 +36,7 @@ namespace SimpleIdentityServer.Parameters.Host.Tests
         {
             _httpClientFactoryStub = new Mock<IHttpClientFactory>();
             _getModulesAction = new GetModulesAction(_httpClientFactoryStub.Object);
-            _updateModuleAction = new UpdateModulesAction(_httpClientFactoryStub.Object);
+            _updateModuleAction = new UpdateUnitsAction(_httpClientFactoryStub.Object);
         }
     }
 }

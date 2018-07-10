@@ -11,16 +11,16 @@ using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.Parameter.Client
 {
-    public interface IUpdateModulesAction
+    public interface IUpdateUnitsAction
     {
         Task<ErrorResponse> Execute(string baseUrl, IEnumerable<UpdateParameterRequest> parameters, string accessToken = null);
     }
 
-    internal sealed class UpdateModulesAction : IUpdateModulesAction
+    internal sealed class UpdateUnitsAction : IUpdateUnitsAction
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public UpdateModulesAction(IHttpClientFactory httpClientFactory)
+        public UpdateUnitsAction(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
@@ -43,7 +43,7 @@ namespace SimpleIdentityServer.Parameter.Client
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Put,
-                RequestUri = new Uri($"{baseUrl}/parameters/modules"),
+                RequestUri = new Uri($"{baseUrl}/parameters/units"),
                 Content = body
             };
             if (!string.IsNullOrWhiteSpace(accessToken))

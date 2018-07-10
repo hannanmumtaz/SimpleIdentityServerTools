@@ -1,9 +1,5 @@
-﻿using Newtonsoft.Json;
-using SimpleIdentityServer.Module.Feed.Common.Responses;
-using SimpleIdentityServer.Parameter.Core.Exceptions;
-using SimpleIdentityServer.Parameter.Core.Helpers;
+﻿using SimpleIdentityServer.Parameter.Core.Common;
 using SimpleIdentityServer.Parameter.Core.Responses;
-using System.IO;
 
 namespace SimpleIdentityServer.Parameter.Core.Parameters.Actions
 {
@@ -14,44 +10,20 @@ namespace SimpleIdentityServer.Parameter.Core.Parameters.Actions
 
     internal class GetConnectorsAction : IGetConnectorsAction
     {
-        private readonly IDirectoryHelper _directoryHelper;
+        private readonly IGetProjectConfiguration _getProjectConfiguration;
 
-        public GetConnectorsAction(IDirectoryHelper directoryHelper)
+        public GetConnectorsAction(IGetProjectConfiguration getProjectConfiguration)
         {
-            _directoryHelper = directoryHelper;
+            _getProjectConfiguration = getProjectConfiguration;
         }
 
         public GetConnectorsResponse Execute()
         {
-            var currentDirectory = _directoryHelper.GetCurrentDirectory();
-            var configurationPath = Path.Combine(currentDirectory, Constants.ConfigurationFileName);
-            var configurationTemplatePath = Path.Combine(currentDirectory, Constants.ConfigurationTemplateFileName);
-            if (!File.Exists(configurationPath))
-            {
-                throw new ConfigurationNotFoundException();
-            }
-
-            if (!File.Exists(configurationTemplatePath))
-            {
-                throw new NotRestoredException();
-            }
-
-            var projectConfiguration = JsonConvert.DeserializeObject<ProjectResponse>(File.ReadAllText(configurationPath));
-            if (projectConfiguration == null)
-            {
-                throw new BadConfigurationException($"the {Constants.ConfigurationFileName} is not correct");
-            }
-
-            var projectTemplateConfiguration = JsonConvert.DeserializeObject<ProjectResponse>(File.ReadAllText(configurationTemplatePath));
-            if (projectTemplateConfiguration == null)
-            {
-                throw new BadConfigurationException($"The {Constants.ConfigurationTemplateFileName} is not correct");
-            }
-
+            var result = _getProjectConfiguration.Execute();
             return new GetConnectorsResponse
             {
-                Connectors = projectConfiguration.Connectors,
-                TemplateConnectors = projectTemplateConfiguration.Connectors
+                Connectors = result.Key.Connectors,
+                TemplateConnectors = result.Value.Connectors
             };
         }
     }
