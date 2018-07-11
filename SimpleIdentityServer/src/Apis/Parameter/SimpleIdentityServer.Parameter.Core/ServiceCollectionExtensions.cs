@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SimpleIdentityServer.Parameter.Core.Common;
 using SimpleIdentityServer.Parameter.Core.Helpers;
 using SimpleIdentityServer.Parameter.Core.Parameters;
 using SimpleIdentityServer.Parameter.Core.Parameters.Actions;
@@ -23,6 +24,7 @@ namespace SimpleIdentityServer.Parameter.Core
             services.AddTransient<IUpdateTwoFactorsAction, UpdateTwoFactorsAction>();
             services.AddTransient<IDirectoryHelper, DirectoryHelper>();
             services.AddTransient<IGetConnectorsAction, GetConnectorsAction>();
+            services.AddTransient<IGetProjectConfiguration, GetProjectConfiguration>();
             return services;
         }
     }

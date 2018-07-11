@@ -11,11 +11,11 @@ using Xunit;
 
 namespace SimpleIdentityServer.Parameter.Core.Tests.Parameters.Actions
 {
-    public class UpdateModuleConfigurationActionFixture
+    public class UpdateUnitsActionFixture
     {
-        private const string _subPath = "UpdateModuleConfigurationActionFixture";
+        private const string _subPath = "UpdateUnitsActionFixture";
         private Mock<IDirectoryHelper> _directoryHelperStub;
-        private IUpdateModuleConfigurationAction _updateModuleConfigurationAction;
+        private IUpdateUnitsAction _updateUnitsAction;
 
         [Fact]
         public void WhenPassNullParameterThenExceptionIsThrown()
@@ -24,7 +24,7 @@ namespace SimpleIdentityServer.Parameter.Core.Tests.Parameters.Actions
             InitializeFakeObjects();
 
             // ACT & ASSERT
-            Assert.Throws<ArgumentNullException>(() => _updateModuleConfigurationAction.Execute(null));
+            Assert.Throws<ArgumentNullException>(() => _updateUnitsAction.Execute(null));
         }
 
         [Fact]
@@ -37,22 +37,22 @@ namespace SimpleIdentityServer.Parameter.Core.Tests.Parameters.Actions
             AddValidConfigurationTemplateFile();
             
             // ACT
-            var invalidUnitException = Assert.Throws<ParameterAggregateException>(() => _updateModuleConfigurationAction.Execute(new[] { new UpdateParameter
+            var invalidUnitException = Assert.Throws<ParameterAggregateException>(() => _updateUnitsAction.Execute(new[] { new UpdateParameter
             {
                 UnitName = "invalidunit"
             }}));
-            var invalidCategoryException = Assert.Throws<ParameterAggregateException>(() => _updateModuleConfigurationAction.Execute(new[] { new UpdateParameter
+            var invalidCategoryException = Assert.Throws<ParameterAggregateException>(() => _updateUnitsAction.Execute(new[] { new UpdateParameter
             {
                 UnitName = "umahost",
                 CategoryName = "invalidcategory"
             }}));
-            var invalidLibraryException = Assert.Throws<ParameterAggregateException>(() => _updateModuleConfigurationAction.Execute(new[] { new UpdateParameter
+            var invalidLibraryException = Assert.Throws<ParameterAggregateException>(() => _updateUnitsAction.Execute(new[] { new UpdateParameter
             {
                 UnitName = "umahost",
                 CategoryName = "host",
                 LibraryName = "invalidlib"
             }}));
-            var invalidParameterException = Assert.Throws<ParameterAggregateException>(() => _updateModuleConfigurationAction.Execute(new[] { new UpdateParameter
+            var invalidParameterException = Assert.Throws<ParameterAggregateException>(() => _updateUnitsAction.Execute(new[] { new UpdateParameter
             {
                 UnitName = "umahost",
                 LibraryName = "firstPackage",
@@ -76,7 +76,7 @@ namespace SimpleIdentityServer.Parameter.Core.Tests.Parameters.Actions
         private static void RemoveConfigurationFiles()
         {
             var configurationFilePath = Path.Combine(Directory.GetCurrentDirectory(), _subPath, "config.json");
-            var configurationTemplateFilePath = Path.Combine(Directory.GetCurrentDirectory(), _subPath, "config.template.config");
+            var configurationTemplateFilePath = Path.Combine(Directory.GetCurrentDirectory(), _subPath, "config.template.json");
             if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), _subPath)))
             {
                 Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), _subPath));
@@ -104,7 +104,7 @@ namespace SimpleIdentityServer.Parameter.Core.Tests.Parameters.Actions
 
         private static void AddInvalidConfigurationTemplateFile()
         {
-            var configurationFilePath = Path.Combine(Directory.GetCurrentDirectory(), _subPath, "config.template.config");
+            var configurationFilePath = Path.Combine(Directory.GetCurrentDirectory(), _subPath, "config.template.json");
             if (!File.Exists(configurationFilePath))
             {
                 File.WriteAllText(configurationFilePath, "{ \"units\" : [ ] }");
@@ -139,7 +139,7 @@ namespace SimpleIdentityServer.Parameter.Core.Tests.Parameters.Actions
 
         private static void AddValidConfigurationTemplateFile()
         {
-            var configurationFilePath = Path.Combine(Directory.GetCurrentDirectory(), _subPath, "config.template.config");
+            var configurationFilePath = Path.Combine(Directory.GetCurrentDirectory(), _subPath, "config.template.json");
             if (!File.Exists(configurationFilePath))
             {
                 File.WriteAllText(configurationFilePath, "{" +
@@ -167,7 +167,7 @@ namespace SimpleIdentityServer.Parameter.Core.Tests.Parameters.Actions
         {
             _directoryHelperStub = new Mock<IDirectoryHelper>();
             _directoryHelperStub.Setup(d => d.GetCurrentDirectory()).Returns(Path.Combine(Directory.GetCurrentDirectory(), _subPath));
-            _updateModuleConfigurationAction = new UpdateUnitsAction(_directoryHelperStub.Object);
+            _updateUnitsAction = new UpdateUnitsAction(_directoryHelperStub.Object);
         }
     }
 }

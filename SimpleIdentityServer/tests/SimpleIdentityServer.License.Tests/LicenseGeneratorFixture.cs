@@ -12,9 +12,9 @@ namespace SimpleIdentityServer.License.Tests
             var directory = Path.Combine(Directory.GetCurrentDirectory(), "Certificates");
             Environment.SetEnvironmentVariable("SID_LICENSE", directory);
             var builder = new LicenseGeneratorBuilder();
-            builder.New().SetOrganisation("organisation")
+            builder.New().SetOrganisation("roche")
                 .SetIssueDateTime(DateTime.UtcNow)
-                .SetExpirationDateTime(DateTime.UtcNow.AddDays(30))
+                .SetExpirationDateTime(DateTime.UtcNow.AddDays(365))
                 .SetType("commercial")
                 .Save();
             string s = "";
@@ -23,8 +23,8 @@ namespace SimpleIdentityServer.License.Tests
         [Fact]
         public void When_Trying_To_GetLicense_File_Then_Informations_Are_Returned()
         {
-            var directory = Path.Combine(Directory.GetCurrentDirectory(), "Certificates");
-            Environment.SetEnvironmentVariable("SID_LICENSE", directory);
+            // var directory = Path.Combine(Directory.GetCurrentDirectory(), "Certificates");
+            // Environment.SetEnvironmentVariable("SID_LICENSE", directory);
             var loader = new LicenseLoader();
             var license = loader.TryGetLicense();
             var t = "";

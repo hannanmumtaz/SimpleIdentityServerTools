@@ -1,16 +1,9 @@
 ﻿using Moq;
 using SimpleIdentityServer.Module.Feed.Client;
-using SimpleIdentityServer.Module.Feed.Client.Projects;
-using SimpleIdentityServer.Module.Feed.Common.Responses;
 using SimpleIdentityServer.Module.Loader.Exceptions;
-using SimpleIdentityServer.Module.Loader.Factories;
-using SimpleIdentityServer.Module.Loader.Nuget;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace SimpleIdentityServer.Module.Loader.Tests
@@ -53,83 +46,21 @@ namespace SimpleIdentityServer.Module.Loader.Tests
         [Fact]
         public void WhenPassingNullParameterToConstructorThenExceptionIsThrown()
         {
-            Assert.Throws<ArgumentNullException>(() => new ModuleLoader(null, null, null));
-            Assert.Throws<ArgumentNullException>(() => new ModuleLoader(new NugetClient(new HttpClientFactory()), null, null));
-            Assert.Throws<ArgumentNullException>(() => new ModuleLoader(new NugetClient(new HttpClientFactory()), new ModuleFeedClientFactory(), null));
+            Assert.Throws<ArgumentNullException>(() => new ModuleLoader(null));
         }
 
         #region Initialize
-
-        [Fact]
-        public void WhenInitializeModuleLoaderAndNoEnvironmentVariableThenExceptionIsThrown()
-        {
-            // ARRANGE
-            Environment.SetEnvironmentVariable("SID_MODULE", null);
-            var nugetClient = new NugetClient(new HttpClientFactory());
-            var moduleFeedClientFactory = new ModuleFeedClientFactory();
-            var options = new ModuleLoaderOptions();
-            var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
-
-            // ACT
-            var exception = Assert.Throws<ModuleLoaderConfigurationException>(() => moduleLoader.Initialize());
-
-            // ASSERT
-            Assert.NotNull(exception);
-            Assert.Equal($"The SID_MODULE environment variable must be set", exception.Message);
-        }
-
-        [Fact]
-        public void WhenInitializeModuleLoaderAndEnvironmentVariableIsNotValidThenExceptionIsThrown()
-        {
-            // ARRANGE
-            var nugetClient = new NugetClient(new HttpClientFactory());
-            var moduleFeedClientFactory = new ModuleFeedClientFactory();
-            var options = new ModuleLoaderOptions();
-            var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
-            Environment.SetEnvironmentVariable("SID_MODULE", "invalid");
-
-            // ACT
-            var exception = Assert.Throws<ModuleLoaderConfigurationException>(() => moduleLoader.Initialize());
-
-            // ASSERT
-            Assert.NotNull(exception);
-            Assert.Equal("The directory specified in the SID_MODULE environment variable doesn't exist", exception.Message);
-        }
-
-        [Fact]
-        public void WhenInitializeModuleLoaderAndNugetSourcesIsNullThenExceptionIsThrown()
-        {
-            // ARRANGE
-            var nugetClient = new NugetClient(new HttpClientFactory());
-            var moduleFeedClientFactory = new ModuleFeedClientFactory();
-            Environment.SetEnvironmentVariable("SID_MODULE", "C:\\");
-            var options = new ModuleLoaderOptions
-            {
-                NugetSources = null
-            };
-            var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
-
-            // ACT
-            var exception = Assert.Throws<ModuleLoaderConfigurationException>(() => moduleLoader.Initialize());
-
-            // ASSERT
-            Assert.NotNull(exception);
-            Assert.Equal("At least one nuget sources must be specified", exception.Message);
-        }
-
+        
         [Fact]
         public void WhenInitializeModuleLoaderAndProjectNameIsNullThenExceptionIsThrown()
         {
             // ARRANGE
-            var nugetClient = new NugetClient(new HttpClientFactory());
             var moduleFeedClientFactory = new ModuleFeedClientFactory();
-            Environment.SetEnvironmentVariable("SID_MODULE", "C:\\");
             var options = new ModuleLoaderOptions
             {
-                NugetSources = new[] { "nuget" },
                 ProjectName = null
             };
-            var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
+            var moduleLoader = new ModuleLoader(options);
 
             // ACT
             var exception = Assert.Throws<ModuleLoaderConfigurationException>(() => moduleLoader.Initialize());
@@ -138,44 +69,18 @@ namespace SimpleIdentityServer.Module.Loader.Tests
             Assert.NotNull(exception);
             Assert.Equal("The project name must be specified", exception.Message);
         }
-
-        [Fact]
-        public void WhenInitializeModuleLoaderAndModuleFeedUriIsNullThenExceptionIsThrown()
-        {
-            // ARRANGE
-            var nugetClient = new NugetClient(new HttpClientFactory());
-            var moduleFeedClientFactory = new ModuleFeedClientFactory();
-            Environment.SetEnvironmentVariable("SID_MODULE", "C:\\");
-            var options = new ModuleLoaderOptions
-            {
-                NugetSources = new[] { "nuget" },
-                ProjectName = "projectName"
-            };
-            var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
-
-            // ACT
-            var exception = Assert.Throws<ModuleLoaderConfigurationException>(() => moduleLoader.Initialize());
-
-            // ASSERT
-            Assert.NotNull(exception);
-            Assert.Equal("The ModuleFeedUri parameter must be specified", exception.Message);
-        }
-
+        
         [Fact]
         public void WhenInitializeModuleLoaderAndConfigurationFileDoesntExistThenExceptionIsThrown()
         {
             // ARRANGE
             RemoveFiles();
-            var nugetClient = new NugetClient(new HttpClientFactory());
             var moduleFeedClientFactory = new ModuleFeedClientFactory();
-            Environment.SetEnvironmentVariable("SID_MODULE", "C:\\");
             var options = new ModuleLoaderOptions
             {
-                NugetSources = new[] { "nuget" },
-                ProjectName = "projectName",
-                ModuleFeedUri = new Uri("http://localhost/configuration")
+                ProjectName = "projectName"
             };
-            var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
+            var moduleLoader = new ModuleLoader(options);
 
             // ACT
             var exception = Assert.Throws<FileNotFoundException>(() => moduleLoader.Initialize());
@@ -186,79 +91,24 @@ namespace SimpleIdentityServer.Module.Loader.Tests
 
         #endregion
 
-        #region RestorePackages
-
-        [Fact]
-        public async Task WhenRestorePackagesAndModuleLoaderIsNotInitializedThenExceptionIsThrown()
-        {
-            // ARRANGE
-            var nugetClient = new NugetClient(new HttpClientFactory());
-            var moduleFeedClientFactory = new ModuleFeedClientFactory();
-            var options = new ModuleLoaderOptions();
-            var moduleLoader = new ModuleLoader(nugetClient, moduleFeedClientFactory, options);
-
-            // ACT
-            var ex = await Assert.ThrowsAsync<ModuleLoaderInternalException>(() => moduleLoader.RestoreUnits());
-
-            // ASSERT
-            Assert.NotNull(ex);
-        }
-
-        [Fact]
-        public async Task WhenRestorePackagesAndNoProjectExistsThenExceptionIsThrown()
-        {
-            // ARRANGE
-            RemoveFiles();
-            AddConfigFile();
-            var nugetClientMock = new Mock<INugetClient>();
-            var projectClientMock = new Mock<IProjectClient>();
-            var moduleFeedClientMock = new Mock<IModuleFeedClient>();
-            var moduleFeedClientFactoryMock = new Mock<IModuleFeedClientFactory>();
-            projectClientMock.Setup(d => d.Download(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(Task.FromResult<Stream>(new MemoryStream(Encoding.UTF8.GetBytes(_templateJson))));
-            moduleFeedClientMock.Setup(m => m.GetProjectClient()).Returns(projectClientMock.Object);
-            moduleFeedClientFactoryMock.Setup(m => m.BuildModuleFeedClient()).Returns(moduleFeedClientMock.Object);
-            Environment.SetEnvironmentVariable("SID_MODULE", "C:\\");
-            var options = new ModuleLoaderOptions
-            {
-                NugetSources = new[] { "nuget" },
-                ProjectName = "projectName",
-                ModuleFeedUri = new Uri("http://localhost/configuration")
-            };
-
-            // ACT
-            var moduleLoader = new ModuleLoader(nugetClientMock.Object, moduleFeedClientFactoryMock.Object, options);
-            moduleLoader.Initialize();
-            var exception = await Assert.ThrowsAsync<ModuleLoaderInternalException>(() => moduleLoader.RestoreUnits());
-
-            // ASSERTS
-            Assert.NotNull(exception);
-            Assert.Equal($"The project {options.ProjectName} doesn't exist", exception.Message);
-        }
-        
-        #endregion
-
         #region CheckConfigurationFile
 
         [Fact]
         public void WhenCheckConfigurationFileThenExceptionIsThrown()
         {
+            // TODO : FIX THIS ISSUE : Assembly.GetEntryAssembly().Location
             // ARRANGE
             RemoveFiles();
             AddTemplateFile();
             AddConfigFile();
-            var nugetClientMock = new Mock<INugetClient>();
             var moduleFeedClientFactoryMock = new Mock<IModuleFeedClientFactory>();
-            Environment.SetEnvironmentVariable("SID_MODULE", "C:\\");
             var options = new ModuleLoaderOptions
             {
-                NugetSources = new[] { "nuget" },
-                ProjectName = "projectName",
-                ModuleFeedUri = new Uri("http://localhost/configuration")
+                ProjectName = "projectName"
             };
 
             // ACT
-            var moduleLoader = new ModuleLoader(nugetClientMock.Object, moduleFeedClientFactoryMock.Object, options);
+            var moduleLoader = new ModuleLoader(options);
             moduleLoader.Initialize();
             var exception = Assert.Throws<ModuleLoaderAggregateConfigurationException>(() => moduleLoader.CheckConfigurationFile());
 

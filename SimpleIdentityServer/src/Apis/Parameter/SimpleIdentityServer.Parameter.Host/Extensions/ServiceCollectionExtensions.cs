@@ -25,11 +25,10 @@ namespace SimpleIdentityServer.Parameter.Host.Extensions
             {
                 throw new ArgumentNullException(nameof(opts));
             }
-
-            const string authScheme = "OAuth2Introspection";
+            
             opts.AddPolicy("get", policy =>
             {
-                policy.AuthenticationSchemes.Add(authScheme);
+                policy.AddAuthenticationSchemes("UserInfoIntrospection", "OAuth2Introspection");
                 policy.RequireAssertion(p =>
                 {
                     if (p.User == null || p.User.Identity == null || !p.User.Identity.IsAuthenticated)
@@ -49,7 +48,7 @@ namespace SimpleIdentityServer.Parameter.Host.Extensions
             });
             opts.AddPolicy("add", policy =>
             {
-                policy.AuthenticationSchemes.Add(authScheme);
+                policy.AddAuthenticationSchemes("UserInfoIntrospection", "OAuth2Introspection");
                 policy.RequireAssertion(p =>
                 {
                     if (p.User == null || p.User.Identity == null || !p.User.Identity.IsAuthenticated)

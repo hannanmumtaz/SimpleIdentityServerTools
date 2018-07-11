@@ -12,7 +12,7 @@ namespace SimpleIdentityServer.Parameter.Core.Common
         KeyValuePair<ProjectResponse, ProjectResponse> Execute();
     }
 
-    internal sealed class GetProjectConfiguration
+    internal sealed class GetProjectConfiguration : IGetProjectConfiguration
     {
         private readonly IDirectoryHelper _directoryHelper;
 
