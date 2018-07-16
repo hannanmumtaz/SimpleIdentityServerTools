@@ -205,6 +205,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Profil
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.HierarchicalResource.Startup", "src\Apis\HierarchicalResource\SimpleIdentityServer.HierarchicalResource.Startup\SimpleIdentityServer.HierarchicalResource.Startup.csproj", "{FC37E1CD-BE4B-4E56-8637-5D7DF9C86BC4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02. Merged", "02. Merged", "{9A02616B-4D01-41E4-835D-CD40635EFA28}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Merged.API.Startup", "src\Apis\ResourceManager\SimpleIdentityServer.Merged.API.Startup\SimpleIdentityServer.Merged.API.Startup.csproj", "{D85BCF70-61CA-495D-AF3A-9DCB821CAE42}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.AccessToken.Store.InMemory", "..\IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.AccessToken.Store.InMemory\SimpleIdentityServer.AccessToken.Store.InMemory.csproj", "{EB2F8180-B392-4255-9A1D-E936FDE4816F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.AccessToken.Store", "..\IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.AccessToken.Store\SimpleIdentityServer.AccessToken.Store.csproj", "{865A8005-4245-4649-916B-B554161DF25D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -523,6 +531,18 @@ Global
 		{FC37E1CD-BE4B-4E56-8637-5D7DF9C86BC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC37E1CD-BE4B-4E56-8637-5D7DF9C86BC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC37E1CD-BE4B-4E56-8637-5D7DF9C86BC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D85BCF70-61CA-495D-AF3A-9DCB821CAE42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D85BCF70-61CA-495D-AF3A-9DCB821CAE42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D85BCF70-61CA-495D-AF3A-9DCB821CAE42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D85BCF70-61CA-495D-AF3A-9DCB821CAE42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB2F8180-B392-4255-9A1D-E936FDE4816F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB2F8180-B392-4255-9A1D-E936FDE4816F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB2F8180-B392-4255-9A1D-E936FDE4816F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB2F8180-B392-4255-9A1D-E936FDE4816F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{865A8005-4245-4649-916B-B554161DF25D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{865A8005-4245-4649-916B-B554161DF25D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{865A8005-4245-4649-916B-B554161DF25D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{865A8005-4245-4649-916B-B554161DF25D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -623,6 +643,10 @@ Global
 		{6BC5963E-FAA8-4102-A000-BF24DE0D9B37} = {442923F7-F406-476D-B7C2-52892078172C}
 		{4E781798-C5C5-405A-B8BD-B5DB9D45C2E5} = {6BC5963E-FAA8-4102-A000-BF24DE0D9B37}
 		{FC37E1CD-BE4B-4E56-8637-5D7DF9C86BC4} = {6BC5963E-FAA8-4102-A000-BF24DE0D9B37}
+		{9A02616B-4D01-41E4-835D-CD40635EFA28} = {442923F7-F406-476D-B7C2-52892078172C}
+		{D85BCF70-61CA-495D-AF3A-9DCB821CAE42} = {9A02616B-4D01-41E4-835D-CD40635EFA28}
+		{EB2F8180-B392-4255-9A1D-E936FDE4816F} = {0F3B4FB9-1CD1-405D-A849-3F20A62BC6E4}
+		{865A8005-4245-4649-916B-B554161DF25D} = {0F3B4FB9-1CD1-405D-A849-3F20A62BC6E4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E1AD5C7-B8BE-4890-9985-F2BDCAD9425F}

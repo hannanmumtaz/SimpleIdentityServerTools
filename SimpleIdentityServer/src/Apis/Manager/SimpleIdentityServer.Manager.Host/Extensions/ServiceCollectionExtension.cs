@@ -25,9 +25,9 @@ using SimpleIdentityServer.License.Exceptions;
 using SimpleIdentityServer.Logging;
 using SimpleIdentityServer.Manager.Logging;
 using SimpleIdentityServer.Manager.Core;
-using SimpleIdentityServer.Manager.Host.Services;
 using System;
 using System.Linq;
+using SimpleIdentityServer.Manager.Host.Services;
 
 namespace SimpleIdentityServer.Manager.Host.Extensions
 {
@@ -40,24 +40,6 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
             if (managerOptions == null)
             {
                 throw new ArgumentNullException(nameof(managerOptions));
-            }
-
-            if (managerOptions.PasswordService == null)
-            {
-                serviceCollection.AddTransient<IPasswordService, DefaultPasswordService>();
-            }
-            else
-            {
-                serviceCollection.AddSingleton(managerOptions.PasswordService);
-            }
-
-            if (managerOptions.AuthenticateResourceOwnerService == null)
-            {
-                serviceCollection.AddTransient<IAuthenticateResourceOwnerService, DefaultAuthenticateResourceOwerService>();
-            }
-            else
-            {
-                serviceCollection.AddSingleton(managerOptions.AuthenticateResourceOwnerService);
             }
 
             var loader = new LicenseLoader();
@@ -74,9 +56,7 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
             // 2. Register all the dependencies.
             serviceCollection.AddSimpleIdentityServerCore();
             serviceCollection.AddSimpleIdentityServerManagerCore();
-            // 3. Register the dependencies to run the authentication.
-            serviceCollection.AddAuthentication();
-            // 4. Add authorization policies
+            // 3. Add authorization policies
             serviceCollection.AddAuthorization(options =>
             {
                 options.AddPolicy("manager", policy =>
@@ -103,10 +83,11 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
             // 5. Add JWT parsers.
             serviceCollection.AddSimpleIdentityServerJwt();
             // 6. Add the dependencies needed to run MVC
-            serviceCollection.AddMvc();
 			serviceCollection.AddTechnicalLogging();
 			serviceCollection.AddManagerLogging();
 			serviceCollection.AddOAuthLogging();
+            // TH : REMOVE THIS SERVICE LATER...
+            serviceCollection.AddTransient<IPasswordService, DefaultPasswordService>();
         }
     }
 }

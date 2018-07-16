@@ -28,6 +28,7 @@ using System;
 using SimpleIdentityServer.EF.SqlServer;
 using WebApiContrib.Core.Concurrency;
 using WebApiContrib.Core.Storage.InMemory;
+using SimpleIdentityServer.AccessToken.Store.InMemory;
 
 namespace SimpleIdentityServer.Manager.Auth.Host.Startup
 {
@@ -51,9 +52,14 @@ namespace SimpleIdentityServer.Manager.Auth.Host.Startup
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()));
+            services.AddMvc();
             ConfigureOauthRepositorySqlServer(services);
             ConfigureCaching(services);
             ConfigureLogging(services);
+            services.AddInMemoryAccessTokenStore();
             // 3. Configure the manager
             services.AddSimpleIdentityServerManager(_options);
             // 4. Configure the authentication.
@@ -107,9 +113,15 @@ namespace SimpleIdentityServer.Manager.Auth.Host.Startup
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddSerilog();
+            app.UseCors("AllowAll");
             app.UseStatusCodePages();
             app.UseAuthentication();
-            app.UseSimpleIdentityServerManager(loggerFactory, _options);
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller}/{action}/{id?}");
+            });
         }
     }
 }

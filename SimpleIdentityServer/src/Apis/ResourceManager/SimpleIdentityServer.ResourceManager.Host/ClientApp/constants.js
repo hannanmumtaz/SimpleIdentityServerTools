@@ -7,8 +7,8 @@
         SESSION_UPDATED: 'SESSION_UPDATED',
         DISPLAY_MESSAGE: 'DISPLAY_MESSAGE'
     },
-    openidManagerBaseUrl: 'http://localhost:60003',
-    profileBaseUrl: 'http://localhost:60005',
-    hierarchicalResourcesBaseUrl: 'http://localhost:60006',
-    eventSourceUrl: 'http://localhost:60002',
+    openidManagerBaseUrl: 'http://localhost:60006/openidmanager',
+    profileBaseUrl: 'http://localhost:60006/profile',
+    hierarchicalResourcesBaseUrl: 'http://localhost:60006/resources',
+    eventSourceUrl: 'http://localhost:60002'
 };

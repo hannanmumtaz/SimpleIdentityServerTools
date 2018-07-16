@@ -54,6 +54,10 @@ namespace SimpleIdentityServer.Manager.Host.Startup
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()));
+            services.AddMvc();
             ConfigureOauthRepositorySqlServer(services);
             ConfigureCaching(services);
             ConfigureLogging(services);
@@ -111,9 +115,15 @@ namespace SimpleIdentityServer.Manager.Host.Startup
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddSerilog();
+            app.UseCors("AllowAll");
             app.UseStatusCodePages();
             app.UseAuthentication();
-            app.UseSimpleIdentityServerManager(loggerFactory, _options);
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller}/{action}/{id?}");
+            });
         }
     }
 }

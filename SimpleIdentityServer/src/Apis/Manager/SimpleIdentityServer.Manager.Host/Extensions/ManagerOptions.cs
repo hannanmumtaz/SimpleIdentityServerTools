@@ -20,13 +20,5 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
 {
     public class ManagerOptions
     {
-        /// <summary>
-        /// Service used to encrypt the password (for the client).
-        /// </summary>
-        public IPasswordService PasswordService { get; set; }
-        /// <summary>
-        /// Service used to authenticate the resource owner.
-        /// </summary>
-        public IAuthenticateResourceOwnerService AuthenticateResourceOwnerService { get; set; }
     }
 }
