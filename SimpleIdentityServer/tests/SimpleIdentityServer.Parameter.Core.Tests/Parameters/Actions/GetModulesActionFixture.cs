@@ -39,7 +39,7 @@ namespace SimpleIdentityServer.Parameter.Core.Tests.Parameters.Actions
         private static void RemoveConfigurationFiles()
         {
             var configurationFilePath = Path.Combine(Directory.GetCurrentDirectory(), _subPath, "config.json");
-            var configurationTemplateFilePath = Path.Combine(Directory.GetCurrentDirectory(), _subPath, "config.template.config");
+            var configurationTemplateFilePath = Path.Combine(Directory.GetCurrentDirectory(), _subPath, "config.template.json");
             if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), _subPath)))
             {
                 Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), _subPath));
@@ -67,7 +67,7 @@ namespace SimpleIdentityServer.Parameter.Core.Tests.Parameters.Actions
 
         private static void AddInvalidConfigurationTemplateFile()
         {
-            var configurationTemplateFilePath = Path.Combine(Directory.GetCurrentDirectory(), _subPath, "config.template.config");
+            var configurationTemplateFilePath = Path.Combine(Directory.GetCurrentDirectory(), _subPath, "config.template.json");
             if (!File.Exists(configurationTemplateFilePath))
             {
                 File.WriteAllText(configurationTemplateFilePath, "abcd");

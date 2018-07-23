@@ -88,7 +88,7 @@ namespace SimpleIdentityServer.ResourceManager.Resolver
             var tasks = new List<Task<string>>();
             foreach (var resource in resources)
             {
-                tasks.Add(ResolveUrl(resource, grantedToken.AccessToken, identityToken));
+                tasks.Add(ResolveUrl(resource, grantedToken.Content.AccessToken, identityToken));
             }
 
             var grantedPathLst = (await Task.WhenAll(tasks)).Where(p => !string.IsNullOrWhiteSpace(p));
@@ -111,7 +111,7 @@ namespace SimpleIdentityServer.ResourceManager.Resolver
                 .UseClientSecretPostAuth(_resourceManagerResolverOptions.Authorization.ClientId, _resourceManagerResolverOptions.Authorization.ClientSecret)
                 .UseTicketId(permissionResponse.TicketId, idToken)
                 .ResolveAsync(_resourceManagerResolverOptions.Authorization.AuthorizationWellKnownConfiguration);
-            if (umaGrantedToken == null || string.IsNullOrWhiteSpace(umaGrantedToken.AccessToken))
+            if (umaGrantedToken == null || string.IsNullOrWhiteSpace(umaGrantedToken.Content.AccessToken))
             {
                 return null;
             }

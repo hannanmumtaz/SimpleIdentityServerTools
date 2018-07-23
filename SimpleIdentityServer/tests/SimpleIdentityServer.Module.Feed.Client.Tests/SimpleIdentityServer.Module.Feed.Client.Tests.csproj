@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Common.Client\SimpleIdentityServer.Common.Client.csproj" />
     <ProjectReference Include="..\..\src\Apis\Module\SimpleIdentityServer.Module.Feed.Client\SimpleIdentityServer.Module.Feed.Client.csproj" />
     <ProjectReference Include="..\..\src\Apis\Module\SimpleIdentityServer.Module.Feed.EF.InMemory\SimpleIdentityServer.Module.Feed.EF.InMemory.csproj" />
     <ProjectReference Include="..\..\src\Apis\Module\SimpleIdentityServer.Module.Feed.Host\SimpleIdentityServer.Module.Feed.Host.csproj" />

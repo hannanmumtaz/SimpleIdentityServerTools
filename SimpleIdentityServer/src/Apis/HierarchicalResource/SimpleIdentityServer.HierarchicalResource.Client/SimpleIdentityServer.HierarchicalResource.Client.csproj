@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\SimpleIdentityServer.Common.Client\SimpleIdentityServer.Common.Client.csproj" />
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Common.Client\SimpleIdentityServer.Common.Client.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.HierarchicalResource.Common\SimpleIdentityServer.HierarchicalResource.Common.csproj" />
   </ItemGroup>
 </Project>

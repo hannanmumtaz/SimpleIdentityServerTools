@@ -60,24 +60,24 @@ namespace SimpleIdentityServer.Parameter.Host.Controllers
             {
                 return BuildError(new ErrorResponse
                 {
-                    Code = "configuration",
-                    Message = ex.Message
+                    Error = "configuration",
+                    ErrorDescription = ex.Message
                 }, HttpStatusCode.InternalServerError);
             }
             catch(ParameterAggregateException ex)
             {
                 return BuildError(new ErrorResponse
                 {
-                    Code = "validation",
-                    Message = string.Join(",", ex.Messages)
+                    Error = "validation",
+                    ErrorDescription = string.Join(",", ex.Messages)
                 }, HttpStatusCode.InternalServerError);
             }
             catch(Exception ex)
             {
                 return BuildError(new ErrorResponse
                 {
-                    Code = "internal",
-                    Message = ex.Message
+                    Error = "internal",
+                    ErrorDescription = ex.Message
                 }, HttpStatusCode.InternalServerError);
             }
         }

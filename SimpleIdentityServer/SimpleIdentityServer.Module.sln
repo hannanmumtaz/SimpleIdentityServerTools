@@ -29,10 +29,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Module
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Module.Feed.Client", "src\Apis\Module\SimpleIdentityServer.Module.Feed.Client\SimpleIdentityServer.Module.Feed.Client.csproj", "{DA16BAAD-8DB3-4231-9009-4987627166B0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Common.Client", "src\Apis\Common\SimpleIdentityServer.Common.Client\SimpleIdentityServer.Common.Client.csproj", "{3058D145-F26F-4062-9F1A-4D4AE8DE2977}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Common.Dtos", "src\Apis\Common\SimpleIdentityServer.Common.Dtos\SimpleIdentityServer.Common.Dtos.csproj", "{923BB2C6-CB4C-45BA-9CCB-248B49F4BFEF}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02. Integration Tests", "02. Integration Tests", "{BC9C4671-8FC5-4C4C-B4EB-F9D81E178740}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Module.Feed.Client.Tests", "tests\SimpleIdentityServer.Module.Feed.Client.Tests\SimpleIdentityServer.Module.Feed.Client.Tests.csproj", "{D7264FE2-3464-4587-B24A-5B6AE7E6A94B}"
@@ -149,6 +145,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Connec
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Connectors.WsFederation", "src\Apis\Connectors\SimpleIdentityServer.Connectors.WsFederation\SimpleIdentityServer.Connectors.WsFederation.csproj", "{AFB0CE6C-9D15-4B10-859D-2E473EED865B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Common.Client", "..\IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Common.Client\SimpleIdentityServer.Common.Client.csproj", "{DC07EA75-D52A-41C9-AC59-D2FBDC50BE1F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Common.Dtos", "..\IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Common.Dtos\SimpleIdentityServer.Common.Dtos.csproj", "{BC28EF6B-FDAD-4F39-83A7-230F01B4D1D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -187,14 +187,6 @@ Global
 		{DA16BAAD-8DB3-4231-9009-4987627166B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA16BAAD-8DB3-4231-9009-4987627166B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA16BAAD-8DB3-4231-9009-4987627166B0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3058D145-F26F-4062-9F1A-4D4AE8DE2977}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3058D145-F26F-4062-9F1A-4D4AE8DE2977}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3058D145-F26F-4062-9F1A-4D4AE8DE2977}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3058D145-F26F-4062-9F1A-4D4AE8DE2977}.Release|Any CPU.Build.0 = Release|Any CPU
-		{923BB2C6-CB4C-45BA-9CCB-248B49F4BFEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{923BB2C6-CB4C-45BA-9CCB-248B49F4BFEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{923BB2C6-CB4C-45BA-9CCB-248B49F4BFEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{923BB2C6-CB4C-45BA-9CCB-248B49F4BFEF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D7264FE2-3464-4587-B24A-5B6AE7E6A94B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D7264FE2-3464-4587-B24A-5B6AE7E6A94B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7264FE2-3464-4587-B24A-5B6AE7E6A94B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -391,6 +383,14 @@ Global
 		{AFB0CE6C-9D15-4B10-859D-2E473EED865B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFB0CE6C-9D15-4B10-859D-2E473EED865B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFB0CE6C-9D15-4B10-859D-2E473EED865B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC07EA75-D52A-41C9-AC59-D2FBDC50BE1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC07EA75-D52A-41C9-AC59-D2FBDC50BE1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC07EA75-D52A-41C9-AC59-D2FBDC50BE1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC07EA75-D52A-41C9-AC59-D2FBDC50BE1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC28EF6B-FDAD-4F39-83A7-230F01B4D1D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC28EF6B-FDAD-4F39-83A7-230F01B4D1D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC28EF6B-FDAD-4F39-83A7-230F01B4D1D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC28EF6B-FDAD-4F39-83A7-230F01B4D1D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -405,8 +405,6 @@ Global
 		{8F34E0B5-7645-4B7C-B1E5-C3AD77D3211A} = {861B6EBB-2434-495F-936C-55481181F4CF}
 		{0B7321F2-46A9-4DFC-AE5D-43BB1CC99171} = {8F34E0B5-7645-4B7C-B1E5-C3AD77D3211A}
 		{DA16BAAD-8DB3-4231-9009-4987627166B0} = {93C9091B-046A-4760-84B3-15B6701B7099}
-		{3058D145-F26F-4062-9F1A-4D4AE8DE2977} = {93C9091B-046A-4760-84B3-15B6701B7099}
-		{923BB2C6-CB4C-45BA-9CCB-248B49F4BFEF} = {93C9091B-046A-4760-84B3-15B6701B7099}
 		{BC9C4671-8FC5-4C4C-B4EB-F9D81E178740} = {861B6EBB-2434-495F-936C-55481181F4CF}
 		{D7264FE2-3464-4587-B24A-5B6AE7E6A94B} = {BC9C4671-8FC5-4C4C-B4EB-F9D81E178740}
 		{11E16520-A251-46BF-9478-7EA65B00A793} = {93C9091B-046A-4760-84B3-15B6701B7099}
@@ -465,6 +463,8 @@ Global
 		{58CEC1FA-1A19-4A16-A2B5-34376E0A8C16} = {EC29B82C-5F43-4014-AA0D-69A53B614E15}
 		{58CA376D-D6AC-4ECE-A4C8-C132B6E1AE94} = {EC29B82C-5F43-4014-AA0D-69A53B614E15}
 		{AFB0CE6C-9D15-4B10-859D-2E473EED865B} = {EC29B82C-5F43-4014-AA0D-69A53B614E15}
+		{DC07EA75-D52A-41C9-AC59-D2FBDC50BE1F} = {93C9091B-046A-4760-84B3-15B6701B7099}
+		{BC28EF6B-FDAD-4F39-83A7-230F01B4D1D7} = {93C9091B-046A-4760-84B3-15B6701B7099}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE45928A-3A95-4F4A-9EF7-E845C4BEA746}

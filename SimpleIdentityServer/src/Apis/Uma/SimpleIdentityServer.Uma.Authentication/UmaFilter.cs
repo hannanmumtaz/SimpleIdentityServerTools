@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SimpleIdentityServer.Client;
+using SimpleIdentityServer.Core.Common.DTOs.Responses;
 using SimpleIdentityServer.Core.Jwt.Signature;
 using SimpleIdentityServer.HierarchicalResource.Client;
 using SimpleIdentityServer.Uma.Common.DTOs;
@@ -96,7 +97,7 @@ namespace SimpleIdentityServer.Uma.Authentication
                     .UseClientSecretPostAuth(_options.Authorization.ClientId, _options.Authorization.ClientSecret)
                     .Introspect(storedGrantedToken.AccessToken, TokenType.AccessToken)
                     .ResolveAsync(_options.Authorization.AuthorizationWellKnownConfiguration);
-                if (introspectionResult.Active)
+                if (!introspectionResult.ContainsError)
                 {
                     var payload = _jwsParser.GetPayload(storedGrantedToken.AccessToken);
                     if (CheckAccessToken(storedGrantedToken.AccessToken, resourceId))
@@ -113,9 +114,9 @@ namespace SimpleIdentityServer.Uma.Authentication
                 .UseClientSecretPostAuth(_options.Authorization.ClientId, _options.Authorization.ClientSecret)
                 .UseClientCredentials("uma_protection")
                 .ResolveAsync(_options.Authorization.AuthorizationWellKnownConfiguration);
-            if (grantedToken == null || string.IsNullOrWhiteSpace(grantedToken.AccessToken))
+            if (grantedToken.ContainsError)
             {
-                context.Result = GetError("internal", "bad_client_configuration", HttpStatusCode.InternalServerError);
+                context.Result = GetError(grantedToken.Error, HttpStatusCode.InternalServerError);
                 return;
             }
 
@@ -124,7 +125,7 @@ namespace SimpleIdentityServer.Uma.Authentication
                 {
                     ResourceSetId = resourceId,
                     Scopes = Scopes
-                }, _options.Authorization.AuthorizationWellKnownConfiguration, grantedToken.AccessToken);
+                }, _options.Authorization.AuthorizationWellKnownConfiguration, grantedToken.Content.AccessToken);
             if (permissionResponse == null || string.IsNullOrWhiteSpace(permissionResponse.TicketId))
             {
                 context.Result = GetError("internal", "no_ticket", HttpStatusCode.InternalServerError);
@@ -135,9 +136,9 @@ namespace SimpleIdentityServer.Uma.Authentication
                 .UseClientSecretPostAuth(_options.Authorization.ClientId, _options.Authorization.ClientSecret)
                 .UseTicketId(permissionResponse.TicketId, identityToken.IdToken)
                 .ResolveAsync(_options.Authorization.AuthorizationWellKnownConfiguration);
-            if (umaGrantedToken == null || string.IsNullOrWhiteSpace(umaGrantedToken.AccessToken))
+            if (umaGrantedToken.ContainsError)
             {
-                context.Result = GetError("authorization", "no_access", HttpStatusCode.Forbidden);
+                context.Result = GetError(umaGrantedToken.Error, HttpStatusCode.InternalServerError);
                 return;
             }
 
@@ -148,7 +149,7 @@ namespace SimpleIdentityServer.Uma.Authentication
 
             storageValue.Add(new EndUserGrantedToken
             {
-                AccessToken = umaGrantedToken.AccessToken,
+                AccessToken = umaGrantedToken.Content.AccessToken,
                 ResourceId = resourceId
             });
             StoreTokens(storageValue, context);
@@ -179,6 +180,14 @@ namespace SimpleIdentityServer.Uma.Authentication
             }
 
             return result.Content.First().ResourceId;
+        }
+
+        private static IActionResult GetError(ErrorResponseWithState error, HttpStatusCode httpStatusCode)
+        {
+            return new JsonResult(error)
+            {
+                StatusCode = (int)httpStatusCode
+            };
         }
 
         private static IActionResult GetError(string code, string description, HttpStatusCode httpStatusCode)

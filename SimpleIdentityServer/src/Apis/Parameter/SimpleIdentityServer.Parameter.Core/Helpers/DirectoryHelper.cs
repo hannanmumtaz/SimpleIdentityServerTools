@@ -2,7 +2,7 @@
 
 namespace SimpleIdentityServer.Parameter.Core.Helpers
 {
-    internal interface IDirectoryHelper
+    public interface IDirectoryHelper
     {
         string GetCurrentDirectory();
     }

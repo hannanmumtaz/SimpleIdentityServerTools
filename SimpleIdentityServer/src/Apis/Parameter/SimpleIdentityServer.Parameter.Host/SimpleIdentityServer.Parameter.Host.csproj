@@ -24,8 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Common.Dtos\SimpleIdentityServer.Common.Dtos.csproj" />
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Module\SimpleIdentityServer.Module.csproj" />
-    <ProjectReference Include="..\..\Common\SimpleIdentityServer.Common.Dtos\SimpleIdentityServer.Common.Dtos.csproj" />
     <ProjectReference Include="..\..\Module\SimpleIdentityServer.Module.Feed.Common\SimpleIdentityServer.Module.Feed.Common.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Parameter.Common\SimpleIdentityServer.Parameter.Common.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Parameter.Core\SimpleIdentityServer.Parameter.Core.csproj" />

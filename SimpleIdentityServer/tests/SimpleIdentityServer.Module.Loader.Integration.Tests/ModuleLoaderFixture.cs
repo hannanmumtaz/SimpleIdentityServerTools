@@ -19,13 +19,12 @@ namespace SimpleIdentityServer.Module.Loader.Integration.Tests
                     @"d:\Projects\SimpleIdentityServer\SimpleIdentityServer\src\feed\",
                     "https://api.nuget.org/v3/index.json",
                     "https://www.myget.org/F/advance-ict/api/v3/index.json"
-                },
-                ModulePath = @"d:\Projects\Modules\"
+                }
             });
 
             moduleLoader.Initialize();
-            await moduleLoader.RestorePackages();
-            moduleLoader.LoadModules();
+            await moduleLoader.RestoreUnits();
+            moduleLoader.LoadUnits();
         }
     }
 }

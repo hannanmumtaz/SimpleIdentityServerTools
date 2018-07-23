@@ -6,6 +6,8 @@ dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Co
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.AccessToken.Store /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.AccessToken.Store.InMemory /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Logging /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Common.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Common.Dtos /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 
 REM UMA
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Uma\SimpleIdentityServer.Uma.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
@@ -52,6 +54,8 @@ dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Si
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.TwoFactorAuthentication.Twilio /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.UserInfoIntrospection /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Twilio.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.UserFilter /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.UserFilter.Basic /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 
 REM SCIM
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%

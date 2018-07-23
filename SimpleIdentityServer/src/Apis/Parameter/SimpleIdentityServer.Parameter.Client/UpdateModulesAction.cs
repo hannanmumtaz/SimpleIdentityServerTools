@@ -63,8 +63,8 @@ namespace SimpleIdentityServer.Parameter.Client
                 {
                     return new ErrorResponse
                     {
-                        Code = "internal",
-                        Message = ex.Message
+                        Error = "internal",
+                        ErrorDescription = ex.Message
                     };
                 }
 

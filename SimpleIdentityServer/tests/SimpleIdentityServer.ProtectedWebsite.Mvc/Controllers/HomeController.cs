@@ -71,12 +71,12 @@ namespace SimpleIdentityServer.ProtectedWebsite.Mvc.Controllers
                 .UsePassword(viewModel.Login, viewModel.Password, "openid", "profile")
                 .ResolveAsync(Constants.OpenIdUrl);
             var userInfo = await _identityServerClientFactory.CreateUserInfoClient()
-                .Resolve(Constants.OpenIdUrl, result.AccessToken).ConfigureAwait(false);
+                .Resolve(Constants.OpenIdUrl, result.Content.AccessToken).ConfigureAwait(false);
             var claims = new List<Claim>();
-            claims.Add(new Claim("sub", userInfo["sub"].ToString()));
-            claims.Add(new Claim("id_token", result.IdToken));
+            claims.Add(new Claim("sub", userInfo.Content["sub"].ToString()));
+            claims.Add(new Claim("id_token", result.Content.IdToken));
             await SetLocalCookie(claims);
-            var accessibleResources = await _resourceManagerResolver.ResolveAccessibleResources(result.IdToken);
+            var accessibleResources = await _resourceManagerResolver.ResolveAccessibleResources(result.Content.IdToken);
             this.PersistAccessibleResources(accessibleResources.ToList(), _dataProtector);
             return RedirectToAction("Index", "Home");
         }

@@ -1,0 +1,89 @@
+@using SimpleIdentityServer.Host
+@{
+    ViewBag.Title = "Authenticate";
+    var userNameState = ViewData.ModelState["UserName"];
+    var passwordState = ViewData.ModelState["Password"];
+}
+
+@model SimpleIdentityServer.Authenticate.Eid.ViewModels.EidAuthorizeViewModel
+@section PageTitle
+    {
+    <h1>
+        @ViewBag.Translations[SimpleIdentityServer.Core.Constants.StandardTranslationCodes.LoginCode]
+    </h1>
+}
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var hubConnection = null;
+            var connectWithEid = $("#eidLogin");
+            var url = '@Model.EidUrl';
+            var launchSignalr = function () {
+                hubConnection = new signalR.HubConnection(url + "/sessionHub", { logger: signalR.LogLevel.Information });
+                hubConnection.start().catch(err => console.error);
+                hubConnection.on("Session", (response, session) => {
+                    $("#submitXml").find("input[name='xml']").val(response.xml);
+                    $("#submitXml").submit();
+                });
+                setInterval(function () {
+                    if (hubConnection.connection.connectionState !== 1) {
+                        connectWithEid.prop('disabled', true);
+                    } else {
+                        connectWithEid.prop('disabled', false);
+                    }
+                }, 3000);
+            };
+
+            connectWithEid.click(function () {
+                if (!hubConnection) {
+                    return;
+                }
+
+                hubConnection.invoke("GetSession");
+            });
+            launchSignalr();
+        });
+    </script>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div>
+            <h2>
+                @ViewBag.Translations[SimpleIdentityServer.Core.Constants.StandardTranslationCodes.LoginExternalAccount]
+            </h2>
+        </div>
+        <div>
+            @if (!Model.IdProviders.Any())
+            {
+                <p>There are no external authentication services configured</p>
+            }
+            else
+            {
+                using (Html.BeginForm("ExternalLoginOpenId", "Authenticate", new { code = Model.Code }))
+                {
+                    foreach (var loginProvider in Model.IdProviders)
+                    {
+                        <button type="submit" class="btn btn-default" id="@loginProvider.AuthenticationScheme" name="provider" value="@loginProvider.AuthenticationScheme" title="Log in using your @loginProvider.DisplayName account">@loginProvider.DisplayName</button>
+                    }
+                }
+            }
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div>
+            <h2>
+                @ViewBag.Translations[SimpleIdentityServer.Core.Constants.StandardTranslationCodes.LoginLocalAccount]
+            </h2>
+        </div>
+        <div>
+            @Html.ValidationMessage("invalid_credentials")
+            <form id="submitXml" method="post" action="@Url.Action("LocalLoginOpenId")">
+                <input type="hidden" value="@Model.Code" name="code" />
+                <input type="hidden" name="xml" />
+            </form>
+            <button type="button" class="btn btn-primary" id="eidLogin" disabled>Connect with EID</button>
+        </div>
+    </div>
+</div>
