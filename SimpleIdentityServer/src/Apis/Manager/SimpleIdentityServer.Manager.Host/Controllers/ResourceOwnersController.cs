@@ -17,11 +17,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleIdentityServer.Core.Common;
+using SimpleIdentityServer.Core.Errors;
 using SimpleIdentityServer.Manager.Common.Requests;
 using SimpleIdentityServer.Manager.Common.Responses;
 using SimpleIdentityServer.Manager.Core.Api.ResourceOwners;
 using SimpleIdentityServer.Manager.Host.Extensions;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using WebApiContrib.Core.Concurrency;
 
@@ -129,11 +131,24 @@ namespace SimpleIdentityServer.Manager.Host.Controllers
         {
             if (searchResourceOwnersRequest == null)
             {
-                throw new ArgumentNullException(nameof(searchResourceOwnersRequest));
+                return BuildError(ErrorCodes.InvalidRequestCode, "no parameter in body request", HttpStatusCode.BadRequest);
             }
 
             var result = await _resourceOwnerActions.Search(searchResourceOwnersRequest.ToParameter());
             return new OkObjectResult(result.ToDto());
+        }
+        
+        private static JsonResult BuildError(string code, string message, HttpStatusCode statusCode)
+        {
+            var error = new SimpleIdentityServer.Common.Dtos.Responses.ErrorResponse
+            {
+                Error = code,
+                ErrorDescription = message
+            };
+            return new JsonResult(error)
+            {
+                StatusCode = (int)statusCode
+            };
         }
     }
 }

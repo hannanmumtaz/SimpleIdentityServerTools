@@ -18,7 +18,6 @@ using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.Core;
 using SimpleIdentityServer.OAuth.Logging;
 using SimpleIdentityServer.OpenId.Logging;
-using SimpleIdentityServer.Core.Extensions;
 using SimpleIdentityServer.Core.Jwt;
 using SimpleIdentityServer.Core.Services;
 using SimpleIdentityServer.License;

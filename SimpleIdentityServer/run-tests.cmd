@@ -1,5 +1,6 @@
 REM MANAGER
 dotnet test tests\SimpleIdentityServer.Manager.Core.Tests
+dotnet test tests\SimpleIdentityServer.Manager.Host.Tests
 
 REM MODULE FEED
 dotnet test tests\SimpleIdentityServer.Module.Feed.Client.Tests

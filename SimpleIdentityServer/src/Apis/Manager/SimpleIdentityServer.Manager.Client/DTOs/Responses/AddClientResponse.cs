@@ -1,4 +1,4 @@
-﻿using SimpleIdentityServer.Core.Common.DTOs;
+﻿using SimpleIdentityServer.Core.Common.DTOs.Responses;
 using SimpleIdentityServer.Manager.Common.Responses;
 
 namespace SimpleIdentityServer.Manager.Client.DTOs.Responses

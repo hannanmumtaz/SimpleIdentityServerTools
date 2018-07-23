@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SimpleIdentityServer.Core.Common.DTOs;
+using SimpleIdentityServer.Core.Common.DTOs.Responses;
 using SimpleIdentityServer.Manager.Client.DTOs.Responses;
 using SimpleIdentityServer.Manager.Client.Factories;
 using SimpleIdentityServer.Manager.Common.Responses;

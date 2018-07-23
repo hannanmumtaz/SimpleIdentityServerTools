@@ -481,14 +481,14 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
             };
         }
 
-        public static SearchResourceOwnersResponse ToDto(this SearchResourceOwnerResult parameter)
+        public static PagedResponse<ResourceOwnerResponse> ToDto(this SearchResourceOwnerResult parameter)
         {
             if (parameter == null)
             {
                 throw new ArgumentNullException(nameof(parameter));
             }
 
-            return new SearchResourceOwnersResponse
+            return new PagedResponse<ResourceOwnerResponse>
             {
                 StartIndex = parameter.StartIndex,
                 TotalResults = parameter.TotalResults,
@@ -496,14 +496,14 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
             };
         }
 
-        public static SearchClientsResponse ToDto(this SearchClientResult parameter)
+        public static PagedResponse<ClientResponse> ToDto(this SearchClientResult parameter)
         {
             if (parameter == null)
             {
                 throw new ArgumentNullException(nameof(parameter));
             }
 
-            return new SearchClientsResponse
+            return new PagedResponse<ClientResponse>
             {
                 StartIndex = parameter.StartIndex,
                 TotalResults = parameter.TotalResults,

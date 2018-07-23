@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
+using SimpleIdentityServer.Core.Common.DTOs.Responses;
 using SimpleIdentityServer.Manager.Client.Factories;
+using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Requests;
 using SimpleIdentityServer.Manager.Common.Responses;
 using System;
@@ -13,7 +14,7 @@ namespace SimpleIdentityServer.Manager.Client.ResourceOwners
 {
     public interface ISearchResourceOwnersOperation
     {
-        Task<SearchResourceOwnerResponse> ExecuteAsync(Uri resourceOwnerUri, SearchResourceOwnersRequest parameter, string authorizationHeaderValue = null);
+        Task<PagedResult<ResourceOwnerResponse>> ExecuteAsync(Uri resourceOwnerUri, SearchResourceOwnersRequest parameter, string authorizationHeaderValue = null);
     }
 
     internal sealed class SearchResourceOwnersOperation : ISearchResourceOwnersOperation
@@ -25,7 +26,7 @@ namespace SimpleIdentityServer.Manager.Client.ResourceOwners
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<SearchResourceOwnerResponse> ExecuteAsync(Uri resourceOwnerUri, SearchResourceOwnersRequest parameter, string authorizationHeaderValue = null)
+        public async Task<PagedResult<ResourceOwnerResponse>> ExecuteAsync(Uri resourceOwnerUri, SearchResourceOwnersRequest parameter, string authorizationHeaderValue = null)
         {
             if (resourceOwnerUri == null)
             {
@@ -53,22 +54,24 @@ namespace SimpleIdentityServer.Manager.Client.ResourceOwners
             {
                 httpResult.EnsureSuccessStatusCode();
             }
-            catch (HttpRequestException)
+            catch
             {
-                var resp = JsonConvert.DeserializeObject<ErrorResponse>(content);
-                return new SearchResourceOwnerResponse(resp);
-            }
-            catch (Exception)
-            {
-                return new SearchResourceOwnerResponse
+                var result = new PagedResult<ResourceOwnerResponse>
                 {
-                    ContainsError = true
+                    ContainsError = true,
+                    Status = httpResult.StatusCode
                 };
+                if (!string.IsNullOrWhiteSpace(content))
+                {
+                    result.Error = JsonConvert.DeserializeObject<ErrorResponseWithState>(content);
+                }
+
+                return result;
             }
 
-            return new SearchResourceOwnerResponse
+            return new PagedResult<ResourceOwnerResponse>
             {
-                Content = JsonConvert.DeserializeObject<SearchResourceOwnersResponse>(content)
+                Content = JsonConvert.DeserializeObject<PagedResponse<ResourceOwnerResponse>>(content)
             };
         }
     }

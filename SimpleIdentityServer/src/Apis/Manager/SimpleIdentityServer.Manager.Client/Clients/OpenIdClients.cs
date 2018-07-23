@@ -1,5 +1,6 @@
 ﻿using SimpleIdentityServer.Manager.Client.Configuration;
 using SimpleIdentityServer.Manager.Client.DTOs.Responses;
+using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Requests;
 using SimpleIdentityServer.Manager.Common.Responses;
 using System;
@@ -15,7 +16,7 @@ namespace SimpleIdentityServer.Manager.Client.Clients
         Task<BaseResponse> ResolvedDelete(Uri wellKnownConfigurationUri, string clientId, string authorizationHeaderValue = null);
         Task<GetAllClientResponse> GetAll(Uri clientsUri, string authorizationHeaderValue = null);
         Task<GetAllClientResponse> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null);
-        Task<SearchClientResponse> ResolveSearch(Uri wellKnownConfigurationUri, SearchClientsRequest searchClientParameter, string authorizationHeaderValue = null);
+        Task<PagedResult<ClientResponse>> ResolveSearch(Uri wellKnownConfigurationUri, SearchClientsRequest searchClientParameter, string authorizationHeaderValue = null);
     }
 
     internal sealed class OpenIdClients : IOpenIdClients
@@ -76,7 +77,7 @@ namespace SimpleIdentityServer.Manager.Client.Clients
             return await GetAll(new Uri(configuration.ClientsEndpoint), authorizationHeaderValue);
         }
 
-        public async Task<SearchClientResponse> ResolveSearch(Uri wellKnownConfigurationUri, SearchClientsRequest searchClientParameter, string authorizationHeaderValue = null)
+        public async Task<PagedResult<ClientResponse>> ResolveSearch(Uri wellKnownConfigurationUri, SearchClientsRequest searchClientParameter, string authorizationHeaderValue = null)
         {
             var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
             return await _searchClientOperation.ExecuteAsync(new Uri(configuration.ClientsEndpoint + "/.search"), searchClientParameter, authorizationHeaderValue);

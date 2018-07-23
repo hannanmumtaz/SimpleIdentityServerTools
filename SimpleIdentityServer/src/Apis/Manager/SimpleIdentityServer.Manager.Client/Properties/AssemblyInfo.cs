@@ -13,16 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #endregion
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
-using SimpleIdentityServer.Core.Services;
 
-namespace SimpleIdentityServer.Manager.Host.Services
-{
-    public class DefaultPasswordService : IPasswordService
-    {
-        public string Encrypt(string password)
-        {
-            return password;
-        }
-    }
-}
+[assembly: InternalsVisibleTo("SimpleIdentityServer.Manager.Host.Tests")]

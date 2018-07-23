@@ -16,8 +16,7 @@
 
 using Moq;
 using SimpleIdentityServer.Core.Common;
-using SimpleIdentityServer.Core.Common.DTOs;
-using SimpleIdentityServer.Core.Jwt;
+using SimpleIdentityServer.Core.Common.DTOs.Requests;
 using SimpleIdentityServer.Core.Jwt.Encrypt;
 using SimpleIdentityServer.Core.Jwt.Signature;
 using SimpleIdentityServer.Manager.Core.Api.Jwe.Actions;

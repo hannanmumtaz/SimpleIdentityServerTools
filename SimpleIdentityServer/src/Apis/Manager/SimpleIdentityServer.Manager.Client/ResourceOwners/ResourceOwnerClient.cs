@@ -1,5 +1,6 @@
 ﻿using SimpleIdentityServer.Manager.Client.Configuration;
 using SimpleIdentityServer.Manager.Client.DTOs.Responses;
+using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Requests;
 using SimpleIdentityServer.Manager.Common.Responses;
 using System;
@@ -15,7 +16,7 @@ namespace SimpleIdentityServer.Manager.Client.ResourceOwners
         Task<BaseResponse> ResolvedDelete(Uri wellKnownConfigurationUri, string resourceOwnerId, string authorizationHeaderValue = null);
         Task<GetAllResourceOwnersResponse> GetAll(Uri resourceOwnerUri, string authorizationHeaderValue = null);
         Task<GetAllResourceOwnersResponse> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null);
-        Task<SearchResourceOwnerResponse> ResolveSearch(Uri wellKnownConfigurationUri, SearchResourceOwnersRequest searchResourceOwnersRequest, string authorizationHeaderValue = null);
+        Task<PagedResult<ResourceOwnerResponse>> ResolveSearch(Uri wellKnownConfigurationUri, SearchResourceOwnersRequest searchResourceOwnersRequest, string authorizationHeaderValue = null);
     }
 
     internal sealed class ResourceOwnerClient : IResourceOwnerClient
@@ -77,7 +78,7 @@ namespace SimpleIdentityServer.Manager.Client.ResourceOwners
             return await GetAll(new Uri(configuration.ResourceOwnersEndpoint), authorizationHeaderValue);
         }
 
-        public async Task<SearchResourceOwnerResponse> ResolveSearch(Uri wellKnownConfigurationUri, SearchResourceOwnersRequest searchResourceOwnersRequest, string authorizationHeaderValue = null)
+        public async Task<PagedResult<ResourceOwnerResponse>> ResolveSearch(Uri wellKnownConfigurationUri, SearchResourceOwnersRequest searchResourceOwnersRequest, string authorizationHeaderValue = null)
         {
             var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
             return await _searchResourceOwnersOperation.ExecuteAsync(new Uri(configuration.ResourceOwnersEndpoint + "/.search"), searchResourceOwnersRequest, authorizationHeaderValue);
