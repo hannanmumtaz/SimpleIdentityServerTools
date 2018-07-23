@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { translate } from 'react-i18next';
 import { withRouter, NavLink } from 'react-router-dom';
-import { ChipsSelector } from './chipsSelector';
+import ChipsSelector from './chipsSelector';
 import moment from 'moment';
 
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
@@ -51,7 +51,7 @@ class Clients extends Component {
             order: 'desc',
             isModalOpened: false,
             client: {
-                redirect_uris: [],
+                redirect_uris: []
             }
         };
     }
@@ -125,11 +125,12 @@ class Clients extends Component {
                         client_name: client['client_name'],
                         client_id: client['client_id'],
                         isSelected: false,
-                        type: client['application_type']
+                        type: client['application_type'],
+                        update_datetime: client['update_datetime']
                     });
                 });
             }
-            
+
             self.setState({
                 isLoading: false,
                 data: data,

@@ -144,7 +144,8 @@ class ViewScopes extends Component {
                     data.push({
                         name: client['name'],
                         type: type,
-                        isSelected: false
+                        isSelected: false,
+                        update_datetime: client['update_datetime']
                     });
                 });
             }

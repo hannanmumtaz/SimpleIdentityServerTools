@@ -113,7 +113,8 @@ class ResourceOwners extends Component {
                         isSelected: false,
                         picture: getClaim("picture", client.claims, ""),
                         email: getClaim("email", client.claims, "-"),
-                        name: getClaim("given_name", client.claims, "-")
+                        name: getClaim("given_name", client.claims, "-"),
+                        update_datetime: client['update_datetime']
                     };
 
                     data.push(record);
