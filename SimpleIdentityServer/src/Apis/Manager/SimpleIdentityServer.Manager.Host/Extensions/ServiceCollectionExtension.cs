@@ -17,6 +17,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.Core;
 using SimpleIdentityServer.OAuth.Logging;
+using SimpleIdentityServer.OpenId.Logging;
 using SimpleIdentityServer.Core.Extensions;
 using SimpleIdentityServer.Core.Jwt;
 using SimpleIdentityServer.Core.Services;
@@ -86,6 +87,7 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
 			serviceCollection.AddTechnicalLogging();
 			serviceCollection.AddManagerLogging();
 			serviceCollection.AddOAuthLogging();
+			serviceCollection.AddOpenidLogging();
             // TH : REMOVE THIS SERVICE LATER...
             serviceCollection.AddTransient<IPasswordService, DefaultPasswordService>();
         }

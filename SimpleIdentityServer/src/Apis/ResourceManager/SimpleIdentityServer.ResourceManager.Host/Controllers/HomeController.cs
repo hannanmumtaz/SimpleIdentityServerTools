@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using SimpleIdentityServer.Client;
-using SimpleIdentityServer.Client.DTOs.Response;
 using SimpleIdentityServer.ResourceManager.Host.DTOs;
 using System;
 using System.Net;

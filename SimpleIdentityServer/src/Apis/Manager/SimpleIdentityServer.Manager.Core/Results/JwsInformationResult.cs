@@ -15,7 +15,7 @@
 #endregion
 
 using SimpleIdentityServer.Core.Common;
-using SimpleIdentityServer.Core.Common.DTOs;
+using SimpleIdentityServer.Core.Common.DTOs.Requests;
 using System.Collections.Generic;
 
 namespace SimpleIdentityServer.Manager.Core.Results

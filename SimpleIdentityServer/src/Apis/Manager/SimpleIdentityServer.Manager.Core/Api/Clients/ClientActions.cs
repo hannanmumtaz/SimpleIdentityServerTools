@@ -15,7 +15,7 @@
 #endregion
 
 using SimpleIdentityServer.Core.Api.Registration.Actions;
-using SimpleIdentityServer.Core.Common.DTOs;
+using SimpleIdentityServer.Core.Common.DTOs.Responses;
 using SimpleIdentityServer.Core.Common.Parameters;
 using SimpleIdentityServer.Core.Parameters;
 using SimpleIdentityServer.Core.Results;
