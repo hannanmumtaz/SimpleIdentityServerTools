@@ -54,8 +54,8 @@ dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Si
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.TwoFactorAuthentication.Twilio /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.UserInfoIntrospection /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Twilio.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.UserFilter /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.UserFilter.Basic /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.AccountFilter /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.AccountFilter.Basic /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 
 REM SCIM
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
