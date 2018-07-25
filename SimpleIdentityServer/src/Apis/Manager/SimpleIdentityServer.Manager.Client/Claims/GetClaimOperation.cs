@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SimpleIdentityServer.Manager.Client.Factories;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
+using SimpleIdentityServer.Common.Client.Factories;
+using SimpleIdentityServer.Common.Dtos.Responses;
+using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Responses;
 using System;
 using System.Net.Http;
@@ -11,7 +12,7 @@ namespace SimpleIdentityServer.Manager.Client.Claims
 {
     public interface IGetClaimOperation
     {
-        Task<GetClaimResponse> ExecuteAsync(Uri claimsUri, string authorizationHeaderValue = null);
+        Task<GetClaimResult> ExecuteAsync(Uri claimsUri, string authorizationHeaderValue = null);
     }
 
     internal sealed class GetClaimOperation : IGetClaimOperation
@@ -23,7 +24,7 @@ namespace SimpleIdentityServer.Manager.Client.Claims
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<GetClaimResponse> ExecuteAsync(Uri claimsUri, string authorizationHeaderValue = null)
+        public async Task<GetClaimResult> ExecuteAsync(Uri claimsUri, string authorizationHeaderValue = null)
         {
             if (claimsUri == null)
             {
@@ -48,23 +49,19 @@ namespace SimpleIdentityServer.Manager.Client.Claims
             {
                 httpResult.EnsureSuccessStatusCode();
             }
-            catch (HttpRequestException)
-            {
-                var err = JsonConvert.DeserializeObject<ErrorResponse>(content);
-                return new GetClaimResponse(err);
-            }
             catch (Exception)
             {
-                return new GetClaimResponse
+                return new GetClaimResult
                 {
-                    ContainsError = true
+                    ContainsError = true,
+                    Error = JsonConvert.DeserializeObject<ErrorResponse>(content),
+                    HttpStatus = httpResult.StatusCode
                 };
             }
-
-            var client = JsonConvert.DeserializeObject<ClaimResponse>(content);
-            return new GetClaimResponse
+            
+            return new GetClaimResult
             {
-                Content = client
+                Content = JsonConvert.DeserializeObject<ClaimResponse>(content)
             };
         }
     }

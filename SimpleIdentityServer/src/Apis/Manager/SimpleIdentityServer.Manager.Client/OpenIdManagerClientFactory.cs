@@ -14,14 +14,15 @@
 // limitations under the License.
 #endregion
 
-using System;
 using Microsoft.Extensions.DependencyInjection;
-using SimpleIdentityServer.Manager.Client.Configuration;
-using SimpleIdentityServer.Manager.Client.Clients;
-using SimpleIdentityServer.Manager.Client.Factories;
-using SimpleIdentityServer.Manager.Client.Scopes;
-using SimpleIdentityServer.Manager.Client.ResourceOwners;
+using SimpleIdentityServer.Common.Client;
+using SimpleIdentityServer.Common.Client.Factories;
 using SimpleIdentityServer.Manager.Client.Claims;
+using SimpleIdentityServer.Manager.Client.Clients;
+using SimpleIdentityServer.Manager.Client.Configuration;
+using SimpleIdentityServer.Manager.Client.ResourceOwners;
+using SimpleIdentityServer.Manager.Client.Scopes;
+using System;
 
 namespace SimpleIdentityServer.Manager.Client
 {
@@ -42,6 +43,13 @@ namespace SimpleIdentityServer.Manager.Client
         {
             var services = new ServiceCollection();
             RegisterDependencies(services);
+            _serviceProvider = services.BuildServiceProvider();
+        }
+
+        public OpenIdManagerClientFactory(IHttpClientFactory httpClientFactory)
+        {
+            var services = new ServiceCollection();
+            RegisterDependencies(services, httpClientFactory);
             _serviceProvider = services.BuildServiceProvider();
         }
 
@@ -75,17 +83,23 @@ namespace SimpleIdentityServer.Manager.Client
             return claimsClient;
         }
 
-        private static void RegisterDependencies(IServiceCollection serviceCollection)
+        private static void RegisterDependencies(IServiceCollection serviceCollection, IHttpClientFactory httpClientFactory = null)
         {
+            if (httpClientFactory != null)
+            {
+                serviceCollection.AddSingleton(httpClientFactory);
+            }
+            else
+            {
+                serviceCollection.AddCommonClient();
+            }
+
             // Register clients
             serviceCollection.AddTransient<IOpenIdClients, OpenIdClients>();
             serviceCollection.AddTransient<IConfigurationClient, ConfigurationClient>();
             serviceCollection.AddTransient<IScopeClient, ScopeClient>();
             serviceCollection.AddTransient<IResourceOwnerClient, ResourceOwnerClient>();
             serviceCollection.AddTransient<IClaimsClient, ClaimsClient>();
-
-            // Regsiter factories
-            serviceCollection.AddTransient<IHttpClientFactory, HttpClientFactory>();
 
             // Register operations
             serviceCollection.AddTransient<IGetAllClientsOperation, GetAllClientsOperation>();
@@ -104,7 +118,8 @@ namespace SimpleIdentityServer.Manager.Client
             serviceCollection.AddTransient<IDeleteResourceOwnerOperation, DeleteResourceOwnerOperation>();
             serviceCollection.AddTransient<IGetAllResourceOwnersOperation, GetAllResourceOwnersOperation>();
             serviceCollection.AddTransient<IGetResourceOwnerOperation, GetResourceOwnerOperation>();
-            serviceCollection.AddTransient<IUpdateResourceOwnerOperation, UpdateResourceOwnerOperation>();
+            serviceCollection.AddTransient<IUpdateResourceOwnerClaimsOperation, UpdateResourceOwnerClaimsOperation>();
+            serviceCollection.AddTransient<IUpdateResourceOwnerPasswordOperation, UpdateResourceOwnerPasswordOperation>();
             serviceCollection.AddTransient<ISearchScopesOperation, SearchScopesOperation>();
             serviceCollection.AddTransient<ISearchResourceOwnersOperation, SearchResourceOwnersOperation>();
             serviceCollection.AddTransient<IAddClaimOperation, AddClaimOperation>();

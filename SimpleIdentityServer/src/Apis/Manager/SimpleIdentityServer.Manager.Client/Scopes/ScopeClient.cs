@@ -1,6 +1,6 @@
-﻿using SimpleIdentityServer.Core.Parameters;
+﻿using SimpleIdentityServer.Common.Client;
 using SimpleIdentityServer.Manager.Client.Configuration;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
+using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Requests;
 using SimpleIdentityServer.Manager.Common.Responses;
 using System;
@@ -12,11 +12,11 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
     {
         Task<BaseResponse> ResolveAdd(Uri wellKnownConfigurationUri, ScopeResponse scope, string authorizationHeaderValue = null);
         Task<BaseResponse> ResolveUpdate(Uri wellKnownConfigurationUri, ScopeResponse client, string authorizationHeaderValue = null);
-        Task<GetScopeResponse> ResolveGet(Uri wellKnownConfigurationUri, string scopeId, string authorizationHeaderValue = null);
+        Task<GetScopeResult> ResolveGet(Uri wellKnownConfigurationUri, string scopeId, string authorizationHeaderValue = null);
         Task<BaseResponse> ResolvedDelete(Uri wellKnownConfigurationUri, string scopeId, string authorizationHeaderValue = null);
         Task<GetAllScopesResult> GetAll(Uri scopesUri, string authorizationHeaderValue = null);
         Task<GetAllScopesResult> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null);
-        Task<SearchScopeResponse> ResolveSearch(Uri wellKnownConfigurationUri, SearchScopesRequest searchScopesParameter, string authorizationHeaderValue = null);
+        Task<PagedResult<ScopeResponse>> ResolveSearch(Uri wellKnownConfigurationUri, SearchScopesRequest searchScopesParameter, string authorizationHeaderValue = null);
     }
 
     internal sealed class ScopeClient : IScopeClient
@@ -43,26 +43,26 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
 
         public async Task<BaseResponse> ResolveAdd(Uri wellKnownConfigurationUri, ScopeResponse scope, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _addScopeOperation.ExecuteAsync(new Uri(configuration.ScopesEndpoint), scope, authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _addScopeOperation.ExecuteAsync(new Uri(configuration.Content.ScopesEndpoint), scope, authorizationHeaderValue).ConfigureAwait(false);
         }
 
         public async Task<BaseResponse> ResolveUpdate(Uri wellKnownConfigurationUri, ScopeResponse client, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _updateScopeOperation.ExecuteAsync(new Uri(configuration.ScopesEndpoint), client, authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _updateScopeOperation.ExecuteAsync(new Uri(configuration.Content.ScopesEndpoint), client, authorizationHeaderValue).ConfigureAwait(false);
         }
 
-        public async Task<GetScopeResponse> ResolveGet(Uri wellKnownConfigurationUri, string scopeId, string authorizationHeaderValue = null)
+        public async Task<GetScopeResult> ResolveGet(Uri wellKnownConfigurationUri, string scopeId, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _getScopeOperation.ExecuteAsync(new Uri(configuration.ScopesEndpoint + "/" + scopeId), authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _getScopeOperation.ExecuteAsync(new Uri(configuration.Content.ScopesEndpoint + "/" + scopeId), authorizationHeaderValue).ConfigureAwait(false);
         }
 
         public async Task<BaseResponse> ResolvedDelete(Uri wellKnownConfigurationUri, string scopeId, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _deleteScopeOperation.ExecuteAsync(new Uri(configuration.ScopesEndpoint + "/" + scopeId), authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _deleteScopeOperation.ExecuteAsync(new Uri(configuration.Content.ScopesEndpoint + "/" + scopeId), authorizationHeaderValue).ConfigureAwait(false);
         }
 
         public Task<GetAllScopesResult> GetAll(Uri scopesUri, string authorizationHeaderValue = null)
@@ -72,14 +72,14 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
 
         public async Task<GetAllScopesResult> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await GetAll(new Uri(configuration.ScopesEndpoint), authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await GetAll(new Uri(configuration.Content.ScopesEndpoint), authorizationHeaderValue).ConfigureAwait(false);
         }
 
-        public async Task<SearchScopeResponse> ResolveSearch(Uri wellKnownConfigurationUri, SearchScopesRequest searchScopesParameter, string authorizationHeaderValue = null)
+        public async Task<PagedResult<ScopeResponse>> ResolveSearch(Uri wellKnownConfigurationUri, SearchScopesRequest searchScopesParameter, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _searchScopesOperation.ExecuteAsync(new Uri(configuration.ScopesEndpoint + "/.search"), searchScopesParameter, authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _searchScopesOperation.ExecuteAsync(new Uri(configuration.Content.ScopesEndpoint + "/.search"), searchScopesParameter, authorizationHeaderValue).ConfigureAwait(false);
         }
     }
 }

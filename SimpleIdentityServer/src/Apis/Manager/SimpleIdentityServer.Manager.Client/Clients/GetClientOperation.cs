@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
-using SimpleIdentityServer.Manager.Client.Factories;
+using SimpleIdentityServer.Common.Client.Factories;
+using SimpleIdentityServer.Common.Dtos.Responses;
+using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Responses;
 using System;
 using System.Net.Http;
@@ -11,7 +12,7 @@ namespace SimpleIdentityServer.Manager.Client.Clients
 {
     public interface IGetClientOperation
     {
-        Task<GetClientResponse> ExecuteAsync(Uri clientsUri, string authorizationHeaderValue = null);
+        Task<GetClientResult> ExecuteAsync(Uri clientsUri, string authorizationHeaderValue = null);
     }
 
     internal sealed class GetClientOperation : IGetClientOperation
@@ -23,7 +24,7 @@ namespace SimpleIdentityServer.Manager.Client.Clients
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<GetClientResponse> ExecuteAsync(Uri clientsUri, string authorizationHeaderValue = null)
+        public async Task<GetClientResult> ExecuteAsync(Uri clientsUri, string authorizationHeaderValue = null)
         {
             if (clientsUri == null)
             {
@@ -48,23 +49,19 @@ namespace SimpleIdentityServer.Manager.Client.Clients
             {
                 httpResult.EnsureSuccessStatusCode();
             }
-            catch(HttpRequestException)
-            {
-                var err = JsonConvert.DeserializeObject<ErrorResponse>(content);
-                return new GetClientResponse(err);
-            }
             catch(Exception)
             {
-                return new GetClientResponse
+                return new GetClientResult
                 {
-                    ContainsError = true
+                    ContainsError = true,
+                    Error = JsonConvert.DeserializeObject<ErrorResponse>(content),
+                    HttpStatus = httpResult.StatusCode
                 };
             }
 
-            var client = JsonConvert.DeserializeObject<ClientResponse>(content);
-            return new GetClientResponse
+            return new GetClientResult
             {
-                Content = client
+                Content = JsonConvert.DeserializeObject<ClientResponse>(content)
             };
         }
     }

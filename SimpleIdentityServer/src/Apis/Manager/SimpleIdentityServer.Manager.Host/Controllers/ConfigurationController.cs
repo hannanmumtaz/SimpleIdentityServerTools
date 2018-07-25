@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
+using SimpleIdentityServer.Manager.Common.Responses;
 using SimpleIdentityServer.Manager.Host.Extensions;
 
 namespace SimpleIdentityServer.Manager.Host.Controllers
@@ -11,15 +11,17 @@ namespace SimpleIdentityServer.Manager.Host.Controllers
         public IActionResult Get()
         {
             var issuer = Request.GetAbsoluteUriWithVirtualPath();
-            var jObj = new JObject();
-            jObj.Add(Constants.ConfigurationNames.ClientsEndpoint, issuer + Constants.EndPoints.Clients);
-            jObj.Add(Constants.ConfigurationNames.JweEndpoint, issuer + Constants.EndPoints.Jwe);
-            jObj.Add(Constants.ConfigurationNames.JwsEndpoint, issuer + Constants.EndPoints.Jws);
-            jObj.Add(Constants.ConfigurationNames.ManageEndpoint, issuer + Constants.EndPoints.Manage);
-            jObj.Add(Constants.ConfigurationNames.ResourceOwnersEndpoint, issuer + Constants.EndPoints.ResourceOwners);
-            jObj.Add(Constants.ConfigurationNames.ScopesEndpoint, issuer + Constants.EndPoints.Scopes);
-            jObj.Add(Constants.ConfigurationNames.ClaimsEndpoint, issuer + Constants.EndPoints.Claims);
-            return new OkObjectResult(jObj);
+            var result = new ConfigurationResponse
+            {
+                ClaimsEndpoint = issuer + Constants.EndPoints.Claims,
+                ClientsEndpoint = issuer + Constants.EndPoints.Clients,
+                JweEndpoint = issuer + Constants.EndPoints.Jwe,
+                JwsEndpoint = issuer + Constants.EndPoints.Jws,
+                ManageEndpoint = issuer + Constants.EndPoints.Manage,
+                ResourceOwnersEndpoint = issuer + Constants.EndPoints.ResourceOwners,
+                ScopesEndpoint = issuer + Constants.EndPoints.Scopes
+            };
+            return new OkObjectResult(result);
         }
     }
 }

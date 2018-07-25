@@ -1,5 +1,5 @@
-﻿using SimpleIdentityServer.Manager.Client.Configuration;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
+﻿using SimpleIdentityServer.Common.Client;
+using SimpleIdentityServer.Manager.Client.Configuration;
 using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Requests;
 using SimpleIdentityServer.Manager.Common.Responses;
@@ -10,12 +10,12 @@ namespace SimpleIdentityServer.Manager.Client.Clients
 {
     public interface IOpenIdClients
     {
-        Task<AddClientResponse> ResolveAdd(Uri wellKnownConfigurationUri, ClientResponse client, string authorizationHeaderValue = null);
+        Task<AddClientResult> ResolveAdd(Uri wellKnownConfigurationUri, ClientResponse client, string authorizationHeaderValue = null);
         Task<BaseResponse> ResolveUpdate(Uri wellKnownConfigurationUri, UpdateClientRequest client, string authorizationHeaderValue = null);
-        Task<GetClientResponse> ResolveGet(Uri wellKnownConfigurationUri, string clientId, string authorizationHeaderValue = null);
+        Task<GetClientResult> ResolveGet(Uri wellKnownConfigurationUri, string clientId, string authorizationHeaderValue = null);
         Task<BaseResponse> ResolvedDelete(Uri wellKnownConfigurationUri, string clientId, string authorizationHeaderValue = null);
-        Task<GetAllClientResponse> GetAll(Uri clientsUri, string authorizationHeaderValue = null);
-        Task<GetAllClientResponse> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null);
+        Task<GetAllClientResult> GetAll(Uri clientsUri, string authorizationHeaderValue = null);
+        Task<GetAllClientResult> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null);
         Task<PagedResult<ClientResponse>> ResolveSearch(Uri wellKnownConfigurationUri, SearchClientsRequest searchClientParameter, string authorizationHeaderValue = null);
     }
 
@@ -42,45 +42,45 @@ namespace SimpleIdentityServer.Manager.Client.Clients
             _configurationClient = configurationClient;
         }
 
-        public async Task<AddClientResponse> ResolveAdd(Uri wellKnownConfigurationUri, ClientResponse client, string authorizationHeaderValue = null)
+        public async Task<AddClientResult> ResolveAdd(Uri wellKnownConfigurationUri, ClientResponse client, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _addClientOperation.ExecuteAsync(new Uri(configuration.ClientsEndpoint), client, authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _addClientOperation.ExecuteAsync(new Uri(configuration.Content.ClientsEndpoint), client, authorizationHeaderValue).ConfigureAwait(false);
         }
 
         public async Task<BaseResponse> ResolveUpdate(Uri wellKnownConfigurationUri, UpdateClientRequest client, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _updateClientOperation.ExecuteAsync(new Uri(configuration.ClientsEndpoint), client, authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _updateClientOperation.ExecuteAsync(new Uri(configuration.Content.ClientsEndpoint), client, authorizationHeaderValue).ConfigureAwait(false);
         }
 
-        public async Task<GetClientResponse> ResolveGet(Uri wellKnownConfigurationUri, string clientId, string authorizationHeaderValue = null)
+        public async Task<GetClientResult> ResolveGet(Uri wellKnownConfigurationUri, string clientId, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _getClientOperation.ExecuteAsync(new Uri(configuration.ClientsEndpoint + "/" + clientId), authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _getClientOperation.ExecuteAsync(new Uri(configuration.Content.ClientsEndpoint + "/" + clientId), authorizationHeaderValue).ConfigureAwait(false);
         }
 
         public async Task<BaseResponse> ResolvedDelete(Uri wellKnownConfigurationUri, string clientId, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _deleteClientOperation.ExecuteAsync(new Uri(configuration.ClientsEndpoint + "/" + clientId), authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _deleteClientOperation.ExecuteAsync(new Uri(configuration.Content.ClientsEndpoint + "/" + clientId), authorizationHeaderValue).ConfigureAwait(false);
         }
 
-        public Task<GetAllClientResponse> GetAll(Uri clientsUri, string authorizationHeaderValue = null)
+        public Task<GetAllClientResult> GetAll(Uri clientsUri, string authorizationHeaderValue = null)
         {
             return _getAllClientsOperation.ExecuteAsync(clientsUri, authorizationHeaderValue);
         }
 
-        public async Task<GetAllClientResponse> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null)
+        public async Task<GetAllClientResult> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await GetAll(new Uri(configuration.ClientsEndpoint), authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await GetAll(new Uri(configuration.Content.ClientsEndpoint), authorizationHeaderValue).ConfigureAwait(false);
         }
 
         public async Task<PagedResult<ClientResponse>> ResolveSearch(Uri wellKnownConfigurationUri, SearchClientsRequest searchClientParameter, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _searchClientOperation.ExecuteAsync(new Uri(configuration.ClientsEndpoint + "/.search"), searchClientParameter, authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _searchClientOperation.ExecuteAsync(new Uri(configuration.Content.ClientsEndpoint + "/.search"), searchClientParameter, authorizationHeaderValue).ConfigureAwait(false);
         }
     }
 }

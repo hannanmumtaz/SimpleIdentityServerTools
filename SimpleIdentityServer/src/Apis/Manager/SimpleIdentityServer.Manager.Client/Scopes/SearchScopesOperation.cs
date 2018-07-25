@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Linq;
 using SimpleIdentityServer.Common.Client.Factories;
 using SimpleIdentityServer.Common.Dtos.Responses;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
+using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Requests;
 using SimpleIdentityServer.Manager.Common.Responses;
 using System;
@@ -14,7 +14,7 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
 {
     public interface ISearchScopesOperation
     {
-        Task<SearchScopeResult> ExecuteAsync(Uri scopesUri, SearchScopesRequest parameter, string authorizationHeaderValue = null);
+        Task<PagedResult<ScopeResponse>> ExecuteAsync(Uri scopesUri, SearchScopesRequest parameter, string authorizationHeaderValue = null);
     }
 
     internal sealed class SearchScopesOperation : ISearchScopesOperation
@@ -26,7 +26,7 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<SearchScopeResult> ExecuteAsync(Uri clientsUri, SearchScopesRequest parameter, string authorizationHeaderValue = null)
+        public async Task<PagedResult<ScopeResponse>> ExecuteAsync(Uri clientsUri, SearchScopesRequest parameter, string authorizationHeaderValue = null)
         {
             if (clientsUri == null)
             {
@@ -56,7 +56,7 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
             }
             catch (Exception)
             {
-                return new SearchScopeResult
+                return new PagedResult<ScopeResponse>
                 {
                     ContainsError = true,
                     Error = JsonConvert.DeserializeObject<ErrorResponse>(content),
@@ -64,9 +64,9 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
                 };
             }
 
-            return new SearchScopeResult
+            return new PagedResult<ScopeResponse>
             {
-                Content = JsonConvert.DeserializeObject<SearchScopesResponse>(content)
+                Content = JsonConvert.DeserializeObject<PagedResponse<ScopeResponse>>(content)
             };
         }
     }

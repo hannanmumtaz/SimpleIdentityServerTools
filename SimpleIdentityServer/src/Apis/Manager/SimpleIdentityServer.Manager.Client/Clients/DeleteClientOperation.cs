@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
-using SimpleIdentityServer.Manager.Client.Factories;
-using SimpleIdentityServer.Manager.Common.Responses;
+using SimpleIdentityServer.Common.Client;
+using SimpleIdentityServer.Common.Client.Factories;
+using SimpleIdentityServer.Common.Dtos.Responses;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -46,21 +46,13 @@ namespace SimpleIdentityServer.Manager.Client.Clients
             {
                 httpResult.EnsureSuccessStatusCode();
             }
-            catch(HttpRequestException)
-            {
-                var resp = JsonConvert.DeserializeObject<ErrorResponse>(content);
-                return new BaseResponse
-                {
-                    ContainsError = true,
-                    Error = resp
-                };                
-            }
             catch(Exception)
             {
                 return new BaseResponse
                 {
-                    ContainsError = true
-                };
+                    ContainsError = true,
+                    Error = JsonConvert.DeserializeObject<ErrorResponse>(content)
+                };                
             }
 
             return new BaseResponse();

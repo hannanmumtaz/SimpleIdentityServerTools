@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SimpleIdentityServer.Common.Client.Factories;
 using SimpleIdentityServer.Core.Common.DTOs.Responses;
-using SimpleIdentityServer.Manager.Client.Factories;
 using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Requests;
 using SimpleIdentityServer.Manager.Common.Responses;
@@ -59,7 +59,7 @@ namespace SimpleIdentityServer.Manager.Client.Clients
                 var result = new PagedResult<ClientResponse>
                 {
                     ContainsError = true,
-                    Status = httpResult.StatusCode
+                    HttpStatus = httpResult.StatusCode
                 };
                 if (!string.IsNullOrWhiteSpace(content))
                 {

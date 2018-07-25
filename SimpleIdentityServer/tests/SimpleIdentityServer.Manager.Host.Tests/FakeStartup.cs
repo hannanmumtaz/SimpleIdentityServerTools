@@ -26,6 +26,7 @@ using SimpleIdentityServer.EF.InMemory;
 using SimpleIdentityServer.Logging;
 using SimpleIdentityServer.Manager.Core;
 using SimpleIdentityServer.Manager.Host.Controllers;
+using SimpleIdentityServer.Manager.Host.Extensions;
 using SimpleIdentityServer.Manager.Logging;
 using SimpleIdentityServer.OAuth.Logging;
 using SimpleIdentityServer.OpenId.Logging;
@@ -65,6 +66,7 @@ namespace SimpleIdentityServer.Manager.Host.Tests
             }
 
             app.UseAuthentication();
+            app.UseManagerApi();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

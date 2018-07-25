@@ -21,7 +21,7 @@ namespace SimpleIdentityServer.Manager.Core.Validators
 
             if (string.IsNullOrWhiteSpace(parameter.Login))
             {
-                throw new IdentityServerManagerException(ErrorCodes.InvalidRequestCode, string.Format(ErrorDescriptions.TheParameterIsMissing, parameter.Login));
+                throw new IdentityServerManagerException(ErrorCodes.InvalidRequestCode, string.Format(ErrorDescriptions.TheParameterIsMissing, "login"));
             }
         }
     }

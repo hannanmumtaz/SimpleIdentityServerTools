@@ -1,4 +1,4 @@
-﻿using SimpleIdentityServer.Manager.Client.DTOs.Responses;
+﻿using SimpleIdentityServer.Manager.Client.Results;
 using System;
 using System.Threading.Tasks;
 
@@ -6,7 +6,7 @@ namespace SimpleIdentityServer.Manager.Client.Configuration
 {
     public interface IConfigurationClient
     {
-        Task<ConfigurationResponse> GetConfiguration(Uri wellKnownConfigurationUri);
+        Task<GetConfigurationResult> GetConfiguration(Uri wellKnownConfigurationUri);
     }
 
     internal sealed class ConfigurationClient : IConfigurationClient
@@ -18,7 +18,7 @@ namespace SimpleIdentityServer.Manager.Client.Configuration
             _getConfigurationOperation = getConfigurationOperation;
         }
 
-        public Task<ConfigurationResponse> GetConfiguration(Uri wellKnownConfigurationUri)
+        public Task<GetConfigurationResult> GetConfiguration(Uri wellKnownConfigurationUri)
         {
             return _getConfigurationOperation.ExecuteAsync(wellKnownConfigurationUri);
         }

@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SimpleIdentityServer.Manager.Client.Factories;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
+using SimpleIdentityServer.Common.Client.Factories;
+using SimpleIdentityServer.Common.Dtos.Responses;
+using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Requests;
 using SimpleIdentityServer.Manager.Common.Responses;
 using System;
@@ -13,7 +14,7 @@ namespace SimpleIdentityServer.Manager.Client.Claims
 {
     public interface ISearchClaimsOperation
     {
-        Task<SearchClaimResponse> ExecuteAsync(Uri claimsUri, SearchClaimsRequest parameter, string authorizationHeaderValue = null);
+        Task<PagedResult<ClaimResponse>> ExecuteAsync(Uri claimsUri, SearchClaimsRequest parameter, string authorizationHeaderValue = null);
     }
 
     internal sealed class SearchClaimsOperation : ISearchClaimsOperation
@@ -25,7 +26,7 @@ namespace SimpleIdentityServer.Manager.Client.Claims
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<SearchClaimResponse> ExecuteAsync(Uri claimsUri, SearchClaimsRequest parameter, string authorizationHeaderValue = null)
+        public async Task<PagedResult<ClaimResponse>> ExecuteAsync(Uri claimsUri, SearchClaimsRequest parameter, string authorizationHeaderValue = null)
         {
             if (claimsUri == null)
             {
@@ -53,22 +54,19 @@ namespace SimpleIdentityServer.Manager.Client.Claims
             {
                 httpResult.EnsureSuccessStatusCode();
             }
-            catch (HttpRequestException)
-            {
-                var resp = JsonConvert.DeserializeObject<ErrorResponse>(content);
-                return new SearchClaimResponse(resp);
-            }
             catch (Exception)
             {
-                return new SearchClaimResponse
+                return new PagedResult<ClaimResponse>
                 {
-                    ContainsError = true
+                    ContainsError = true,
+                    HttpStatus = httpResult.StatusCode,
+                    Error = JsonConvert.DeserializeObject<ErrorResponse>(content)
                 };
             }
 
-            return new SearchClaimResponse
+            return new PagedResult<ClaimResponse>
             {
-                Content = JsonConvert.DeserializeObject<SearchClaimsResponse>(content)
+                Content = JsonConvert.DeserializeObject<PagedResponse<ClaimResponse>>(content)
             };
         }
     }

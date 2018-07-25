@@ -1,6 +1,4 @@
-﻿using SimpleIdentityServer.Manager.Client.Factories;
-
-namespace SimpleIdentityServer.Manager.Host.Tests
+﻿namespace SimpleIdentityServer.Manager.Host.Tests
 {
     public class SharedContext
     {

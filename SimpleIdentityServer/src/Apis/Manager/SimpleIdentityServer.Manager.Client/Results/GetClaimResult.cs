@@ -3,8 +3,8 @@ using SimpleIdentityServer.Manager.Common.Responses;
 
 namespace SimpleIdentityServer.Manager.Client.Results
 {
-    public class GetResourceOwnerResult : BaseResponse
+    public class GetClaimResult : BaseResponse
     {
-        public ResourceOwnerResponse Content { get; set; }
+        public ClaimResponse Content { get; set; }
     }
 }

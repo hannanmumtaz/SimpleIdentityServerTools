@@ -1,5 +1,6 @@
-﻿using SimpleIdentityServer.Manager.Client.Configuration;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
+﻿using SimpleIdentityServer.Common.Client;
+using SimpleIdentityServer.Manager.Client.Configuration;
+using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Requests;
 using SimpleIdentityServer.Manager.Common.Responses;
 using System;
@@ -10,9 +11,9 @@ namespace SimpleIdentityServer.Manager.Client.Claims
     public interface IClaimsClient
     {
         Task<BaseResponse> Add(Uri wellKnownConfigurationUri, ClaimResponse claim, string authorizationHeaderValue = null);
-        Task<GetClaimResponse> Get(Uri wellKnownConfigurationUri, string claimId, string authorizationHeaderValue = null);
+        Task<GetClaimResult> Get(Uri wellKnownConfigurationUri, string claimId, string authorizationHeaderValue = null);
         Task<BaseResponse> Delete(Uri wellKnownConfigurationUri, string claimId, string authorizationHeaderValue = null);
-        Task<SearchClaimResponse> Search(Uri wellKnownConfigurationUri, SearchClaimsRequest searchClaimsRequest, string authorizationHeaderValue = null);
+        Task<PagedResult<ClaimResponse>> Search(Uri wellKnownConfigurationUri, SearchClaimsRequest searchClaimsRequest, string authorizationHeaderValue = null);
     }
 
     internal sealed class ClaimsClient : IClaimsClient
@@ -35,26 +36,26 @@ namespace SimpleIdentityServer.Manager.Client.Claims
 
         public async Task<BaseResponse> Add(Uri wellKnownConfigurationUri, ClaimResponse claim, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _addClaimOperation.ExecuteAsync(new Uri(configuration.ClaimsEndpoint), claim, authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _addClaimOperation.ExecuteAsync(new Uri(configuration.Content.ClaimsEndpoint), claim, authorizationHeaderValue).ConfigureAwait(false);
         }
         
-        public async Task<GetClaimResponse> Get(Uri wellKnownConfigurationUri, string claimId, string authorizationHeaderValue = null)
+        public async Task<GetClaimResult> Get(Uri wellKnownConfigurationUri, string claimId, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _getClaimOperation.ExecuteAsync(new Uri(configuration.ClaimsEndpoint + "/" + claimId), authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _getClaimOperation.ExecuteAsync(new Uri(configuration.Content.ClaimsEndpoint + "/" + claimId), authorizationHeaderValue).ConfigureAwait(false);
         }
 
         public async Task<BaseResponse> Delete(Uri wellKnownConfigurationUri, string claimId, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _deleteClaimOperation.ExecuteAsync(new Uri(configuration.ClaimsEndpoint + "/" + claimId), authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _deleteClaimOperation.ExecuteAsync(new Uri(configuration.Content.ClaimsEndpoint + "/" + claimId), authorizationHeaderValue).ConfigureAwait(false);
         }
 
-        public async Task<SearchClaimResponse> Search(Uri wellKnownConfigurationUri, SearchClaimsRequest searchClaimsRequest, string authorizationHeaderValue = null)
+        public async Task<PagedResult<ClaimResponse>> Search(Uri wellKnownConfigurationUri, SearchClaimsRequest searchClaimsRequest, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _searchClaimsOperation.ExecuteAsync(new Uri(configuration.ClaimsEndpoint + "/.search"), searchClaimsRequest, authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _searchClaimsOperation.ExecuteAsync(new Uri(configuration.Content.ClaimsEndpoint + "/.search"), searchClaimsRequest, authorizationHeaderValue).ConfigureAwait(false);
         }
     }
 }

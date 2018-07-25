@@ -2,6 +2,17 @@
 {
     public static class Constants
     {
+        public static class ConfigurationResponseNames
+        {
+            public const string JwsEndpoint = "jws_endpoint";
+            public const string JweEndpoint = "jwe_endpoint";
+            public const string ClientsEndpoint = "clients_endpoint";
+            public const string ScopesEndpoint = "scopes_endpoint";
+            public const string ResourceOwnersEndpoint = "resourceowners_endpoint";
+            public const string ManageEndpoint = "manage_endpoint";
+            public const string ClaimsEndpoint = "claims_endpoint";
+        }
+
         public static class ClaimResponseNames
         {
             public const string Code = "key";

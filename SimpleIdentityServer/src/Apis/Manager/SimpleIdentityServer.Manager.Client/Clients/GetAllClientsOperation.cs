@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
-using SimpleIdentityServer.Manager.Client.Factories;
+using SimpleIdentityServer.Common.Client.Factories;
+using SimpleIdentityServer.Common.Dtos.Responses;
+using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Responses;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace SimpleIdentityServer.Manager.Client.Clients
 {
     public interface IGetAllClientsOperation
     {
-        Task<GetAllClientResponse> ExecuteAsync(Uri clientsUri, string authorizationHeaderValue = null);
+        Task<GetAllClientResult> ExecuteAsync(Uri clientsUri, string authorizationHeaderValue = null);
     }
 
     internal sealed class GetAllClientsOperation : IGetAllClientsOperation
@@ -24,7 +24,7 @@ namespace SimpleIdentityServer.Manager.Client.Clients
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<GetAllClientResponse> ExecuteAsync(Uri clientsUri, string authorizationHeaderValue = null)
+        public async Task<GetAllClientResult> ExecuteAsync(Uri clientsUri, string authorizationHeaderValue = null)
         {
             if (clientsUri == null)
             {
@@ -48,33 +48,19 @@ namespace SimpleIdentityServer.Manager.Client.Clients
             {
                 httpResult.EnsureSuccessStatusCode();
             }
-            catch(HttpRequestException)
-            {
-                var rec = JsonConvert.DeserializeObject<ErrorResponse>(content);
-                return new GetAllClientResponse(rec);
-            }
             catch(Exception)
             {
-                return new GetAllClientResponse
+                return new GetAllClientResult
                 {
-                    ContainsError = true
+                    ContainsError = true,
+                    Error = JsonConvert.DeserializeObject<ErrorResponse>(content),
+                    HttpStatus = httpResult.StatusCode
                 };
             }
 
-            var jArr = JArray.Parse(content);
-            var result = new List<ClientResponse>();
-            foreach (JObject rec in jArr)
+            return new GetAllClientResult
             {
-                var client = JsonConvert.DeserializeObject<ClientResponse>(rec.ToString());
-                if (client != null)
-                {
-                    result.Add(client);
-                }
-            }
-
-            return new GetAllClientResponse
-            {
-                Content = result
+                Content = JsonConvert.DeserializeObject<IEnumerable<ClientResponse>>(content)
             };
         }
     }

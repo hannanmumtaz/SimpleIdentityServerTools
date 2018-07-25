@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SimpleIdentityServer.Core.Common.DTOs;
+using SimpleIdentityServer.Common.Client.Factories;
+using SimpleIdentityServer.Common.Dtos.Responses;
 using SimpleIdentityServer.Core.Common.DTOs.Responses;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
-using SimpleIdentityServer.Manager.Client.Factories;
+using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Responses;
 using System;
 using System.Net.Http;
@@ -14,7 +14,7 @@ namespace SimpleIdentityServer.Manager.Client.Clients
 {
     public interface IAddClientOperation
     {
-        Task<AddClientResponse> ExecuteAsync(Uri clientsUri, ClientResponse client, string authorizationHeaderValue = null);
+        Task<AddClientResult> ExecuteAsync(Uri clientsUri, ClientResponse client, string authorizationHeaderValue = null);
     }
 
     internal sealed class AddClientOperation : IAddClientOperation
@@ -26,7 +26,7 @@ namespace SimpleIdentityServer.Manager.Client.Clients
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<AddClientResponse> ExecuteAsync(Uri clientsUri, ClientResponse client, string authorizationHeaderValue = null)
+        public async Task<AddClientResult> ExecuteAsync(Uri clientsUri, ClientResponse client, string authorizationHeaderValue = null)
         {
             if (clientsUri == null)
             {
@@ -58,27 +58,19 @@ namespace SimpleIdentityServer.Manager.Client.Clients
             {
                 httpResult.EnsureSuccessStatusCode();
             }
-            catch (HttpRequestException)
-            {
-                var rec = JsonConvert.DeserializeObject<ErrorResponse>(content);
-                return new AddClientResponse
-                {
-                    ContainsError = true,
-                    Error = rec
-                };
-            }
             catch (Exception)
             {
-                return new AddClientResponse
+                return new AddClientResult
                 {
-                    ContainsError = true
+                    ContainsError = true,
+                    Error = JsonConvert.DeserializeObject<ErrorResponse>(content),
+                    HttpStatus = httpResult.StatusCode
                 };
             }
-
-            var regist = JsonConvert.DeserializeObject<ClientRegistrationResponse>(content);
-            return new AddClientResponse
+            
+            return new AddClientResult
             {
-                Content = regist
+                Content = JsonConvert.DeserializeObject<ClientRegistrationResponse>(content)
             };
         }
     }
