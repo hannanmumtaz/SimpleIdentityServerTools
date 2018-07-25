@@ -37,6 +37,8 @@ namespace SimpleIdentityServer.Manager.Logging
         void FinishToUpdateResourceOwnerClaims(string subject);
         void StartToUpdateResourceOwnerPassword(string subject);
         void FinishToUpdateResourceOwnerPassword(string subject);
+        void StartToAddResourceOwner(string subject);
+        void FinishToAddResourceOwner(string subject);
 
         #endregion
 
@@ -184,6 +186,30 @@ namespace SimpleIdentityServer.Manager.Logging
                 Id = 415,
                 Task = Tasks.ResourceOwner,
                 Message = $"Finish to update the resource owner password : {subject}"
+            };
+
+            LogInformation(evt);
+        }
+
+        public void StartToAddResourceOwner(string subject)
+        {
+            var evt = new Event
+            {
+                Id = 416,
+                Task = Tasks.ResourceOwner,
+                Message = $"Start to add the resource owner : {subject}"
+            };
+
+            LogInformation(evt);
+        }
+
+        public void FinishToAddResourceOwner(string subject)
+        {
+            var evt = new Event
+            {
+                Id = 417,
+                Task = Tasks.ResourceOwner,
+                Message = $"Finish to add the resource owner : {subject}"
             };
 
             LogInformation(evt);

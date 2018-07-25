@@ -47,8 +47,7 @@ namespace SimpleIdentityServer.Manager.Core.Api.ResourceOwners.Actions
             var resourceOwner = await _resourceOwnerRepository.GetAsync(subject);
             if (resourceOwner == null)
             {
-                throw new IdentityServerManagerException(ErrorCodes.InvalidRequestCode,
-                    string.Format(ErrorDescriptions.TheResourceOwnerDoesntExist, subject));
+                throw new IdentityServerManagerException(ErrorCodes.InvalidRequestCode, string.Format(ErrorDescriptions.TheResourceOwnerDoesntExist, subject));
             }
 
             return resourceOwner;

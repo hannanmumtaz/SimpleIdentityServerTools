@@ -18,10 +18,12 @@ namespace SimpleIdentityServer.Manager.Core.Api.ResourceOwners.Actions
     internal class UpdateResourceOwnerClaimsAction : IUpdateResourceOwnerClaimsAction
     {
         private readonly IResourceOwnerRepository _resourceOwnerRepository;
+        private readonly IClaimRepository _claimRepository;
         
-        public UpdateResourceOwnerClaimsAction(IResourceOwnerRepository resourceOwnerRepository)
+        public UpdateResourceOwnerClaimsAction(IResourceOwnerRepository resourceOwnerRepository, IClaimRepository claimRepository)
         {
             _resourceOwnerRepository = resourceOwnerRepository;
+            _claimRepository = claimRepository;
         }
 
         public async Task<bool> Execute(UpdateResourceOwnerClaimsParameter request)
@@ -38,7 +40,23 @@ namespace SimpleIdentityServer.Manager.Core.Api.ResourceOwners.Actions
             }
 
             resourceOwner.UpdateDateTime = DateTime.UtcNow;
-            resourceOwner.Claims = request.Claims == null ? new List<Claim>() : request.Claims.Select(c => new Claim(c.Key, c.Value)).ToList();
+            var claims = new List<Claim>();
+            var existingClaims = await _claimRepository.GetAllAsync();
+            if (existingClaims != null && existingClaims.Any() && request.Claims != null && request.Claims.Any())
+            {
+                foreach(var claim in request.Claims)
+                {
+                    var cl = existingClaims.FirstOrDefault(c => c.Code == claim.Key);
+                    if (cl == null)
+                    {
+                        continue;
+                    }
+
+                    claims.Add(new Claim(claim.Key, claim.Value));
+                }
+            }
+
+            resourceOwner.Claims = claims;
             Claim updatedClaim, subjectClaim;
             if (((updatedClaim = resourceOwner.Claims.FirstOrDefault(c => c.Type == SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.UpdatedAt)) != null))
             {

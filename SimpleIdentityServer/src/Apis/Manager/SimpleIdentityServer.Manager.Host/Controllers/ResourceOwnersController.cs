@@ -65,7 +65,7 @@ namespace SimpleIdentityServer.Manager.Host.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                throw new ArgumentNullException(nameof(id));
+                return BuildError(ErrorCodes.InvalidRequestCode, "the id parameter must be specified", HttpStatusCode.BadRequest);
             }
             
             if (!await _representationManager.CheckRepresentationExistsAsync(this, StoreNames.GetResourceOwner + id))
@@ -87,7 +87,7 @@ namespace SimpleIdentityServer.Manager.Host.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                throw new ArgumentNullException(nameof(id));
+                return BuildError(ErrorCodes.InvalidRequestCode, "the id parameter must be specified", HttpStatusCode.BadRequest);
             }
 
             await _resourceOwnerActions.Delete(id);

@@ -66,6 +66,7 @@ namespace SimpleIdentityServer.Manager.Core
             serviceCollection.AddTransient<IUpdateResourceOwnerPasswordAction, UpdateResourceOwnerPasswordAction>();
             serviceCollection.AddTransient<IUpdateResourceOwnerClaimsParameterValidator, UpdateResourceOwnerClaimsParameterValidator>();
             serviceCollection.AddTransient<IUpdateResourceOwnerPasswordParameterValidator, UpdateResourceOwnerPasswordParameterValidator>();
+            serviceCollection.AddTransient<IAddUserParameterValidator, AddUserParameterValidator>();
             serviceCollection.AddTransient<IResourceOwnerActions, ResourceOwnerActions>();
             serviceCollection.AddTransient<IDeleteResourceOwnerAction, DeleteResourceOwnerAction>();
             serviceCollection.AddTransient<IRegisterClientAction, RegisterClientAction>();

@@ -31,19 +31,14 @@ namespace SimpleIdentityServer.Manager.Core.Api.ResourceOwners.Actions
     internal class DeleteResourceOwnerAction : IDeleteResourceOwnerAction
     {
         private readonly IResourceOwnerRepository _resourceOwnerRepository;
-        private readonly IManagerEventSource _managerEventSource;
 
-        public DeleteResourceOwnerAction(
-            IResourceOwnerRepository resourceOwnerRepository,
-            IManagerEventSource managerEventSource)
+        public DeleteResourceOwnerAction(IResourceOwnerRepository resourceOwnerRepository)
         {
             _resourceOwnerRepository = resourceOwnerRepository;
-            _managerEventSource = managerEventSource;
         }
 
         public async Task<bool> Execute(string subject)
         {
-            _managerEventSource.StartToRemoveResourceOwner(subject);
             if (string.IsNullOrWhiteSpace(subject))
             {
                 throw new ArgumentNullException(nameof(subject));
@@ -58,9 +53,9 @@ namespace SimpleIdentityServer.Manager.Core.Api.ResourceOwners.Actions
 
 
             var res = await _resourceOwnerRepository.DeleteAsync(subject);
-            if (res)
+            if (!res)
             {
-                _managerEventSource.FinishToRemoveResourceOwner(subject);
+                throw new IdentityServerManagerException(ErrorCodes.InternalErrorCode, ErrorDescriptions.TheResourceOwnerCannotBeRemoved);
             }
 
             return res;

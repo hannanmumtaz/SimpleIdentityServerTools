@@ -30,7 +30,6 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.ResourceOwners
     public class DeleteResourceOwnerActionFixture
     {
         private Mock<IResourceOwnerRepository> _resourceOwnerRepositoryStub;
-        private Mock<IManagerEventSource> _managerEventSourceStub;
         private IDeleteResourceOwnerAction _deleteResourceOwnerAction;
 
         [Fact]
@@ -62,6 +61,26 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.ResourceOwners
         }
 
         [Fact]
+        public async Task When_Cannot_Delete_Resource_Owner_Then_Exception_Is_Thrown()
+        {
+            // ARRANGE
+            const string subject = "subject";
+            InitializeFakeObjects();
+            _resourceOwnerRepositoryStub.Setup(r => r.GetAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(new ResourceOwner()));
+            _resourceOwnerRepositoryStub.Setup(r => r.DeleteAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(false));
+
+            // ACT
+            var exception = await Assert.ThrowsAsync<IdentityServerManagerException>(() => _deleteResourceOwnerAction.Execute(subject));
+
+            // ASSERT
+            Assert.NotNull(exception);
+            Assert.Equal("internal_error", exception.Code);
+            Assert.Equal("the resource owner cannot be removed", exception.Message);
+        }
+
+        [Fact]
         public async Task When_Delete_Resource_Owner_Then_Operation_Is_Called()
         {   
             // ARRANGE
@@ -69,6 +88,8 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.ResourceOwners
             InitializeFakeObjects();
             _resourceOwnerRepositoryStub.Setup(r => r.GetAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(new ResourceOwner()));
+            _resourceOwnerRepositoryStub.Setup(r => r.DeleteAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(true));
 
             // ACT
             await _deleteResourceOwnerAction.Execute(subject);
@@ -80,10 +101,8 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.ResourceOwners
         private void InitializeFakeObjects()
         {
             _resourceOwnerRepositoryStub = new Mock<IResourceOwnerRepository>();
-            _managerEventSourceStub = new Mock<IManagerEventSource>();
             _deleteResourceOwnerAction = new DeleteResourceOwnerAction(
-                _resourceOwnerRepositoryStub.Object,
-                _managerEventSourceStub.Object);
+                _resourceOwnerRepositoryStub.Object);
         }
     }
 }

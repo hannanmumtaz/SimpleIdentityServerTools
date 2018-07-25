@@ -50,6 +50,7 @@ namespace SimpleIdentityServer.Manager.Core.Api.ResourceOwners
         private readonly ISearchResourceOwnersAction _searchResourceOwnersAction;
         private readonly IUpdateResourceOwnerClaimsParameterValidator _updateResourceOwnerClaimsParameterValidator;
         private readonly IUpdateResourceOwnerPasswordParameterValidator _updateResourceOwnerPasswordParameterValidator;
+        private readonly IAddUserParameterValidator _addUserParameterValidator;
         private readonly IManagerEventSource _managerEventSource;
 
         public ResourceOwnerActions(
@@ -62,6 +63,7 @@ namespace SimpleIdentityServer.Manager.Core.Api.ResourceOwners
             ISearchResourceOwnersAction searchResourceOwnersAction,
             IUpdateResourceOwnerClaimsParameterValidator updateResourceOwnerClaimsParameterValidator,
             IUpdateResourceOwnerPasswordParameterValidator updateResourceOwnerPasswordParameterValidator,
+            IAddUserParameterValidator addUserParameterValidator,
             IManagerEventSource managerEventSource)
         {
             _getResourceOwnerAction = getResourceOwnerAction;
@@ -73,6 +75,7 @@ namespace SimpleIdentityServer.Manager.Core.Api.ResourceOwners
             _searchResourceOwnersAction = searchResourceOwnersAction;
             _updateResourceOwnerClaimsParameterValidator = updateResourceOwnerClaimsParameterValidator;
             _updateResourceOwnerPasswordParameterValidator = updateResourceOwnerPasswordParameterValidator;
+            _addUserParameterValidator = addUserParameterValidator;
             _managerEventSource = managerEventSource;
         }
         
@@ -86,32 +89,39 @@ namespace SimpleIdentityServer.Manager.Core.Api.ResourceOwners
             return _getResourceOwnersAction.Execute();
         }
 
-        public Task<bool> UpdateResourceOwnerClaims(UpdateResourceOwnerClaimsParameter request)
+        public async Task<bool> UpdateResourceOwnerClaims(UpdateResourceOwnerClaimsParameter request)
         {
             _managerEventSource.StartToUpdateResourceOwnerClaims(request.Login);
             _updateResourceOwnerClaimsParameterValidator.Validate(request);
-            var result = _updateResourceOwnerClaimsAction.Execute(request);
+            var result = await _updateResourceOwnerClaimsAction.Execute(request);
             _managerEventSource.FinishToUpdateResourceOwnerClaims(request.Login);
             return result;
         }
 
-        public Task<bool> UpdateResourceOwnerPassword(UpdateResourceOwnerPasswordParameter request)
+        public async Task<bool> UpdateResourceOwnerPassword(UpdateResourceOwnerPasswordParameter request)
         {
             _managerEventSource.StartToUpdateResourceOwnerPassword(request.Login);
             _updateResourceOwnerPasswordParameterValidator.Validate(request);
-            var result =  _updateResourceOwnerPasswordAction.Execute(request);
+            var result =  await _updateResourceOwnerPasswordAction.Execute(request);
             _managerEventSource.FinishToUpdateResourceOwnerPassword(request.Login);
             return result;
         }
 
-        public Task<bool> Delete(string subject)
+        public async Task<bool> Delete(string subject)
         {
-            return _deleteResourceOwnerAction.Execute(subject);
+            _managerEventSource.StartToRemoveResourceOwner(subject);
+            var result = await _deleteResourceOwnerAction.Execute(subject);
+            _managerEventSource.FinishToRemoveResourceOwner(subject);
+            return result;
         }
 
-        public Task<bool> Add(AddUserParameter parameter)
+        public async Task<bool> Add(AddUserParameter parameter)
         {
-            return _addUserOperation.Execute(parameter, null);
+            _managerEventSource.StartToAddResourceOwner(parameter.Login);
+            _addUserParameterValidator.Validate(parameter);
+            var result = await _addUserOperation.Execute(parameter, null);
+            _managerEventSource.FinishToAddResourceOwner(parameter.Login);
+            return result;
         }
 
         public Task<SearchResourceOwnerResult> Search(SearchResourceOwnerParameter parameter)

@@ -57,5 +57,6 @@ namespace SimpleIdentityServer.Manager.Core.Errors
         public const string CannotRemoveClaimIdentifier = "cannot remove claim identifier";
         public const string ThePasswordCannotBeUpdated = "the password cannot be updated";
         public const string TheClaimsCannotBeUpdated = "the claims cannot be updated";
+        public const string TheResourceOwnerCannotBeRemoved = "the resource owner cannot be removed";
     }
 }

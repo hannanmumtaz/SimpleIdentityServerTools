@@ -22,6 +22,7 @@ using SimpleIdentityServer.Manager.Core.Errors;
 using SimpleIdentityServer.Manager.Core.Exceptions;
 using SimpleIdentityServer.Manager.Core.Parameters;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -30,6 +31,7 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.ResourceOwners
     public class UpdateResourceOwnerClaimsActionFixture
     {
         private Mock<IResourceOwnerRepository> _resourceOwnerRepositoryStub;
+        private Mock<IClaimRepository> _claimRepositoryStub;
         private IUpdateResourceOwnerClaimsAction _updateResourceOwnerClaimsAction;
 
         [Fact]
@@ -98,6 +100,7 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.ResourceOwners
             _resourceOwnerRepositoryStub.Setup(r => r.GetAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(new ResourceOwner()));
             _resourceOwnerRepositoryStub.Setup(r => r.UpdateAsync(It.IsAny<ResourceOwner>())).Returns(Task.FromResult(true));
+            _claimRepositoryStub.Setup(c => c.GetAllAsync()).Returns(Task.FromResult((IEnumerable<ClaimAggregate>)new List<ClaimAggregate>()));
 
             // ACT
             await _updateResourceOwnerClaimsAction.Execute(request);
@@ -109,8 +112,9 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.ResourceOwners
         private void InitializeFakeObjects()
         {
             _resourceOwnerRepositoryStub = new Mock<IResourceOwnerRepository>();
+            _claimRepositoryStub = new Mock<IClaimRepository>();
             _updateResourceOwnerClaimsAction = new UpdateResourceOwnerClaimsAction(
-                _resourceOwnerRepositoryStub.Object);
+                _resourceOwnerRepositoryStub.Object, _claimRepositoryStub.Object);
         }
     }
 }
