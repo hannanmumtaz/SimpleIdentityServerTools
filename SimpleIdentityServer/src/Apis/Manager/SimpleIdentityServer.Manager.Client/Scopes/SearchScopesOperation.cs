@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SimpleIdentityServer.Common.Client.Factories;
+using SimpleIdentityServer.Common.Dtos.Responses;
 using SimpleIdentityServer.Manager.Client.DTOs.Responses;
-using SimpleIdentityServer.Manager.Client.Factories;
 using SimpleIdentityServer.Manager.Common.Requests;
 using SimpleIdentityServer.Manager.Common.Responses;
 using System;
@@ -13,7 +14,7 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
 {
     public interface ISearchScopesOperation
     {
-        Task<SearchScopeResponse> ExecuteAsync(Uri scopesUri, SearchScopesRequest parameter, string authorizationHeaderValue = null);
+        Task<SearchScopeResult> ExecuteAsync(Uri scopesUri, SearchScopesRequest parameter, string authorizationHeaderValue = null);
     }
 
     internal sealed class SearchScopesOperation : ISearchScopesOperation
@@ -25,7 +26,7 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<SearchScopeResponse> ExecuteAsync(Uri clientsUri, SearchScopesRequest parameter, string authorizationHeaderValue = null)
+        public async Task<SearchScopeResult> ExecuteAsync(Uri clientsUri, SearchScopesRequest parameter, string authorizationHeaderValue = null)
         {
             if (clientsUri == null)
             {
@@ -53,20 +54,17 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
             {
                 httpResult.EnsureSuccessStatusCode();
             }
-            catch (HttpRequestException)
-            {
-                var resp = JsonConvert.DeserializeObject<ErrorResponse>(content);
-                return new SearchScopeResponse(resp);
-            }
             catch (Exception)
             {
-                return new SearchScopeResponse
+                return new SearchScopeResult
                 {
-                    ContainsError = true
+                    ContainsError = true,
+                    Error = JsonConvert.DeserializeObject<ErrorResponse>(content),
+                    HttpStatus = httpResult.StatusCode
                 };
             }
 
-            return new SearchScopeResponse
+            return new SearchScopeResult
             {
                 Content = JsonConvert.DeserializeObject<SearchScopesResponse>(content)
             };

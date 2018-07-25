@@ -14,8 +14,8 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
         Task<BaseResponse> ResolveUpdate(Uri wellKnownConfigurationUri, ScopeResponse client, string authorizationHeaderValue = null);
         Task<GetScopeResponse> ResolveGet(Uri wellKnownConfigurationUri, string scopeId, string authorizationHeaderValue = null);
         Task<BaseResponse> ResolvedDelete(Uri wellKnownConfigurationUri, string scopeId, string authorizationHeaderValue = null);
-        Task<GetAllScopesResponse> GetAll(Uri scopesUri, string authorizationHeaderValue = null);
-        Task<GetAllScopesResponse> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null);
+        Task<GetAllScopesResult> GetAll(Uri scopesUri, string authorizationHeaderValue = null);
+        Task<GetAllScopesResult> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null);
         Task<SearchScopeResponse> ResolveSearch(Uri wellKnownConfigurationUri, SearchScopesRequest searchScopesParameter, string authorizationHeaderValue = null);
     }
 
@@ -65,12 +65,12 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
             return await _deleteScopeOperation.ExecuteAsync(new Uri(configuration.ScopesEndpoint + "/" + scopeId), authorizationHeaderValue);
         }
 
-        public Task<GetAllScopesResponse> GetAll(Uri scopesUri, string authorizationHeaderValue = null)
+        public Task<GetAllScopesResult> GetAll(Uri scopesUri, string authorizationHeaderValue = null)
         {
             return _getAllScopesOperation.ExecuteAsync(scopesUri, authorizationHeaderValue);
         }
 
-        public async Task<GetAllScopesResponse> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null)
+        public async Task<GetAllScopesResult> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null)
         {
             var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
             return await GetAll(new Uri(configuration.ScopesEndpoint), authorizationHeaderValue);

@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
-using SimpleIdentityServer.Manager.Client.Factories;
+using SimpleIdentityServer.Common.Client.Factories;
+using SimpleIdentityServer.Common.Dtos.Responses;
+using SimpleIdentityServer.Manager.Client.DTOs.Results;
 using SimpleIdentityServer.Manager.Common.Responses;
 using System;
 using System.Net.Http;
@@ -11,7 +12,7 @@ namespace SimpleIdentityServer.Manager.Client.ResourceOwners
 {
     public interface IGetResourceOwnerOperation
     {
-        Task<GetResourceOwnerResponse> ExecuteAsync(Uri resourceOwnerUri, string authorizationHeaderValue = null);
+        Task<GetResourceOwnerResult> ExecuteAsync(Uri resourceOwnerUri, string authorizationHeaderValue = null);
     }
 
     internal sealed class GetResourceOwnerOperation : IGetResourceOwnerOperation
@@ -23,7 +24,7 @@ namespace SimpleIdentityServer.Manager.Client.ResourceOwners
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<GetResourceOwnerResponse> ExecuteAsync(Uri clientsUri, string authorizationHeaderValue = null)
+        public async Task<GetResourceOwnerResult> ExecuteAsync(Uri clientsUri, string authorizationHeaderValue = null)
         {
             if (clientsUri == null)
             {
@@ -48,23 +49,19 @@ namespace SimpleIdentityServer.Manager.Client.ResourceOwners
             {
                 httpResult.EnsureSuccessStatusCode();
             }
-            catch (HttpRequestException)
-            {
-                var err = JsonConvert.DeserializeObject<ErrorResponse>(content);
-                return new GetResourceOwnerResponse(err);
-            }
             catch (Exception)
             {
-                return new GetResourceOwnerResponse
+                return new GetResourceOwnerResult
                 {
-                    ContainsError = true
+                    ContainsError = true,
+                    Error = JsonConvert.DeserializeObject<ErrorResponse>(content),
+                    HttpStatus = httpResult.StatusCode
                 };
             }
 
-            var resourceOwner = JsonConvert.DeserializeObject<ResourceOwnerResponse>(content);
-            return new GetResourceOwnerResponse
+            return new GetResourceOwnerResult
             {
-                Content = resourceOwner
+                Content = JsonConvert.DeserializeObject<ResourceOwnerResponse>(content)
             };
         }
     }

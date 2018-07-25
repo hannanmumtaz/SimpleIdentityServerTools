@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
-using SimpleIdentityServer.Manager.Client.Factories;
+using SimpleIdentityServer.Common.Client.Factories;
+using SimpleIdentityServer.Common.Dtos.Responses;
+using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Responses;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
 {
     public interface IGetAllScopesOperation
     {
-        Task<GetAllScopesResponse> ExecuteAsync(Uri scopesUri, string authorizationHeaderValue = null);
+        Task<GetAllScopesResult> ExecuteAsync(Uri scopesUri, string authorizationHeaderValue = null);
     }
 
     internal sealed class GetAllScopesOperation : IGetAllScopesOperation
@@ -24,7 +24,7 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<GetAllScopesResponse> ExecuteAsync(Uri scopesUri, string authorizationHeaderValue = null)
+        public async Task<GetAllScopesResult> ExecuteAsync(Uri scopesUri, string authorizationHeaderValue = null)
         {
             if (scopesUri == null)
             {
@@ -48,33 +48,19 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
             {
                 httpResult.EnsureSuccessStatusCode();
             }
-            catch (HttpRequestException)
-            {
-                var rec = JsonConvert.DeserializeObject<ErrorResponse>(content);
-                return new GetAllScopesResponse(rec);
-            }
             catch (Exception)
             {
-                return new GetAllScopesResponse
+                return new GetAllScopesResult
                 {
-                    ContainsError = true
+                    ContainsError = true,
+                    Error = JsonConvert.DeserializeObject<ErrorResponse>(content),
+                    HttpStatus = httpResult.StatusCode
                 };
             }
 
-            var jArr = JArray.Parse(content);
-            var result = new List<ScopeResponse>();
-            foreach (JObject rec in jArr)
+            return new GetAllScopesResult
             {
-                var scope = JsonConvert.DeserializeObject<ScopeResponse>(rec.ToString());
-                if (scope != null)
-                {
-                    result.Add(scope);
-                }
-            }
-
-            return new GetAllScopesResponse
-            {
-                Content = result
+                Content = JsonConvert.DeserializeObject<IEnumerable<ScopeResponse>>(content)
             };
         }
     }

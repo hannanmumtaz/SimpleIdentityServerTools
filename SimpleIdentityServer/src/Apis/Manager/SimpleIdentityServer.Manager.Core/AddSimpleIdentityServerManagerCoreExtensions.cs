@@ -33,6 +33,7 @@ using SimpleIdentityServer.Manager.Core.Api.Scopes.Actions;
 using SimpleIdentityServer.Manager.Core.Factories;
 using SimpleIdentityServer.Manager.Core.Helpers;
 using SimpleIdentityServer.Manager.Core.Manage;
+using SimpleIdentityServer.Manager.Core.Validators;
 
 namespace SimpleIdentityServer.Manager.Core
 {
@@ -61,7 +62,10 @@ namespace SimpleIdentityServer.Manager.Core
             serviceCollection.AddTransient<IGetScopesOperation, GetScopesOperation>();
             serviceCollection.AddTransient<IGetResourceOwnersAction, GetResourceOwnersAction>();
             serviceCollection.AddTransient<IGetResourceOwnerAction, GetResourceOwnerAction>();
-            serviceCollection.AddTransient<IUpdateResourceOwnerAction, UpdateResourceOwnerAction>();
+            serviceCollection.AddTransient<IUpdateResourceOwnerClaimsAction, UpdateResourceOwnerClaimsAction>();
+            serviceCollection.AddTransient<IUpdateResourceOwnerPasswordAction, UpdateResourceOwnerPasswordAction>();
+            serviceCollection.AddTransient<IUpdateResourceOwnerClaimsParameterValidator, UpdateResourceOwnerClaimsParameterValidator>();
+            serviceCollection.AddTransient<IUpdateResourceOwnerPasswordParameterValidator, UpdateResourceOwnerPasswordParameterValidator>();
             serviceCollection.AddTransient<IResourceOwnerActions, ResourceOwnerActions>();
             serviceCollection.AddTransient<IDeleteResourceOwnerAction, DeleteResourceOwnerAction>();
             serviceCollection.AddTransient<IRegisterClientAction, RegisterClientAction>();

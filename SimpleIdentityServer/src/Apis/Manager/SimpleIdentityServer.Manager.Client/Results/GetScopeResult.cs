@@ -3,8 +3,8 @@ using SimpleIdentityServer.Manager.Common.Responses;
 
 namespace SimpleIdentityServer.Manager.Client.Results
 {
-    public class PagedResult<T> : BaseResponse
+    public class GetScopeResult : BaseResponse
     {
-        public PagedResponse<T> Content { get; set; }
+        public ScopeResponse Content { get; set; }
     }
 }

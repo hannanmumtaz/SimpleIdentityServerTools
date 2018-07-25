@@ -20,9 +20,7 @@ namespace SimpleIdentityServer.Manager.Host.Middleware
 {
     public static class UseExceptionHandlerExtensions
     {
-        public static IApplicationBuilder UseSimpleIdentityServerManagerExceptionHandler(
-            this IApplicationBuilder applicationBuilder,
-            ExceptionHandlerMiddlewareOptions options)
+        public static IApplicationBuilder UseSimpleIdentityServerManagerExceptionHandler(this IApplicationBuilder applicationBuilder, ExceptionHandlerMiddlewareOptions options)
         {
             return applicationBuilder.UseMiddleware<ExceptionHandlerMiddleware>(options);
         }

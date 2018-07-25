@@ -1,10 +1,11 @@
 ﻿using SimpleIdentityServer.Common.Client;
 using SimpleIdentityServer.Manager.Common.Responses;
+using System.Collections.Generic;
 
 namespace SimpleIdentityServer.Manager.Client.Results
 {
-    public class PagedResult<T> : BaseResponse
+    public class GetAllResourceOwnersResult : BaseResponse
     {
-        public PagedResponse<T> Content { get; set; }
+        public IEnumerable<ResourceOwnerResponse> Content { get; set; }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
-using SimpleIdentityServer.Manager.Client.Factories;
-using SimpleIdentityServer.Manager.Common.Responses;
+using SimpleIdentityServer.Common.Client;
+using SimpleIdentityServer.Common.Client.Factories;
+using SimpleIdentityServer.Common.Dtos.Responses;
+using SimpleIdentityServer.Manager.Common.Requests;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -9,34 +10,34 @@ using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.Manager.Client.ResourceOwners
 {
-    public interface IUpdateResourceOwnerOperation
+    public interface IUpdateResourceOwnerPasswordOperation
     {
-        Task<BaseResponse> ExecuteAsync(Uri resourceOwnerUri, ResourceOwnerResponse resourceOwner, string authorizationHeaderValue = null);
+        Task<BaseResponse> ExecuteAsync(Uri resourceOwnerUri, UpdateResourceOwnerPasswordRequest updateResourceOwnerPasswordRequest, string authorizationHeaderValue = null);
     }
 
-    internal sealed class UpdateResourceOwnerOperation : IUpdateResourceOwnerOperation
+    internal sealed class UpdateResourceOwnerPasswordOperation : IUpdateResourceOwnerPasswordOperation
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public UpdateResourceOwnerOperation(IHttpClientFactory httpClientFactory)
+        public UpdateResourceOwnerPasswordOperation(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<BaseResponse> ExecuteAsync(Uri resourceOwnerUri, ResourceOwnerResponse resourceOwner, string authorizationHeaderValue = null)
+        public async Task<BaseResponse> ExecuteAsync(Uri resourceOwnerUri, UpdateResourceOwnerPasswordRequest updateResourceOwnerPasswordRequest, string authorizationHeaderValue = null)
         {
             if (resourceOwnerUri == null)
             {
                 throw new ArgumentNullException(nameof(resourceOwnerUri));
             }
 
-            if (resourceOwner == null)
+            if (updateResourceOwnerPasswordRequest == null)
             {
-                throw new ArgumentNullException(nameof(resourceOwner));
+                throw new ArgumentNullException(nameof(updateResourceOwnerPasswordRequest));
             }
 
             var httpClient = _httpClientFactory.GetHttpClient();
-            var serializedJson = JsonConvert.SerializeObject(resourceOwner).ToString();
+            var serializedJson = JsonConvert.SerializeObject(updateResourceOwnerPasswordRequest).ToString();
             var body = new StringContent(serializedJson, Encoding.UTF8, "application/json");
             var request = new HttpRequestMessage
             {
@@ -55,20 +56,13 @@ namespace SimpleIdentityServer.Manager.Client.ResourceOwners
             {
                 httpResult.EnsureSuccessStatusCode();
             }
-            catch (HttpRequestException)
-            {
-                var resp = JsonConvert.DeserializeObject<ErrorResponse>(content);
-                return new BaseResponse
-                {
-                    ContainsError = true,
-                    Error = resp
-                };
-            }
             catch (Exception)
             {
                 return new BaseResponse
                 {
-                    ContainsError = true
+                    ContainsError = true,
+                    Error = JsonConvert.DeserializeObject<ErrorResponse>(content),
+                    HttpStatus = httpResult.StatusCode
                 };
             }
 

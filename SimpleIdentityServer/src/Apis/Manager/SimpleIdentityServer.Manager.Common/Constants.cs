@@ -84,12 +84,6 @@
             public const string Password = "password";
         }
 
-        public static class UpdateResourceOwnerRequestNames
-        {
-            public const string Subject = "sub";
-            public const string Roles = "roles";
-        }
-
         public static class SearchClientNames
         {
             public const string Order = "order";

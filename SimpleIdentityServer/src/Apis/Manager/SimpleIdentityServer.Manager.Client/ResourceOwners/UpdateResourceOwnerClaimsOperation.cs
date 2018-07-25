@@ -1,49 +1,48 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SimpleIdentityServer.Common.Client;
 using SimpleIdentityServer.Common.Client.Factories;
 using SimpleIdentityServer.Common.Dtos.Responses;
-using SimpleIdentityServer.Manager.Common.Responses;
+using SimpleIdentityServer.Manager.Common.Requests;
 using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimpleIdentityServer.Manager.Client.Scopes
+namespace SimpleIdentityServer.Manager.Client.ResourceOwners
 {
-    public interface IAddScopeOperation
+    public interface IUpdateResourceOwnerClaimsOperation
     {
-        Task<BaseResponse> ExecuteAsync(Uri scopesUri, ScopeResponse scope, string authorizationHeaderValue = null);
+        Task<BaseResponse> ExecuteAsync(Uri resourceOwnerUri, UpdateResourceOwnerClaimsRequest updateResourceOwnerClaimsRequest, string authorizationHeaderValue = null);
     }
 
-    internal sealed class AddScopeOperation : IAddScopeOperation
+    internal sealed class UpdateResourceOwnerClaimsOperation : IUpdateResourceOwnerClaimsOperation
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public AddScopeOperation(IHttpClientFactory httpClientFactory)
+        public UpdateResourceOwnerClaimsOperation(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<BaseResponse> ExecuteAsync(Uri scopesUri, ScopeResponse scope, string authorizationHeaderValue = null)
+        public async Task<BaseResponse> ExecuteAsync(Uri resourceOwnerUri, UpdateResourceOwnerClaimsRequest updateResourceOwnerClaimsRequest, string authorizationHeaderValue = null)
         {
-            if (scopesUri == null)
+            if (resourceOwnerUri == null)
             {
-                throw new ArgumentNullException(nameof(scopesUri));
+                throw new ArgumentNullException(nameof(resourceOwnerUri));
             }
 
-            if (scope == null)
+            if (updateResourceOwnerClaimsRequest == null)
             {
-                throw new ArgumentNullException(nameof(scope));
+                throw new ArgumentNullException(nameof(updateResourceOwnerClaimsRequest));
             }
 
             var httpClient = _httpClientFactory.GetHttpClient();
-            var serializedJson = JObject.FromObject(scope).ToString();
+            var serializedJson = JsonConvert.SerializeObject(updateResourceOwnerClaimsRequest).ToString();
             var body = new StringContent(serializedJson, Encoding.UTF8, "application/json");
             var request = new HttpRequestMessage
             {
-                Method = HttpMethod.Post,
-                RequestUri = scopesUri,
+                Method = HttpMethod.Put,
+                RequestUri = resourceOwnerUri,
                 Content = body
             };
             if (!string.IsNullOrWhiteSpace(authorizationHeaderValue))
@@ -66,7 +65,6 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
                     HttpStatus = httpResult.StatusCode
                 };
             }
-
 
             return new BaseResponse();
         }

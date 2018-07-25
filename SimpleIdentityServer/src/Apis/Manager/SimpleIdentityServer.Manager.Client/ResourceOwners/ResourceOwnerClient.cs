@@ -1,5 +1,6 @@
-﻿using SimpleIdentityServer.Manager.Client.Configuration;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
+﻿using SimpleIdentityServer.Common.Client;
+using SimpleIdentityServer.Manager.Client.Configuration;
+using SimpleIdentityServer.Manager.Client.DTOs.Results;
 using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Requests;
 using SimpleIdentityServer.Manager.Common.Responses;
@@ -11,11 +12,12 @@ namespace SimpleIdentityServer.Manager.Client.ResourceOwners
     public interface IResourceOwnerClient
     {
         Task<BaseResponse> ResolveAdd(Uri wellKnownConfigurationUri, AddResourceOwnerRequest request, string authorizationHeaderValue = null);
-        Task<BaseResponse> ResolveUpdate(Uri wellKnownConfigurationUri, ResourceOwnerResponse resourceOwner, string authorizationHeaderValue = null);
-        Task<GetResourceOwnerResponse> ResolveGet(Uri wellKnownConfigurationUri, string resourceOwnerId, string authorizationHeaderValue = null);
+        Task<BaseResponse> ResolveUpdateClaims(Uri wellKnownConfigurationUri, UpdateResourceOwnerClaimsRequest resourceOwner, string authorizationHeaderValue = null);
+        Task<BaseResponse> ResolveUpdatePassword(Uri wellKnownConfigurationUri, UpdateResourceOwnerPasswordRequest request, string authorizationHeaderValue = null);
+        Task<GetResourceOwnerResult> ResolveGet(Uri wellKnownConfigurationUri, string resourceOwnerId, string authorizationHeaderValue = null);
         Task<BaseResponse> ResolvedDelete(Uri wellKnownConfigurationUri, string resourceOwnerId, string authorizationHeaderValue = null);
-        Task<GetAllResourceOwnersResponse> GetAll(Uri resourceOwnerUri, string authorizationHeaderValue = null);
-        Task<GetAllResourceOwnersResponse> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null);
+        Task<GetAllResourceOwnersResult> GetAll(Uri resourceOwnerUri, string authorizationHeaderValue = null);
+        Task<GetAllResourceOwnersResult> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null);
         Task<PagedResult<ResourceOwnerResponse>> ResolveSearch(Uri wellKnownConfigurationUri, SearchResourceOwnersRequest searchResourceOwnersRequest, string authorizationHeaderValue = null);
     }
 
@@ -25,63 +27,71 @@ namespace SimpleIdentityServer.Manager.Client.ResourceOwners
         private readonly IDeleteResourceOwnerOperation _deleteResourceOwnerOperation;
         private readonly IGetAllResourceOwnersOperation _getAllResourceOwnersOperation;
         private readonly IGetResourceOwnerOperation _getResourceOwnerOperation;
-        private readonly IUpdateResourceOwnerOperation _updateResourceOwnerOperation;
+        private readonly IUpdateResourceOwnerPasswordOperation _updateResourceOwnerPasswordOperation;
+        private readonly IUpdateResourceOwnerClaimsOperation _updateResourceOwnerClaimsOperation;
         private readonly IConfigurationClient _configurationClient;
         private readonly ISearchResourceOwnersOperation _searchResourceOwnersOperation;
 
         public ResourceOwnerClient(IAddResourceOwnerOperation addResourceOwnerOperation, IDeleteResourceOwnerOperation deleteResourceOwnerOperation,
             IGetAllResourceOwnersOperation getAllResourceOwnersOperation, IGetResourceOwnerOperation getResourceOwnerOperation,
-            IUpdateResourceOwnerOperation updateResourceOwnerOperation, IConfigurationClient configurationClient,
+            IUpdateResourceOwnerClaimsOperation updateResourceOwnerClaimsOperation, IUpdateResourceOwnerPasswordOperation updateResourceOwnerPasswordOperation, IConfigurationClient configurationClient,
             ISearchResourceOwnersOperation searchResourceOwnersOperation)
         {
             _addResourceOwnerOperation = addResourceOwnerOperation;
             _deleteResourceOwnerOperation = deleteResourceOwnerOperation;
             _getAllResourceOwnersOperation = getAllResourceOwnersOperation;
             _getResourceOwnerOperation = getResourceOwnerOperation;
-            _updateResourceOwnerOperation = updateResourceOwnerOperation;
+            _updateResourceOwnerClaimsOperation = updateResourceOwnerClaimsOperation;
+            _updateResourceOwnerPasswordOperation = updateResourceOwnerPasswordOperation;
             _configurationClient = configurationClient;
             _searchResourceOwnersOperation = searchResourceOwnersOperation;
         }
 
         public async Task<BaseResponse> ResolveAdd(Uri wellKnownConfigurationUri, AddResourceOwnerRequest request, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _addResourceOwnerOperation.ExecuteAsync(new Uri(configuration.ResourceOwnersEndpoint), request, authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _addResourceOwnerOperation.ExecuteAsync(new Uri(configuration.ResourceOwnersEndpoint), request, authorizationHeaderValue).ConfigureAwait(false);
         }
 
-        public async Task<BaseResponse> ResolveUpdate(Uri wellKnownConfigurationUri, ResourceOwnerResponse resourceOwner, string authorizationHeaderValue = null)
+        public async Task<BaseResponse> ResolveUpdateClaims(Uri wellKnownConfigurationUri, UpdateResourceOwnerClaimsRequest request, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _updateResourceOwnerOperation.ExecuteAsync(new Uri(configuration.ResourceOwnersEndpoint), resourceOwner, authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _updateResourceOwnerClaimsOperation.ExecuteAsync(new Uri(configuration.ResourceOwnersEndpoint + "/claims"), request, authorizationHeaderValue).ConfigureAwait(false);
         }
 
-        public async Task<GetResourceOwnerResponse> ResolveGet(Uri wellKnownConfigurationUri, string resourceOwnerId, string authorizationHeaderValue = null)
+        public async Task<BaseResponse> ResolveUpdatePassword(Uri wellKnownConfigurationUri, UpdateResourceOwnerPasswordRequest request, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _getResourceOwnerOperation.ExecuteAsync(new Uri(configuration.ResourceOwnersEndpoint + "/" + resourceOwnerId), authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _updateResourceOwnerPasswordOperation.ExecuteAsync(new Uri(configuration.ResourceOwnersEndpoint + "/password"), request, authorizationHeaderValue).ConfigureAwait(false);
+        }
+
+        public async Task<GetResourceOwnerResult> ResolveGet(Uri wellKnownConfigurationUri, string resourceOwnerId, string authorizationHeaderValue = null)
+        {
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _getResourceOwnerOperation.ExecuteAsync(new Uri(configuration.ResourceOwnersEndpoint + "/" + resourceOwnerId), authorizationHeaderValue).ConfigureAwait(false);
         }
 
         public async Task<BaseResponse> ResolvedDelete(Uri wellKnownConfigurationUri, string resourceOwnerId, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _deleteResourceOwnerOperation.ExecuteAsync(new Uri(configuration.ResourceOwnersEndpoint + "/" + resourceOwnerId), authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _deleteResourceOwnerOperation.ExecuteAsync(new Uri(configuration.ResourceOwnersEndpoint + "/" + resourceOwnerId), authorizationHeaderValue).ConfigureAwait(false);
         }
 
-        public Task<GetAllResourceOwnersResponse> GetAll(Uri resourceOwnerUri, string authorizationHeaderValue = null)
+        public async Task<GetAllResourceOwnersResult> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null)
+        {
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await GetAll(new Uri(configuration.ResourceOwnersEndpoint), authorizationHeaderValue).ConfigureAwait(false);
+        }
+
+        public Task<GetAllResourceOwnersResult> GetAll(Uri resourceOwnerUri, string authorizationHeaderValue = null)
         {
             return _getAllResourceOwnersOperation.ExecuteAsync(resourceOwnerUri, authorizationHeaderValue);
         }
 
-        public async Task<GetAllResourceOwnersResponse> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null)
-        {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await GetAll(new Uri(configuration.ResourceOwnersEndpoint), authorizationHeaderValue);
-        }
-
         public async Task<PagedResult<ResourceOwnerResponse>> ResolveSearch(Uri wellKnownConfigurationUri, SearchResourceOwnersRequest searchResourceOwnersRequest, string authorizationHeaderValue = null)
         {
-            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri);
-            return await _searchResourceOwnersOperation.ExecuteAsync(new Uri(configuration.ResourceOwnersEndpoint + "/.search"), searchResourceOwnersRequest, authorizationHeaderValue);
+            var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
+            return await _searchResourceOwnersOperation.ExecuteAsync(new Uri(configuration.ResourceOwnersEndpoint + "/.search"), searchResourceOwnersRequest, authorizationHeaderValue).ConfigureAwait(false);
         }
     }
 }

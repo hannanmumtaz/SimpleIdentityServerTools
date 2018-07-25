@@ -32,8 +32,11 @@ namespace SimpleIdentityServer.Manager.Logging
         #region Events linked to resource owner
 
         void StartToRemoveResourceOwner(string subject);
-
         void FinishToRemoveResourceOwner(string subject);
+        void StartToUpdateResourceOwnerClaims(string subject);
+        void FinishToUpdateResourceOwnerClaims(string subject);
+        void StartToUpdateResourceOwnerPassword(string subject);
+        void FinishToUpdateResourceOwnerPassword(string subject);
 
         #endregion
 
@@ -90,7 +93,7 @@ namespace SimpleIdentityServer.Manager.Logging
         {
             var evt = new Event
             {
-                Id = 1,
+                Id = 400,
                 Task = Tasks.Client,
                 Message = $"Start to remove the client : {clientId}"
             };
@@ -102,7 +105,7 @@ namespace SimpleIdentityServer.Manager.Logging
         {
             var evt = new Event
             {
-                Id = 2,
+                Id = 401,
                 Task = Tasks.Client,
                 Message = $"Finish to remove the client : {clientId}"
             };
@@ -118,7 +121,7 @@ namespace SimpleIdentityServer.Manager.Logging
         {
             var evt = new Event
             {
-                Id = 3,
+                Id = 410,
                 Task = Tasks.ResourceOwner,
                 Message = $"Start to remove the resource owner: {subject}"
             };
@@ -130,9 +133,57 @@ namespace SimpleIdentityServer.Manager.Logging
         {
             var evt = new Event
             {
-                Id = 4,
+                Id = 411,
                 Task = Tasks.ResourceOwner,
                 Message = $"Finish to remove the resource owner: {subject}"
+            };
+
+            LogInformation(evt);
+        }
+
+        public void StartToUpdateResourceOwnerClaims(string subject)
+        {
+            var evt = new Event
+            {
+                Id = 412,
+                Task = Tasks.ResourceOwner,
+                Message = $"Start to update the resource owner claims : {subject}"
+            };
+
+            LogInformation(evt);
+        }
+
+        public void FinishToUpdateResourceOwnerClaims(string subject)
+        {
+            var evt = new Event
+            {
+                Id = 413,
+                Task = Tasks.ResourceOwner,
+                Message = $"Finish to update the resource owner claims : {subject}"
+            };
+
+            LogInformation(evt);
+        }
+
+        public void StartToUpdateResourceOwnerPassword(string subject)
+        {
+            var evt = new Event
+            {
+                Id = 414,
+                Task = Tasks.ResourceOwner,
+                Message = $"Start to update the resource owner password : {subject}"
+            };
+
+            LogInformation(evt);
+        }
+
+        public void FinishToUpdateResourceOwnerPassword(string subject)
+        {
+            var evt = new Event
+            {
+                Id = 415,
+                Task = Tasks.ResourceOwner,
+                Message = $"Finish to update the resource owner password : {subject}"
             };
 
             LogInformation(evt);
@@ -146,7 +197,7 @@ namespace SimpleIdentityServer.Manager.Logging
         {
             var evt = new Event
             {
-                Id = 5,
+                Id = 420,
                 Task = Tasks.Scope,
                 Message = $"Start to remove the scope: {scope}"
             };
@@ -158,7 +209,7 @@ namespace SimpleIdentityServer.Manager.Logging
         {
             var evt = new Event
             {
-                Id = 6,
+                Id = 421,
                 Task = Tasks.Scope,
                 Message = $"Finish to remove the scope: {scope}"
             };
@@ -174,7 +225,7 @@ namespace SimpleIdentityServer.Manager.Logging
         {
             var evt = new Event
             {
-                Id = 7,
+                Id = 430,
                 Task = Tasks.Export,
                 Message = $"Start to export"
             };
@@ -186,7 +237,7 @@ namespace SimpleIdentityServer.Manager.Logging
         {
             var evt = new Event
             {
-                Id = 8,
+                Id = 431,
                 Task = Tasks.Export,
                 Message = $"Finish to export"
             };
@@ -202,7 +253,7 @@ namespace SimpleIdentityServer.Manager.Logging
         {
             var evt = new Event
             {
-                Id = 9,
+                Id = 440,
                 Task = Tasks.Import,
                 Message = $"Start to import"
             };
@@ -215,7 +266,7 @@ namespace SimpleIdentityServer.Manager.Logging
         {
             var evt = new Event
             {
-                Id = 10,
+                Id = 441,
                 Task = Tasks.Import,
                 Message = $"All clients have been removed"
             };
@@ -227,7 +278,7 @@ namespace SimpleIdentityServer.Manager.Logging
         {
             var evt = new Event
             {
-                Id = 11,
+                Id = 442,
                 Task = Tasks.Import,
                 Message = $"Import is finished"
             };

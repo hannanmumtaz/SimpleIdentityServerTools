@@ -18,6 +18,7 @@ namespace SimpleIdentityServer.Manager.Core.Errors
 {
     public static class ErrorCodes
     {
+        public const string InternalErrorCode = "internal_error";
         public static string InvalidRedirectUri = "invalid_redirect_uri";
         public const string InvalidRequestCode = "invalid_request";
         public const string UnhandledExceptionCode = "unhandled_exception";

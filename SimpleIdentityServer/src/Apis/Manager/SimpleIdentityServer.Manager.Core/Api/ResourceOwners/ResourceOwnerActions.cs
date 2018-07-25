@@ -20,6 +20,9 @@ using SimpleIdentityServer.Core.Common.Results;
 using SimpleIdentityServer.Core.Parameters;
 using SimpleIdentityServer.Core.WebSite.User.Actions;
 using SimpleIdentityServer.Manager.Core.Api.ResourceOwners.Actions;
+using SimpleIdentityServer.Manager.Core.Parameters;
+using SimpleIdentityServer.Manager.Core.Validators;
+using SimpleIdentityServer.Manager.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -27,7 +30,8 @@ namespace SimpleIdentityServer.Manager.Core.Api.ResourceOwners
 {
     public interface IResourceOwnerActions
     {
-        Task<bool> UpdateResourceOwner(ResourceOwner resourceOwner);
+        Task<bool> UpdateResourceOwnerClaims(UpdateResourceOwnerClaimsParameter request);
+        Task<bool> UpdateResourceOwnerPassword(UpdateResourceOwnerPasswordParameter request);
         Task<ResourceOwner> GetResourceOwner(string subject);
         Task<ICollection<ResourceOwner>> GetResourceOwners();
         Task<bool> Delete(string subject);
@@ -39,25 +43,37 @@ namespace SimpleIdentityServer.Manager.Core.Api.ResourceOwners
     {
         private readonly IGetResourceOwnerAction _getResourceOwnerAction;
         private readonly IGetResourceOwnersAction _getResourceOwnersAction;
-        private readonly IUpdateResourceOwnerAction _updateResourceOwnerAction;
+        private readonly IUpdateResourceOwnerClaimsAction _updateResourceOwnerClaimsAction;
+        private readonly IUpdateResourceOwnerPasswordAction _updateResourceOwnerPasswordAction;
         private readonly IDeleteResourceOwnerAction _deleteResourceOwnerAction;
         private readonly IAddUserOperation _addUserOperation;
         private readonly ISearchResourceOwnersAction _searchResourceOwnersAction;
+        private readonly IUpdateResourceOwnerClaimsParameterValidator _updateResourceOwnerClaimsParameterValidator;
+        private readonly IUpdateResourceOwnerPasswordParameterValidator _updateResourceOwnerPasswordParameterValidator;
+        private readonly IManagerEventSource _managerEventSource;
 
         public ResourceOwnerActions(
             IGetResourceOwnerAction getResourceOwnerAction,
             IGetResourceOwnersAction getResourceOwnersAction,
-            IUpdateResourceOwnerAction updateResourceOwnerAction,
+            IUpdateResourceOwnerClaimsAction updateResourceOwnerClaimsAction,
+            IUpdateResourceOwnerPasswordAction updateResourceOwnerPasswordAction,
             IDeleteResourceOwnerAction deleteResourceOwnerAction,
             IAddUserOperation addUserOperation,
-            ISearchResourceOwnersAction searchResourceOwnersAction)
+            ISearchResourceOwnersAction searchResourceOwnersAction,
+            IUpdateResourceOwnerClaimsParameterValidator updateResourceOwnerClaimsParameterValidator,
+            IUpdateResourceOwnerPasswordParameterValidator updateResourceOwnerPasswordParameterValidator,
+            IManagerEventSource managerEventSource)
         {
             _getResourceOwnerAction = getResourceOwnerAction;
             _getResourceOwnersAction = getResourceOwnersAction;
-            _updateResourceOwnerAction = updateResourceOwnerAction;
+            _updateResourceOwnerClaimsAction = updateResourceOwnerClaimsAction;
+            _updateResourceOwnerPasswordAction = updateResourceOwnerPasswordAction;
             _deleteResourceOwnerAction = deleteResourceOwnerAction;
             _addUserOperation = addUserOperation;
             _searchResourceOwnersAction = searchResourceOwnersAction;
+            _updateResourceOwnerClaimsParameterValidator = updateResourceOwnerClaimsParameterValidator;
+            _updateResourceOwnerPasswordParameterValidator = updateResourceOwnerPasswordParameterValidator;
+            _managerEventSource = managerEventSource;
         }
         
         public Task<ResourceOwner> GetResourceOwner(string subject)
@@ -70,9 +86,22 @@ namespace SimpleIdentityServer.Manager.Core.Api.ResourceOwners
             return _getResourceOwnersAction.Execute();
         }
 
-        public Task<bool> UpdateResourceOwner(ResourceOwner resourceOwner)
+        public Task<bool> UpdateResourceOwnerClaims(UpdateResourceOwnerClaimsParameter request)
         {
-            return _updateResourceOwnerAction.Execute(resourceOwner);
+            _managerEventSource.StartToUpdateResourceOwnerClaims(request.Login);
+            _updateResourceOwnerClaimsParameterValidator.Validate(request);
+            var result = _updateResourceOwnerClaimsAction.Execute(request);
+            _managerEventSource.FinishToUpdateResourceOwnerClaims(request.Login);
+            return result;
+        }
+
+        public Task<bool> UpdateResourceOwnerPassword(UpdateResourceOwnerPasswordParameter request)
+        {
+            _managerEventSource.StartToUpdateResourceOwnerPassword(request.Login);
+            _updateResourceOwnerPasswordParameterValidator.Validate(request);
+            var result =  _updateResourceOwnerPasswordAction.Execute(request);
+            _managerEventSource.FinishToUpdateResourceOwnerPassword(request.Login);
+            return result;
         }
 
         public Task<bool> Delete(string subject)

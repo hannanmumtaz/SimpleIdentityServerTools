@@ -33,9 +33,7 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
 {
     public static class ServiceCollectionExtension
     {
-        public static void AddSimpleIdentityServerManager(
-            this IServiceCollection serviceCollection,
-            ManagerOptions managerOptions)
+        public static void AddSimpleIdentityServerManager(this IServiceCollection serviceCollection, ManagerOptions managerOptions)
         {
             if (managerOptions == null)
             {

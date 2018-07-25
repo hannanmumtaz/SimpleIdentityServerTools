@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SimpleIdentityServer.Manager.Client.DTOs.Responses;
-using SimpleIdentityServer.Manager.Client.Factories;
+using SimpleIdentityServer.Common.Client.Factories;
+using SimpleIdentityServer.Common.Dtos.Responses;
+using SimpleIdentityServer.Manager.Client.Results;
 using SimpleIdentityServer.Manager.Common.Responses;
 using System;
 using System.Net.Http;
@@ -11,7 +12,7 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
 {
     public interface IGetScopeOperation
     {
-        Task<GetScopeResponse> ExecuteAsync(Uri scopesUri, string authorizationHeaderValue = null);
+        Task<GetScopeResult> ExecuteAsync(Uri scopesUri, string authorizationHeaderValue = null);
     }
 
     internal sealed class GetScopeOperation : IGetScopeOperation
@@ -23,7 +24,7 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<GetScopeResponse> ExecuteAsync(Uri scopesUri, string authorizationHeaderValue = null)
+        public async Task<GetScopeResult> ExecuteAsync(Uri scopesUri, string authorizationHeaderValue = null)
         {
             if (scopesUri == null)
             {
@@ -48,23 +49,19 @@ namespace SimpleIdentityServer.Manager.Client.Scopes
             {
                 httpResult.EnsureSuccessStatusCode();
             }
-            catch (HttpRequestException)
-            {
-                var err = JsonConvert.DeserializeObject<ErrorResponse>(content);
-                return new GetScopeResponse(err);
-            }
             catch (Exception)
             {
-                return new GetScopeResponse
+                return new GetScopeResult
                 {
-                    ContainsError = true
+                    ContainsError = true,
+                    Error = JsonConvert.DeserializeObject<ErrorResponse>(content),
+                    HttpStatus = httpResult.StatusCode
                 };
             }
 
-            var scope = JsonConvert.DeserializeObject<ScopeResponse>(content);
-            return new GetScopeResponse
+            return new GetScopeResult
             {
-                Content = scope
+                Content = JsonConvert.DeserializeObject<ScopeResponse>(content)
             };
         }
     }

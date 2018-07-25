@@ -18,6 +18,7 @@ namespace SimpleIdentityServer.Manager.Core.Errors
 {
     public static class ErrorDescriptions
     {
+        public const string TheParameterIsMissing = "the parameter {0} is missing";
         public const string TheUrlIsNotWellFormed = "the url {0} is not well formed";
         public const string TheTokenIsNotAValidJws = "the token is not a valid JWS";
         public const string TheTokenIsNotAValidJwe = "the token is not a valid JWE";
@@ -54,5 +55,7 @@ namespace SimpleIdentityServer.Manager.Core.Errors
         public const string ClaimDoesntExist = "the claim doesn't exist";
         public const string CannotInsertClaimIdentifier = "cannot insert claim identifier";
         public const string CannotRemoveClaimIdentifier = "cannot remove claim identifier";
+        public const string ThePasswordCannotBeUpdated = "the password cannot be updated";
+        public const string TheClaimsCannotBeUpdated = "the claims cannot be updated";
     }
 }

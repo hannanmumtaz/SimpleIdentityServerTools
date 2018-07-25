@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleIdentityServer.Core.Common;
 using SimpleIdentityServer.Core.Errors;
+using SimpleIdentityServer.Manager.Common;
 using SimpleIdentityServer.Manager.Common.Requests;
 using SimpleIdentityServer.Manager.Common.Responses;
 using SimpleIdentityServer.Manager.Core.Api.ResourceOwners;
@@ -97,27 +98,41 @@ namespace SimpleIdentityServer.Manager.Host.Controllers
             return new NoContentResult();
         }
 
-        [HttpPut]
+        [HttpPut("claims")]
         [Authorize("manager")]
-        public async Task<ActionResult> Update([FromBody] ResourceOwnerResponse resourceOwnerResponse)
+        public async Task<ActionResult> UpdateClaims([FromBody] UpdateResourceOwnerClaimsRequest updateResourceOwnerClaimsRequest)
         {
-            if (resourceOwnerResponse == null)
+            if (updateResourceOwnerClaimsRequest == null)
             {
-                throw new ArgumentNullException(nameof(resourceOwnerResponse));
+                return BuildError(ErrorCodes.InvalidRequestCode, "no parameter in body request", HttpStatusCode.BadRequest);
             }
 
-            await _resourceOwnerActions.UpdateResourceOwner(resourceOwnerResponse.ToParameter());
-            await _representationManager.AddOrUpdateRepresentationAsync(this, StoreNames.GetResourceOwner + resourceOwnerResponse.Login, false);
-            return new NoContentResult();
+            await _resourceOwnerActions.UpdateResourceOwnerClaims(updateResourceOwnerClaimsRequest.ToParameter());
+            await _representationManager.AddOrUpdateRepresentationAsync(this, StoreNames.GetResourceOwner + updateResourceOwnerClaimsRequest.Login, false);
+            return new OkResult();
+        }
+
+        [HttpPut("password")]
+        [Authorize("manager")]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdateResourceOwnerPasswordRequest updateResourceOwnerPasswordRequest)
+        {
+            if (updateResourceOwnerPasswordRequest == null)
+            {
+                return BuildError(ErrorCodes.InvalidRequestCode, "no parameter in body request", HttpStatusCode.BadRequest);
+            }
+
+            await _resourceOwnerActions.UpdateResourceOwnerPassword(updateResourceOwnerPasswordRequest.ToParameter());
+            await _representationManager.AddOrUpdateRepresentationAsync(this, StoreNames.GetResourceOwner + updateResourceOwnerPasswordRequest.Login, false);
+            return new OkResult();
         }
 
         [HttpPost]
         [Authorize("manager")]
-        public async Task<ActionResult> Add([FromBody] AddResourceOwnerRequest addResourceOwnerRequest)
+        public async Task<IActionResult> Add([FromBody] AddResourceOwnerRequest addResourceOwnerRequest)
         {
             if (addResourceOwnerRequest == null)
             {
-                throw new ArgumentNullException(nameof(addResourceOwnerRequest));
+                return BuildError(ErrorCodes.InvalidRequestCode, "no parameter in body request", HttpStatusCode.BadRequest);
             }
 
             await _resourceOwnerActions.Add(addResourceOwnerRequest.ToParameter());
@@ -127,7 +142,7 @@ namespace SimpleIdentityServer.Manager.Host.Controllers
 
         [HttpPost(".search")]
         [Authorize("manager")]
-        public async Task<ActionResult> Search([FromBody] SearchResourceOwnersRequest searchResourceOwnersRequest)
+        public async Task<IActionResult> Search([FromBody] SearchResourceOwnersRequest searchResourceOwnersRequest)
         {
             if (searchResourceOwnersRequest == null)
             {

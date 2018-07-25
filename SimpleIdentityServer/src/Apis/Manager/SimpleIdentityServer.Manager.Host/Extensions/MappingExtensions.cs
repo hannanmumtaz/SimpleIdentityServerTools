@@ -112,21 +112,31 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
             };
         }
 
-        public static ResourceOwner ToParameter(this ResourceOwnerResponse request)
+        public static UpdateResourceOwnerClaimsParameter ToParameter(this UpdateResourceOwnerClaimsRequest request)
         {
-            var claims = new List<Claim>();
-            if (request.Claims != null)
+            if (request == null)
             {
-                claims = request.Claims.Select(s => new Claim(s.Key, s.Value)).ToList();
+                throw new ArgumentNullException(nameof(request));
             }
 
-            return new ResourceOwner
+            return new UpdateResourceOwnerClaimsParameter
             {
-                Id = request.Login,
-                Password = request.Password,
-                IsLocalAccount = request.IsLocalAccount,
-                TwoFactorAuthentication = request.TwoFactorAuthentication,
-                Claims = claims
+                Login = request.Login,
+                Claims = request.Claims
+            };
+        }
+
+        public static UpdateResourceOwnerPasswordParameter ToParameter(this UpdateResourceOwnerPasswordRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            return new UpdateResourceOwnerPasswordParameter
+            {
+                Login = request.Login,
+                Password = request.Password
             };
         }
 

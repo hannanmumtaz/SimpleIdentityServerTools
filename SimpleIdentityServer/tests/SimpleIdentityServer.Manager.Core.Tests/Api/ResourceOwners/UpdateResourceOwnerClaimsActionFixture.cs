@@ -20,16 +20,17 @@ using SimpleIdentityServer.Core.Common.Repositories;
 using SimpleIdentityServer.Manager.Core.Api.ResourceOwners.Actions;
 using SimpleIdentityServer.Manager.Core.Errors;
 using SimpleIdentityServer.Manager.Core.Exceptions;
+using SimpleIdentityServer.Manager.Core.Parameters;
 using System;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace SimpleIdentityServer.Manager.Core.Tests.Api.ResourceOwners
 {
-    public class UpdateResourceOwnerActionFixture
+    public class UpdateResourceOwnerClaimsActionFixture
     {
         private Mock<IResourceOwnerRepository> _resourceOwnerRepositoryStub;
-        private IUpdateResourceOwnerAction _updateResourceOwnerAction;
+        private IUpdateResourceOwnerClaimsAction _updateResourceOwnerClaimsAction;
 
         [Fact]
         public async Task When_Passing_Null_Parameters_Then_Exceptions_Are_Thrown()
@@ -38,8 +39,7 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.ResourceOwners
             InitializeFakeObjects();
 
             // ACT & ASSERT
-            await Assert.ThrowsAsync<ArgumentNullException>(() => _updateResourceOwnerAction.Execute(null));
-            await Assert.ThrowsAsync<ArgumentNullException>(() => _updateResourceOwnerAction.Execute(new ResourceOwner()));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _updateResourceOwnerClaimsAction.Execute(null));
         }
 
         [Fact]
@@ -47,40 +47,37 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.ResourceOwners
         {
             // ARRANGE
             const string subject = "invalid_subject";
-            var request = new ResourceOwner
+            var request = new UpdateResourceOwnerClaimsParameter
             {
-                Id = subject
+                Login = subject
             };
             InitializeFakeObjects();
             _resourceOwnerRepositoryStub.Setup(r => r.GetAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult((ResourceOwner)null));
 
             // ACT
-            var exception = await Assert.ThrowsAsync<IdentityServerManagerException>(() => _updateResourceOwnerAction.Execute(request));
+            var exception = await Assert.ThrowsAsync<IdentityServerManagerException>(() => _updateResourceOwnerClaimsAction.Execute(request));
 
             // ASSERT
             Assert.NotNull(exception);
-            Assert.True(exception.Code == ErrorCodes.InvalidParameterCode);
-            Assert.True(exception.Message == string.Format(ErrorDescriptions.TheResourceOwnerDoesntExist, subject));
+            Assert.Equal(ErrorCodes.InvalidParameterCode, exception.Code);
+            Assert.Equal(string.Format(ErrorDescriptions.TheResourceOwnerDoesntExist, subject), exception.Message);
         }
         
         [Fact]
         public async Task When_Updating_Resource_Owner_Then_Operation_Is_Called()
         {
             // ARRANGE
-            var request = new ResourceOwner
+            var request = new UpdateResourceOwnerClaimsParameter
             {
-                Id = "subject"
+                Login = "subject"
             };
             InitializeFakeObjects();
             _resourceOwnerRepositoryStub.Setup(r => r.GetAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult(new ResourceOwner
-                {
-                    IsLocalAccount = true
-                }));
+                .Returns(Task.FromResult(new ResourceOwner()));
 
             // ACT
-            await _updateResourceOwnerAction.Execute(request);
+            await _updateResourceOwnerClaimsAction.Execute(request);
 
             // ASSERT
             _resourceOwnerRepositoryStub.Verify(r => r.UpdateAsync(It.IsAny<ResourceOwner>()));
@@ -89,7 +86,7 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.ResourceOwners
         private void InitializeFakeObjects()
         {
             _resourceOwnerRepositoryStub = new Mock<IResourceOwnerRepository>();
-            _updateResourceOwnerAction = new UpdateResourceOwnerAction(
+            _updateResourceOwnerClaimsAction = new UpdateResourceOwnerClaimsAction(
                 _resourceOwnerRepositoryStub.Object);
         }
     }
