@@ -288,7 +288,7 @@ class Claims extends Component {
                         <TableCell><Checkbox color="primary" checked={record.is_identifier} disabled={true} /></TableCell>
                         <TableCell>{moment(record.update_datetime).format('LLLL')}</TableCell>
                         <TableCell>
-                            <IconButton onClick={ () => self.props.history.push('/viewClaim/' + record.code) }><Visibility /></IconButton>
+                            <IconButton onClick={ () => self.props.history.push('/claims/' + record.code) }><Visibility /></IconButton>
                         </TableCell>
                     </TableRow>
                 ));

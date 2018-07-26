@@ -103,15 +103,41 @@ module.exports = {
         });
     },
     /**
-    * Update a resource owner.
+    * Update the claims.
     */
-    update: function(request) {
+    updateClaims: function(request) {
         return new Promise(function (resolve, reject) {
             var data = JSON.stringify(request);
             var session = SessionService.getSession();
             $.get(SessionStore.getSession().selectedOpenid['manager_url']).then(function(configuration) { 
                 $.ajax({
-                    url: configuration['resourceowners_endpoint'],
+                    url: configuration['resourceowners_endpoint'] + '/claims',
+                    method: "PUT",
+                    data: data,
+                    contentType: 'application/json',
+                    headers: {
+                        "Authorization": "Bearer "+ session.token
+                    }
+                }).then(function (data) {
+                    resolve(data);
+                }).fail(function (e) {
+                    reject(e);
+                });                
+            }).fail(function(e) {
+                reject(e);
+            });
+        });
+    },
+    /**
+    * Update password.
+    */
+    updatePassword: function(request) {
+        return new Promise(function (resolve, reject) {
+            var data = JSON.stringify(request);
+            var session = SessionService.getSession();
+            $.get(SessionStore.getSession().selectedOpenid['manager_url']).then(function(configuration) { 
+                $.ajax({
+                    url: configuration['resourceowners_endpoint'] + '/password',
                     method: "PUT",
                     data: data,
                     contentType: 'application/json',

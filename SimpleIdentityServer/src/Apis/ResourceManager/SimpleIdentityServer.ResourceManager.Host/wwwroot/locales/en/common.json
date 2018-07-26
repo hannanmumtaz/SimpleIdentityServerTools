@@ -1,2 +1,14 @@
 ﻿{
+	"resourceOwner": "User",
+	"resourceOwnerDescription": "View / Edit the claims of the local user account",
+	"resourceOwnerInformation": "User's information",
+	"roLogin": "Login",
+	"roLoginDescription": "User's login",
+	"newPassword": "New password",
+	"newPasswordDescription": "Enter the new password",
+	"passwordConfirmation": "Password confirmation",
+	"passwordConfirmationDescription": "Re enter password",
+	"savePassword": "Save password",
+	"addClaim": "Add claim",
+	"saveClaims" : "Save claims"
 }

@@ -6,12 +6,16 @@ import AppDispatcher from '../appDispatcher';
 import Constants from '../constants';
 import Save from '@material-ui/icons/Save';
 import { SessionStore } from '../stores';
+import { ChipsSelector } from './common';
+import $ from 'jquery';
 
-import { CircularProgress, IconButton, Select, MenuItem, Checkbox, Typography, Grid } from 'material-ui';
+import { CircularProgress, IconButton, Select, MenuItem, Checkbox, Typography, Grid, Button, Paper, Chip, List, ListItem, ListItemText } from 'material-ui';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter } from 'material-ui/Table';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
 import { withStyles } from 'material-ui/styles';
+import Delete from '@material-ui/icons/Delete';
+import Visibility from '@material-ui/icons/Visibility';
 
 const styles = theme => ({
   margin: {
@@ -23,15 +27,22 @@ class ViewResourceOwner extends Component {
     constructor(props) {
         super(props);
         this.refreshData = this.refreshData.bind(this);
-        this.saveUser = this.saveUser.bind(this);
+        this.saveClaims = this.saveClaims.bind(this);
+        this.savePassword = this.savePassword.bind(this);
         this.handleChangeProperty = this.handleChangeProperty.bind(this);
-        this.handleRowClick = this.handleRowClick.bind(this);
         this.handleChangeClaimValue = this.handleChangeClaimValue.bind(this);
+        this.handleAddClaim = this.handleAddClaim.bind(this);
+        this.handleRemoveClaim = this.handleRemoveClaim.bind(this);
         this.state = {
         	isLoading: true,
-        	login: '',
-        	user: {},
-            claims: []
+            roLogin: '',
+            roClaims: [],
+            newpassword: '',
+            passwordConfirmation: '',
+            claimType: '',
+            claimValue: '',
+            supportedClaims: [],
+            isRemoveDisplayed: false
         };
 
 	}
@@ -45,35 +56,20 @@ class ViewResourceOwner extends Component {
 		self.setState({
 			isLoading: true
 		});
-        var request = { start_index: 0, count: 500 };
+        var profile = SessionStore.getSession();
         Promise.all([
             ResourceOwnerService.get(self.state.login),
-            ClaimService.search(request)
+            $.get(profile.selectedOpenid.url)
         ]).then(function(values) {
             var user = values[0];
-            var claims = [];
-            values[1].content.forEach(function(claim) {
-                var record = {
-                    key: claim.key,
-                    value: '',
-                    isChecked: false,
-                    is_identifier: claim.is_identifier
-                };
-                if (user.claims) {
-                    var userClaim = user.claims.filter(function(c) { return c.key === claim.key; });
-                    if (userClaim.length !== 0) {
-                        record.value = userClaim[0].value;
-                        record.isChecked = true;
-                    }
-                    claim.isChecked = true;
-                }
-
-                claims.push(record);
-            });
+            var wellKnownConfiguration = values[1];
+            var claimType = wellKnownConfiguration['claims_supported'][0];
             self.setState({
                 isLoading: false,
-                user: user,
-                claims: claims
+                roClaims: user.claims,
+                roLogin: user.login,
+                claimType: claimType,
+                supportedClaims: wellKnownConfiguration['claims_supported']
             });
         }).catch(function(e) {
             self.setState({
@@ -89,22 +85,24 @@ class ViewResourceOwner extends Component {
 	/**
 	* Save the user.
 	*/
-	saveUser() {
+	saveClaims() {
         var self = this;
         const {t} = self.props;
-        var claims = self.state.claims.filter(function(claim) { return claim.isChecked; });
-        var user = self.state.user;
-        user.claims = claims;
+        var roClaims = self.state.roClaims;
+        var request = {
+            login: self.state.login,
+            claims: roClaims
+        };
         self.setState({
             isLoading: true
         });
-        ResourceOwnerService.update(user).then(function() {
+        ResourceOwnerService.updateClaims(request).then(function() {
             self.setState({
                 isLoading: false
             });
             AppDispatcher.dispatch({
                 actionName: Constants.events.DISPLAY_MESSAGE,
-                data: t('resourceOwnerUpdated')
+                data: t('resourceOwnerClaimsUpdated')
             }); 
         }).catch(function() {
             self.setState({
@@ -112,32 +110,57 @@ class ViewResourceOwner extends Component {
             });
             AppDispatcher.dispatch({
                 actionName: Constants.events.DISPLAY_MESSAGE,
-                data: t('resourceOwnerCannotBeUpdated')
+                data: t('resourceOwnerClaimsCannotBeUpdated')
             }); 
         });
 	}
 
     /**
-    * Change the property.
+    * Save the password
     */
-    handleChangeProperty(e) {
+    savePassword() {
         var self = this;
-        var scope = self.state.scope;
-        scope[e.target.name] = e.target.value;
-        self.state.scope.claims = [];
+        const {t} = self.props;
+        if (self.state.newpassword !== self.state.passwordConfirmation) {
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('thePasswordDoesntMatch')
+            });
+            return;
+        }
+
         self.setState({
-            scope: scope
+            isLoading: true
+        });
+        var request = {
+            login: self.state.login,
+            password: self.state.newpassword
+        };
+        ResourceOwnerService.updatePassword(request).then(function() {
+            self.setState({
+                isLoading: false
+            });
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('resourceOwnerPasswordUpdated')
+            }); 
+        }).catch(function() {
+            self.setState({
+                isLoading: false
+            });
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('resourceOwnerPasswordCannotBeUpdated')
+            });
         });
     }
 
     /**
-    * Handle click on the row.
+    * Change the property.
     */
-    handleRowClick(e, record) {
-        record.isChecked = e.target.checked;
-        var claims = this.state.claims;
+    handleChangeProperty(e) {
         this.setState({
-            claims: claims
+            [e.target.name]: e.target.value
         });
     }
 
@@ -152,18 +175,63 @@ class ViewResourceOwner extends Component {
         });
     }
 
+    /**
+    * Add a claim to the list.
+    */
+    handleAddClaim() {
+        var self = this;
+        var claimType = self.state.claimType;
+        var claimValue = self.state.claimValue;   
+        var roClaims = self.state.roClaims;     
+        var roClaimsTypes = roClaims.map(function(c) { return c.key; });
+        if (!claimType || claimType === '' || !claimValue || claimValue === '' || roClaimsTypes.indexOf(claimType) !== -1) {
+            return;
+        }
+
+        var record = { key : claimType, value : claimValue };
+        roClaims.push(record);
+        self.setState({
+            claimValue: '',
+            roClaims: roClaims
+        });
+    }
+
+    /**
+    * Remove the selected claim.
+    */
+    handleRemoveClaim(claim) {
+        const roClaims = this.state.roClaims;
+        const claimIndex = roClaims.indexOf(claim);
+        roClaims.splice(claimIndex, 1);        
+        this.setState({
+            roClaims: roClaims
+        });
+    }
+
     render() {
     	var self = this;
     	const { t, classes } = self.props;
-        var claims = [];
-        if (self.state.claims) {
-            self.state.claims.forEach(function(claim) {
-                claims.push(
-                    <TableRow key={claim.key}>
-                        <TableCell><Checkbox color="primary" checked={claim.isChecked} onChange={(e) => self.handleRowClick(e, claim)} disabled={claim.is_identifier} /></TableCell>
-                        <TableCell>{claim.key}</TableCell>
-                        <TableCell><Input value={claim.value} onChange={(e) => self.handleChangeClaimValue(e, claim)} disabled={claim.is_identifier} /></TableCell>
-                    </TableRow>
+        var claims = [], userClaims = [];
+        if (self.state.supportedClaims) {
+            self.state.supportedClaims.forEach(function(claim) {
+                claims.push((<MenuItem key={claim} value={claim}>{t(claim)}</MenuItem>));
+            });
+        }
+
+        if (self.state.roClaims) {
+            self.state.roClaims.forEach(function(claim) {
+                userClaims.push(
+                    <ListItem dense button style={{overflow: 'hidden'}}>
+                        <IconButton onClick={() => self.handleRemoveClaim(claim)}>
+                            <Delete />
+                        </IconButton>
+                        <NavLink to={"/claims/" + claim.key}>
+                            <IconButton>
+                                <Visibility />
+                            </IconButton>
+                        </NavLink>
+                        <ListItemText>{claim.key} : {claim.value}</ListItemText>
+                    </ListItem>
                 );
             });
         }
@@ -186,36 +254,52 @@ class ViewResourceOwner extends Component {
             </div>
             <div className="card">
                 <div className="header">
-                	 <h4 style={{display: "inline-block"}}>{t('resourceOwnerInformation')}</h4>                   
-                    <div style={{float: "right"}}>                        
-                        <IconButton onClick={this.saveUser}>
-                            <Save />
-                        </IconButton>
-                    </div>
+                	 <h4 style={{display: "inline-block"}}>{t('resourceOwnerInformation')}</h4>
                 </div>
                 <div className="body">
                 	{ self.state.isLoading ? (<CircularProgress />) : (
                     	<Grid container spacing={40}>
                     		<Grid item md={5} sm={12}>
 		                        {/* Login */}
-		                        <FormControl fullWidth={true} className={classes.margin} disabled={self.props.isReadOnly}>
+		                        <FormControl fullWidth={true} className={classes.margin} disabled={true}>
 		                            <InputLabel>{t('roLogin')}</InputLabel>
-		                            <Input value={self.state.user.login} name="login" disabled={true} />
+		                            <Input value={self.state.roLogin} disabled={true} />
 		                            <FormHelperText>{t('roLoginDescription')}</FormHelperText>
-		                        </FormControl>                   			
+		                        </FormControl> 
+                                <form onSubmit={(e) => { e.preventDefault(); self.savePassword(); }}>
+                                    {/* New password */ }
+                                    <FormControl fullWidth={true} className={classes.margin}>
+                                        <InputLabel>{t('newPassword')}</InputLabel>
+                                        <Input type='password' value={self.state.newpassword} onChange={self.handleChangeProperty} name='newpassword' />
+                                        <FormHelperText>{t('newPasswordDescription')}</FormHelperText>
+                                    </FormControl> 
+                                    {/* Confirm password */ }
+                                    <FormControl fullWidth={true} className={classes.margin}>
+                                        <InputLabel>{t('passwordConfirmation')}</InputLabel>
+                                        <Input type='password' value={self.state.passwordConfirmation} onChange={self.handleChangeProperty} name='passwordConfirmation'/>
+                                        <FormHelperText>{t('passwordConfirmationDescription')}</FormHelperText>
+                                    </FormControl> 
+                                    <Button variant="raised" color="primary" onClick={self.savePassword}>{t('savePassword')}</Button>
+                                </form>                			
                     		</Grid>
                     		<Grid item md={5} sm={12}>
-                    			    {/* Claims */}
-                    				<Table>
-                    					<TableHead>
-                                        	<TableCell></TableCell>
-                                        	<TableCell>{t('claimKey')}</TableCell>
-                                        	<TableCell>{t('claimValue')}</TableCell>
-                    					</TableHead>
-                                		<TableBody>
+                                {/* Claims */}
+                                <FormControl fullWidth={true}>
+                                    <form onSubmit={(e) => { e.preventDefault(); self.handleAddClaim(); }}>
+                                        <Select value={self.state.claimType} onChange={self.handleChangeProperty} name="claimType">
                                             {claims}
-                                		</TableBody>
-                    				</Table>
+                                        </Select>                                    
+                                        <FormControl className={classes.margin}>
+                                            <InputLabel>{t('claimValue')}</InputLabel>
+                                            <Input value={self.state.claimValue} name="claimValue" onChange={self.handleChangeProperty}  />
+                                        </FormControl>
+                                        <Button variant="raised" color="primary" onClick={this.handleAddClaim}>{t('addClaim')}</Button>
+                                        <Button variant="raised" color="primary" onClick={this.saveClaims}>{t('saveClaims')}</Button>
+                                    </form>
+                                </FormControl>
+                                <List>
+                                    {userClaims}
+                                </List>
                     		</Grid>
                     	</Grid>
                     )}

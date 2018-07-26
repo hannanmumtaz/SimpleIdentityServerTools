@@ -117,6 +117,7 @@ namespace SimpleIdentityServer.Manager.Host.Startup
             loggerFactory.AddSerilog();
             app.UseCors("AllowAll");
             app.UseStatusCodePages();
+            app.UseManagerApi();
             app.UseAuthentication();
             app.UseMvc(routes =>
             {

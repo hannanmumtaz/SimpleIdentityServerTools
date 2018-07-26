@@ -101,6 +101,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Scim.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Scim.Common", "..\IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Common\SimpleIdentityServer.Scim.Common.csproj", "{C818CF5D-423B-4FF5-B801-80F4E2558684}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Manager.Auth.Host.Startup", "src\Apis\Manager\SimpleIdentityServer.Manager.Auth.Host.Startup\SimpleIdentityServer.Manager.Auth.Host.Startup.csproj", "{C11160CB-C743-4CC1-9F68-EF1234786F80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -336,6 +338,12 @@ Global
 		{C818CF5D-423B-4FF5-B801-80F4E2558684}.Fake|Any CPU.Build.0 = Debug|Any CPU
 		{C818CF5D-423B-4FF5-B801-80F4E2558684}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C818CF5D-423B-4FF5-B801-80F4E2558684}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C11160CB-C743-4CC1-9F68-EF1234786F80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C11160CB-C743-4CC1-9F68-EF1234786F80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C11160CB-C743-4CC1-9F68-EF1234786F80}.Fake|Any CPU.ActiveCfg = Debug|Any CPU
+		{C11160CB-C743-4CC1-9F68-EF1234786F80}.Fake|Any CPU.Build.0 = Debug|Any CPU
+		{C11160CB-C743-4CC1-9F68-EF1234786F80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C11160CB-C743-4CC1-9F68-EF1234786F80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -386,6 +394,7 @@ Global
 		{583A76B3-4043-4A0B-A2A0-195920754791} = {D3274B2A-7992-412D-A2BC-CD2DDA51F24E}
 		{E8345ED5-3361-4486-ABD7-FA223FEFCD3A} = {A5297CEE-CE03-4D0C-9445-F5F2AEBF3C9C}
 		{C818CF5D-423B-4FF5-B801-80F4E2558684} = {A5297CEE-CE03-4D0C-9445-F5F2AEBF3C9C}
+		{C11160CB-C743-4CC1-9F68-EF1234786F80} = {5DEBCF0A-FE01-425F-BFE2-F1EADDD6D8D2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EA28E198-EBC9-4C87-B84F-439D80617DC3}
