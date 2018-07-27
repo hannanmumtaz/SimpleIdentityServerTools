@@ -6,17 +6,18 @@ import { AppContainer } from 'react-hot-loader';
 import { BrowserRouter } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import createPalette from 'material-ui/styles/createPalette'
 import { createMuiTheme } from 'material-ui/styles';
-import lightBlue from 'material-ui/colors/lightBlue';
+import grey from 'material-ui/colors/grey';
 import i18n from './i18n';
 import * as RoutesModule from './routes';
 
 let routes = RoutesModule.routes;
 
 const theme = createMuiTheme({
-    palette: {
-        primary: lightBlue
-    }
+    palette: createPalette({
+        primary: grey
+    })
 });
 
 class Main extends React.Component {

@@ -1,4 +1,59 @@
-﻿body.blue {
+﻿body.grey {
+    background-color: #fafafa;
+}
+
+.grey .navbar {
+    background: #212121;
+    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.15);
+}
+
+.grey .navbar a, .grey .navbar button {
+    color: white;
+}
+
+.grey .block::before {
+    background-color: #9E9E9E;
+}
+
+.grey .block-header {
+    color: white;
+}
+
+.grey .block-header .breadcrumb {
+    background: rgba(255,255,255,0.3);
+}
+
+.grey .block-header .breadcrumb a {
+    color: white;
+}
+
+.grey .card {
+    background: #fff;
+    margin-bottom: 30px;
+}
+
+.grey .nav-tabs {
+    border-bottom: 0;
+}
+
+.grey .nav-tabs .nav-link {
+    color: #888;
+}
+
+.grey .nav-tabs .nav-link:hover,
+.grey .nav-tabs .nav-link:active {
+    border: 1px solid #9E9E9E !important;
+}
+
+.grey .card .header h4 {
+    color: #757575
+}
+
+.grey .card .header h4::before {
+    background: #9E9E9E;
+}
+
+body.blue {
     background-color: #f4f6f9;
     font-size: 15px;
 }

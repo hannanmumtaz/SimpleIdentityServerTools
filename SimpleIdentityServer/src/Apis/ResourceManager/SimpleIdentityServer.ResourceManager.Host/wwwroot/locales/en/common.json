@@ -42,5 +42,10 @@
 	"saveAuthRulePolicy": "Save authorization policy",
 	"claimValue": "Claim value",
 	"resourceUpdated": "UMA resource has been updated",
-	"resourceCannotBeUpdated": "An error occured while trying to update the UMA resource"
+	"resourceCannotBeUpdated": "An error occured while trying to update the UMA resource",
+	"websiteTitle": "SimpleIdServer admin",
+	"unknown": "Unknown",
+	"loginTitle": "Authenticate",
+	"connectMenuItem": "Authenticate",
+	"aboutMenuItem": "About"
 }

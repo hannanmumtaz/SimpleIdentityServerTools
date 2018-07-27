@@ -110,7 +110,7 @@ class Login extends Component {
                     <div className="col-md-12">
                         <div className="card">
                             <div className="body">
-                                <Button variant="raised" color="primary" onClick={this.externalAuthenticate}>{t('connect')}</Button>
+                                <Button variant="raised" color="primary" onClick={this.externalAuthenticate} style={{marginTop: "20px"}}>{t('connect')}</Button>
                                 {(this.state.errorMessage !== null && (
                                     <div className="alert alert-danger alert-dismissable" style={{ marginTop: '5px' }}>
                                         <strong>Danger !</strong> {this.state.errorMessage}
