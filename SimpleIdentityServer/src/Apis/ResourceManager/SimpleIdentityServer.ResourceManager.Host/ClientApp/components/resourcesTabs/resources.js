@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { translate } from 'react-i18next';
 import { ResourceService } from '../../services';
-import { withRouter } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import { ChipsSelector } from '../common';
 
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination } from 'material-ui/Table';
-import { Popover, Hidden, IconButton, Menu, MenuItem, Checkbox, TextField, Select, Avatar, CircularProgress, List, ListItem, Button } from 'material-ui';
+import { Popover, Hidden, IconButton, Menu, MenuItem, Checkbox, TextField, Select, Avatar, CircularProgress, List, ListItem, Button, ListItemText } from 'material-ui';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import Input, { InputLabel } from 'material-ui/Input';
 import { FormControl, FormHelperText } from 'material-ui/Form';
@@ -25,10 +25,13 @@ class Resources extends Component {
         this.handleRowClick = this.handleRowClick.bind(this);
         this.refreshData = this.refreshData.bind(this);
         this.handleRemoveResources = this.handleRemoveResources.bind(this);
+        this.handleRemoveResource = this.handleRemoveResource.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
         this.handleOpenModal = this.handleOpenModal.bind(this);
         this.handleAddResource = this.handleAddResource.bind(this);
         this.handleChangeResource = this.handleChangeResource.bind(this);
+        this.handleChangePage = this.handleChangePage.bind(this);
+        this.handleChangeRowsPage = this.handleChangeRowsPage.bind(this);
         this.state = {
             isLoading: false,
             page: 0,
@@ -208,6 +211,35 @@ class Resources extends Component {
     }
 
     /**
+    * Remove the resource.
+    */
+    handleRemoveResource(resourceId) {
+        var self = this;
+        const { t } = self.props;
+        self.setState({
+            isLoading: true
+        });
+        ResourceService.delete(resourceId).then(function() {
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('resourceIsRemoved')
+            });
+            self.setState({
+                isRemoveDisplayed: false
+            });
+            self.refreshData();
+        }).catch(function(e) {
+            self.setState({
+                isLoading: false
+            });
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('resourceCannotBeRemoved')
+            });
+        });
+    }
+
+    /**
     * Close the modal.
     */
     handleCloseModal() {
@@ -228,10 +260,34 @@ class Resources extends Component {
         });
     }
 
+    /**
+    * Execute when the page has changed.
+    */
+    handleChangePage(evt, page) {
+        var self = this;
+        self.setState({
+            page: page
+        }, function() {
+            self.refreshData();
+        });
+    }
+
+    /**
+    * Execute when the number of records has changed.
+    */
+    handleChangeRowsPage(evt) {
+        var self = this;
+        self.setState({
+            pageSize: evt.target.value
+        }, function() {
+            self.refreshData();
+        });
+    }
+
     render() {
         var self = this;
         const { t } = self.props;
-        var rows = [];
+        var rows = [], listItems = [];
         if (self.state.data) {
             self.state.data.forEach(function(record) {
                 rows.push(
@@ -244,6 +300,19 @@ class Resources extends Component {
                             <IconButton onClick={ () => self.props.history.push('/resources/' + record.id + '/edit') }><Visibility /></IconButton>
                         </TableCell>
                     </TableRow>
+                );
+                listItems.push(
+                    <ListItem dense button style={{overflow: 'hidden'}}>
+                        <IconButton onClick={() => self.handleRemoveResource(record.id)}>
+                            <Delete />
+                        </IconButton>
+                        <NavLink to={'/resources/' + record.id + '/edit'}>
+                            <IconButton>
+                                <Visibility />
+                            </IconButton>
+                        </NavLink>
+                        <ListItemText>{record.id} (scopes : {record.scopes})</ListItemText>
+                    </ListItem>
                 );
             });
         }
@@ -315,7 +384,7 @@ class Resources extends Component {
                                 </Hidden>
                                 <Hidden only={['lg', 'xl', 'md']}>
                                     <List>
-                                        <ListItem>coucu</ListItem>
+                                        {listItems}
                                     </List>
                                 </Hidden>
                                 <TablePagination component="div" count={self.state.count} rowsPerPage={self.state.pageSize} page={this.state.page} onChangePage={self.handleChangePage} onChangeRowsPerPage={self.handleChangeRowsPage} />

@@ -375,7 +375,6 @@ class Layout extends Component {
             });
         }
 
-        console.log(process.env);
         var pathName = self.props.location.pathname;
         var drawer = (
                 <List>
@@ -443,12 +442,10 @@ class Layout extends Component {
                                     <ListItemIcon><Label /></ListItemIcon>
                                     {t('authscopes')}
                                 </MenuItem>
-                                {(process.env.IS_COMMERCIAL && (
-                                    <MenuItem key='/resources' selected={pathName.indexOf('/resources') !== -1} className={classes.nested} onClick={() => self.navigate('/resources')}>
-                                        <ListItemIcon><Lock /></ListItemIcon>
-                                        {t('resources')}
-                                    </MenuItem>
-                                ))}
+                                <MenuItem key='/resources' selected={pathName.indexOf('/resources') !== -1} className={classes.nested} onClick={() => self.navigate('/resources')}>
+                                    <ListItemIcon><Lock /></ListItemIcon>
+                                    {t('resources')}
+                                </MenuItem>
                             </List>
                         </Collapse>
                     ))}

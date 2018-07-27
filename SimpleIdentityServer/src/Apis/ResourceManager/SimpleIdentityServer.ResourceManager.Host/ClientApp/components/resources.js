@@ -43,7 +43,7 @@ class Resources extends Component {
                 <div className="body">
                                 <Tabs indicatorColor="primary" value={self.state.tabId} onChange={self.handleChangeTab}>
                                     <Tab label={t('resources')} component={Link}  to="/resources" />
-                                    <Tab label={t('hierarchicalResources')} component={Link}  to="/resources/hierarchy" />
+                                    <Tab label={t('hierarchicalResources')} component={Link}  to="/resources/hierarchy" disabled={!process.env.IS_COMMERCIAL}/>
                                 </Tabs>
                 </div>
             </div>

@@ -7,7 +7,7 @@ import { withStyles } from 'material-ui/styles';
 import Input, { InputLabel } from 'material-ui/Input';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter } from 'material-ui/Table';
-import { CircularProgress, IconButton, Menu, MenuItem, Grid, Chip, Checkbox, Paper, Button, Select } from 'material-ui';
+import { CircularProgress, IconButton, Menu, MenuItem, Grid, Chip, Checkbox, Paper, Button, Select, Hidden, List, ListItem, ListItemText } from 'material-ui';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import MoreVert from '@material-ui/icons/MoreVert';
 import Delete from '@material-ui/icons/Delete';
@@ -384,6 +384,7 @@ class ViewResource extends Component {
                 resourceId: resource._id,
                 resourceName: resource.name,
                 resourceScopes: resource.scopes,
+                resourceType: resource.type,
                 resourceAuthPolicies: p,
                 isLoading: false,
             });
@@ -431,7 +432,8 @@ class ViewResource extends Component {
         const { t, classes } = self.props;
         var rows = [],
             claims = [],
-            chips = [];
+            chips = [],
+            items = [];
         if (self.state.resourceAuthPolicies) {
             self.state.resourceAuthPolicies.forEach(function(authPolicy) {
                 var authPolicies = [];
@@ -442,7 +444,6 @@ class ViewResource extends Component {
                                 <TableCell>{rule.clients.join(',')}</TableCell>
                                 <TableCell>{rule.claims.map(function(r) { return r.type + ":" + r.value }).join(',')}</TableCell>
                                 <TableCell>{rule.scopes.join(',')}</TableCell>
-                                <TableCell>{rule.provider}</TableCell>
                                 <TableCell>
                                     <IconButton onClick={() => { self.handleEditAuthPolicyRule(authPolicy, rule); }}>
                                         <Edit />
@@ -472,8 +473,7 @@ class ViewResource extends Component {
                                         <TableRow>
                                             <TableCell>{t('allowedClients')}</TableCell>
                                             <TableCell>{t('allowedClaims')}</TableCell>
-                                            <TableCell>{t('scopes')}</TableCell>
-                                            <TableCell>{t('authProvider')}</TableCell>
+                                            <TableCell>{t('allowedScopes')}</TableCell>
                                             <TableCell></TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -484,6 +484,11 @@ class ViewResource extends Component {
                             </Collapse> 
                         </TableCell>
                     </TableRow>
+                );
+                items.push(
+                    <ListItem key={authPolicy.id} dense button style={{overflow: 'hidden'}}>
+                        <ListItemText>{t('authorizationPolicy') +": " + authPolicy.id}</ListItemText>
+                    </ListItem>
                 );
             });
         }
@@ -509,15 +514,15 @@ class ViewResource extends Component {
         var chipsOptions = { type: 'select', values: values };
         return (<div className="block">
             <Dialog open={self.state.isAuthPolicyModalOpened} onClose={this.handleCloseAuthPolicyRuleModal}>
-                <DialogTitle>{t('addAuthRulePolicy')}</DialogTitle>
+                <DialogTitle>{t('editAuthRulePolicy')}</DialogTitle>
                 {self.state.isAddUserLoading ? (<CircularProgress />) : (
                     <div>
                         <DialogContent>
                             {/* Provider */}
                             <FormControl fullWidth={true}>
-                                <InputLabel htmlFor="provider">{t('provider')}</InputLabel>
+                                <InputLabel htmlFor="provider">{t('authProvider')}</InputLabel>
                                 <Input id="provider" value={self.state.currentAuthRulePolicy.provider} name="provider" onChange={self.handleChangeProvider}  />
-                                <FormHelperText>{t('providerDescription')}</FormHelperText>
+                                <FormHelperText>{t('authProviderDescription')}</FormHelperText>
                             </FormControl>
                             {/* AllowedClients */}
                             <FormControl fullWidth={true}>
@@ -545,7 +550,7 @@ class ViewResource extends Component {
                             </FormControl>
                         </DialogContent>
                         <DialogActions>
-                            <Button  variant="raised" color="primary" onClick={self.handleAddAuthRulePolicy}>{t('save')}</Button>
+                            <Button  variant="raised" color="primary" onClick={self.handleAddAuthRulePolicy}>{t('saveAuthRulePolicy')}</Button>
                         </DialogActions>
                     </div>
                 )}
@@ -585,7 +590,6 @@ class ViewResource extends Component {
                                             <FormControl className={classes.margin} fullWidth={true}>
                                                 <InputLabel>{t('resourceId')}</InputLabel>
                                                 <Input value={self.state.resourceId}  disabled={true}  />
-                                                <FormHelperText>{t('resourceIdDescription')}</FormHelperText>
                                             </FormControl>
                                             {/* Type */}
                                             <FormControl className={classes.margin} fullWidth={true}>
@@ -630,17 +634,24 @@ class ViewResource extends Component {
                                     </div>
                                 </div>
                                 <div className="body">
-                                    <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
-                                                <TableCell></TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {rows}
-                                        </TableBody>
-                                    </Table>
+                                    <Hidden only={['xs', 'sm']}>
+                                        <Table>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
+                                                    <TableCell></TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {rows}
+                                            </TableBody>
+                                        </Table>
+                                    </Hidden>
+                                    <Hidden only={['lg', 'xl', 'md']}>
+                                        <List>
+                                            {items}
+                                        </List>
+                                    </Hidden>
                                 </div>
                             </div>
                         ) }

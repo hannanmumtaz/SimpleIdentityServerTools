@@ -45,7 +45,7 @@ class Settings extends Component {
                 <TableRow>
                     <TableCell>{module.name}</TableCell>
                     <TableCell>
-                        <IconButton onClick={ () => self.props.history.push('/settings/' + module.name) }><Visibility /></IconButton>
+                        <IconButton onClick={ () => self.props.history.push('/units/' + module.name) }><Visibility /></IconButton>
                     </TableCell>
                 </TableRow>
             );
