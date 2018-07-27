@@ -30,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\SimpleIdentityServer.Common.Dtos\SimpleIdentityServer.Common.Dtos.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Module.Feed.Common\SimpleIdentityServer.Module.Feed.Common.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Module.Feed.Core\SimpleIdentityServer.Module.Feed.Core.csproj" />
   </ItemGroup>

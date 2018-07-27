@@ -109,7 +109,7 @@ namespace SimpleIdentityServer.ResourceManager.Resolver
                 }, _resourceManagerResolverOptions.Authorization.AuthorizationWellKnownConfiguration, accessToken);
             var umaGrantedToken = await _identityServerClientFactory.CreateAuthSelector()
                 .UseClientSecretPostAuth(_resourceManagerResolverOptions.Authorization.ClientId, _resourceManagerResolverOptions.Authorization.ClientSecret)
-                .UseTicketId(permissionResponse.TicketId, idToken)
+                .UseTicketId(permissionResponse.Content.TicketId, idToken)
                 .ResolveAsync(_resourceManagerResolverOptions.Authorization.AuthorizationWellKnownConfiguration);
             if (umaGrantedToken == null || string.IsNullOrWhiteSpace(umaGrantedToken.Content.AccessToken))
             {

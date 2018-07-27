@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.EventS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.EventStore.SqlServer", "src\Apis\EventStore\SimpleIdentityServer.EventStore.SqlServer\SimpleIdentityServer.EventStore.SqlServer.csproj", "{B3EEA40E-9905-4BC8-92B7-0593876D872E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Module", "..\IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Module\SimpleIdentityServer.Module.csproj", "{564E29CE-C32D-45C1-83E8-AFA6D864EF25}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{B3EEA40E-9905-4BC8-92B7-0593876D872E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3EEA40E-9905-4BC8-92B7-0593876D872E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3EEA40E-9905-4BC8-92B7-0593876D872E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{564E29CE-C32D-45C1-83E8-AFA6D864EF25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{564E29CE-C32D-45C1-83E8-AFA6D864EF25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{564E29CE-C32D-45C1-83E8-AFA6D864EF25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{564E29CE-C32D-45C1-83E8-AFA6D864EF25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +91,7 @@ Global
 		{884E05C3-5518-4C58-82CF-7A3908E181B1} = {F0B324F6-8AC2-4B24-8BC2-7BC8F52BB99F}
 		{A9567195-DF29-41F0-B9BD-FC4E0314DFBF} = {F0B324F6-8AC2-4B24-8BC2-7BC8F52BB99F}
 		{B3EEA40E-9905-4BC8-92B7-0593876D872E} = {F0B324F6-8AC2-4B24-8BC2-7BC8F52BB99F}
+		{564E29CE-C32D-45C1-83E8-AFA6D864EF25} = {C843B91D-0469-4419-A8CD-D05D7A2AB706}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B634F5C1-5B2B-4583-B1EF-0E5356BA4A4C}

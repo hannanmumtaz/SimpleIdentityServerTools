@@ -28,7 +28,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Apis\Module\SimpleIdentityServer.Module.Loader\SimpleIdentityServer.Module.Loader.csproj" />
-    <ProjectReference Include="..\..\src\Apis\SimpleIdServer\SimpleIdentityServer.Module.Loader\SimpleIdentityServer.Module.Loader.csproj" />
   </ItemGroup>
 
   <ItemGroup>

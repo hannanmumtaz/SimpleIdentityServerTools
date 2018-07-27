@@ -126,7 +126,7 @@ namespace SimpleIdentityServer.Uma.Authentication
                     ResourceSetId = resourceId,
                     Scopes = Scopes
                 }, _options.Authorization.AuthorizationWellKnownConfiguration, grantedToken.Content.AccessToken);
-            if (permissionResponse == null || string.IsNullOrWhiteSpace(permissionResponse.TicketId))
+            if (permissionResponse == null || string.IsNullOrWhiteSpace(permissionResponse.Content.TicketId))
             {
                 context.Result = GetError("internal", "no_ticket", HttpStatusCode.InternalServerError);
                 return;
@@ -134,7 +134,7 @@ namespace SimpleIdentityServer.Uma.Authentication
 
             var umaGrantedToken = await _identityServerClientFactory.CreateAuthSelector()
                 .UseClientSecretPostAuth(_options.Authorization.ClientId, _options.Authorization.ClientSecret)
-                .UseTicketId(permissionResponse.TicketId, identityToken.IdToken)
+                .UseTicketId(permissionResponse.Content.TicketId, identityToken.IdToken)
                 .ResolveAsync(_options.Authorization.AuthorizationWellKnownConfiguration);
             if (umaGrantedToken.ContainsError)
             {
