@@ -113,7 +113,7 @@ class Layout extends Component {
     disconnect() {
         // TODO : Resolve this url.
         var url = "http://localhost:60000/end_session?post_logout_redirect_uri=http://localhost:64950/end_session&id_token_hint="+ SessionService.getSession().id_token;
-        var w = window.open(url, 'targetWindow', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=400,height=400');
+        var w = window.open(url, '_blank');
         var interval = setInterval(function() {
             if (w.closed) {
                 clearInterval(interval);
