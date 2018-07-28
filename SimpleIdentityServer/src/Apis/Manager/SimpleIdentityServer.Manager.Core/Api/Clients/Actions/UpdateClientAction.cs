@@ -14,6 +14,7 @@
 // limitations under the License.
 #endregion
 
+using Newtonsoft.Json;
 using SimpleIdentityServer.Core.Common;
 using SimpleIdentityServer.Core.Common.Models;
 using SimpleIdentityServer.Core.Common.Repositories;
@@ -21,6 +22,7 @@ using SimpleIdentityServer.Core.Exceptions;
 using SimpleIdentityServer.Manager.Core.Errors;
 using SimpleIdentityServer.Manager.Core.Exceptions;
 using SimpleIdentityServer.Manager.Core.Parameters;
+using SimpleIdentityServer.Manager.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,13 +39,16 @@ namespace SimpleIdentityServer.Manager.Core.Api.Clients.Actions
     {
         private readonly IClientRepository _clientRepository;
         private readonly IGenerateClientFromRegistrationRequest _generateClientFromRegistrationRequest;
-        
-        public UpdateClientAction(
-            IClientRepository clientRepository,
-            IGenerateClientFromRegistrationRequest generateClientFromRegistrationRequest)
+        private readonly IScopeRepository _scopeRepository;
+        private readonly IManagerEventSource _managerEventSource;
+
+        public UpdateClientAction(IClientRepository clientRepository, IGenerateClientFromRegistrationRequest generateClientFromRegistrationRequest, IScopeRepository scopeRepository,
+            IManagerEventSource managerEventSource)
         {
             _clientRepository = clientRepository;
             _generateClientFromRegistrationRequest = generateClientFromRegistrationRequest;
+            _scopeRepository = scopeRepository;
+            _managerEventSource = managerEventSource;
         }
 
         public async Task<bool> Execute(UpdateClientParameter updateClientParameter)
@@ -53,11 +58,16 @@ namespace SimpleIdentityServer.Manager.Core.Api.Clients.Actions
                 throw new ArgumentNullException(nameof(updateClientParameter));
             }
 
+            if (string.IsNullOrWhiteSpace(updateClientParameter.ClientId))
+            {
+                throw new IdentityServerManagerException(ErrorCodes.InvalidParameterCode, string.Format(ErrorDescriptions.MissingParameter, "client_id"));
+            }
+
+            _managerEventSource.StartToUpdateClient(JsonConvert.SerializeObject(updateClientParameter));
             var existedClient = await _clientRepository.GetClientByIdAsync(updateClientParameter.ClientId);
             if (existedClient == null)
             {
-                throw new IdentityServerManagerException(ErrorCodes.InvalidParameterCode,
-                    string.Format(ErrorDescriptions.TheClientDoesntExist, updateClientParameter.ClientId));
+                throw new IdentityServerManagerException(ErrorCodes.InvalidParameterCode, string.Format(ErrorDescriptions.TheClientDoesntExist, updateClientParameter.ClientId));
             }
 
             SimpleIdentityServer.Core.Common.Models.Client client = null;
@@ -71,13 +81,27 @@ namespace SimpleIdentityServer.Manager.Core.Api.Clients.Actions
             }
 
             client.ClientId = existedClient.ClientId;
-            client.AllowedScopes = updateClientParameter.AllowedScopes == null 
-                ? new List<Scope>() 
+            client.AllowedScopes = updateClientParameter.AllowedScopes == null
+                ? new List<Scope>()
                 : updateClientParameter.AllowedScopes.Select(s => new Scope
+                {
+                    Name = s
+                }).ToList();
+            var existingScopes = await _scopeRepository.SearchByNamesAsync(client.AllowedScopes.Select(s => s.Name));
+            var notSupportedScopes = client.AllowedScopes.Where(s => !existingScopes.Any(sc => sc.Name == s.Name)).Select(s => s.Name);
+            if (notSupportedScopes.Any())
             {
-                Name = s
-            }).ToList();
-            return await _clientRepository.UpdateAsync(client);
+                throw new IdentityServerManagerException(ErrorCodes.InvalidParameterCode, string.Format(ErrorDescriptions.TheScopesDontExist, string.Join(",", notSupportedScopes)));
+            }
+
+            var result = await _clientRepository.UpdateAsync(client);
+            if (!result)
+            {
+                throw new IdentityServerManagerException(ErrorCodes.InternalErrorCode, ErrorDescriptions.TheClientCannotBeUpdated);
+            }
+
+            _managerEventSource.FinishToUpdateClient(JsonConvert.SerializeObject(updateClientParameter));
+            return result;
         }
     }
 }

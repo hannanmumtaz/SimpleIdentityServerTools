@@ -4,7 +4,7 @@ using SimpleIdentityServer.Common.Client.Factories;
 using SimpleIdentityServer.Common.Dtos.Responses;
 using SimpleIdentityServer.Core.Common.DTOs.Responses;
 using SimpleIdentityServer.Manager.Client.Results;
-using SimpleIdentityServer.Manager.Common.Responses;
+using SimpleIdentityServer.Manager.Common.Requests;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -14,7 +14,7 @@ namespace SimpleIdentityServer.Manager.Client.Clients
 {
     public interface IAddClientOperation
     {
-        Task<AddClientResult> ExecuteAsync(Uri clientsUri, ClientResponse client, string authorizationHeaderValue = null);
+        Task<AddClientResult> ExecuteAsync(Uri clientsUri, AddClientRequest client, string authorizationHeaderValue = null);
     }
 
     internal sealed class AddClientOperation : IAddClientOperation
@@ -26,7 +26,7 @@ namespace SimpleIdentityServer.Manager.Client.Clients
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<AddClientResult> ExecuteAsync(Uri clientsUri, ClientResponse client, string authorizationHeaderValue = null)
+        public async Task<AddClientResult> ExecuteAsync(Uri clientsUri, AddClientRequest client, string authorizationHeaderValue = null)
         {
             if (clientsUri == null)
             {

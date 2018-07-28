@@ -24,8 +24,9 @@ namespace SimpleIdentityServer.Manager.Logging
         #region Events linked to client
 
         void StartToRemoveClient(string clientId);
-
         void FinishToRemoveClient(string clientId);
+        void StartToUpdateClient(string request);
+        void FinishToUpdateClient(string request);
 
         #endregion
 
@@ -110,6 +111,30 @@ namespace SimpleIdentityServer.Manager.Logging
                 Id = 401,
                 Task = Tasks.Client,
                 Message = $"Finish to remove the client : {clientId}"
+            };
+
+            LogInformation(evt);
+        }
+
+        public void StartToUpdateClient(string request)
+        {
+            var evt = new Event
+            {
+                Id = 402,
+                Task = Tasks.Client,
+                Message = $"Start to update the client : {request}"
+            };
+
+            LogInformation(evt);
+        }
+
+        public void FinishToUpdateClient(string request)
+        {
+            var evt = new Event
+            {
+                Id = 403,
+                Task = Tasks.Client,
+                Message = $"Finish to update the client : {request}"
             };
 
             LogInformation(evt);

@@ -1,55 +1,14 @@
-﻿#region copyright
-// Copyright 2015 Habart Thierry
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-#endregion
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using SimpleIdentityServer.Core.Common;
+﻿using SimpleIdentityServer.Core.Common;
 using SimpleIdentityServer.Core.Common.DTOs.Requests;
 using SimpleIdentityServer.Core.Common.Models;
-using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace SimpleIdentityServer.Manager.Common.Responses
+namespace SimpleIdentityServer.Manager.Common.Requests
 {
     [DataContract]
-    public class ResponseClientSecret
+    public class AddClientRequest
     {
-        [DataMember(Name = Constants.ClientSecretNames.Type)]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public ClientSecretTypes Type { get; set; }
-        [DataMember(Name = Constants.ClientSecretNames.Value)]
-        public string Value { get; set; }
-    }
-
-    [DataContract]
-    public class ClientResponse
-    {
-        /// <summary>
-        /// Gets or sets the client identifier.
-        /// </summary>
-        [DataMember(Name = Constants.ClientNames.ClientId)]
-        public string ClientId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the client secret.
-        /// </summary>
-        [DataMember(Name = Constants.ClientNames.Secrets)]
-        public IEnumerable<ResponseClientSecret> Secrets { get; set; }
-
         /// <summary>
         /// Gets or sets the client name
         /// </summary>
@@ -115,31 +74,25 @@ namespace SimpleIdentityServer.Manager.Common.Responses
         /// Gets or sets an array containing a list of OAUTH2.0 response_type values
         /// </summary>
         [DataMember(Name = Constants.ClientNames.ResponseTypes)]
-        public List<string> ResponseTypes { get; set; }
+        public List<ResponseType> ResponseTypes { get; set; }
 
         /// <summary>
         /// Gets or sets an array containing a list of OAUTH2.0 grant types
         /// </summary>
         [DataMember(Name = Constants.ClientNames.GrantTypes)]
-        public List<string> GrantTypes { get; set; }
+        public List<GrantType> GrantTypes { get; set; }
 
         /// <summary>
-        /// Gets or sets a list of OAUTH2.0 grant_types.
+        /// Gets or sets the type of application
         /// </summary>
-        [DataMember(Name = Constants.ClientNames.AllowedScopes)]
-        public List<string> AllowedScopes { get; set; }
+        [DataMember(Name = Constants.ClientNames.ApplicationType)]
+        public ApplicationTypes? ApplicationType { get; set; }
 
         /// <summary>
         /// Gets or sets an array of Redirection URI values used by the client.
         /// </summary>
         [DataMember(Name = Constants.ClientNames.RedirectUris)]
         public List<string> RedirectUris { get; set; }
-
-        /// <summary>
-        /// Gets or sets the type of application
-        /// </summary>
-        [DataMember(Name = Constants.ClientNames.ApplicationType)]
-        public string ApplicationType { get; set; }
 
         /// <summary>
         /// Url for the Client's JSON Web Key Set document
@@ -254,17 +207,5 @@ namespace SimpleIdentityServer.Manager.Common.Responses
         /// </summary>
         [DataMember(Name = Constants.ClientNames.PostLogoutRedirectUris)]
         public List<string> PostLogoutRedirectUris { get; set; }
-
-        /// <summary>
-        /// Gets or sets the create datetime.
-        /// </summary>
-        [DataMember(Name = Constants.ClientNames.CreateDateTime)]
-        public DateTime CreateDateTime { get; set; }
-
-        /// <summary>
-        /// Gets or sets the update datetime.
-        /// </summary>
-        [DataMember(Name = Constants.ClientNames.UpdateDateTime)]
-        public DateTime UpdateDateTime { get; set; }
     }
 }

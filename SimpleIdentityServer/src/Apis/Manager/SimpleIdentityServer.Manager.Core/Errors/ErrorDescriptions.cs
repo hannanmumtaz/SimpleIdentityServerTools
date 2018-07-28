@@ -31,6 +31,7 @@ namespace SimpleIdentityServer.Manager.Core.Errors
         public const string TheClientDoesntExist = "the client '{0}' doesn't exist";
         public const string MissingParameter = "the parameter {0} is missing";
         public const string TheScopeDoesntExist = "the scope '{0}' doesn't exist";
+        public const string TheScopesDontExist = "the scopes '{0}' don't exist";
         public const string TheRedirectUriParameterIsNotValid = "one or more redirect_uri values are invalid";
         public const string TheRedirectUriContainsAFragment = "one or more redirect_uri contains a fragment";
         public const string ParameterIsNotCorrect = "the paramater {0} is not correct";
@@ -58,5 +59,7 @@ namespace SimpleIdentityServer.Manager.Core.Errors
         public const string ThePasswordCannotBeUpdated = "the password cannot be updated";
         public const string TheClaimsCannotBeUpdated = "the claims cannot be updated";
         public const string TheResourceOwnerCannotBeRemoved = "the resource owner cannot be removed";
+        public const string TheClientCannotBeUpdated = "an error occured while trying to update the client";
+        public const string TheClientCannotBeRemoved = "an error occured while trying to remove the client";
     }
 }

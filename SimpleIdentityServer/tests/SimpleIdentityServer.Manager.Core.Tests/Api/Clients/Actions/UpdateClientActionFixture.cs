@@ -16,13 +16,16 @@
 
 using Moq;
 using SimpleIdentityServer.Core.Common;
+using SimpleIdentityServer.Core.Common.Models;
 using SimpleIdentityServer.Core.Common.Repositories;
 using SimpleIdentityServer.Core.Exceptions;
 using SimpleIdentityServer.Manager.Core.Api.Clients.Actions;
 using SimpleIdentityServer.Manager.Core.Errors;
 using SimpleIdentityServer.Manager.Core.Exceptions;
 using SimpleIdentityServer.Manager.Core.Parameters;
+using SimpleIdentityServer.Manager.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -32,6 +35,8 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.Clients.Actions
     {
         private Mock<IClientRepository> _clientRepositoryStub;
         private Mock<IGenerateClientFromRegistrationRequest> _generateClientFromRegistrationRequestStub;
+        private Mock<IScopeRepository> _scopeRepositoryStub;
+        private Mock<IManagerEventSource> _managerEventSourceStub;
         private IUpdateClientAction _updateClientAction;
 
         [Fact]
@@ -42,6 +47,24 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.Clients.Actions
 
             // ACT & ASSERT
             await Assert.ThrowsAsync<ArgumentNullException>(() => _updateClientAction.Execute(null));
+        }
+
+        [Fact]
+        public async Task When_No_Client_Id_Is_Passed_Then_Exception_Is_Thrown()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            var parameter = new UpdateClientParameter
+            {
+                ClientId = null
+            };
+
+            // ACT
+            var exception = await Assert.ThrowsAsync<IdentityServerManagerException>(() => _updateClientAction.Execute(parameter));
+            
+            // ASSERTS
+            Assert.True(exception.Code == ErrorCodes.InvalidParameterCode);
+            Assert.True(exception.Message == string.Format(ErrorDescriptions.MissingParameter, "client_id"));
         }
 
         [Fact]
@@ -57,8 +80,10 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.Clients.Actions
                 ClientId = clientId
             };
 
-            // ACT & ASSERT
+            // ACT
             var exception = await Assert.ThrowsAsync<IdentityServerManagerException>(() => _updateClientAction.Execute(parameter));
+
+            // ASSERTS
             Assert.True(exception.Code == ErrorCodes.InvalidParameterCode);
             Assert.True(exception.Message == string.Format(ErrorDescriptions.TheClientDoesntExist, clientId));
         }
@@ -87,11 +112,52 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.Clients.Actions
                     throw new IdentityServerException(code, message);
                 });
 
-            // ACT & ASSERT
+            // ACT
             var exception = await Assert.ThrowsAsync<IdentityServerManagerException>(() => _updateClientAction.Execute(parameter));
+
+            // ASSERTS
             Assert.True(exception.Code == code);
             Assert.True(exception.Message == message);
         }
+
+        [Fact]
+        public async Task When_Scope_Are_Not_Supported_Then_Exception_Is_Thrown()
+        {
+            // ARRANGE
+            const string clientId = "client_id";
+            var client = new SimpleIdentityServer.Core.Common.Models.Client
+            {
+                ClientId = clientId
+            };
+            var parameter = new UpdateClientParameter
+            {
+                ClientId = clientId,
+                AllowedScopes = new List<string>
+                {
+                    "not_supported_scope"
+                }
+            };
+            InitializeFakeObjects();
+            _clientRepositoryStub.Setup(c => c.GetClientByIdAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(client));
+            _generateClientFromRegistrationRequestStub.Setup(g => g.Execute(It.IsAny<UpdateClientParameter>()))
+                .Returns(client);
+            _scopeRepositoryStub.Setup(s => s.SearchByNamesAsync(It.IsAny<IEnumerable<string>>())).Returns(Task.FromResult((ICollection<Scope>)new List<Scope>
+            {
+                new Scope
+                {
+                    Name = "scope"
+                }
+            }));
+            
+            // ACT
+            var exception = await Assert.ThrowsAsync<IdentityServerManagerException>(() => _updateClientAction.Execute(parameter));
+
+            // ASSERTS
+            Assert.Equal("invalid_parameter", exception.Code);
+            Assert.Equal("the scopes 'not_supported_scope' don't exist", exception.Message);
+        }
+
         
         [Fact]
         public async Task When_Passing_Correct_Parameter_Then_Update_Operation_Is_Called()
@@ -104,13 +170,25 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.Clients.Actions
             };
             var parameter = new UpdateClientParameter
             {
-                ClientId = clientId
+                ClientId = clientId,
+                AllowedScopes = new List<string>
+                {
+                    "scope"
+                }
             };
             InitializeFakeObjects();
             _clientRepositoryStub.Setup(c => c.GetClientByIdAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(client));
             _generateClientFromRegistrationRequestStub.Setup(g => g.Execute(It.IsAny<UpdateClientParameter>()))
                 .Returns(client);
+            _scopeRepositoryStub.Setup(s => s.SearchByNamesAsync(It.IsAny<IEnumerable<string>>())).Returns(Task.FromResult((ICollection<Scope>)new List<Scope>
+            {
+                new Scope
+                {
+                    Name = "scope"
+                }
+            }));
+            _clientRepositoryStub.Setup(c => c.UpdateAsync(It.IsAny<SimpleIdentityServer.Core.Common.Models.Client>())).Returns(Task.FromResult(true));
 
             // ACT
             await _updateClientAction.Execute(parameter);
@@ -123,9 +201,13 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.Clients.Actions
         {
             _clientRepositoryStub = new Mock<IClientRepository>();
             _generateClientFromRegistrationRequestStub = new Mock<IGenerateClientFromRegistrationRequest>();
+            _scopeRepositoryStub = new Mock<IScopeRepository>();
+            _managerEventSourceStub = new Mock<IManagerEventSource>();
             _updateClientAction = new UpdateClientAction(
                 _clientRepositoryStub.Object,
-                _generateClientFromRegistrationRequestStub.Object);
+                _generateClientFromRegistrationRequestStub.Object,
+                _scopeRepositoryStub.Object,
+                _managerEventSourceStub.Object);
         }
     }
 }

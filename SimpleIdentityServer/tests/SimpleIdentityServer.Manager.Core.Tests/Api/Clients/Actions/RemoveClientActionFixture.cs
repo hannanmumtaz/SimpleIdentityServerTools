@@ -69,6 +69,7 @@ namespace SimpleIdentityServer.Manager.Core.Tests.Api.Clients.Actions
             InitializeFakeObjects();
             _clientRepositoryStub.Setup(c => c.GetClientByIdAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(client));
+            _clientRepositoryStub.Setup(c => c.DeleteAsync(It.IsAny<SimpleIdentityServer.Core.Common.Models.Client>())).Returns(Task.FromResult(true));
 
             // ACT
             await _removeClientAction.Execute(clientId);

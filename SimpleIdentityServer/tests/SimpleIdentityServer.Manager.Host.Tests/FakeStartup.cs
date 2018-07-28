@@ -21,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.AccessToken.Store.InMemory;
 using SimpleIdentityServer.Core;
 using SimpleIdentityServer.Core.Jwt;
+using SimpleIdentityServer.Core.Services;
 using SimpleIdentityServer.EF;
 using SimpleIdentityServer.EF.InMemory;
 using SimpleIdentityServer.Logging;
@@ -94,6 +95,15 @@ namespace SimpleIdentityServer.Manager.Host.Tests
             serviceCollection.AddManagerLogging();
             serviceCollection.AddOAuthLogging();
             serviceCollection.AddOpenidLogging();
+            serviceCollection.AddSingleton<IPasswordService>(new FakePasswordService());
+        }
+
+        private class FakePasswordService : IPasswordService
+        {
+            public string Encrypt(string password)
+            {
+                return password;
+            }
         }
     }
 }

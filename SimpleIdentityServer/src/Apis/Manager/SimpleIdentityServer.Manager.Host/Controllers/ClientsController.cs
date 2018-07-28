@@ -17,12 +17,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
+using SimpleIdentityServer.Core.Errors;
 using SimpleIdentityServer.Manager.Common.Requests;
-using SimpleIdentityServer.Manager.Common.Responses;
 using SimpleIdentityServer.Manager.Core.Api.Clients;
 using SimpleIdentityServer.Manager.Host.Extensions;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using WebApiContrib.Core.Concurrency;
 
@@ -67,7 +67,7 @@ namespace SimpleIdentityServer.Manager.Host.Controllers
         {
             if (request == null)
             {
-                throw new ArgumentNullException(nameof(request));
+                return BuildError(ErrorCodes.InvalidRequestCode, "no parameter in body request", HttpStatusCode.BadRequest);
             }
 
             var parameter = request.ToSearchClientParameter();
@@ -81,7 +81,7 @@ namespace SimpleIdentityServer.Manager.Host.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                throw new ArgumentNullException(nameof(id));
+                return BuildError(ErrorCodes.InvalidRequestCode, "identifier is missing", HttpStatusCode.BadRequest);
             }
 
             if (!await _representationManager.CheckRepresentationExistsAsync(this, GetClientStoreName + id))
@@ -95,7 +95,7 @@ namespace SimpleIdentityServer.Manager.Host.Controllers
             var result = await _clientActions.GetClient(id);
             if (result == null)
             {
-                return new NotFoundResult();
+                return BuildError(ErrorCodes.InvalidRequestCode, "client doesn't exist", HttpStatusCode.NotFound);
             }
 
             var response = result.ToDto();
@@ -109,7 +109,7 @@ namespace SimpleIdentityServer.Manager.Host.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                throw new ArgumentNullException(nameof(id));
+                return BuildError(ErrorCodes.InvalidRequestCode, "identifier is missing", HttpStatusCode.BadRequest);
             }
 
             if (!await _clientActions.DeleteClient(id))
@@ -128,7 +128,7 @@ namespace SimpleIdentityServer.Manager.Host.Controllers
         {
             if (updateClientRequest == null)
             {
-                throw new ArgumentNullException(nameof(updateClientRequest));
+                return BuildError(ErrorCodes.InvalidRequestCode, "no parameter in body request", HttpStatusCode.BadRequest);
             }
 
             if (!await _clientActions.UpdateClient(updateClientRequest.ToParameter()))
@@ -143,16 +143,29 @@ namespace SimpleIdentityServer.Manager.Host.Controllers
 
         [HttpPost]
         [Authorize("manager")]
-        public async Task<ActionResult> Add([FromBody] ClientResponse client)
+        public async Task<ActionResult> Add([FromBody] AddClientRequest client)
         {
             if (client == null)
             {
-                throw new ArgumentNullException(nameof(client));
+                return BuildError(ErrorCodes.InvalidRequestCode, "no parameter in body request", HttpStatusCode.BadRequest);
             }
 
             var result = await _clientActions.AddClient(client.ToParameter());
             await _representationManager.AddOrUpdateRepresentationAsync(this, GetClientsStoreName, false);
             return new OkObjectResult(result);
+        }
+
+        private static JsonResult BuildError(string code, string message, HttpStatusCode statusCode)
+        {
+            var error = new SimpleIdentityServer.Common.Dtos.Responses.ErrorResponse
+            {
+                Error = code,
+                ErrorDescription = message
+            };
+            return new JsonResult(error)
+            {
+                StatusCode = (int)statusCode
+            };
         }
     }
 }

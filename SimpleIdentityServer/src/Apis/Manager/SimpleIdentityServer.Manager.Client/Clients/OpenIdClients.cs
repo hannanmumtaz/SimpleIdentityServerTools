@@ -10,7 +10,7 @@ namespace SimpleIdentityServer.Manager.Client.Clients
 {
     public interface IOpenIdClients
     {
-        Task<AddClientResult> ResolveAdd(Uri wellKnownConfigurationUri, ClientResponse client, string authorizationHeaderValue = null);
+        Task<AddClientResult> ResolveAdd(Uri wellKnownConfigurationUri, AddClientRequest client, string authorizationHeaderValue = null);
         Task<BaseResponse> ResolveUpdate(Uri wellKnownConfigurationUri, UpdateClientRequest client, string authorizationHeaderValue = null);
         Task<GetClientResult> ResolveGet(Uri wellKnownConfigurationUri, string clientId, string authorizationHeaderValue = null);
         Task<BaseResponse> ResolvedDelete(Uri wellKnownConfigurationUri, string clientId, string authorizationHeaderValue = null);
@@ -42,7 +42,7 @@ namespace SimpleIdentityServer.Manager.Client.Clients
             _configurationClient = configurationClient;
         }
 
-        public async Task<AddClientResult> ResolveAdd(Uri wellKnownConfigurationUri, ClientResponse client, string authorizationHeaderValue = null)
+        public async Task<AddClientResult> ResolveAdd(Uri wellKnownConfigurationUri, AddClientRequest client, string authorizationHeaderValue = null)
         {
             var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
             return await _addClientOperation.ExecuteAsync(new Uri(configuration.Content.ClientsEndpoint), client, authorizationHeaderValue).ConfigureAwait(false);

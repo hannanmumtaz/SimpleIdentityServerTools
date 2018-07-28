@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SimpleIdentityServer.Core.Common.Extensions;
+using SimpleIdentityServer.Core.Exceptions;
 using SimpleIdentityServer.Manager.Core.Errors;
 using SimpleIdentityServer.Manager.Core.Exceptions;
 using System;
@@ -38,15 +39,22 @@ namespace SimpleIdentityServer.Manager.Host.Middleware
             catch (Exception exception)
             {
                 var identityServerManagerException = exception as IdentityServerManagerException;
-                if (identityServerManagerException == null)
+                var idServerException = exception as IdentityServerException;
+                var code = ErrorCodes.UnhandledExceptionCode;
+                if (identityServerManagerException != null)
                 {
-                    identityServerManagerException = new IdentityServerManagerException(ErrorCodes.UnhandledExceptionCode, exception.Message);
+                    code = identityServerManagerException.Code;
+                }
+
+                if (idServerException != null)
+                {
+                    code = idServerException.Code;
                 }
 
                 var errorResponse = new SimpleIdentityServer.Common.Dtos.Responses.ErrorResponse
                 {
-                    Error = identityServerManagerException.Code,
-                    ErrorDescription = identityServerManagerException.Message
+                    Error = code,
+                    ErrorDescription = exception.Message
                 };
 
                 _options.ManagerEventSource.Failure(identityServerManagerException);

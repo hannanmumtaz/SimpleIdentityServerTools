@@ -57,11 +57,12 @@ namespace SimpleIdentityServer.Manager.Core.Api.Clients.Actions
             }
 
             var result = await _clientRepository.DeleteAsync(client);
-            if (result)
+            if (!result)
             {
-                _managerEventSource.FinishToRemoveClient(clientId);
+                throw new IdentityServerManagerException(ErrorCodes.InternalErrorCode, ErrorDescriptions.TheClientCannotBeRemoved);
             }
 
+            _managerEventSource.FinishToRemoveClient(clientId);
             return result;
         }
     }
