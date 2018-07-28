@@ -47,5 +47,22 @@
 	"unknown": "Unknown",
 	"loginTitle": "Authenticate",
 	"connectMenuItem": "Authenticate",
-	"aboutMenuItem": "About"
+	"aboutMenuItem": "About",
+	"oauthClients": "OAUTH2.0 clients",
+	"oauthClientsShortDescription": "View / Add and remove the list of OAUTH2.0 clients",
+	"listOfClients": "List of OAUTH2.0 clients",
+	"clientName": "Client name",
+	"clientId": "Client identifier",
+	"clientType": "Client type",
+	"updateDateTime": "Update datetime",
+	"clientAllowedCallbackUrls": "Allowed callback urls",
+	"clientAllowedCallbackUrlsDescription": "Enter a list of allowed callback urls",
+	"addClient": "Add client",
+	"openidclients": "OPENID clients",
+	"clientsAreRemoved": "Selected clients have been removed",
+	"clientsCannotBeRemoved": "An error occured while trying to remove the selected clients",
+	"clientIsRemoved": "Client has been removed",
+	"clientCannotBeRemoved": "An error occured while trying to remove the client",
+	"clientIsAdded": "Client has been added",
+	"clientCannotBeAdded": "An error occured while trying to add the client"
 }

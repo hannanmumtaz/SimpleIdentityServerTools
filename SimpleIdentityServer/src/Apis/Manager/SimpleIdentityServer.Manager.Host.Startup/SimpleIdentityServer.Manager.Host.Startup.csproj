@@ -9,10 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\SimpleIdentityServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.EF.Postgre\SimpleIdentityServer.EF.Postgre.csproj" />
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.AccessToken.Store.InMemory\SimpleIdentityServer.AccessToken.Store.InMemory.csproj" />
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Lib\WebApiContrib\WebApiContrib.Core.Concurrency\WebApiContrib.Core.Concurrency.csproj" />
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Lib\WebApiContrib\WebApiContrib.Core.Storage.InMemory\WebApiContrib.Core.Storage.InMemory.csproj" />
-    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.EF.SqlServer\SimpleIdentityServer.EF.SqlServer.csproj" />
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.OAuth2Introspection\SimpleIdentityServer.OAuth2Introspection.csproj" />
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.UserInfoIntrospection\SimpleIdentityServer.UserInfoIntrospection.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.Manager.Host\SimpleIdentityServer.Manager.Host.csproj" />

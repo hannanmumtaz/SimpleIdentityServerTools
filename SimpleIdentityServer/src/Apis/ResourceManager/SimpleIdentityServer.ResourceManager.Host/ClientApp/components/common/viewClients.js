@@ -5,7 +5,7 @@ import ChipsSelector from './chipsSelector';
 import moment from 'moment';
 
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
-import { Popover, IconButton, Menu, MenuItem, Checkbox, TextField, Select, Avatar, CircularProgress, Grid, Typography, Button } from 'material-ui';
+import { Popover, IconButton, Menu, MenuItem, Checkbox, TextField, Select, Avatar, CircularProgress, Grid, Typography, Button, Hidden, List, ListItem, ListItemText } from 'material-ui';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import { withStyles } from 'material-ui/styles';
 import { FormControl, FormHelperText } from 'material-ui/Form';
@@ -31,6 +31,7 @@ class Clients extends Component {
         this.handleRowClick = this.handleRowClick.bind(this);
         this.handleAllSelections = this.handleAllSelections.bind(this);
         this.handleRemoveClients = this.handleRemoveClients.bind(this);
+        this.handleRemoveClient = this.handleRemoveClient.bind(this);
         this.handleSort = this.handleSort.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
         this.handleOpenModal = this.handleOpenModal.bind(this);
@@ -232,6 +233,32 @@ class Clients extends Component {
     }
 
     /**
+    * Remove a client.
+    */
+    handleRemoveClient(clientId) {
+        var self = this;
+        const { t } = self.props;
+        self.setState({
+            isLoading: true
+        });
+        ClientService.remove(clientId, self.state.type).then(function() {
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('clientIsRemoved')
+            });
+            self.refreshData();
+        }).catch(function(e) {
+            self.setState({
+                isLoading: false
+            });
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('clientCannotBeRemoved')
+            });
+        });        
+    }
+
+    /**
     * Sort the scopes.
     */
     handleSort(colName) {
@@ -275,7 +302,10 @@ class Clients extends Component {
         ClientService.add(self.state.client, self.state.type).then(function() {
             self.setState({
                 isAddClientLoading: false,
-                isModalOpened: false
+                isModalOpened: false,
+                client: {
+                    redirect_uris:[]
+                }
             });
             AppDispatcher.dispatch({
                 actionName: Constants.events.DISPLAY_MESSAGE,
@@ -296,7 +326,7 @@ class Clients extends Component {
     render() {
         var self = this;
         const { t, classes } = this.props;
-        var rows = [];
+        var rows = [], listItems = [];
         if (self.state.data) {
             self.state.data.forEach(function(record) {
                 rows.push((
@@ -312,13 +342,26 @@ class Clients extends Component {
                         </TableCell>
                     </TableRow>
                 ));
+                listItems.push(
+                    <ListItem dense button style={{overflow: 'hidden'}}>
+                        <IconButton onClick={() => self.handleRemoveClient(record.client_id)}>
+                            <Delete />
+                        </IconButton>
+                        <NavLink to={'/' + self.state.type + '/clients/' + record.client_id + '/edit'}>
+                            <IconButton>
+                                <Visibility />
+                            </IconButton>
+                        </NavLink>
+                        <ListItemText>{record.client_id}</ListItemText>
+                    </ListItem>
+                )
             });
         }
 
         return (<div className="block">
             <Dialog open={self.state.isModalOpened} onClose={this.handleCloseModal}>
                 <DialogTitle>{t('addClient')}</DialogTitle>
-                {self.state.isAddClientLoading ? (<CircularProgress />) : (
+                {self.state.isAddClientLoading ? (<DialogContent><CircularProgress /></DialogContent>) : (
                     <div>
                         <DialogContent>
                             <ChipsSelector label={t('clientAllowedCallbackUrls')} properties={self.state.client.redirect_uris} />
@@ -364,44 +407,44 @@ class Clients extends Component {
                 <div className="body">
                     { this.state.isLoading ? (<CircularProgress />) : (
                         <div>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell>{t('clientName')}</TableCell>
-                                        <TableCell>{t('clientId')}</TableCell>
-                                        <TableCell>{t('clientType')}</TableCell>
-                                        <TableCell>
-                                            <TableSortLabel active={true} direction={self.state.order} onClick={self.handleSort}>{t('updateDateTime')}</TableSortLabel>
-                                        </TableCell>
-                                        <TableCell></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell>
-                                            <form onSubmit={(e) => { e.preventDefault(); self.refreshData(); }}>
-                                                <TextField value={this.state.selectedId} name='selectedId' onChange={this.handleChangeValue} placeholder={t('Filter...')}/>
-                                                <IconButton onClick={self.refreshData}><Search /></IconButton>
-                                            </form>
-                                        </TableCell>
-                                        <TableCell>                                                                                               
-                                            <Select value={this.state.selectedType} fullWidth={true} name="selectedType" onChange={this.handleChangeFilter}>
-                                                <MenuItem value="all">{t('all')}</MenuItem>
-                                                <MenuItem value="0">{t('native')}</MenuItem>
-                                                <MenuItem value="1">{t('web')}</MenuItem>
-                                            </Select>
-                                        </TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
-                                    </TableRow>
-                                    {rows}
-                                </TableBody>
-                            </Table>
+                            <Hidden only={['xs', 'sm']}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
+                                            <TableCell></TableCell>
+                                            <TableCell>{t('clientName')}</TableCell>
+                                            <TableCell>
+                                                {t('clientId')}
+                                                <form onSubmit={(e) => { e.preventDefault(); self.refreshData(); }}>
+                                                    <TextField value={this.state.selectedId} name='selectedId' onChange={this.handleChangeValue} placeholder={t('Filter...')}/>
+                                                    <IconButton onClick={self.refreshData}><Search /></IconButton>
+                                                </form>
+                                            </TableCell>
+                                            <TableCell>
+                                                {t('clientType')}                                                                                                                                               
+                                                <Select value={this.state.selectedType} fullWidth={true} name="selectedType" onChange={this.handleChangeFilter}>
+                                                    <MenuItem value="all">{t('all')}</MenuItem>
+                                                    <MenuItem value="0">{t('native')}</MenuItem>
+                                                    <MenuItem value="1">{t('web')}</MenuItem>
+                                                </Select>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel active={true} direction={self.state.order} onClick={self.handleSort}>{t('updateDateTime')}</TableSortLabel>
+                                            </TableCell>
+                                            <TableCell></TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {rows}
+                                    </TableBody>
+                                </Table>
+                            </Hidden>
+                            <Hidden only={['lg', 'xl', 'md']}>
+                                <List>
+                                    {listItems}
+                                </List>
+                            </Hidden>
                             <TablePagination component="div" count={self.state.count} rowsPerPage={self.state.pageSize} page={this.state.page} onChangePage={self.handleChangePage} onChangeRowsPerPage={self.handleChangeRowsPage} />
                         </div>
                     )}

@@ -22,7 +22,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using SimpleIdentityServer.AccessToken.Store.InMemory;
-using SimpleIdentityServer.EF.SqlServer;
+using SimpleIdentityServer.EF.Postgre;
 using SimpleIdentityServer.Manager.Host.Extensions;
 using SimpleIdentityServer.OAuth2Introspection;
 using SimpleIdentityServer.UserInfoIntrospection;
@@ -58,7 +58,7 @@ namespace SimpleIdentityServer.Manager.Host.Startup
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
             services.AddMvc();
-            ConfigureOauthRepositorySqlServer(services);
+            ConfigureOauthRepositoryPostgre(services);
             ConfigureCaching(services);
             ConfigureLogging(services);
             services.AddInMemoryAccessTokenStore();
@@ -78,10 +78,10 @@ namespace SimpleIdentityServer.Manager.Host.Startup
                 });
         }
 
-        private void ConfigureOauthRepositorySqlServer(IServiceCollection services)
+        private void ConfigureOauthRepositoryPostgre(IServiceCollection services)
         {
-            var connectionString = "Data Source=.;Initial Catalog=SimpleIdentityServer;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            services.AddOAuthSqlServerEF(connectionString, null);
+            var connectionString = "User ID=rocheidserver;Password=password;Host=localhost;Port=5432;Database=idserver;Pooling=true;";
+            services.AddOAuthPostgresqlEF(connectionString, null);
         }
 
         private void ConfigureCaching(IServiceCollection services)
