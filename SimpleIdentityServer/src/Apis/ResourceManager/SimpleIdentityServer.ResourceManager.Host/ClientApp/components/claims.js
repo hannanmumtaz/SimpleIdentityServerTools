@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { translate } from 'react-i18next';
 import { ClaimService } from '../services';
-import { NavLink, withRouter } from "react-router-dom";
+import { withRouter, NavLink } from 'react-router-dom';
 import { SessionStore } from '../stores';
 import moment from 'moment';
 
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
-import { Popover, IconButton, Menu, MenuItem, Checkbox, TextField, Select, Avatar , CircularProgress, Grid, Button } from 'material-ui';
+import { Popover, IconButton, Menu, MenuItem, Checkbox, TextField, Select, Avatar , CircularProgress, Grid, Button, Hidden, List, ListItem, ListItemText } from 'material-ui';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import Input, { InputLabel } from 'material-ui/Input';
 import { FormControl, FormHelperText } from 'material-ui/Form';
@@ -29,6 +29,7 @@ class Claims extends Component {
         this.handleRowClick = this.handleRowClick.bind(this);
         this.handleAllSelections = this.handleAllSelections.bind(this);
         this.handleRemoveClaims = this.handleRemoveClaims.bind(this);
+        this.handleRemoveClaim = this.handleRemoveClaim.bind(this);
         this.handleSort = this.handleSort.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
         this.handleOpenModal = this.handleOpenModal.bind(this);
@@ -212,6 +213,35 @@ class Claims extends Component {
     }
 
     /**
+    * Remove the claim.
+    */
+    handleRemoveClaim(claimCode) {      
+        var self = this;
+        const { t } = self.props;
+        self.setState({
+            isLoading: true
+        });
+        ClaimService.delete(claimCode).then(function() {
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('claimIsRemoved')
+            });
+            self.setState({
+                isRemoveDisplayed: false
+            });
+            self.refreshData();
+        }).catch(function(e) {
+            self.setState({
+                isLoading: false
+            });
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('claimCannotBeRemoved')
+            });
+        });
+    }
+
+    /**
     * Sort the users.
     */
     handleSort() {
@@ -278,27 +308,43 @@ class Claims extends Component {
     render() {
         var self = this;
         const { t } = this.props;
-        var rows = [];
+        var rows = [], listItems = [];
         if (self.state.data) {
             self.state.data.forEach(function(record) {
                 rows.push((
                     <TableRow hover role="checkbox" key={record.login}>
                         <TableCell><Checkbox color="primary" checked={record.isSelected} onChange={(e) => self.handleRowClick(e, record)} /></TableCell>
                         <TableCell>{record.code}</TableCell>
-                        <TableCell><Checkbox color="primary" checked={record.is_identifier} disabled={true} /></TableCell>
                         <TableCell>{moment(record.update_datetime).format('LLLL')}</TableCell>
                         <TableCell>
-                            <IconButton onClick={ () => self.props.history.push('/claims/' + record.code) }><Visibility /></IconButton>
+                            <NavLink to={'/claims/' + record.code}>
+                                <IconButton>
+                                    <Visibility />
+                                </IconButton>
+                            </NavLink>
                         </TableCell>
                     </TableRow>
                 ));
+                listItems.push(
+                    <ListItem>
+                        <IconButton onClick={() => self.handleRemoveClaim(record.code)}>
+                            <Delete />
+                        </IconButton>
+                        <NavLink to={'/claims/' + record.code}>
+                            <IconButton>
+                                <Visibility />
+                            </IconButton>
+                        </NavLink>
+                        <ListItemText>{record.code}</ListItemText>
+                    </ListItem>
+                );
             });
         }
 
         return (<div className="block">
             <Dialog open={self.state.isModalOpened} onClose={this.handleCloseModal}>
                 <DialogTitle>{t('addClaim')}</DialogTitle>
-                {self.state.isAddClaimLoading ? (<CircularProgress />) : (
+                {self.state.isAddClaimLoading ? (<DialogContent><CircularProgress /></DialogContent>) : (
                     <div>
                         <DialogContent>
                             <FormControl fullWidth={true}>
@@ -350,34 +396,34 @@ class Claims extends Component {
                 <div className="body">
                     { this.state.isLoading ? (<CircularProgress />) : (
                         <div>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell></TableCell>
-                                        <TableCell>{t('claimCode')}</TableCell>
-                                        <TableCell>{t('claimUsedAsIdentifier')}</TableCell>
-                                        <TableCell>
-                                            <TableSortLabel active={true} direction={self.state.order} onClick={self.handleSort}>{t('updateDateTime')}</TableSortLabel>
-                                        </TableCell>
-                                        <TableCell></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
-                                        <TableCell>
-                                            <form onSubmit={(e) => { e.preventDefault(); self.refreshData(); }}>
-                                                <TextField value={this.state.selectedCode} name='selectedCode' onChange={this.handleChangeFilter} placeholder={t('Filter...')}/>
-                                                <IconButton onClick={self.refreshData}><Search /></IconButton>
-                                            </form>
-                                        </TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
-                                    </TableRow>
-                                    {rows}
-                                </TableBody>
-                            </Table>
+                            <Hidden only={['xs', 'sm']}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
+                                            <TableCell>
+                                                {t('claimCode')}
+                                                <form onSubmit={(e) => { e.preventDefault(); self.refreshData(); }}>
+                                                    <TextField value={this.state.selectedCode} name='selectedCode' onChange={this.handleChangeFilter} placeholder={t('Filter...')}/>
+                                                    <IconButton onClick={self.refreshData}><Search /></IconButton>
+                                                </form>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel active={true} direction={self.state.order} onClick={self.handleSort}>{t('updateDateTime')}</TableSortLabel>
+                                            </TableCell>
+                                            <TableCell></TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {rows}
+                                    </TableBody>
+                                </Table>
+                            </Hidden>
+                            <Hidden only={['lg', 'xl', 'md']}>
+                                <List>
+                                    {listItems}
+                                </List>
+                            </Hidden>
                             <TablePagination component="div" count={self.state.count} rowsPerPage={self.state.pageSize} page={this.state.page} onChangePage={self.handleChangePage} onChangeRowsPerPage={self.handleChangeRowsPage} />
                         </div>
                     )}
