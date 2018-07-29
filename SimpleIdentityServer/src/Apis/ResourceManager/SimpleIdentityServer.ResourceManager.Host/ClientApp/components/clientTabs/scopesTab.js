@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { translate } from 'react-i18next';
-import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
-import { Checkbox, CircularProgress } from 'material-ui';
+import { withRouter, NavLink } from 'react-router-dom';
+import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel} from 'material-ui/Table';
+import { Checkbox, CircularProgress, Hidden, List, ListItem, ListItemText, IconButton  } from 'material-ui';
 import { ScopeService } from '../../services';
 import moment from 'moment';
+import Visibility from '@material-ui/icons/Visibility'; 
 
 class ScopesTab extends Component {
 	constructor(props) {
@@ -123,7 +125,7 @@ class ScopesTab extends Component {
             return (<CircularProgress />);
         }
 
-        var rows = [];
+        var rows = [], listItems = [];
         if (self.state.data) {
             self.state.data.forEach(function(record) {
                 rows.push((
@@ -131,34 +133,54 @@ class ScopesTab extends Component {
                         <TableCell><Checkbox color="primary" checked={record.isSelected} onChange={(e) => self.handleRowClick(e, record)} /></TableCell>
                         <TableCell>{record.name}</TableCell>
                         <TableCell>{record.type}</TableCell>
-                        <TableCell>{moment(record.update_datetime).format('LLLL')}</TableCell>
+                        <TableCell>
+                            <NavLink to={'/' + self.props.type + '/scopes/' + record.name}>
+                                <IconButton>
+                                    <Visibility />
+                                </IconButton>
+                            </NavLink>
+                        </TableCell>
                     </TableRow>
                 ));
+                listItems.push(
+                    <ListItem dense button style={{overflow: 'hidden'}}>
+                        <Checkbox color="primary" checked={record.isSelected} onChange={(e) => self.handleRowClick(e, record)} />
+                        <NavLink to={'/' + self.props.type + '/scopes/' + record.name}>
+                            <IconButton>
+                                <Visibility />
+                            </IconButton>
+                        </NavLink>
+                        <ListItemText>{record.name}</ListItemText>
+                    </ListItem>
+                );
             });
         }
         
 		return (
-			<Table>
-            	<TableHead>
-                	<TableRow>
-                    	<TableCell></TableCell>
-                        <TableCell>{t('name')}</TableCell>
-                        <TableCell>{t('scopeType')}</TableCell>
-                        <TableCell>{t('updateDateTime')}</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                	<TableRow>
-                    	<TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
-                        <TableCell></TableCell>
-						<TableCell></TableCell>                                        
-						<TableCell></TableCell>    
-                    </TableRow>
-                    {rows}
-                </TableBody>
-                <TableFooter>
-                </TableFooter>
-           </Table>
+            <div>
+                <Hidden only={['xs', 'sm']}>
+        			<Table>
+                    	<TableHead>
+                        	<TableRow>
+                            	<TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
+                                <TableCell>{t('scopeName')}</TableCell>
+                                <TableCell>{t('scopeType')}</TableCell>
+                                <TableCell></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows}
+                        </TableBody>
+                        <TableFooter>
+                        </TableFooter>
+                   </Table>
+                </Hidden>
+                <Hidden only={['lg', 'xl', 'md']}>
+                    <List>
+                        {listItems}
+                    </List>
+                </Hidden>
+           </div>
 		);
 	}
 

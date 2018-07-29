@@ -104,8 +104,8 @@ class ViewClient extends Component {
                     <Grid item md={7} sm={12}>                        
                         <ul className="breadcrumb float-md-right">
                             <li className="breadcrumb-item"><NavLink to="/">{t('websiteTitle')}</NavLink></li>
-                            <li className="breadcrumb-item"><NavLink to={self.state.type ==="openid" ? "/openid/clients" : "/auth/clients"}>{t('clients')}</NavLink></li>
-                            <li className="breadcrumb-item">{t('client')}</li>
+                            <li className="breadcrumb-item"><NavLink to={self.state.type ==="openid" ? "/openid/clients" : "/auth/clients"}>{t('oauthClients')}</NavLink></li>
+                            <li className="breadcrumb-item">{t('oauthClient')}</li>
                         </ul>
                     </Grid>
                 </Grid>
