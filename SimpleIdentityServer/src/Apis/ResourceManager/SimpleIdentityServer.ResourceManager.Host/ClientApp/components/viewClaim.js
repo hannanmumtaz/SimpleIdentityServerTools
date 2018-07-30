@@ -7,10 +7,12 @@ import { CircularProgress, IconButton, Select, MenuItem, Checkbox, Typography, G
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
 import { DisplayScope } from './common';
+import { SessionStore } from '../stores';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Save from '@material-ui/icons/Save';
 import AppDispatcher from '../appDispatcher';
 import Constants from '../constants';
+import moment from 'moment';
 
 
 const styles = theme => ({
@@ -26,7 +28,6 @@ class ViewClaim extends Component {
         this.state = {
             isLoading: true,
             id: null,
-            type: null,
             claim: {}
         };
     }
@@ -84,17 +85,14 @@ class ViewClaim extends Component {
                                 {/* Code */}
                                 <FormControl fullWidth={true} className={classes.margin} disabled={true}>
                                     <InputLabel>{t('claimCode')}</InputLabel>
-                                    <Input value={self.state.claim.key} name="name"  />
-                                    <FormHelperText>{t('claimCodeShortDescription')}</FormHelperText>
+                                    <Input value={self.state.claim.key} />
                                 </FormControl>
-
-                            </Grid>
-                            <Grid item sm={12} md={6}>
-                                {/* Is used as identifier */}                                
-                                <div>
-                                    <Typography><Checkbox color="primary" checked={self.state.claim.is_identifier} disabled={true}/> {t('isUsedAsOpenidIdentifier')}</Typography >
-                                    <Typography>{t('isUsedAsOpenidIdentifier')}</Typography>
-                                </div>
+                                <FormControl fullWidth={true} className={classes.margin} disabled={true}>
+                                    <InputLabel>{t('updateDateTime')}</InputLabel>
+                                    <Input value={moment(self.state.claim.update_datetime).format('LLLL')} />
+                                </FormControl>
+                                {/* Is used as identifier */ }
+                                <Typography><Checkbox color="primary" checked={self.state.claim.is_identifier} disabled={true}/> {t('isUsedAsOpenidIdentifier')}</Typography >
                             </Grid>
                         </Grid>
                     ) }
@@ -105,12 +103,20 @@ class ViewClaim extends Component {
 
     componentDidMount() {
         var self = this;
-        self.setState({
-            id: self.props.match.params.id,
-            type: self.props.match.params.type
-        }, function() {
-            self.refreshData();
+        SessionStore.addChangeListener(function() {
+            self.setState({
+                id : self.props.match.params.id
+            }, function() {
+                self.refreshData();
+            });
         });
+        if (SessionStore.getSession().selectedOpenid) {
+            self.setState({
+                id : self.props.match.params.id
+            }, function() {
+                self.refreshData();
+            });
+        }
     }
 }
 

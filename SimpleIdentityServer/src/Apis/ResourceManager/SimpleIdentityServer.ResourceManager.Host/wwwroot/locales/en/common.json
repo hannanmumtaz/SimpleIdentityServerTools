@@ -111,5 +111,10 @@
 	"dashboardMenuItem": "Dashboard",
 	"authscopes": "Authorization scopes",
 	"scimSchemas": "SCIM schemas",
-	"scimResources" : "SCIM resources"
+	"scimResources" : "SCIM resources",
+	"claimTitle": "Claim",
+	"claimShortDescription": "View the claim information",
+	"isUsedAsOpenidIdentifier": "The claim is used as an OPENID identifier",
+	"claimInformation": "The claim information",
+	"claim": "Claim"
 }
