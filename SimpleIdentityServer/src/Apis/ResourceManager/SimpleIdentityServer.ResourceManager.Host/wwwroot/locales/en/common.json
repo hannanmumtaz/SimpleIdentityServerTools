@@ -116,5 +116,17 @@
 	"claimShortDescription": "View the claim information",
 	"isUsedAsOpenidIdentifier": "The claim is used as an OPENID identifier",
 	"claimInformation": "The claim information",
-	"claim": "Claim"
+	"claim": "Claim",
+	"scopesAreRemoved": "The selected scopes have been removed",
+	"scopesCannotBeRemoved": "An error occured while trying to remove the selected scope",
+	"scopeAdded": "A scope has been added",
+	"scopeCannotBeAdded": "An error occured while trying to add the scope",
+	"scopeIsRemoved": "The scope has been removed",
+	"scopeCannotBeRemoved": "An error occured while trying to remove the scope",
+	"listOfScopes": "List of scopes",
+	"scopes": "Scopes",
+	"scopesDescription": "View, remove and add scopes",
+	"addScope": "Add scope",
+	"scopeDescription": "Scope description",
+	"scopeDescriptionDescription": "Enter the scope description"
 }

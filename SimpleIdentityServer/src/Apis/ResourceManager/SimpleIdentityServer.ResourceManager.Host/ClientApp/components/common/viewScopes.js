@@ -4,7 +4,7 @@ import { withRouter, NavLink } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import moment from 'moment';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
-import { Popover, IconButton, Menu, MenuItem, Checkbox, TextField, Select, CircularProgress, Grid, Button } from 'material-ui';
+import { Popover, IconButton, Menu, MenuItem, Checkbox, TextField, Select, CircularProgress, Grid, Button, Hidden, List, ListItem, ListItemText } from 'material-ui';
 import Input, { InputLabel } from 'material-ui/Input';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import { FormControl, FormHelperText } from 'material-ui/Form';
@@ -36,6 +36,7 @@ class ViewScopes extends Component {
         this.handleChangeRowsPage = this.handleChangeRowsPage.bind(this);
         this.handleRowClick = this.handleRowClick.bind(this);
         this.handleRemoveScopes = this.handleRemoveScopes.bind(this);
+        this.handleRemoveScope = this.handleRemoveScope.bind(this);
         this.handleAllSelections = this.handleAllSelections.bind(this);
         this.handleSort = this.handleSort.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
@@ -238,6 +239,32 @@ class ViewScopes extends Component {
     }
 
     /**
+    * Remove the scope.
+    */
+    handleRemoveScope(scopeName) {
+        var self = this;
+        const { t } = self.props;
+        self.setState({
+            isLoading: true
+        });
+        ScopeService.delete(scopeName, self.state.type).then(function() {
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('scopeIsRemoved')
+            });
+            self.refreshData();
+        }).catch(function(e) {
+            self.setState({
+                isLoading: false
+            });
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('scopeCannotBeRemoved')
+            });
+        });        
+    }
+
+    /**
     * Select / Unselect all scopes.
     */
     handleAllSelections(e) {
@@ -318,7 +345,7 @@ class ViewScopes extends Component {
     render() {
         var self = this;
         const { t, classes } = this.props;
-        var rows = [];
+        var rows = [], listItems = [];
         if (self.state.data) {
             self.state.data.forEach(function(record) {
                 rows.push((
@@ -328,10 +355,27 @@ class ViewScopes extends Component {
                         <TableCell>{record.type}</TableCell>
                         <TableCell>{moment(record.update_datetime).format('LLLL')}</TableCell>
                         <TableCell>
-                            <IconButton onClick={ () => self.props.history.push('/' + self.state.type + '/scopes/' + record.name) }><Visibility /></IconButton>
+                            <NavLink to={'/' + self.state.type + '/scopes/' + record.name}>
+                                <IconButton>
+                                    <Visibility />
+                                </IconButton>
+                            </NavLink>
                         </TableCell>
                     </TableRow>
                 ));
+                listItems.push(
+                    <ListItem dense button style={{overflow: 'hidden'}}>
+                        <IconButton onClick={() => self.handleRemoveScope(record.name)}>
+                            <Delete />
+                        </IconButton>
+                        <NavLink to={'/' + self.state.type + '/scopes/' + record.name}>
+                            <IconButton>
+                                <Visibility />
+                            </IconButton>
+                        </NavLink>
+                        <ListItemText>{record.name}</ListItemText>
+                    </ListItem>
+                );
             });
         }
         
@@ -340,23 +384,25 @@ class ViewScopes extends Component {
                 <DialogTitle>{t('addScope')}</DialogTitle>
                 { self.state.isAddScopeLoading ? (<DialogContent><CircularProgress /></DialogContent>) : (
                     <div>
-                        <DialogContent>
-                            {/* Name */}
-                            <FormControl fullWidth={true} className={classes.margin}>
-                                <InputLabel>{t('scopeName')}</InputLabel>
-                                <Input value={self.state.newScope.name} name="name" onChange={self.handleChangeScopeProperty}  />
-                                <FormHelperText>{t('scopeNameDescription')}</FormHelperText>
-                            </FormControl>
-                            {/* Description */}
-                            <FormControl fullWidth={true} className={classes.margin}>
-                                <InputLabel>{t('scopeDescription')}</InputLabel>
-                                <Input value={self.state.newScope.description} name="description" onChange={self.handleChangeScopeProperty}  />
-                                <FormHelperText>{t('scopeDescriptionDescription')}</FormHelperText>
-                            </FormControl>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button  variant="raised" color="primary" onClick={self.handleAddScope}>{t('addScope')}</Button>
-                        </DialogActions>
+                        <form onSubmit={(e) => { e.preventDefault(); self.handleAddScope(); } }>
+                            <DialogContent>
+                                {/* Name */}
+                                <FormControl fullWidth={true} className={classes.margin}>
+                                    <InputLabel>{t('scopeName')}</InputLabel>
+                                    <Input value={self.state.newScope.name} name="name" onChange={self.handleChangeScopeProperty}  />
+                                    <FormHelperText>{t('scopeNameDescription')}</FormHelperText>
+                                </FormControl>
+                                {/* Description */}
+                                <FormControl fullWidth={true} className={classes.margin}>
+                                    <InputLabel>{t('scopeDescription')}</InputLabel>
+                                    <Input value={self.state.newScope.description} name="description" onChange={self.handleChangeScopeProperty}  />
+                                    <FormHelperText>{t('scopeDescriptionDescription')}</FormHelperText>
+                                </FormControl>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button  variant="raised" color="primary" onClick={self.handleAddScope}>{t('addScope')}</Button>
+                            </DialogActions>
+                        </form>
                     </div>
                 ) }
             </Dialog>
@@ -394,42 +440,49 @@ class ViewScopes extends Component {
                 <div className="body">
                     { this.state.isLoading ? (<CircularProgress />) : (
                         <div>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell></TableCell>
-                                        <TableCell>{t('name')}</TableCell>
-                                        <TableCell>{t('scopeType')}</TableCell>
-                                        <TableCell>
-                                            <TableSortLabel active={true} direction={self.state.order} onClick={self.handleSort}>{t('updateDateTime')}</TableSortLabel>
-                                        </TableCell>
-                                        <TableCell></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
-                                        <TableCell>
-                                            <form onSubmit={(e) => { e.preventDefault(); self.refreshData(); }}>
-                                                <TextField value={this.state.selectedName} name='selectedName' onChange={self.handleChangeProperty} placeholder={t('Filter...')}/>
-                                                <IconButton onClick={self.refreshData}><Search /></IconButton>
-                                            </form>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Select value={this.state.selectedType} fullWidth={true} name="selectedType" onChange={this.handleChangeFilter}>
-                                                <MenuItem value="all">{t('all')}</MenuItem>
-                                                <MenuItem value="0">{t('apiScope')}</MenuItem>
-                                                <MenuItem value="1">{t('openidScope')}</MenuItem>
-                                            </Select>
-                                        </TableCell>                                        
-                                        <TableCell></TableCell>                               
-                                        <TableCell></TableCell>
-                                    </TableRow>
-                                    {rows}
-                                </TableBody>
-                                <TableFooter>
-                                </TableFooter>
-                            </Table>
+                            <Hidden only={['xs', 'sm']}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell></TableCell>
+                                            <TableCell>{t('scopeName')}</TableCell>
+                                            <TableCell>{t('scopeType')}</TableCell>
+                                            <TableCell>
+                                                <TableSortLabel active={true} direction={self.state.order} onClick={self.handleSort}>{t('updateDateTime')}</TableSortLabel>
+                                            </TableCell>
+                                            <TableCell></TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
+                                            <TableCell>
+                                                <form onSubmit={(e) => { e.preventDefault(); self.refreshData(); }}>
+                                                    <TextField value={this.state.selectedName} name='selectedName' onChange={self.handleChangeProperty} placeholder={t('Filter...')}/>
+                                                    <IconButton onClick={self.refreshData}><Search /></IconButton>
+                                                </form>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Select value={this.state.selectedType} fullWidth={true} name="selectedType" onChange={this.handleChangeFilter}>
+                                                    <MenuItem value="all">{t('all')}</MenuItem>
+                                                    <MenuItem value="0">{t('apiScope')}</MenuItem>
+                                                    <MenuItem value="1">{t('openidScope')}</MenuItem>
+                                                </Select>
+                                            </TableCell>                                        
+                                            <TableCell></TableCell>                               
+                                            <TableCell></TableCell>
+                                        </TableRow>
+                                        {rows}
+                                    </TableBody>
+                                    <TableFooter>
+                                    </TableFooter>
+                                </Table>
+                            </Hidden>
+                            <Hidden only={['lg', 'xl', 'md']}>
+                                <List>
+                                    {listItems}
+                                </List>
+                            </Hidden>
                             <TablePagination component="div" count={self.state.count} rowsPerPage={self.state.pageSize} page={this.state.page} onChangePage={self.handleChangePage} onChangeRowsPerPage={self.handleChangeRowsPage} />
                         </div>
                     )}
