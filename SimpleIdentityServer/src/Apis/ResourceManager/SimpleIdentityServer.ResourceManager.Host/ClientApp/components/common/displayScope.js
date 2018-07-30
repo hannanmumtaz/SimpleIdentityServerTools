@@ -134,7 +134,6 @@ class DisplayScope extends Component {
                         <FormControl fullWidth={true} className={classes.margin} disabled={self.props.isReadOnly}>
                             <InputLabel>{t('scopeName')}</InputLabel>
                             <Input value={self.state.scope.name} name="name" onChange={self.handleChangeProperty}  />
-                            <FormHelperText>{t('scopeNameDescription')}</FormHelperText>
                         </FormControl>
                         {/* Description */}
                         <FormControl fullWidth={true} className={classes.margin}>
@@ -149,14 +148,16 @@ class DisplayScope extends Component {
                             <InputLabel>{t('scopeType')}</InputLabel>
                             <Select value={self.state.scope.type} onChange={self.handleChangeProperty} name="type">
                                 <MenuItem value={0}>{t('apiScope')}</MenuItem>
-                                <MenuItem value={1}>{t('resourceOwnerScope')}</MenuItem>
+                                <MenuItem value={1}>{t('openidScope')}</MenuItem>
                             </Select>
                             <FormHelperText>{t('scopeTypeDescription')}</FormHelperText>
                         </FormControl>
                         {/* Openid scope */}
                         <div>
-                            <Typography><Checkbox color="primary" checked={self.state.scope.is_openid_scope} onChange={() => { self.handleToggleProperty('is_openid_scope'); }}/> {t('isOpenidScope')}</Typography >
-                            <Typography>{t('isOpenidScopeDescription')}</Typography>
+                            <Typography>
+                                <Checkbox color="primary" checked={self.state.scope.is_openid_scope} onChange={() => { self.handleToggleProperty('is_openid_scope'); }}/>
+                                {t('isOpenidScope')}
+                            </Typography >
                         </div>
                         { self.state.scope.type === 1 && self.state.chipsSelectorOpts.values.length > 0 && ( <ChipsSelector label={t('addScopeClaims')} properties={self.state.scope.claims} input={self.state.chipsSelectorOpts} />) }                        
                     </Grid>

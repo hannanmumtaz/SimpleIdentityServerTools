@@ -106,7 +106,7 @@
 	"manageScimServers": "Manager SCIM server",
 	"logsMenuItem": "Logs",
 	"disconnectMenuItem": "Disconnect",
-	"openidScopes": "Openid scopes",
+	"openidScopes": "OPENID scopes",
 	"resourceOwners": "Users",
 	"dashboardMenuItem": "Dashboard",
 	"authscopes": "Authorization scopes",
@@ -128,5 +128,15 @@
 	"scopesDescription": "View, remove and add scopes",
 	"addScope": "Add scope",
 	"scopeDescription": "Scope description",
-	"scopeDescriptionDescription": "Enter the scope description"
+	"scopeDescriptionDescription": "Enter the scope description",
+	"scopeUpdated": "Scope has been updated",
+	"scopeCannotBeUpdated": "An error occured while trying to update the scope",
+	"scopeTitle": "Scope",
+	"scopeShortDescription": "View & edit the scope information",
+	"isOpenidScope": "Is standard Openid scope",
+	"scope": "Scope",
+	"scopeInformation": "Scope information",
+	"scopeTypeDescription": "Select the scope type",
+	"apiScope": "API scope",
+	"openidScope": "Openid scope"
 }
