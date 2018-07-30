@@ -76,7 +76,7 @@ class Layout extends Component {
         this.displayMessage = this.displayMessage.bind(this);
         var pathName = this.props.location.pathname;
         this.state = {
-            isManageOpenidServerOpened: pathName.indexOf('/claims') !== -1 || pathName.indexOf('/resourceowners') !== -1 || pathName.indexOf('/openid') !== -1,
+            isManageOpenidServerOpened: pathName.indexOf('/claims') !== -1 || pathName.indexOf('/users') !== -1 || pathName.indexOf('/openid') !== -1,
             isManageAuthServersOpened: pathName.indexOf('/auth') !== -1 ||  pathName.indexOf('/resources') !== -1,
             isScimOpened: pathName.indexOf('/scim') !== -1,
             isSettingsOpened: pathName.indexOf('/units') !== -1 || pathName.indexOf('/connectors') !== -1 || pathName.indexOf('/twofactors') !== -1,
@@ -409,7 +409,7 @@ class Layout extends Component {
                                     <ListItemIcon><Assignment /></ListItemIcon>
                                     {t('claims')}
                                 </MenuItem>
-                                <MenuItem key='/resourceowners' selected={pathName.indexOf('/resourceowners') !== -1} className={classes.nested} onClick={() => self.navigate('/resourceowners')}>
+                                <MenuItem key='/users' selected={pathName.indexOf('/users') !== -1} className={classes.nested} onClick={() => self.navigate('/users')}>
                                     <ListItemIcon><Face /></ListItemIcon>
                                     {t('resourceOwners')}
                                 </MenuItem>

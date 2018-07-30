@@ -138,5 +138,22 @@
 	"scopeInformation": "Scope information",
 	"scopeTypeDescription": "Select the scope type",
 	"apiScope": "API scope",
-	"openidScope": "Openid scope"
+	"openidScope": "Openid scope",
+	"users": "Users",
+	"usersShortDescription": "View, add and remove users",
+	"userSubject": "Subject",
+	"userEmail": "Email",
+	"userName": "Name",
+	"listOfUsers": "List of users",
+	"userLogin": "User's login",
+	"userPassword": "User's password",
+	"userLoginShortDescription": "Enter the user login",
+	"userPasswordShortDescription": "Enter the user password",
+	"addUser": "Add user",
+	"userIsRemoved": "User has been removed",
+	"userCannotBeRemoved": "An error occured while trying to remove the user",
+	"usersAreRemoved": "The selected users have been removed",
+	"usersCannotBeRemoved": "An error occured while trying to remove the selected users",
+	"userIsAdded": "A user has been added",
+	"userCannotBeAdded": "An error occured while trying to remove the user"
 }

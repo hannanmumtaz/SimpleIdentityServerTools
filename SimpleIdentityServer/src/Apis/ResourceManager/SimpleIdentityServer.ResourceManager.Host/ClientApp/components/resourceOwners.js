@@ -6,7 +6,7 @@ import { SessionStore } from '../stores';
 import moment from 'moment';
 
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
-import { Popover, IconButton, Menu, MenuItem, Checkbox, TextField, Select, Avatar , CircularProgress, Grid, Button } from 'material-ui';
+import { Popover, IconButton, Menu, MenuItem, Checkbox, TextField, Select, Avatar , CircularProgress, Grid, Button, Hidden, List, ListItem, ListItemText } from 'material-ui';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import Input, { InputLabel } from 'material-ui/Input';
 import { FormControl, FormHelperText } from 'material-ui/Form';
@@ -29,6 +29,7 @@ class ResourceOwners extends Component {
         this.handleRowClick = this.handleRowClick.bind(this);
         this.handleAllSelections = this.handleAllSelections.bind(this);
         this.handleRemoveUsers = this.handleRemoveUsers.bind(this);
+        this.handleRemoveUser = this.handleRemoveUser.bind(this);
         this.handleSort = this.handleSort.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
         this.handleOpenModal = this.handleOpenModal.bind(this);
@@ -222,6 +223,32 @@ class ResourceOwners extends Component {
     }
 
     /**
+    * Remove the user
+    */
+    handleRemoveUser(login) {
+        var self = this;
+        const {t} = self.props;
+        self.setState({
+            isLoading: true
+        });
+        ResourceOwnerService.delete(login).then(function() {
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('userIsRemoved')
+            });
+            self.refreshData();
+        }).catch(function() {
+            self.setState({
+                isLoading: false
+            });
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('userCannotBeRemoved')
+            });
+        });
+    }
+
+    /**
     * Sort the users.
     */
     handleSort() {
@@ -297,7 +324,7 @@ class ResourceOwners extends Component {
     render() {
         var self = this;
         const { t } = this.props;
-        var rows = [];
+        var rows = [], listItems = [];
         if (self.state.data) {
             self.state.data.forEach(function(record) {
                 rows.push((
@@ -309,17 +336,34 @@ class ResourceOwners extends Component {
                         <TableCell>{record.name}</TableCell>
                         <TableCell>{moment(record.update_datetime).format('LLLL')}</TableCell>
                         <TableCell>
-                            <IconButton onClick={ () => self.props.history.push('/resourceowners/' + record.login) }><Visibility /></IconButton>
+                            <NavLink to={'/users/' + record.login}>
+                                <IconButton>
+                                    <Visibility />
+                                </IconButton>
+                            </NavLink>
                         </TableCell>
                     </TableRow>
                 ));
+                listItems.push(                    
+                    <ListItem dense button style={{overflow: 'hidden'}}>
+                        <IconButton onClick={() => self.handleRemoveUser(record.login)}>
+                            <Delete />
+                        </IconButton>
+                        <NavLink to={'/users/' + record.login }>
+                            <IconButton>
+                                <Visibility />
+                            </IconButton>
+                        </NavLink>
+                        <ListItemText>{record.login}</ListItemText>
+                    </ListItem>
+                );
             });
         }
 
         return (<div className="block">
             <Dialog open={self.state.isModalOpened} onClose={this.handleCloseModal}>
                 <DialogTitle>{t('addUser')}</DialogTitle>
-                {self.state.isAddUserLoading ? (<CircularProgress />) : (
+                {self.state.isAddUserLoading ? (<DialogContent><CircularProgress /></DialogContent>) : (
                     <form onSubmit={(e) => { e.preventDefault(); self.handleAddUser(); }}>
                         <DialogContent>
                             {/* Login */}
@@ -375,38 +419,37 @@ class ResourceOwners extends Component {
                 <div className="body">
                     { this.state.isLoading ? (<CircularProgress />) : (
                         <div>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell>{t('subject')}</TableCell>
-                                        <TableCell>{t('email')}</TableCell>
-                                        <TableCell>{t('name')}</TableCell>
-                                        <TableCell>
-                                            <TableSortLabel active={true} direction={self.state.order} onClick={self.handleSort}>{t('updateDateTime')}</TableSortLabel>
-                                        </TableCell>
-                                        <TableCell></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell>
-                                            <form onSubmit={(e) => { e.preventDefault(); self.refreshData(); }}>
-                                                <TextField value={this.state.selectedSubject} name='selectedSubject' onChange={this.handleChangeFilter} placeholder={t('Filter...')}/>
-                                                <IconButton onClick={self.refreshData}><Search /></IconButton>
-                                            </form>
-                                        </TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
-                                    </TableRow>
-                                    {rows}
-                                </TableBody>
-                            </Table>
+                            <Hidden only={['xs', 'sm']}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
+                                            <TableCell></TableCell>
+                                            <TableCell>
+                                                {t('userSubject')}                                            
+                                                <form onSubmit={(e) => { e.preventDefault(); self.refreshData(); }}>
+                                                    <TextField value={this.state.selectedSubject} name='selectedSubject' onChange={this.handleChangeFilter} placeholder={t('Filter...')}/>
+                                                    <IconButton onClick={self.refreshData}><Search /></IconButton>
+                                                </form>
+                                            </TableCell>
+                                            <TableCell>{t('userEmail')}</TableCell>
+                                            <TableCell>{t('userName')}</TableCell>
+                                            <TableCell>
+                                                <TableSortLabel active={true} direction={self.state.order} onClick={self.handleSort}>{t('updateDateTime')}</TableSortLabel>
+                                            </TableCell>
+                                            <TableCell></TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {rows}
+                                    </TableBody>
+                                </Table>
+                            </Hidden>
+                            <Hidden only={['lg', 'xl', 'md']}>
+                                <List>
+                                    {listItems}
+                                </List>
+                            </Hidden>
                             <TablePagination component="div" count={self.state.count} rowsPerPage={self.state.pageSize} page={this.state.page} onChangePage={self.handleChangePage} onChangeRowsPerPage={self.handleChangeRowsPage} />
                         </div>
                     )}

@@ -246,7 +246,7 @@ class ViewResourceOwner extends Component {
                     <Grid item md={7} sm={12}>                        
                         <ul className="breadcrumb float-md-right">
                             <li className="breadcrumb-item"><NavLink to="/">{t('websiteTitle')}</NavLink></li>
-                            <li className="breadcrumb-item"><NavLink to="/resourceowners">{t('resourceOwners')}</NavLink></li>
+                            <li className="breadcrumb-item"><NavLink to="/users">{t('resourceOwners')}</NavLink></li>
                             <li className="breadcrumb-item">{t('resourceOwner')}</li>
                         </ul>
                     </Grid>
