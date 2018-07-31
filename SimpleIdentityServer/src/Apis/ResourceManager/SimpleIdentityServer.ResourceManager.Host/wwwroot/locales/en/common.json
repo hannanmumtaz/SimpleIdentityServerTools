@@ -189,5 +189,19 @@
 	"scimLogsTitle": "SCIM events",
 	"scimErrorsTitle": "SCIM errors",
 	"authLogsTitle": "Authorization events",
-	"authErrorsTitle": "Authorization errors"
+	"authErrorsTitle": "Authorization errors",
+	"resourceOwnerPasswordUpdated": "The user's password has been updated",
+	"resourceOwnerPasswordCannotBeUpdated": "An error occured while trying to update the password",
+	"resourceOwnerClaimsUpdated": "The user's claims have been updated",
+	"resourceOwnerClaimsCannotBeUpdated": "An error occured while trying to update the claims",
+	"thePasswordDoesntMatch": "The passwords don't match",
+	"revealClientSecret": "Reveal the client secret",
+	"hierarchicalResources": "Hierarchical resources",
+	"aboutTitle": "About",
+	"aboutShortDescription": "About SimpleIdServer UI",
+	"aboutContent": "Welcome to SimpleIdServer management UI",
+	"selectedPreferredOpenIdProvider": "Select your preferred OPENID provider",
+	"selectPreferredAuthorizationServer": "Select your prefrerred Authorization server",
+	"selectPreferredScimServer": "Select your preferred SCIM server",
+	"saveChanges": "Save the changes"
 }

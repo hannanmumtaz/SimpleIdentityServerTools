@@ -469,6 +469,7 @@ class Layout extends Component {
                         </Collapse>
                     )}
                     {/* SETTINGS */}
+                    {/*
                     {(this.state.isLoggedIn && process.env.IS_COMMERCIAL && (
                         <MenuItem onClick={() => self.toggleValue('isSettingsOpened')}>
                             { this.state.isSettingsOpened ? (<ListItemIcon><ExpandLess /></ListItemIcon>) : (<ListItemIcon><ExpandMore /></ListItemIcon>) }
@@ -484,6 +485,7 @@ class Layout extends Component {
                             </List>
                         </Collapse>
                     ))}
+                    */}
                     {/* Logs */}         
                     {this.state.isLoggedIn && process.env.IS_COMMERCIAL && (
                        <MenuItem key='logs' selected={pathName.indexOf('/logs') !== -1} onClick={() => self.navigate('/logs')}>

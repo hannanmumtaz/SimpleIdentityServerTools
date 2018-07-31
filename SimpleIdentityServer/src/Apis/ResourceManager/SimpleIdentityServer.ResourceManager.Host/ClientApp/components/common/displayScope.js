@@ -22,7 +22,6 @@ const styles = theme => ({
 class DisplayScope extends Component {
     constructor(props) {
         super(props);
-        this.saveScope = this.saveScope.bind(this);
         this.handleChangeProperty = this.handleChangeProperty.bind(this);
         this.handleToggleProperty = this.handleToggleProperty.bind(this);
         this.refreshData = this.refreshData.bind(this);
@@ -36,14 +35,6 @@ class DisplayScope extends Component {
             }
         };
     }
-    /**
-    * Save the scope.
-    */
-    saveScope() {
-        if (this.props.onSave) {
-            this.props.onSave(this.state.scope);
-        }
-    }
 
     /**
     * Change the property.
@@ -52,7 +43,6 @@ class DisplayScope extends Component {
         var self = this;
         var scope = self.state.scope;
         scope[e.target.name] = e.target.value;
-        self.state.scope.claims = [];
         self.setState({
             scope: scope
         });

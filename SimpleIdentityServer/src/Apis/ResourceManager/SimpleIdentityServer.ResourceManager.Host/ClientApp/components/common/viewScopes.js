@@ -444,9 +444,22 @@ class ViewScopes extends Component {
                                 <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell></TableCell>
-                                            <TableCell>{t('scopeName')}</TableCell>
-                                            <TableCell>{t('scopeType')}</TableCell>
+                                            <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
+                                            <TableCell>
+                                                {t('scopeName')}
+                                                <form onSubmit={(e) => { e.preventDefault(); self.refreshData(); }}>
+                                                    <TextField value={this.state.selectedName} name='selectedName' onChange={self.handleChangeProperty} placeholder={t('Filter...')}/>
+                                                    <IconButton onClick={self.refreshData}><Search /></IconButton>
+                                                </form>
+                                            </TableCell>
+                                            <TableCell>
+                                                {t('scopeType')}                                                
+                                                <Select value={this.state.selectedType} fullWidth={true} name="selectedType" onChange={this.handleChangeFilter}>
+                                                    <MenuItem value="all">{t('all')}</MenuItem>
+                                                    <MenuItem value="0">{t('apiScope')}</MenuItem>
+                                                    <MenuItem value="1">{t('openidScope')}</MenuItem>
+                                                </Select>
+                                            </TableCell>
                                             <TableCell>
                                                 <TableSortLabel active={true} direction={self.state.order} onClick={self.handleSort}>{t('updateDateTime')}</TableSortLabel>
                                             </TableCell>
@@ -454,24 +467,6 @@ class ViewScopes extends Component {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        <TableRow>
-                                            <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
-                                            <TableCell>
-                                                <form onSubmit={(e) => { e.preventDefault(); self.refreshData(); }}>
-                                                    <TextField value={this.state.selectedName} name='selectedName' onChange={self.handleChangeProperty} placeholder={t('Filter...')}/>
-                                                    <IconButton onClick={self.refreshData}><Search /></IconButton>
-                                                </form>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Select value={this.state.selectedType} fullWidth={true} name="selectedType" onChange={this.handleChangeFilter}>
-                                                    <MenuItem value="all">{t('all')}</MenuItem>
-                                                    <MenuItem value="0">{t('apiScope')}</MenuItem>
-                                                    <MenuItem value="1">{t('openidScope')}</MenuItem>
-                                                </Select>
-                                            </TableCell>                                        
-                                            <TableCell></TableCell>                               
-                                            <TableCell></TableCell>
-                                        </TableRow>
                                         {rows}
                                     </TableBody>
                                     <TableFooter>

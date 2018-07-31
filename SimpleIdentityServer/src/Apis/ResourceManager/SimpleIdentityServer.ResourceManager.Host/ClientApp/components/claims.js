@@ -326,7 +326,7 @@ class Claims extends Component {
                     </TableRow>
                 ));
                 listItems.push(
-                    <ListItem>
+                    <ListItem dense button style={{overflow: 'hidden'}}>
                         <IconButton onClick={() => self.handleRemoveClaim(record.code)}>
                             <Delete />
                         </IconButton>

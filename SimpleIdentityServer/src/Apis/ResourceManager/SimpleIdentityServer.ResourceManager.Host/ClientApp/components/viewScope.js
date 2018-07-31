@@ -37,7 +37,6 @@ class ViewScope extends Component {
             self.setState({
                 isLoading: false
             });
-            self.props.history.push(self.state.type === "openid" ? "/openid/scopes" : "/auth/scopes");
             AppDispatcher.dispatch({
                 actionName: Constants.events.DISPLAY_MESSAGE,
                 data: t('scopeUpdated')
