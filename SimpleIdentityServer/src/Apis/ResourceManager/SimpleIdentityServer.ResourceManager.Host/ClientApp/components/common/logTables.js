@@ -206,14 +206,14 @@ class LogTables extends Component {
     */
     handleSortError(colName) {
         var self = this;
-        var logOrder = this.state.logOrder === 'asc' ? 'desc' : 'asc';
-        if (this.state.logOrderBy !== colName) {
-            logOrder = 'asc';
+        var errorOrder = this.state.errorOrder === 'asc' ? 'desc' : 'asc';
+        if (this.state.errorOrderBy !== colName) {
+            errorOrder = 'asc';
         }
 
         this.setState({
             errorOrderBy: colName,
-            errorOrder: logOrder
+            errorOrder: errorOrder
         }, () => {
             self.refreshErrors();
         });
@@ -347,7 +347,7 @@ class LogTables extends Component {
         if (self.state.data) {
             self.state.data.forEach(function(record) {
                 logRows.push((
-                    <TableRow hover role="checkbox" key={record.aggregate_id} onClick={() => self.props.history.push('/viewaggregate/' + record.aggregate_id) }>
+                    <TableRow hover role="checkbox" key={record.aggregate_id} onClick={() => self.props.history.push('/aggregates/' + record.aggregate_id) }>
                         <TableCell>{record.description}</TableCell>
                         <TableCell>{record.client_id}</TableCell>
                         <TableCell>{record.created_on}</TableCell>
@@ -360,7 +360,7 @@ class LogTables extends Component {
         if (self.state.errorData) {
             self.state.errorData.forEach(function(record) {
                 errorRows.push((
-                    <TableRow hover role="checkbox" key={record.id} onClick={() => self.props.history.push('/viewlog/' + record.id) }>
+                    <TableRow hover role="checkbox" key={record.id} onClick={() => self.props.history.push('/events/' + record.id) }>
                         <TableCell>{record.code}</TableCell>
                         <TableCell>{record.description}</TableCell>
                         <TableCell>{record.created_on}</TableCell>
@@ -383,28 +383,21 @@ class LogTables extends Component {
                                         <TableRow>
                                             <TableCell>
                                                 <TableSortLabel active={self.state.logOrderBy === 'description' ? true : false} direction={self.state.logOrder} onClick={() => self.handleSortLog('description')}>{t('eventDescription')}</TableSortLabel>                                        
-                                            </TableCell>
-                                            <TableCell>{t('clientId')}</TableCell>
-                                            <TableCell>
-                                                <TableSortLabel active={self.state.logOrderBy === 'created_on' ? true : false} direction={self.state.logOrder} onClick={() => self.handleSortLog('created_on')}>{t('createdAfter')}</TableSortLabel>                                        
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell>
                                                 <form onSubmit={(e) => { e.preventDefault(); self.refreshLogs(); }}>
                                                     <TextField value={this.state.selectedLogEventDescription} name='selectedLogEventDescription' onChange={this.handleChangeValue} placeholder={t('Filter...')}/>
                                                     <IconButton onClick={self.refreshData}><Search /></IconButton>
                                                 </form>
                                             </TableCell>
-                                            <TableCell></TableCell>
+                                            <TableCell>{t('clientId')}</TableCell>
                                             <TableCell>
+                                                <TableSortLabel active={self.state.logOrderBy === 'created_on' ? true : false} direction={self.state.logOrder} onClick={() => self.handleSortLog('created_on')}>{t('createdAfter')}</TableSortLabel>
                                                 <MuiPickersUtilsProvider utils={MomentUtils}>
                                                     <DatePicker value={self.state.selectedLogCreatedOn} onChange={self.handleLogCreatedOnChange} />
-                                                </MuiPickersUtilsProvider>
+                                                </MuiPickersUtilsProvider>                                        
                                             </TableCell>
                                         </TableRow>
+                                    </TableHead>
+                                    <TableBody>
                                         {logRows}
                                     </TableBody>
                                 </Table>
@@ -429,19 +422,13 @@ class LogTables extends Component {
                                             <TableCell>{t('errorMessage')}</TableCell>
                                             <TableCell>
                                                 <TableSortLabel active={self.state.errorOrderBy === 'created_on' ? true : false} direction={self.state.errorOrder} onClick={() => self.handleSortError('created_on')}>{t('createdAfter')}</TableSortLabel>                                        
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell></TableCell>
-                                            <TableCell></TableCell>
-                                            <TableCell>
                                                 <MuiPickersUtilsProvider utils={MomentUtils}>
                                                     <DatePicker value={self.state.selectedErrorCreatedOn} onChange={self.handleErrorCreatedOnChange} />
                                                 </MuiPickersUtilsProvider>
                                             </TableCell>
                                         </TableRow>
+                                    </TableHead>
+                                    <TableBody>
                                         {errorRows}
                                     </TableBody>
                                 </Table>

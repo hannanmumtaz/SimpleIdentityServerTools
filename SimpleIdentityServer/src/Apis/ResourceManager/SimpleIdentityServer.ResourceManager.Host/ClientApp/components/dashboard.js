@@ -169,7 +169,7 @@ class Dashboard extends Component {
             self.state.latestErrors.forEach(function(latestError) {
                 lstError.push(
                     <ListItem dense button style={{overflow: 'hidden'}}>
-                        <NavLink to={'/viewlog/' + latestError.Id}>
+                        <NavLink to={'/events/' + latestError.Id}>
                             <IconButton>
                                 <Visibility />
                             </IconButton>
@@ -183,7 +183,7 @@ class Dashboard extends Component {
             self.state.latestLogs.forEach(function(latestLog) {
                 lstLogs.push(
                     <ListItem dense button style={{overflow: 'hidden'}}>
-                        <NavLink to={'/viewlog/' + latestLog.Id}>
+                        <NavLink to={'/aggregates/' + latestLog.AggregateId}>
                             <IconButton>
                                 <Visibility />
                             </IconButton>

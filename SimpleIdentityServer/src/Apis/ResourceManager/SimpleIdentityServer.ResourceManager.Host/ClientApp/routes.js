@@ -40,6 +40,6 @@ export const routes = (<Layout>
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/units/:id' exact path='/units/:id' component={ViewSetting} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/twofactors' exact path='/twofactors' component={TwoFactors} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/connectors' exact path='/connectors' component={Connectors} />)}
-    { !process.env.IS_LOG_DISABLED && (<Route exact path="/viewaggregate/:id" component={ViewAggregate} /> )}
-    { !process.env.IS_LOG_DISABLED && (<Route exact path="/viewlog/:id" component={ViewLog} /> )}
+    { !process.env.IS_LOG_DISABLED && (<Route key='/aggregates/:id' exact path="/aggregates/:id" component={ViewAggregate} /> )}
+    { !process.env.IS_LOG_DISABLED && (<Route key='/events/:id' exact path="/events/:id" component={ViewLog} /> )}
 </Layout>);

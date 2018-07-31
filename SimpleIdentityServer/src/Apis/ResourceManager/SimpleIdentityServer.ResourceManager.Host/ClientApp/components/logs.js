@@ -45,15 +45,15 @@ class Logs extends Component {
                     <div className="body">
                         <Tabs indicatorColor="primary" value={self.state.tabId} onChange={self.handleChangeTab}>
                             <Tab label={t('openid')} component={Link}  to="/logs/openid" />
-                            <Tab label={t('scim')} component={Link}  to="/logs/scim" />
                             <Tab label={t('authorization')} component={Link}  to="/logs/authorization" />
+                            <Tab label={t('scim')} component={Link}  to="/logs/scim" />
                         </Tabs>
                     </div>
                 </div>
                 <div>
                     {self.state.tabId === 0 && (<OpenIdTab />)}
-                    {self.state.tabId === 1 && (<ScimTab />)}
-                    {self.state.tabId === 2 && (<AuthorizationTab />)}
+                    {self.state.tabId === 1 && (<AuthorizationTab />)}
+                    {self.state.tabId === 2 && (<ScimTab />)}
                 </div>
             </div>
         </div>);

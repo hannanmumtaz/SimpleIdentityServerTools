@@ -64,7 +64,7 @@ class ViewAggregate extends Component {
         if (self.state.data) {
             self.state.data.forEach(function(record) {                
                 rows.push((
-                    <TableRow hover role="checkbox" key={record.id} onClick={() => self.props.history.push('/viewlog/' + record.id) }>
+                    <TableRow hover role="checkbox" key={record.id} onClick={() => self.props.history.push('/events/' + record.id) }>
                         <TableCell>{record.description}</TableCell>
                         <TableCell>{record.created_on}</TableCell>
                         <TableCell style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "200px" }}>
