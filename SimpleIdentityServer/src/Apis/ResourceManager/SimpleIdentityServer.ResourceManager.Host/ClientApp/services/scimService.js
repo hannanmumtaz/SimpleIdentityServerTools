@@ -65,6 +65,25 @@ module.exports = {
         });        
     },
     /**
+    * Get the users.
+    */
+    getUsers: function() {
+        return new Promise(function (resolve, reject) {
+            var session = SessionService.getSession();
+            $.ajax({
+                url: SessionStore.getSession().selectedScim.url + '/users',
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer "+ session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });        
+    },
+    /**
     * Search the groups.
     */
     searchGroups: function(request) {        

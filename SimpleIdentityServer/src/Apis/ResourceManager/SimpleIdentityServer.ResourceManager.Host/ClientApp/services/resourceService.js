@@ -82,6 +82,31 @@ module.exports = {
         });        
     },
     /**
+    * Get the resource.
+    */
+    getAll: function(id) {
+        return new Promise(function (resolve, reject) {
+            var session = SessionService.getSession();
+            var url = SessionStore.getSession().selectedAuth['url'];
+            $.get(url).then(function(configuration) {
+                $.ajax({
+                    url: configuration['resource_registration_endpoint'],
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer "+ session.token
+                    }
+                }).then(function (data) {
+                    resolve(data);
+                }).fail(function (e) {
+                    reject(e);
+                });
+            }).fail(function(e) {
+                reject(e);
+            });
+            
+        });        
+    },
+    /**
     * Remove the resource.
     */
     delete: function(id) {

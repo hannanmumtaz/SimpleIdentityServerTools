@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Authors>thierry habart</Authors>
+    <TargetFrameworks>net461;netcoreapp2.0</TargetFrameworks>
+    <AssemblyName>SimpleIdentityServer.EventStore.Handler</AssemblyName>
+    <PackageId>SimpleIdentityServer.EventStore.Handler</PackageId>
+    <OutputType>Exe</OutputType>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <StartupObject>SimpleIdentityServer.EventStore.Handler.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Events\SimpleIdentityServer.Scim.Events.csproj" />
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.OAuth.Events\SimpleIdentityServer.OAuth.Events.csproj" />
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.OpenId.Events\SimpleIdentityServer.OpenId.Events.csproj" />
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Lib\Bus\SimpleBus.Core\SimpleBus.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Lib\Bus\SimpleBus.InMemory\SimpleBus.InMemory.csproj" />
+  </ItemGroup>
+</Project>

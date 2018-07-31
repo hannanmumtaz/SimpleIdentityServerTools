@@ -56,6 +56,30 @@ module.exports = {
 		});
 	},
     /**
+    * Get all the scopes
+    */
+    getAll: function(type) {
+        return new Promise(function(resolve, reject) {
+            var session = SessionService.getSession();
+            var url = type === 'openid' ? SessionStore.getSession().selectedOpenid['manager_url'] : SessionStore.getSession().selectedAuth['manager_url'];
+             $.get(url).then(function(configuration) {
+                $.ajax({
+                    url: configuration['scopes_endpoint'],
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer "+ session.token
+                    }
+                }).then(function(data) {
+                    resolve(data);
+                }).fail(function(e) {
+                    reject(e);
+                });
+            }).fail(function(e) {
+                reject(e);
+            });
+        });
+    },
+    /**
     * Add a scope.
     */
     add: function(request, type) {

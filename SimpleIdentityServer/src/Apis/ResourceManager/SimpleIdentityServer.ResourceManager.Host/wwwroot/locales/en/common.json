@@ -155,5 +155,10 @@
 	"usersAreRemoved": "The selected users have been removed",
 	"usersCannotBeRemoved": "An error occured while trying to remove the selected users",
 	"userIsAdded": "A user has been added",
-	"userCannotBeAdded": "An error occured while trying to remove the user"
+	"userCannotBeAdded": "An error occured while trying to remove the user",
+	"dashboardTitle": "Dashboard",
+	"dashboardShortDescription": "Dashboard",
+	"latestErrors": "The latest errors",
+	"latestLogs": "The latest logs",
+	"dashboard": "Dashboard"
 }

@@ -54,6 +54,29 @@ module.exports = {
 		});
 	},
     /**
+    * Get all the claims.
+    */
+    getAll: function() {
+        return new Promise(function(resolve, reject) {
+            var session = SessionService.getSession();
+            $.get(SessionStore.getSession().selectedOpenid['manager_url']).then(function(configuration) {
+                $.ajax({
+                    url: configuration['claims_endpoint'],
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer "+ session.token
+                    }
+                }).then(function(data) {
+                    resolve(data);
+                }).fail(function(e) {
+                    reject(e);
+                });
+            }).fail(function(e) {
+                reject(e);
+            });
+        });
+    },
+    /**
     * Add a claim.
     */
     add: function(request) {

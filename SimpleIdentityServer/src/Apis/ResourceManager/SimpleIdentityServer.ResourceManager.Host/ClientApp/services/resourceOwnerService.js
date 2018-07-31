@@ -53,6 +53,29 @@ module.exports = {
             });
 		});
 	},
+    /**
+    * Get the resource owner.
+    */
+    getAll: function(id) {
+        return new Promise(function(resolve, reject) {
+            var session = SessionService.getSession();
+            $.get(SessionStore.getSession().selectedOpenid['manager_url']).then(function(configuration) { 
+                $.ajax({
+                    url: configuration['resourceowners_endpoint'],
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer "+ session.token
+                    }
+                }).then(function(data) {
+                    resolve(data);
+                }).fail(function(e) {
+                    reject(e);
+                });                
+            }).fail(function(e) {
+                reject(e);
+            });
+        });
+    },
 	/**
 	* Remove the user.
 	*/
