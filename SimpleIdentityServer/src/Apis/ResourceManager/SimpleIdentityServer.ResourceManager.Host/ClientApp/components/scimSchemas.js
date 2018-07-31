@@ -4,12 +4,12 @@ import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
 import { NavLink, Link } from 'react-router-dom';
 import { SessionStore } from '../stores';
-import { TextField , Button, Grid, IconButton, CircularProgress } from 'material-ui';
+import { TextField , Button, Grid, IconButton, CircularProgress, Hidden, List, ListItem, ListItemText } from 'material-ui';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
-import Visibility from '@material-ui/icons/Visibility';
 import $ from 'jquery';
 import AppDispatcher from '../appDispatcher';
 import Constants from '../constants';
+import Visibility from '@material-ui/icons/Visibility'; 
 
 
 class ScimSchemas extends Component {
@@ -58,7 +58,7 @@ class ScimSchemas extends Component {
     render() {
         var self = this;
         const { t } = self.props;
-        var rows = [];
+        var rows = [], listItems = [];
         if (self.state.schemas) {
             self.state.schemas.forEach(function(schema) {
                 rows.push(
@@ -67,9 +67,23 @@ class ScimSchemas extends Component {
                         <TableCell>{schema.name}</TableCell>
                         <TableCell>{schema.nbAttributes}</TableCell>
                         <TableCell>
-                            <IconButton onClick={ () => self.props.history.push('/scim/schemas/' + schema.name) }><Visibility /></IconButton>
+                            <NavLink to={'/scim/schemas/' + schema.name}>
+                                <IconButton>
+                                    <Visibility />
+                                </IconButton>
+                            </NavLink>
                         </TableCell>
                     </TableRow>
+                );
+                listItems.push(
+                    <ListItem dense button style={{overflow: 'hidden'}}>
+                        <NavLink to={'/scim/schemas/' + schema.name}>
+                            <IconButton>
+                                <Visibility />
+                            </IconButton>
+                        </NavLink>
+                        <ListItemText>{schema.id}</ListItemText>
+                    </ListItem>
                 );
             });
         }
@@ -96,17 +110,24 @@ class ScimSchemas extends Component {
                 <div className="body">
                     { this.state.isLoading ? (<CircularProgress />) : (
                         <div>
-                            <Table>
-                                <TableHead>
-                                    <TableCell>{t('scimSchemaId')}</TableCell>
-                                    <TableCell>{t('scimSchemaName')}</TableCell>
-                                    <TableCell>{t('scimSchemaNbAttributes')}</TableCell>
-                                    <TableCell></TableCell>
-                                </TableHead>
-                                <TableBody>
-                                    {rows}
-                                </TableBody>
-                            </Table>
+                            <Hidden only={['xs', 'sm']}>
+                                <Table>
+                                    <TableHead>
+                                        <TableCell>{t('scimSchemaId')}</TableCell>
+                                        <TableCell>{t('scimSchemaName')}</TableCell>
+                                        <TableCell>{t('scimSchemaNbAttributes')}</TableCell>
+                                        <TableCell></TableCell>
+                                    </TableHead>
+                                    <TableBody>
+                                        {rows}
+                                    </TableBody>
+                                </Table>
+                            </Hidden>
+                            <Hidden only={['lg', 'xl', 'md']}>
+                                <List>
+                                    {listItems}
+                                </List>
+                            </Hidden>
                         </div>
                     )}
                 </div>

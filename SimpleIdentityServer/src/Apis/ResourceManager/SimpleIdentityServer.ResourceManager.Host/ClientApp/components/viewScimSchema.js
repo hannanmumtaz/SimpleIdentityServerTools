@@ -5,7 +5,7 @@ import { withStyles } from 'material-ui/styles';
 import { translate } from 'react-i18next';
 import { NavLink, Link } from 'react-router-dom';
 import { SessionStore } from '../stores';
-import { TextField , Button, Grid, IconButton, Checkbox, CircularProgress } from 'material-ui';
+import { TextField , Button, Grid, IconButton, Checkbox, CircularProgress, Hidden, List, ListItem, ListItemText } from 'material-ui';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
 import Input, { InputLabel } from 'material-ui/Input';
 import { FormControl, FormHelperText } from 'material-ui/Form';
@@ -81,7 +81,7 @@ class ViewScimSchema extends Component {
     render() {
         var self = this;
         const { t, classes } = self.props;
-        var rows = [];
+        var rows = [], listItems = [];
         if (self.state.schema && self.state.schema.attributes) {
             self.state.schema.attributes.forEach(function(attribute) {
                 rows.push(
@@ -91,9 +91,23 @@ class ViewScimSchema extends Component {
                         <TableCell>{<Checkbox color="primary" checked={attribute.required} disabled={true} />}</TableCell>
                         <TableCell>{<Checkbox color="primary" checked={attribute.multiValued} disabled={true} />}</TableCell>
                         <TableCell>
-                            <IconButton onClick={ () => self.props.history.push('/scim/schemas/' + self.state.id + '/' + attribute.name) }><Visibility /></IconButton>
+                            <NavLink to={'/scim/schemas/' + self.state.id + '/' + attribute.name}>
+                                <IconButton>
+                                    <Visibility />
+                                </IconButton>
+                            </NavLink>
                         </TableCell>
                     </TableRow>
+                );
+                listItems.push(
+                    <ListItem dense button style={{overflow: 'hidden'}}>
+                        <NavLink to={'/scim/schemas/' + self.state.id + '/' + attribute.name}>
+                            <IconButton>
+                                <Visibility />
+                            </IconButton>
+                        </NavLink>
+                        <ListItemText>{attribute.name}</ListItemText>
+                    </ListItem>
                 );
             });
         }
@@ -103,7 +117,7 @@ class ViewScimSchema extends Component {
                 <Grid container>
                     <Grid item md={5} sm={12}>
                         <h4>{t('scimSchema')}</h4>
-                        <i>{t('scimSchemaDescription')}</i>
+                        <i>{t('scimSchemaShortDescription')}</i>
                     </Grid>
                     <Grid item md={7} sm={12}>                        
                         <ul className="breadcrumb float-md-right">
@@ -127,19 +141,16 @@ class ViewScimSchema extends Component {
                                     <FormControl fullWidth={true} className={classes.margin} disabled={true}>
                                         <InputLabel>{t('scimSchemaId')}</InputLabel>
                                         <Input value={self.state.schema.id} />
-                                        <FormHelperText>{t('scimSchemaIdDescription')}</FormHelperText>
                                     </FormControl>
                                     {/* Name */}
                                     <FormControl fullWidth={true} className={classes.margin}>
                                         <InputLabel>{t('scimSchemaName')}</InputLabel>
                                         <Input value={self.state.schema.name} name="name" onChange={self.handleChangeProperty}  />
-                                        <FormHelperText>{t('scimSchemaNameDescription')}</FormHelperText>
                                     </FormControl>    
                                     {/* Description */}
                                   <FormControl fullWidth={true} className={classes.margin}>
                                         <InputLabel>{t('scimSchemaDescription')}</InputLabel>
                                         <Input value={self.state.schema.description} name="description" onChange={self.handleChangeProperty}  />
-                                        <FormHelperText>{t('scimSchemaDescriptionDescription')}</FormHelperText>
                                     </FormControl>                       
                                 </div>
                             )}
@@ -153,20 +164,29 @@ class ViewScimSchema extends Component {
                         </div>
                         <div className="body">
                             { self.state.isLoading ? ( <CircularProgress /> ) : (
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>{t('scimSchemaAttributeName')}</TableCell>
-                                            <TableCell>{t('scimSchemaAttributeType')}</TableCell>
-                                            <TableCell>{t('scimSchemaAttributeIsRequired')}</TableCell>
-                                            <TableCell>{t('scimSchemaAttributeIsMultiValued')}</TableCell>
-                                            <TableCell></TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {rows}
-                                    </TableBody>
-                                </Table>
+                                <div>
+                                    <Hidden only={['xs', 'sm']}>
+                                        <Table>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>{t('scimSchemaAttributeName')}</TableCell>
+                                                    <TableCell>{t('scimSchemaAttributeType')}</TableCell>
+                                                    <TableCell>{t('scimSchemaAttributeIsRequired')}</TableCell>
+                                                    <TableCell>{t('scimSchemaAttributeIsMultiValued')}</TableCell>
+                                                    <TableCell></TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {rows}
+                                            </TableBody>
+                                        </Table>
+                                    </Hidden>
+                                    <Hidden only={['lg', 'xl', 'md']}>
+                                        <List>
+                                            {listItems}
+                                        </List>
+                                    </Hidden>
+                                </div>
                             )}
                         </div>
                     </div>

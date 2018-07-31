@@ -5,7 +5,7 @@ import { withStyles } from 'material-ui/styles';
 import { translate } from 'react-i18next';
 import { NavLink, Link } from 'react-router-dom';
 import { SessionStore } from '../stores';
-import { TextField , Button, Grid, IconButton, Checkbox, CircularProgress } from 'material-ui';
+import { TextField , Button, Grid, IconButton, Checkbox, CircularProgress, Hidden, List, ListItem, ListItemText } from 'material-ui';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
 import Input, { InputLabel } from 'material-ui/Input';
 import { FormControl, FormHelperText } from 'material-ui/Form';
@@ -96,7 +96,7 @@ class ViewScimAttribute extends Component {
     render() {
         var self = this;
         const { t, classes } = self.props;
-        var rows = [];
+        var rows = [], listItems = [];
         if (self.state.attribute && self.state.attribute.subAttributes) {
             self.state.attribute.subAttributes.forEach(function(attribute) {
                 rows.push(
@@ -108,6 +108,11 @@ class ViewScimAttribute extends Component {
                         <TableCell>{<Checkbox color="primary" checked={attribute.multiValued} disabled={true} />}</TableCell>
                     </TableRow>
                 );
+                listItems.push(
+                    <ListItem dense button style={{overflow: 'hidden'}}>
+                        <ListItemText>{attribute.name}</ListItemText>
+                    </ListItem>
+                );
             });
         }
 
@@ -115,8 +120,8 @@ class ViewScimAttribute extends Component {
             <div className="block-header">
                 <Grid container>
                     <Grid item md={5} sm={12}>
-                        <h4>{t('scimSchema')}</h4>
-                        <i>{t('scimSchemaDescription')}</i>
+                        <h4>{t('scimSchemaAttribute')}</h4>
+                        <i>{t('scimSchemaAttributeShortDescription')}</i>
                     </Grid>
                     <Grid item md={7} sm={12}>                        
                         <ul className="breadcrumb float-md-right">
@@ -132,7 +137,7 @@ class ViewScimAttribute extends Component {
                 <Grid item md={12}>
                     <div className="card">
                         <div className="header">
-                            <h4 style={{display: "inline-block"}}>{t('scimSchemaInformation')}</h4>
+                            <h4 style={{display: "inline-block"}}>{t('scimSchemaAttributeInformation')}</h4>
                         </div>
                         <div className="body">
                             { self.state.isLoading ? ( <CircularProgress /> ) : (        
@@ -141,29 +146,26 @@ class ViewScimAttribute extends Component {
                                     <FormControl fullWidth={true} className={classes.margin} disabled={true}>
                                         <InputLabel>{t('scimSchemaAttributeName')}</InputLabel>
                                         <Input value={self.state.attribute.name} />
-                                        <FormHelperText>{t('scimSchemaAttributeNameDescription')}</FormHelperText>
                                     </FormControl>   
                                     {/* Description */} 
                                     <FormControl fullWidth={true} className={classes.margin} disabled={true}>
                                         <InputLabel>{t('scimSchemaAttributeDescription')}</InputLabel>
                                         <Input value={self.state.attribute.description} />
-                                        <FormHelperText>{t('scimSchemaAttributeDescriptionDescription')}</FormHelperText>
                                     </FormControl>     
                                     {/* Type */} 
                                     <FormControl fullWidth={true} className={classes.margin} disabled={true}>
                                         <InputLabel>{t('scimSchemaAttributeType')}</InputLabel>
                                         <Input value={self.state.attribute.type} />
-                                        <FormHelperText>{t('scimSchemaAttributeTypeDescription')}</FormHelperText>
                                     </FormControl>
                                     {/* Required */} 
                                     <FormControl fullWidth={true} className={classes.margin} disabled={true}>
                                         <Checkbox checked={self.state.attribute.required} />
-                                        <FormHelperText>{t('scimSchemaAttributeIsRequiredDescription')}</FormHelperText>
+                                        <FormHelperText>{t('scimSchemaAttributeIsRequired')}</FormHelperText>
                                     </FormControl>   
                                     {/* MultiValued */} 
                                     <FormControl fullWidth={true} className={classes.margin} disabled={true}>
                                         <Checkbox checked={self.state.attribute.required} />
-                                        <FormHelperText>{t('scimSchemaAttributeMultivaluedDescription')}</FormHelperText>
+                                        <FormHelperText>{t('scimSchemaAttributeIsMultiValued')}</FormHelperText>
                                     </FormControl>          
                                 </div>
                             )}
@@ -177,20 +179,29 @@ class ViewScimAttribute extends Component {
                         </div>
                         <div className="body">
                             { self.state.isLoading ? ( <CircularProgress /> ) : (
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>{t('scimSchemaAttributeName')}</TableCell>
-                                            <TableCell>{t('scimSchemaAttributeDescription')}</TableCell>
-                                            <TableCell>{t('scimSchemaAttributeType')}</TableCell>
-                                            <TableCell>{t('scimSchemaAttributeIsRequired')}</TableCell>
-                                            <TableCell>{t('scimSchemaAttributeIsMultiValued')}</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {rows}
-                                    </TableBody>
-                                </Table>
+                                <div>
+                                    <Hidden only={['xs', 'sm']}>
+                                        <Table>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>{t('scimSchemaAttributeName')}</TableCell>
+                                                    <TableCell>{t('scimSchemaAttributeDescription')}</TableCell>
+                                                    <TableCell>{t('scimSchemaAttributeType')}</TableCell>
+                                                    <TableCell>{t('scimSchemaAttributeIsRequired')}</TableCell>
+                                                    <TableCell>{t('scimSchemaAttributeIsMultiValued')}</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {rows}
+                                            </TableBody>
+                                        </Table>
+                                    </Hidden>
+                                    <Hidden only={['lg', 'xl', 'md']}>
+                                        <List>
+                                            {listItems}
+                                        </List>
+                                    </Hidden>
+                                </div>
                             )}
                         </div>
                     </div>
