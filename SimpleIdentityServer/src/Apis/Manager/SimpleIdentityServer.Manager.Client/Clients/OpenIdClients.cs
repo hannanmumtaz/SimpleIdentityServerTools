@@ -13,7 +13,7 @@ namespace SimpleIdentityServer.Manager.Client.Clients
         Task<AddClientResult> ResolveAdd(Uri wellKnownConfigurationUri, AddClientRequest client, string authorizationHeaderValue = null);
         Task<BaseResponse> ResolveUpdate(Uri wellKnownConfigurationUri, UpdateClientRequest client, string authorizationHeaderValue = null);
         Task<GetClientResult> ResolveGet(Uri wellKnownConfigurationUri, string clientId, string authorizationHeaderValue = null);
-        Task<BaseResponse> ResolvedDelete(Uri wellKnownConfigurationUri, string clientId, string authorizationHeaderValue = null);
+        Task<BaseResponse> ResolveDelete(Uri wellKnownConfigurationUri, string clientId, string authorizationHeaderValue = null);
         Task<GetAllClientResult> GetAll(Uri clientsUri, string authorizationHeaderValue = null);
         Task<GetAllClientResult> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null);
         Task<PagedResult<ClientResponse>> ResolveSearch(Uri wellKnownConfigurationUri, SearchClientsRequest searchClientParameter, string authorizationHeaderValue = null);
@@ -60,7 +60,7 @@ namespace SimpleIdentityServer.Manager.Client.Clients
             return await _getClientOperation.ExecuteAsync(new Uri(configuration.Content.ClientsEndpoint + "/" + clientId), authorizationHeaderValue).ConfigureAwait(false);
         }
 
-        public async Task<BaseResponse> ResolvedDelete(Uri wellKnownConfigurationUri, string clientId, string authorizationHeaderValue = null)
+        public async Task<BaseResponse> ResolveDelete(Uri wellKnownConfigurationUri, string clientId, string authorizationHeaderValue = null)
         {
             var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
             return await _deleteClientOperation.ExecuteAsync(new Uri(configuration.Content.ClientsEndpoint + "/" + clientId), authorizationHeaderValue).ConfigureAwait(false);

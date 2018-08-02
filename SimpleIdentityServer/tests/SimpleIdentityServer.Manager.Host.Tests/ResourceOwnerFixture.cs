@@ -220,7 +220,7 @@ namespace SimpleIdentityServer.Manager.Host.Tests
             _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
 
             // ACT
-            var result = await _resourceOwnerClient.ResolvedDelete(new Uri("http://localhost:5000/.well-known/openidmanager-configuration"), "invalid_login", null);
+            var result = await _resourceOwnerClient.ResolveDelete(new Uri("http://localhost:5000/.well-known/openidmanager-configuration"), "invalid_login", null);
 
             // ASSERT
             Assert.NotNull(result);
@@ -370,7 +370,7 @@ namespace SimpleIdentityServer.Manager.Host.Tests
                 Subject = "login1",
                 Password = "password"
             }, null);
-            var remove = await _resourceOwnerClient.ResolvedDelete(new Uri("http://localhost:5000/.well-known/openidmanager-configuration"), "login1", null);
+            var remove = await _resourceOwnerClient.ResolveDelete(new Uri("http://localhost:5000/.well-known/openidmanager-configuration"), "login1", null);
 
             // ASSERT
             Assert.NotNull(remove);

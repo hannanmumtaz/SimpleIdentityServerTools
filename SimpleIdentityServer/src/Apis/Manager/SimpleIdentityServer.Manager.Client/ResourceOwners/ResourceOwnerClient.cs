@@ -14,7 +14,7 @@ namespace SimpleIdentityServer.Manager.Client.ResourceOwners
         Task<BaseResponse> ResolveUpdateClaims(Uri wellKnownConfigurationUri, UpdateResourceOwnerClaimsRequest resourceOwner, string authorizationHeaderValue = null);
         Task<BaseResponse> ResolveUpdatePassword(Uri wellKnownConfigurationUri, UpdateResourceOwnerPasswordRequest request, string authorizationHeaderValue = null);
         Task<GetResourceOwnerResult> ResolveGet(Uri wellKnownConfigurationUri, string resourceOwnerId, string authorizationHeaderValue = null);
-        Task<BaseResponse> ResolvedDelete(Uri wellKnownConfigurationUri, string resourceOwnerId, string authorizationHeaderValue = null);
+        Task<BaseResponse> ResolveDelete(Uri wellKnownConfigurationUri, string resourceOwnerId, string authorizationHeaderValue = null);
         Task<GetAllResourceOwnersResult> GetAll(Uri resourceOwnerUri, string authorizationHeaderValue = null);
         Task<GetAllResourceOwnersResult> ResolveGetAll(Uri wellKnownConfigurationUri, string authorizationHeaderValue = null);
         Task<PagedResult<ResourceOwnerResponse>> ResolveSearch(Uri wellKnownConfigurationUri, SearchResourceOwnersRequest searchResourceOwnersRequest, string authorizationHeaderValue = null);
@@ -70,7 +70,7 @@ namespace SimpleIdentityServer.Manager.Client.ResourceOwners
             return await _getResourceOwnerOperation.ExecuteAsync(new Uri(configuration.Content.ResourceOwnersEndpoint + "/" + resourceOwnerId), authorizationHeaderValue).ConfigureAwait(false);
         }
 
-        public async Task<BaseResponse> ResolvedDelete(Uri wellKnownConfigurationUri, string resourceOwnerId, string authorizationHeaderValue = null)
+        public async Task<BaseResponse> ResolveDelete(Uri wellKnownConfigurationUri, string resourceOwnerId, string authorizationHeaderValue = null)
         {
             var configuration = await _configurationClient.GetConfiguration(wellKnownConfigurationUri).ConfigureAwait(false);
             return await _deleteResourceOwnerOperation.ExecuteAsync(new Uri(configuration.Content.ResourceOwnersEndpoint + "/" + resourceOwnerId), authorizationHeaderValue).ConfigureAwait(false);

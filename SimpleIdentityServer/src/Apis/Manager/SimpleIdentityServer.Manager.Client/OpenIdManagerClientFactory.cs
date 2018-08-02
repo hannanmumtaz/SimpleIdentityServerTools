@@ -35,7 +35,7 @@ namespace SimpleIdentityServer.Manager.Client
         IClaimsClient GetClaimsClient();
     }
 
-    internal sealed class OpenIdManagerClientFactory : IOpenIdManagerClientFactory
+    public sealed class OpenIdManagerClientFactory : IOpenIdManagerClientFactory
     {
         private readonly IServiceProvider _serviceProvider;
 

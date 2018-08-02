@@ -239,7 +239,7 @@ namespace SimpleIdentityServer.Manager.Host.Tests
             _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
 
             // ACT
-            var newClient = await _openidClients.ResolvedDelete(new Uri("http://localhost:5000/.well-known/openidmanager-configuration"), "unknown_client");
+            var newClient = await _openidClients.ResolveDelete(new Uri("http://localhost:5000/.well-known/openidmanager-configuration"), "unknown_client");
 
             // ASSERTS
             Assert.NotNull(newClient);
@@ -411,7 +411,7 @@ namespace SimpleIdentityServer.Manager.Host.Tests
             }, null);
 
             // ACT
-            var deleteResult = await _openidClients.ResolvedDelete(new Uri("http://localhost:5000/.well-known/openidmanager-configuration"), addClientResult.Content.ClientId);
+            var deleteResult = await _openidClients.ResolveDelete(new Uri("http://localhost:5000/.well-known/openidmanager-configuration"), addClientResult.Content.ClientId);
 
             // ASSERTS
             Assert.NotNull(deleteResult);
