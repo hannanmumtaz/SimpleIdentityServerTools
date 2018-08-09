@@ -56,6 +56,11 @@ dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Si
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Twilio.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.AccountFilter /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.AccountFilter.Basic /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.AccountFilter.Basic.EF /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.AccountFilter.Basic.EF.InMemory /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.AccountFilter.Basic.EF.Postgre /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.AccountFilter.Basic.EF.Sqlite /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.AccountFilter.Basic.EF.SqlServer /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 
 REM SCIM
 dotnet pack --output d:\sidfeeds\core\ IdServer\SimpleIdentityServer\src\Apis\Scim\SimpleIdentityServer.Scim.Client /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
