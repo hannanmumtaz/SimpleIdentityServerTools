@@ -111,8 +111,7 @@ class Layout extends Component {
      * @param {any} e
      */
     disconnect() {
-        // TODO : Resolve this url.
-        var url = "http://localhost:60000/end_session?post_logout_redirect_uri=http://localhost:64950/end_session&id_token_hint="+ SessionService.getSession().id_token;
+        var url = Constants.openidUrl + "/end_session?post_logout_redirect_uri="+Constants.adminuiUrl+"/end_session&id_token_hint="+ SessionService.getSession().id_token;
         var w = window.open(url, '_blank');
         var interval = setInterval(function() {
             if (w.closed) {
@@ -121,7 +120,7 @@ class Layout extends Component {
             }
 
             var href = w.location.href;
-            if (href === "http://localhost:64950/end_session") {                
+            if (href === Constants.adminuiUrl + "/end_session") {                
                 clearInterval(interval);
                 w.close();
             }
@@ -267,8 +266,7 @@ class Layout extends Component {
             }
             
             var win = self._sessionFrame.contentWindow;
-            // TODO : Externalize the client_id & openid url.
-            win.postMessage(message, "http://localhost:60000");
+            win.postMessage(message, Constants.openidUrl);
         }, 3*1000);
     }
 
@@ -572,7 +570,7 @@ class Layout extends Component {
                 </section>
             </section>
             { this.state.isLoggedIn && (<div>
-                    <iframe ref={(elt) => { self._sessionFrame = elt; self.startCheckSession(); }} id="session-frame" src="http://localhost:60000/check_session" style={{display: "none"}} /> 
+                    <iframe ref={(elt) => { self._sessionFrame = elt; self.startCheckSession(); }} id="session-frame" src={Constants.openidUrl + "/check_session"} style={{display: "none"}} /> 
                 </div>
             )}
             <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} open={self.state.isSnackbarOpened} onClose={self.handleSnackbarClose} message={<span>{self.state.snackbarMessage}</span>} />

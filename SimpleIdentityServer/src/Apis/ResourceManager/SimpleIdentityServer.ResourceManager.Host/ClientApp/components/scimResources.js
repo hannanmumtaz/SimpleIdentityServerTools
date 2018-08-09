@@ -51,12 +51,14 @@ class ScimResources extends Component {
 
             self.setState({
                 isUsersLoading: false,
-                users: users
+                users: users,
+                countUser: result.totalResults
             });
         }).catch(function() {
             self.setState({
                 isUsersLoading: false,
-                users: []
+                users: [],
+                countUser: 0
             });
             AppDispatcher.dispatch({
                 actionName: Constants.events.DISPLAY_MESSAGE,
@@ -83,12 +85,14 @@ class ScimResources extends Component {
 
             self.setState({
                 isGroupsLoading: false,
-                groups: groups
+                groups: groups,
+                countGroup: result.totalResults
             });
         }).catch(function() {
             self.setState({
                 isGroupsLoading: false,
-                groups: []
+                groups: [],
+                countGroup: 0
             });
             AppDispatcher.dispatch({
                 actionName: Constants.events.DISPLAY_MESSAGE,
@@ -184,12 +188,12 @@ class ScimResources extends Component {
             <Grid container spacing={40}>
                 <Grid item md={12}>
                     <div className="card">
-                        { self.state.isUsersLoading ? ( <CircularProgress /> ) : (
-                            <div>
-                                <div className="header">
-                                    <h4 style={{display: "inline-block"}}>{t('scimUsers')}</h4>
-                                </div>
-                                <div className="body">
+                        <div className="header">
+                            <h4 style={{display: "inline-block"}}>{t('scimUsers')}</h4>
+                        </div>
+                        <div className="body">
+                            { self.state.isUsersLoading ? ( <CircularProgress /> ) : (
+                                <div>
                                     <Table>
                                         <TableHead>
                                             <TableRow>
@@ -199,23 +203,23 @@ class ScimResources extends Component {
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {userRows}
+                                           {userRows}
                                         </TableBody>
                                     </Table>
                                     <TablePagination component="div" count={self.state.countUser} rowsPerPage={self.state.pageSizeUser} page={this.state.pageUser} onChangePage={self.handleChangePageUser} onChangeRowsPerPage={self.handleChangeRowsPageUser} />
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
                 </Grid>
                 <Grid item md={12}>
                     <div className="card">
-                        { self.state.isGroupsLoading ? ( <CircularProgress /> ) : (
-                            <div>
-                                <div className="header">
-                                    <h4 style={{display: "inline-block"}}>{t('scimGroups')}</h4>
-                                </div>
-                                <div className="body">
+                        <div className="header">
+                            <h4 style={{display: "inline-block"}}>{t('scimGroups')}</h4>
+                        </div>
+                        <div className="body">
+                            { self.state.isGroupsLoading ? ( <CircularProgress /> ) : (
+                                <div>
                                     <Table>
                                         <TableHead>
                                             <TableRow>
@@ -226,12 +230,12 @@ class ScimResources extends Component {
                                         </TableHead>
                                         <TableBody>
                                             {groupRows}
-                                        </TableBody>
-                                        <TablePagination component="div" count={self.state.countGroup} rowsPerPage={self.state.pageSizeGroup} page={this.state.pageGroup} onChangePage={self.handleChangePageGroup} onChangeRowsPerPage={self.handleChangeRowsPageGroup} />
+                                        </TableBody>                                    
                                     </Table>
+                                    <TablePagination component="div" count={self.state.countGroup} rowsPerPage={self.state.pageSizeGroup} page={this.state.pageGroup} onChangePage={self.handleChangePageGroup} onChangeRowsPerPage={self.handleChangeRowsPageGroup} />
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
                 </Grid>
             </Grid>

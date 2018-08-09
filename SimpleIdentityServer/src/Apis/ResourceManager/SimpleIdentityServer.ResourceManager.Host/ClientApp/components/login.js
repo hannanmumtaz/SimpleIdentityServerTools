@@ -52,8 +52,7 @@ class Login extends Component {
         self.setState({
             isLoading: true
         });
-        // TODO : Resolve this url.
-        var url = "http://localhost:60000/authorization?scope=openid role profile&state=75BCNvRlEGHpQRCT&redirect_uri=http://localhost:64950/callback&response_type=id_token token&client_id=ResourceManagerClientId&nonce=nonce&response_mode=query&amr_values=pwd";
+        var url = Constants.openidUrl + "/authorization?scope=openid role profile&state=75BCNvRlEGHpQRCT&redirect_uri="+Constants.adminuiUrl+"/callback&response_type=id_token token&client_id=ResourceManagerClientId&nonce=nonce&response_mode=query&amr_values=pwd";
         var w = window.open(url, '_blank');        
         var interval = setInterval(function () {
             if (w.closed) {

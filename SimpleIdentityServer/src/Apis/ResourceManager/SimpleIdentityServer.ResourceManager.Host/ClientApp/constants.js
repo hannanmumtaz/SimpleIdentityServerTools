@@ -7,6 +7,8 @@
         SESSION_UPDATED: 'SESSION_UPDATED',
         DISPLAY_MESSAGE: 'DISPLAY_MESSAGE'
     },
+    adminuiUrl: 'http://localhost:64950',
+    openidUrl: 'http://localhost:60000',
     openidManagerBaseUrl: 'http://localhost:60003',
     profileBaseUrl: 'http://localhost:60005',
     hierarchicalResourcesBaseUrl: 'http://localhost:60006',
