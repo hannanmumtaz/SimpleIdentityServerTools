@@ -26,8 +26,8 @@ dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Hierarchic
 dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\HierarchicalResource\SimpleIdentityServer.HierarchicalResource.EF.Postgre /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\HierarchicalResource\SimpleIdentityServer.HierarchicalResource.EF.Sqlite /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\HierarchicalResource\SimpleIdentityServer.HierarchicalResource.EF.SqlServer /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\HierarchicalResource\SimpleIdentityServer.HierarchicalResource.EF.Host /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
-dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\HierarchicalResource\SimpleIdentityServer.HierarchicalResource.EF.Resolver /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\HierarchicalResource\SimpleIdentityServer.HierarchicalResource.Host /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\HierarchicalResource\SimpleIdentityServer.HierarchicalResource.Resolver /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 
 REM EVENT STORE
 dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\EventStore\SimpleIdentityServer.EventStore.Core /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%

@@ -19,9 +19,7 @@ module.exports = (env) => {
         },
         entry: {
             vendor: ['react', 'react-dom', 'react-router-dom', 'jquery', 'popper.js', 'bootstrap/dist/css/bootstrap.css', 
-					'react-table/react-table.css', 'jquery-ui/themes/base/all.css', 'codemirror/lib/codemirror.css', 
-					'react-datepicker/dist/react-datepicker.css', 'roboto-fontface/css/roboto/roboto-fontface.css',
-					'material-icons/iconfont/material-icons.css', './elfinder/css/elfinder.full.css'],
+					'react-table/react-table.css', 'jquery-ui/themes/base/all.css', 'material-icons/iconfont/material-icons.css', './elfinder/css/elfinder.full.css'],
         },
         output: {
             path: path.join(__dirname, 'wwwroot', 'dist'),
