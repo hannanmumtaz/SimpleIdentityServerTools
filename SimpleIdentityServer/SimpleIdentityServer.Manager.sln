@@ -103,7 +103,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Scim.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Manager.Auth.Host.Startup", "src\Apis\Manager\SimpleIdentityServer.Manager.Auth.Host.Startup\SimpleIdentityServer.Manager.Auth.Host.Startup.csproj", "{C11160CB-C743-4CC1-9F68-EF1234786F80}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.EF.Postgre", "..\..\SimpleIdentityServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.EF.Postgre\SimpleIdentityServer.EF.Postgre.csproj", "{12618878-2525-464F-9507-367667B887A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.EF.Postgre", "..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.EF.Postgre\SimpleIdentityServer.EF.Postgre.csproj", "{12618878-2525-464F-9507-367667B887A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

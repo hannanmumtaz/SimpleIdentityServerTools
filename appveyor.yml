@@ -2,6 +2,17 @@ version: 3.0.{build}
 install:
 - cmd: git submodule -q update --init
 build_script:
-- ps: .\build.ps1
+- ps: .\build.ps1 -packageVersion $(appveyor_repo_tag_name)
 test_script:
 - cmd: cd SimpleIdentityServer && run-tests.cmd
+artifacts:  
+- path: .\sidfeeds\*.nupkg
+  name: NuGet
+deploy:  
+- provider: NuGet
+  server: https://www.myget.org/F/advance-ict/api/v3/index.json
+  api_key:
+    secure: ShvXI7uxNw6D5l8qqrUAwIKPjOU1YlQahqUk5B+YtaEUCdUloAukHIINzRj9av8C
+  on:
+    branch: master
+    appveyor_repo_tag: true
