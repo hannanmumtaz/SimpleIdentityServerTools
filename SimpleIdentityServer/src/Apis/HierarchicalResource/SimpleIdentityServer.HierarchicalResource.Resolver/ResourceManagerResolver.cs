@@ -111,7 +111,7 @@ namespace SimpleIdentityServer.ResourceManager.Resolver
                 .UseClientSecretPostAuth(_resourceManagerResolverOptions.Authorization.ClientId, _resourceManagerResolverOptions.Authorization.ClientSecret)
                 .UseTicketId(permissionResponse.Content.TicketId, idToken)
                 .ResolveAsync(_resourceManagerResolverOptions.Authorization.AuthorizationWellKnownConfiguration);
-            if (umaGrantedToken == null || string.IsNullOrWhiteSpace(umaGrantedToken.Content.AccessToken))
+            if (umaGrantedToken.ContainsError)
             {
                 return null;
             }

@@ -41,6 +41,9 @@ dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\EventStore
 REM LICENSE
 dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\License\SimpleIdentityServer.License /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 
+REM UMA
+dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Uma\SimpleIdentityServer.Uma.Authentication /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
+
 REM CONNECTORS
 REM dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Connectors\SimpleIdentityServer.Connectors.Common /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
 REM dotnet pack --output d:\sidfeeds\tools\ SimpleIdentityServer\src\Apis\Connectors\SimpleIdentityServer.Connectors.Facebook /p:PackageVersion=%packageVersion% /p:Version=%packageVersion%
