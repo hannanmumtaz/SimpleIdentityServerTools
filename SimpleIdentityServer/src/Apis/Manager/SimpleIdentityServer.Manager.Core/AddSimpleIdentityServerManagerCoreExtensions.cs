@@ -83,6 +83,7 @@ namespace SimpleIdentityServer.Manager.Core
             serviceCollection.AddTransient<IDeleteClaimAction, DeleteClaimAction>();
             serviceCollection.AddTransient<IGetClaimAction, GetClaimAction>();
             serviceCollection.AddTransient<ISearchClaimsAction, SearchClaimsAction>();
+            serviceCollection.AddTransient<IGetClaimsAction, GetClaimsAction>();
             return serviceCollection;
         }
     }

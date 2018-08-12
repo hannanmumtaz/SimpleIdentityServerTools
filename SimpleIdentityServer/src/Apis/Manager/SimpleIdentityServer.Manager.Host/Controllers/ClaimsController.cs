@@ -53,6 +53,23 @@ namespace SimpleIdentityServer.Manager.Host.Controllers
             return new OkObjectResult(response);
         }
 
+        [HttpGet]
+        [Authorize("manager")]
+        public async Task<ActionResult> GetAll()
+        {
+            if (!await _representationManager.CheckRepresentationExistsAsync(this, GetClaimsStoreName))
+            {
+                return new ContentResult
+                {
+                    StatusCode = 412
+                };
+            }
+
+            var result = (await _claimActions.GetAll()).ToDtos();
+            await _representationManager.AddOrUpdateRepresentationAsync(this, GetClaimsStoreName);
+            return new OkObjectResult(result);
+        }
+
         [HttpPost(".search")]
         [Authorize("manager")]
         public async Task<ActionResult> Search([FromBody] SearchClaimsRequest request)

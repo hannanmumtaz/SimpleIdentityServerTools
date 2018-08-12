@@ -126,6 +126,7 @@ namespace SimpleIdentityServer.Manager.Client
             serviceCollection.AddTransient<IDeleteClaimOperation, DeleteClaimOperation>();
             serviceCollection.AddTransient<IGetClaimOperation, GetClaimOperation>();
             serviceCollection.AddTransient<ISearchClaimsOperation, SearchClaimsOperation>();
+            serviceCollection.AddTransient<IGetAllClaimsOperation, GetAllClaimsOperation>();
         }
     }
 }

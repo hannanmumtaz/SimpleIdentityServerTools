@@ -648,6 +648,11 @@ namespace SimpleIdentityServer.Manager.Host.Extensions
             return resourceOwners.Select(r => r.ToDto()).ToList();
         }
 
+        public static IEnumerable<ClaimResponse> ToDtos(this IEnumerable<ClaimAggregate> claims)
+        {
+            return claims.Select(c => c.ToDto());
+        }
+
         #endregion
     }
 }
