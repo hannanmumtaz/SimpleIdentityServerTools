@@ -6,13 +6,14 @@ import { SessionStore } from '../stores';
 import moment from 'moment';
 
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from 'material-ui/Table';
-import { Popover, IconButton, Menu, MenuItem, Checkbox, TextField, Select, Avatar , CircularProgress, Grid, Button, Hidden, List, ListItem, ListItemText } from 'material-ui';
+import { Popover, IconButton, Menu, MenuItem, Checkbox, TextField, Select, Avatar , CircularProgress, Grid, Tooltip, Button, Hidden, List, ListItem, ListItemText } from 'material-ui';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import Input, { InputLabel } from 'material-ui/Input';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import MoreVert from '@material-ui/icons/MoreVert';
 import Delete from '@material-ui/icons/Delete';
 import Search from '@material-ui/icons/Search';
+import Link from '@material-ui/icons/Link';
 import Visibility from '@material-ui/icons/Visibility'; 
 import AppDispatcher from '../appDispatcher';
 import Constants from '../constants';
@@ -115,6 +116,7 @@ class ResourceOwners extends Component {
                         picture: getClaim("picture", client.claims, ""),
                         email: getClaim("email", client.claims, "-"),
                         name: getClaim("given_name", client.claims, "-"),
+                        scimId: getClaim("scim_id", client.claims, ""),
                         update_datetime: client['update_datetime']
                     };
 
@@ -336,6 +338,15 @@ class ResourceOwners extends Component {
                         <TableCell>{record.name}</TableCell>
                         <TableCell>{moment(record.update_datetime).format('LLLL')}</TableCell>
                         <TableCell>
+                            { record.scimId !== "" && 
+                                <NavLink to={'/scim/resources/user/' + record.scimId}>
+                                    <Tooltip title={t('viewScimResource')}>
+                                        <IconButton>
+                                            <Link />
+                                        </IconButton>
+                                    </Tooltip>
+                                </NavLink>
+                            }
                             <NavLink to={'/users/' + record.login}>
                                 <IconButton>
                                     <Visibility />

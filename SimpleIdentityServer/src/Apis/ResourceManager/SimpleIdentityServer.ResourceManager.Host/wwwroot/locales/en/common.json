@@ -229,5 +229,6 @@
 	"scimMetadata": "Metadata",
 	"notAdministrator": "Your are not an administrator !",
 	"scimResource": "SCIM resource",
-	"scimResourceDescription": "View the SCIM resource"
+	"scimResourceDescription": "View the SCIM resource",
+	"viewScimResource": "View SCIM resource"
 }

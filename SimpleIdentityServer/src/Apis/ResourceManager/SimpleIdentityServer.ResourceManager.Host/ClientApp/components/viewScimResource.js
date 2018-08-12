@@ -95,16 +95,12 @@ class ViewScimResource extends Component {
                 </Grid>
             </div>
             <div className="card">
-                { self.state.isLoading ? ( <CircularProgress /> ) : (
-                    <div>
-                        <div className="header">
-                            <h4 style={{display: "inline-block"}}>{t('scimResource')}</h4>
-                        </div>
-                        <div className="body">
-                            {rows}
-                        </div>
+                    <div className="header">
+                        <h4 style={{display: "inline-block"}}>{t('scimResource')}</h4>
                     </div>
-                )}
+                    <div className="body">
+                        { self.state.isLoading ? ( <CircularProgress /> ) : (<div>{rows}</div>) }
+                    </div>
             </div>
         </div>);
     }
