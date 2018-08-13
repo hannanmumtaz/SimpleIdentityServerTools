@@ -230,5 +230,16 @@
 	"notAdministrator": "Your are not an administrator !",
 	"scimResource": "SCIM resource",
 	"scimResourceDescription": "View the SCIM resource",
-	"viewScimResource": "View SCIM resource"
+	"viewScimResource": "View SCIM resource",
+	"resourceOwnerProfilesCannotBeRetrieved": "User profiles cannot be retrieved",
+	"resourceOwnerProfileLinked": "Profile has been linked",
+	"resourceOwnerProfileCannotBeLinked": "Profile cannot be linked",
+	"resourceOwnerProfileUnlinked": "Profile has been unlinked",
+	"resourceOwnerProfileCannotBeUnlinked": "Profile cannot be unlinked",
+	"externalSubject": "External subject",
+	"externalSubjectDescription": "Enter the external subject",
+	"linkProfile": "Link the profile",
+	"resourceOwnerSettings": "User settings",
+	"resourceOwnerProfiles": "User profiles",
+	"authProviderAlreadyLinked": "The authentication provider is already linked"
 }

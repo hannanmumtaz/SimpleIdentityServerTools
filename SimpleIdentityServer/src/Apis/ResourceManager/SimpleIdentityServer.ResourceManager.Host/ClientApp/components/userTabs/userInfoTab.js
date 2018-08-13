@@ -231,25 +231,25 @@ class UserInfoTab extends Component {
         }
 
     	return (
-            <div>
+            <div  style={style}>
                 { self.state.isLoading ? (<CircularProgress />) : (
-                    <Grid container spacing={40} style={style}>
+                    <Grid container spacing={40}>
                         <Grid item md={5} sm={12}>
                             {/* Login */}
-                            <FormControl fullWidth={true} className={{margin: "5px"}} disabled={true}>
+                            <FormControl fullWidth={true} style={{margin: "5px"}} disabled={true}>
                                 <InputLabel>{t('roLogin')}</InputLabel>
                                 <Input value={self.state.roLogin} disabled={true} />
                                 <FormHelperText>{t('roLoginDescription')}</FormHelperText>
                             </FormControl> 
                             <form onSubmit={(e) => { e.preventDefault(); self.savePassword(); }}>
                                 {/* New password */ }
-                                    <FormControl fullWidth={true} className={{margin: "5px"}}>
+                                    <FormControl fullWidth={true} style={{margin: "5px"}}>
                                         <InputLabel>{t('newPassword')}</InputLabel>
                                         <Input type='password' value={self.state.newpassword} onChange={self.handleChangeProperty} name='newpassword' />
                                         <FormHelperText>{t('newPasswordDescription')}</FormHelperText>
                                     </FormControl> 
                                     {/* Confirm password */ }
-                                    <FormControl fullWidth={true} className={{margin: "5px"}}>
+                                    <FormControl fullWidth={true} style={{margin: "5px"}}>
                                         <InputLabel>{t('passwordConfirmation')}</InputLabel>
                                         <Input type='password' value={self.state.passwordConfirmation} onChange={self.handleChangeProperty} name='passwordConfirmation'/>
                                         <FormHelperText>{t('passwordConfirmationDescription')}</FormHelperText>
@@ -264,7 +264,7 @@ class UserInfoTab extends Component {
                                     <Select value={self.state.claimType} onChange={self.handleChangeProperty} name="claimType">
                                         {claims}
                                     </Select>                                    
-                                    <FormControl className={{margin: "5px"}}>
+                                    <FormControl style={{margin: "5px"}}>
                                         <InputLabel>{t('claimValue')}</InputLabel>
                                         <Input value={self.state.claimValue} name="claimValue" onChange={self.handleChangeProperty}  />
                                     </FormControl>

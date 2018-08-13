@@ -20,7 +20,8 @@ class ViewResourceOwner extends Component {
         this.handleTabChange = this.handleTabChange.bind(this);
         this.state = {
             tabIndex: 0,
-            login: ''
+            login: '',
+            isLoading: true
         };
 	}
 
@@ -29,6 +30,7 @@ class ViewResourceOwner extends Component {
     */
     refreshData() {      
         this.userInfoTab.getWrappedInstance().refreshData(this.state.login);
+        this.userProfileTab.getWrappedInstance().refreshData(this.state.login);
     }
 
     /**
@@ -67,12 +69,16 @@ class ViewResourceOwner extends Component {
                 	 <h4 style={{display: "inline-block"}}>{t('resourceOwnerInformation')}</h4>
                 </div>
                 <div className="body">
-                    <Tabs indicatorColor="primary" value={self.state.tabIndex} onChange={self.handleTabChange}>
-                        <Tab label={t('resourceOwnerSettings')} component={Link}  to={"/users/" + self.state.login} />
-                        <Tab label={t('resourceOwnerProfiles')} component={Link}  to={"/users/" + self.state.login + "/profiles"} />
-                    </Tabs>
-                    <UserInfoTab ref={ ref => this.userInfoTab = ref } hidden={self.state.tabIndex !== 0} />
-                    <UserProfileTab ref="userProfileTab" type={self.state.login} hidden={self.state.tabIndex !== 1} />
+                    { self.state.isLoading ? (<CircularProgress />) : (
+                        <div>
+                            <Tabs indicatorColor="primary" value={self.state.tabIndex} onChange={self.handleTabChange}>
+                                <Tab label={t('resourceOwnerSettings')} component={Link}  to={"/users/" + self.state.login} />
+                                <Tab label={t('resourceOwnerProfiles')} component={Link}  to={"/users/" + self.state.login + "/profiles"} />
+                            </Tabs>
+                            <UserInfoTab ref={ ref => this.userInfoTab = ref } hidden={self.state.tabIndex !== 0} />
+                            <UserProfileTab ref={ ref => this.userProfileTab = ref } hidden={self.state.tabIndex !== 1} />
+                        </div>
+                    )}
                 </div>
             </div>
     	</div>);
@@ -87,7 +93,9 @@ class ViewResourceOwner extends Component {
 
         SessionStore.addChangeListener(function() {
             self.setState({
-                login: self.props.match.params.id
+                login: self.props.match.params.id,
+                tabIndex: tabIndex,
+                isLoading: false
             }, function() {
                 self.refreshData();
             });
@@ -95,7 +103,9 @@ class ViewResourceOwner extends Component {
         
         if (SessionStore.getSession().selectedOpenid) {
             self.setState({
-                login: self.props.match.params.id
+                login: self.props.match.params.id,
+                tabIndex: tabIndex,
+                isLoading: false
             }, function() {
                 self.refreshData();
             });
