@@ -103,8 +103,8 @@ class UserProfileTab extends Component {
             }); 
             var profiles = self.state.profiles;
             profiles.push({
-            	authentication_scheme: self.state.selectedAuthProvider,
-            	display_name: self.state.externalSubject
+            	user_id: self.state.externalSubject,
+            	issuer: self.state.selectedAuthProvider
             });
     		self.setState({
     			isLoading: false,
