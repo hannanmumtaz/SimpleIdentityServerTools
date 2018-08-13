@@ -17,7 +17,7 @@ export const routes = (<Layout>
 
     { /* OPENID */ }
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/users' exact path='/users' component={ResourceOwners} />) }
-    { !process.env.IS_MANAGE_DISABLED && (<Route key='/users/:id' exact path='/users/:id' component={ViewResourceOwner} />)}
+    { !process.env.IS_MANAGE_DISABLED && (<Route key='/users/:id/:action?' exact path='/users/:id/:action?' component={ViewResourceOwner} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/claims' exact path='/claims' component={Claims} />) }
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/claims/:id' exact path='/claims/:id' component={ViewClaim} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/openid/clients' exact path='/openid/clients' component={OpenidClients} />) }
