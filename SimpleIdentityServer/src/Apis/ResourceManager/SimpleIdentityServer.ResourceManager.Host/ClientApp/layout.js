@@ -419,6 +419,9 @@ class Layout extends Component {
                                     <ListItemIcon><Label /></ListItemIcon>
                                     {t('openidScopes')}
                                 </MenuItem>
+                                <MenuItem key='/openid/accountfiltering' selected={pathName.indexOf('/openid/accountfiltering') !== -1} className={classes.nested} onClick={() => self.navigate('/openid/accountfiltering')}>
+                                    {t('accountFiltering')}
+                                </MenuItem> 
                             </List>
                         </Collapse>   
                     ))}       

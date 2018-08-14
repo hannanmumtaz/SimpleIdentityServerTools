@@ -12,6 +12,7 @@ import ScimService from './scimService';
 import ParameterService from './parameterService';
 import UserProfileService from './userProfileService';
 import AuthProviderService from './authProviderService';
+import AccountFilterService from './accountFilterService';
 
 exports.SessionService = SessionService;
 exports.WebsiteService = WebsiteService;
@@ -27,3 +28,4 @@ exports.ScimService = ScimService;
 exports.ParameterService = ParameterService;
 exports.UserProfileService = UserProfileService;
 exports.AuthProviderService = AuthProviderService;
+exports.AccountFilterService = AccountFilterService;
