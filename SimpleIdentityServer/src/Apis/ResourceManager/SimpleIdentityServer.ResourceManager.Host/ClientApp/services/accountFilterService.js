@@ -45,6 +45,28 @@ module.exports = {
         });
     },
     /**
+    * Update an account filter
+    */
+    updateAccountFilter: function(request) {
+        return new Promise(function (resolve, reject) {
+            var session = SessionService.getSession();
+            var data = JSON.stringify(request);
+            $.ajax({
+                url: "http://localhost:60000/filters", // TODO : EXTERNALIZE THIS URL.
+                method: "PUT",
+                data: data,
+                contentType: 'application/json',
+                headers: {
+                    "Authorization": "Bearer "+ session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });
+    },
+    /**
     * Remove the account filter.
     */
     deleteAccountFilter: function(filterId) {

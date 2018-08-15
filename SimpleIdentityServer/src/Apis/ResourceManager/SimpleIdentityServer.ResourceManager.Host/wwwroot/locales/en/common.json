@@ -256,5 +256,20 @@
 	"accountFiltersAreRemoved": "The selected account filters have been removed",
 	"accountFiltersCannotBeRemoved": "An error occured while trying to remove the seleted account filters",
 	"accountFilterRemoved": "The account filter has been removed",
-	"accountFilterCannotBeRemoved": "An error occured while trying to remove the account filter"
+	"accountFilterCannotBeRemoved": "An error occured while trying to remove the account filter",
+	"cannotRetrievedAccountFilter": "An error occured while trying to get the account filter",
+	"accountFilterUpdated": "The account filter has been updated",
+	"cannotUpdateAccountFilter": "An error occured while trying to update the account filter",
+	"accountFilterTitle": "Account filter",
+	"accountFilterShortDescription": "View and edit the account filter",
+	"accountFilter": "Account filter",
+	"claimKey": "Claim key",
+	"claimKeyDescription": "Enter the claim key",
+	"claimValueDescription": "Enter the claim value",
+	"equal": "Equal",
+	"notEqual": "Not equal",
+	"regex": "Regular expression",
+	"filterRuleOperationDescription": "Enter the type of operation",
+	"filterRuleOperation": "Type of operation",
+	"addFilterRule": "Add fiter rule"
 }

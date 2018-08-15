@@ -1,24 +1,48 @@
 import React, { Component } from "react";
 import { translate } from 'react-i18next';
-import { Grid, CircularProgress, IconButton } from 'material-ui';
+import { Grid, CircularProgress, IconButton, Select, MenuItem, Button, List, ListItem, ListItemText } from 'material-ui';
 import { NavLink } from 'react-router-dom';
+import AppDispatcher from '../appDispatcher';
 import Constants from '../constants';
 import { AccountFilterService } from '../services';
 import { SessionStore } from '../stores';
 import Input, { InputLabel } from 'material-ui/Input';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import Save from '@material-ui/icons/Save';
+import Delete from '@material-ui/icons/Delete';
 
 class ViewAccountFilter extends Component {
     constructor(props) {
         super(props);
+        this.handleRemoveRule = this.handleRemoveRule.bind(this);
         this.refreshData = this.refreshData.bind(this);
         this.saveAccountFilter = this.saveAccountFilter.bind(this);
+        this.handleChangeFilterProperty = this.handleChangeFilterProperty.bind(this);
+        this.handleChangeFilterRuleProperty = this.handleChangeFilterRuleProperty.bind(this);
+        this.handleAddFilterRule = this.handleAddFilterRule.bind(this);
         this.state = {
             isLoading: true,
             id: null,
-            accountFilter: {}
+            accountFilter: {},
+            newFilterRule: {
+                claim_key: '',
+                claim_value: '',
+                op: "eq"
+            }
         };
+    }
+
+    /**
+    * Remove the rule
+    */
+    handleRemoveRule(rule) {
+        var self = this;
+        var accountFilter = self.state.accountFilter;
+        var index = accountFilter.rules.indexOf(rule);
+        accountFilter.rules.splice(index, 1);
+        self.setState({
+            accountFilter: accountFilter
+        });
     }
 
     /**
@@ -35,6 +59,10 @@ class ViewAccountFilter extends Component {
                 accountFilter: result
             });
         }).catch(function() {
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('cannotRetrievedAccountFilter')
+            });
             self.setState({
                 isLoading: false,
                 accountFilter: {}
@@ -46,12 +74,91 @@ class ViewAccountFilter extends Component {
     * Save the account filter.
     */
     saveAccountFilter() {
+        var self = this;
+        self.setState({
+            isLoading: true
+        });
+        const { t } = self.props;
+        var request = self.state.accountFilter;
+        request['id'] = self.state.id;
+        AccountFilterService.updateAccountFilter(request).then(function() {
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('accountFilterUpdated')
+            });
+            self.refreshData();
+        }).catch(function() {
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('cannotUpdateAccountFilter')
+            });
+            self.setState({
+                isLoading: false
+            });
+        });
+    }
 
+    handleChangeFilterProperty(e) {
+        var self = this;
+        var filter = self.state.accountFilter;
+        filter[e.target.name] = e.target.value;
+        self.setState({
+            accountFilter: filter
+        });
+    }
+
+    /**
+    * Handle change property
+    */
+    handleChangeFilterRuleProperty(e) {        
+        var self = this;
+        var newFilterRule = self.state.newFilterRule;
+        newFilterRule[e.target.name] = e.target.value;
+        self.setState({
+            newFilterRule: newFilterRule
+        });
+    }
+
+    /**
+    * Add the filter rule.
+    */
+    handleAddFilterRule() {
+        var self = this;
+        var accountFilter = self.state.accountFilter;
+        var newFilterRule = self.state.newFilterRule;
+        if (!newFilterRule.claim_key || newFilterRule.claim_key === '' || !newFilterRule.claim_value || newFilterRule.claim_value === '')
+        {
+            return;
+        }
+
+        accountFilter.rules.push(newFilterRule);
+        self.setState({
+            accountFilter: accountFilter,
+            newFilterRule: {
+                claim_key: '',
+                claim_value: '',
+                op: "eq"
+            }
+        });
     }
 
     render() {
         var self = this;
         const { t } = self.props;
+        var rules = [];
+        if (self.state.accountFilter.rules) {
+            self.state.accountFilter.rules.forEach(function(rule) {
+                rules.push(
+                    <ListItem dense button style={{overflow: 'hidden'}}>
+                        <IconButton onClick={() => self.handleRemoveRule(rule)}>
+                            <Delete />
+                        </IconButton>
+                        <ListItemText>{rule.claim_key} {rule.op} {rule.claim_value}</ListItemText>
+                    </ListItem>
+                );
+            });
+        }
+
         return (<div className="block">
             <div className="block-header">
                 <Grid container>
@@ -93,12 +200,40 @@ class ViewAccountFilter extends Component {
                                 {/* Account filter name */}
                                 <FormControl fullWidth={true} style={{margin: "5px"}}>
                                     <InputLabel htmlFor="accountFilterName">{t('accountFilterName')}</InputLabel>
-                                    <Input type="text" value={self.state.accountFilter.name} />
+                                    <Input type="text" name="name" onChange={self.handleChangeFilterProperty} value={self.state.accountFilter.name}  />
                                     <FormHelperText>{t('accountFilterNameDescription')}</FormHelperText>
                                 </FormControl>
                             </Grid>
                             <Grid item md={6} sm={12}>
-                                
+                                <div>
+                                    {/* Claim key */}
+                                    <FormControl fullWidth={true} style={{margin: "5px"}}>
+                                        <InputLabel htmlFor="claimKey">{t('claimKey')}</InputLabel> 
+                                        <Input type="text" name="claim_key" onChange={self.handleChangeFilterRuleProperty} value={self.state.newFilterRule.claim_key}  />                                    
+                                        <FormHelperText>{t('claimKeyDescription')}</FormHelperText>                                   
+                                    </FormControl>
+                                    {/* Claim value */}
+                                    <FormControl fullWidth={true} style={{margin: "5px"}}>
+                                        <InputLabel htmlFor="claimValue">{t('claimValue')}</InputLabel> 
+                                        <Input type="text" name="claim_value" onChange={self.handleChangeFilterRuleProperty} value={self.state.newFilterRule.claim_value}  />                                    
+                                        <FormHelperText>{t('claimValueDescription')}</FormHelperText>                                   
+                                    </FormControl>
+                                    {/* Operation */}
+                                    <FormControl fullWidth={true} style={{margin: "5px"}}>
+                                        <InputLabel htmlFor="filterRuleOperation">{t('filterRuleOperation')}</InputLabel>     
+                                        <Select value={self.state.newFilterRule.op} onChange={self.handleChangeFilterRuleProperty} name="op">
+                                            <MenuItem value="eq">{t('equal')}</MenuItem>
+                                            <MenuItem value="neq">{t('notEqual')}</MenuItem>
+                                            <MenuItem value="regex">{t('regex')}</MenuItem>
+                                        </Select>
+                                        <FormHelperText>{t('filterRuleOperationDescription')}</FormHelperText>
+                                    </FormControl>
+                                    {/* Submit button */}
+                                    <Button variant="raised" color="primary" onClick={self.handleAddFilterRule}>{t('addFilterRule')}</Button>
+                                </div>
+                                <List>
+                                    {rules}
+                                </List>
                             </Grid>
                         </Grid>
                     )}
