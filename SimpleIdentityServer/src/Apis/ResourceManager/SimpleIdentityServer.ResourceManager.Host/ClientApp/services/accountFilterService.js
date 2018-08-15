@@ -43,5 +43,43 @@ module.exports = {
                 reject(e);
             });
         });
+    },
+    /**
+    * Remove the account filter.
+    */
+    deleteAccountFilter: function(filterId) {
+        return new Promise(function (resolve, reject) {
+            var session = SessionService.getSession();
+            $.ajax({
+                url: "http://localhost:60000/filters/" + filterId, // TODO : EXTERNALIZE THIS URL.
+                method: "DELETE",
+                headers: {
+                    "Authorization": "Bearer "+ session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });
+    },
+    /**
+    * Get the account filter.
+    */
+    getAccountFilter: function(filterId) {
+        return new Promise(function (resolve, reject) {
+            var session = SessionService.getSession();
+            $.ajax({
+                url: "http://localhost:60000/filters/" + filterId, // TODO : EXTERNALIZE THIS URL.
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer "+ session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });
     }
 };

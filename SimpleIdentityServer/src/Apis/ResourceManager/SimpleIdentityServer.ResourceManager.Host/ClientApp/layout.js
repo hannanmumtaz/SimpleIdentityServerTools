@@ -19,6 +19,7 @@ import Label from '@material-ui/icons/Label';
 import Lock from '@material-ui/icons/Lock';
 import Assignment from '@material-ui/icons/Assignment';
 import MenuIcon from '@material-ui/icons/Menu';
+import FilterList from '@material-ui/icons/FilterList';
 import Collapse from 'material-ui/transitions/Collapse';
 
 const drawerWidth = 300;
@@ -419,8 +420,9 @@ class Layout extends Component {
                                     <ListItemIcon><Label /></ListItemIcon>
                                     {t('openidScopes')}
                                 </MenuItem>
-                                <MenuItem key='/openid/accountfiltering' selected={pathName.indexOf('/openid/accountfiltering') !== -1} className={classes.nested} onClick={() => self.navigate('/openid/accountfiltering')}>
-                                    {t('accountFiltering')}
+                                <MenuItem key='/openid/accountfilters' selected={pathName.indexOf('/openid/accountfilters') !== -1} className={classes.nested} onClick={() => self.navigate('/openid/accountfilters')}>
+                                    <ListItemIcon><FilterList /></ListItemIcon>
+                                    {t('accountFilters')}
                                 </MenuItem> 
                             </List>
                         </Collapse>   

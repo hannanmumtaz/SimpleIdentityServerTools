@@ -241,5 +241,20 @@
 	"linkProfile": "Link the profile",
 	"resourceOwnerSettings": "User settings",
 	"resourceOwnerProfiles": "User profiles",
-	"authProviderAlreadyLinked": "The authentication provider is already linked"
+	"authProviderAlreadyLinked": "The authentication provider is already linked",
+	"accountFiltersTitle": "Account filters",
+	"accountFiltersDescription": "Add, view and remove the account filters",
+	"accountFilters": "Account filters",
+	"listOfAccountFilters": "List of account filters",
+	"accountFilterId": "Filter identifier",
+	"accountFilterName": "Filter name",
+	"addAccountFilter": "Add account filter",
+	"accountFilterNameDescription": "Enter the filter name",
+	"accountFilterHasBeenAdded": "Account filter has been added",
+	"cannotAddAccountFilter": "An error occured while trying to add the account filter",
+	"accountFiltersCannotBeRetrieved": "An error occured while trying to retrieve the account filters",
+	"accountFiltersAreRemoved": "The selected account filters have been removed",
+	"accountFiltersCannotBeRemoved": "An error occured while trying to remove the seleted account filters",
+	"accountFilterRemoved": "The account filter has been removed",
+	"accountFilterCannotBeRemoved": "An error occured while trying to remove the account filter"
 }

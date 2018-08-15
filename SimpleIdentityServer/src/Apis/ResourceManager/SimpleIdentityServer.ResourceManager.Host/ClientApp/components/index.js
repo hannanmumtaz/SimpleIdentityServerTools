@@ -25,7 +25,8 @@ import Settings from './settings';
 import ViewSetting from './viewSetting';
 import Connectors from './connectors';
 import TwoFactors from './twoFactors';
-import AccountFilter from './accountFilter';
+import AccountFilters from './accountFilters';
+import ViewAccountFilter from './viewAccountFilter';
 
 exports.Dashboard = Dashboard;
 exports.About = About;
@@ -54,4 +55,5 @@ exports.Settings = Settings;
 exports.ViewSetting = ViewSetting;
 exports.Connectors = Connectors;
 exports.TwoFactors = TwoFactors;
-exports.AccountFilter = AccountFilter;
+exports.AccountFilters = AccountFilters;
+exports.ViewAccountFilter = ViewAccountFilter;
