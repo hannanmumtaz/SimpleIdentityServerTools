@@ -1,6 +1,9 @@
-﻿using SimpleIdentityServer.DocumentManagement.Common.DTOs.Responses;
+﻿using SimpleIdentityServer.Client;
+using SimpleIdentityServer.DocumentManagement.Common.DTOs.Responses;
 using SimpleIdentityServer.DocumentManagement.Core.Exceptions;
+using SimpleIdentityServer.DocumentManagement.Core.Parameters;
 using SimpleIdentityServer.DocumentManagement.Core.Repositories;
+using SimpleIdentityServer.DocumentManagement.Core.Validators;
 using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -11,37 +14,46 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
 {
     public interface IDecryptOfficeDocumentAction
     {
-        Task<DecryptedResponse> Execute(string kid, string credentials);
+        Task<DecryptedResponse> Execute(DecryptOfficeDocumentParameter decryptOfficeDocumentParameter, string accessToken, AuthenticateParameter authenticateParameter);
     }
 
     internal sealed class DecryptOfficeDocumentAction : IDecryptOfficeDocumentAction
     {
         private readonly IJsonWebKeyRepository _jsonWebKeyRepository;
+        private readonly IGetOfficeDocumentAction _getOfficeDocumentAction;
+        private readonly IDecryptOfficeDocumentParameterValidator _decryptOfficeDocumentParameterValidator;
+        private readonly IIdentityServerClientFactory _identityServerClientFactory;
 
-        public DecryptOfficeDocumentAction(IJsonWebKeyRepository jsonWebKeyRepository)
+        public DecryptOfficeDocumentAction(IJsonWebKeyRepository jsonWebKeyRepository, IGetOfficeDocumentAction getOfficeDocumentAction,
+            IIdentityServerClientFactory identityServerClientFactory, IDecryptOfficeDocumentParameterValidator decryptOfficeDocumentParameterValidator)
         {
             _jsonWebKeyRepository = jsonWebKeyRepository;
+            _getOfficeDocumentAction = getOfficeDocumentAction;
+            _identityServerClientFactory = identityServerClientFactory;
+            _decryptOfficeDocumentParameterValidator = decryptOfficeDocumentParameterValidator;
         }
 
-        public async Task<DecryptedResponse> Execute(string kid, string credentials)
+        public async Task<DecryptedResponse> Execute(DecryptOfficeDocumentParameter decryptOfficeDocumentParameter, string accessToken, AuthenticateParameter authenticateParameter)
         {
-            if (string.IsNullOrWhiteSpace(kid))
+            if (decryptOfficeDocumentParameter == null)
             {
-                throw new ArgumentNullException(nameof(kid));
+                throw new ArgumentNullException(nameof(decryptOfficeDocumentParameter));
             }
 
-            if (string.IsNullOrWhiteSpace(credentials))
+            if (authenticateParameter == null)
             {
-                throw new ArgumentNullException(nameof(credentials));
+                throw new ArgumentNullException(nameof(authenticateParameter));
             }
 
-            var jsonWebKey = await _jsonWebKeyRepository.Get(kid);
+            _decryptOfficeDocumentParameterValidator.Check(decryptOfficeDocumentParameter);
+            await _getOfficeDocumentAction.Execute(decryptOfficeDocumentParameter.DocumentId, accessToken, authenticateParameter);
+            var jsonWebKey = await _jsonWebKeyRepository.Get(decryptOfficeDocumentParameter.Kid);
             if (jsonWebKey == null)
             {
-                throw new BaseDocumentManagementApiException("invalid_request", $"the json web key {kid} doesn't exist");
+                throw new BaseDocumentManagementApiException(ErrorCodes.InvalidRequest, string.Format(ErrorDescriptions.TheJsonWebKeyDoesntExist, decryptOfficeDocumentParameter.Kid));
             }
 
-            var payload = Convert.FromBase64String(credentials);
+            var payload = Convert.FromBase64String(decryptOfficeDocumentParameter.Credentials);
             byte[] decryptedPayload = null;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {

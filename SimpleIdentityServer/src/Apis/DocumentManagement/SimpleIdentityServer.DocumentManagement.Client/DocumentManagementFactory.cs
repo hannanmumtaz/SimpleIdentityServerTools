@@ -57,6 +57,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client
             serviceCollection.AddTransient<IDecryptOfficeDocumentOperation, DecryptOfficeDocumentOperation>();
             serviceCollection.AddTransient<IJwksClient, JwksClient>();
             serviceCollection.AddTransient<IGetJwksOperation, GetJwksOperation>();
+            serviceCollection.AddTransient<IGetConfigurationOperation, GetConfigurationOperation>();
             return serviceCollection;
         }
     }

@@ -6,8 +6,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core
     {
         public static IEnumerable<string> DEFAULT_SCOPES = new[]
         {
-            "read",
-            "print"
+            "read"
         };
     }
 }

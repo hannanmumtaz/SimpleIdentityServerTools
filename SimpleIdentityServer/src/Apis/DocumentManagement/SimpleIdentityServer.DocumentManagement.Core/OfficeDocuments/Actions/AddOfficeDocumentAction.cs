@@ -4,6 +4,7 @@ using SimpleIdentityServer.DocumentManagement.Core.Aggregates;
 using SimpleIdentityServer.DocumentManagement.Core.Exceptions;
 using SimpleIdentityServer.DocumentManagement.Core.Parameters;
 using SimpleIdentityServer.DocumentManagement.Core.Repositories;
+using SimpleIdentityServer.DocumentManagement.Core.Validators;
 using SimpleIdentityServer.Uma.Common.DTOs;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
 {
     public interface IAddOfficeDocumentAction
     {
-        Task<bool> Execute(string openIdWellKnownConfiguration, OfficeDocumentAggregate document, AuthenticateParameter authenticateParameter);
+        Task<bool> Execute(string openIdWellKnownConfiguration, AddDocumentParameter document, AuthenticateParameter authenticateParameter);
     }
 
     internal sealed class AddOfficeDocumentAction : IAddOfficeDocumentAction
@@ -22,15 +23,18 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
         private readonly IOfficeDocumentRepository _officeDocumentRepository;
         private readonly IIdentityServerUmaClientFactory _identityServerUmaClientFactory;
         private readonly IAccessTokenStore _accessTokenStore;
+        private readonly IAddDocumentParameterValidator _addDocumentParameterValidator;
 
-        public AddOfficeDocumentAction(IOfficeDocumentRepository officeDocumentRepository, IIdentityServerUmaClientFactory identityServerUmaClientFactory, IAccessTokenStore accessTokenStore)
+        public AddOfficeDocumentAction(IOfficeDocumentRepository officeDocumentRepository, IIdentityServerUmaClientFactory identityServerUmaClientFactory, IAccessTokenStore accessTokenStore,
+            IAddDocumentParameterValidator addDocumentParameterValidator)
         {
             _officeDocumentRepository = officeDocumentRepository;
             _identityServerUmaClientFactory = identityServerUmaClientFactory;
             _accessTokenStore = accessTokenStore;
+            _addDocumentParameterValidator = addDocumentParameterValidator;
         }
 
-        public async Task<bool> Execute(string openidWellKnownConfiguration, OfficeDocumentAggregate document, AuthenticateParameter authenticateParameter)
+        public async Task<bool> Execute(string openidWellKnownConfiguration, AddDocumentParameter document, AuthenticateParameter authenticateParameter)
         {
             if (string.IsNullOrWhiteSpace(openidWellKnownConfiguration))
             {
@@ -47,17 +51,17 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
                 throw new ArgumentNullException(nameof(authenticateParameter));
             }
 
-            Check(document);
+            _addDocumentParameterValidator.Check(document);
             var officeDocument = await _officeDocumentRepository.Get(document.Id);
             if (officeDocument != null)
             {
-                throw new InternalDocumentException("internal", "document_exists");
+                throw new BaseDocumentManagementApiException(ErrorCodes.InternalError, ErrorDescriptions.OfficeDocumentExists);
             }
 
             var grantedToken = await _accessTokenStore.GetToken(authenticateParameter.WellKnownConfigurationUrl, authenticateParameter.ClientId, authenticateParameter.ClientSecret, new[] { "uma_protection" });
             if (grantedToken == null || string.IsNullOrWhiteSpace(grantedToken.AccessToken))
             {
-                throw new InvalidConfigurationException("invalid_client_configuration");
+                throw new BaseDocumentManagementApiException(ErrorCodes.InternalError, ErrorDescriptions.CannotRetrieveAccessToken);
             }
 
             var resource = await _identityServerUmaClientFactory.GetResourceSetClient().AddByResolution(new PostResourceSet
@@ -67,7 +71,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
             }, authenticateParameter.WellKnownConfigurationUrl, grantedToken.AccessToken);
             if (resource.ContainsError)
             {
-                throw new InternalDocumentException("internal", "uma_resource_cannot_be_created");
+                throw new BaseDocumentManagementApiException(ErrorCodes.InternalError, ErrorDescriptions.CannotAddUmaResource);
             }
 
             var policy = await _identityServerUmaClientFactory.GetPolicyClient().AddByResolution(new PostPolicy
@@ -92,7 +96,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
             }, authenticateParameter.WellKnownConfigurationUrl, grantedToken.AccessToken);
             if (policy.ContainsError)
             {
-                throw new InternalDocumentException("internal", "uma_policy_cannot_be_created");
+                throw new BaseDocumentManagementApiException(ErrorCodes.InternalError, ErrorDescriptions.CannotAddUmaPolicy);
             }
 
             officeDocument = new OfficeDocumentAggregate
@@ -104,27 +108,10 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
             };
             if (!await _officeDocumentRepository.Add(officeDocument))
             {
-                throw new InternalDocumentException("internal", "cannot_update_document");
+                throw new BaseDocumentManagementApiException(ErrorCodes.InternalError, ErrorDescriptions.CannotAddOfficeDocument);
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Check the office document parameter.
-        /// </summary>
-        /// <param name="document"></param>
-        private void Check(OfficeDocumentAggregate document)
-        {
-            if (string.IsNullOrWhiteSpace(document.Id))
-            {
-                throw new ArgumentNullException(nameof(document.Id));
-            }
-
-            if (string.IsNullOrWhiteSpace(document.Subject))
-            {
-                throw new ArgumentNullException(nameof(document.Subject));
-            }
         }
     }
 }

@@ -13,9 +13,10 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.1" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
-    <PackageReference Include="OpenCover" Version="4.6.519" />
-    <PackageReference Include="ReportGenerator" Version="2.4.5" />
-    <PackageReference Include="coveralls.io" Version="1.3.4" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
@@ -28,9 +29,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Client\SimpleIdentityServer.Client.csproj" />
-    <ProjectReference Include="..\..\..\IdServer\SimpleIdentityServer\src\Apis\Uma\SimpleIdentityServer.Uma.Client\SimpleIdentityServer.Uma.Client.csproj" />
+    <ProjectReference Include="..\..\..\IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.AccessToken.Store.InMemory\SimpleIdentityServer.AccessToken.Store.InMemory.csproj" />
+    <ProjectReference Include="..\..\src\Apis\DocumentManagement\SimpleIdentityServer.DocumentManagement.Api\SimpleIdentityServer.DocumentManagement.Api.csproj" />
     <ProjectReference Include="..\..\src\Apis\DocumentManagement\SimpleIdentityServer.DocumentManagement.Client\SimpleIdentityServer.DocumentManagement.Client.csproj" />
+    <ProjectReference Include="..\..\src\Apis\DocumentManagement\SimpleIdentityServer.DocumentManagement.EF.InMemory\SimpleIdentityServer.DocumentManagement.EF.InMemory.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Middlewares\" />
   </ItemGroup>
 
 </Project>

@@ -4,8 +4,9 @@
     {
         public static class RouteNames
         {
-            public const string OfficeDocumentsController = "officedocuments";
+            public const string OfficeDocuments = "officedocuments";
             public const string Jwks = "jwks";
+            public const string Configuration = "configuration";
         }
     }
 }

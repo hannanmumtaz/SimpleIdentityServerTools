@@ -3,6 +3,7 @@ using SimpleIdentityServer.DocumentManagement.Core.Jwks;
 using SimpleIdentityServer.DocumentManagement.Core.Jwks.Actions;
 using SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments;
 using SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions;
+using SimpleIdentityServer.DocumentManagement.Core.Validators;
 using System;
 
 namespace SimpleIdentityServer.DocumentManagement.Core.Extensions
@@ -24,6 +25,9 @@ namespace SimpleIdentityServer.DocumentManagement.Core.Extensions
             services.AddTransient<IJwksActions, JwksActions>();
             services.AddTransient<IGetJwksAction, GetJwksAction>();
             services.AddTransient<IJsonWebKeyEnricher, JsonWebKeyEnricher>();
+            services.AddTransient<IAddDocumentParameterValidator, AddDocumentParameterValidator>();
+            services.AddTransient<IUpdateOfficeDocumentParameterValidator, UpdateOfficeDocumentParameterValidator>();
+            services.AddTransient<IDecryptOfficeDocumentParameterValidator, DecryptOfficeDocumentParameterValidator>();
             return services;
         }
     }

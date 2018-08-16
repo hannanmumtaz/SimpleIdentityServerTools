@@ -25,7 +25,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Extensions
             };
         }
 
-        public static UpdateOfficeDocumentParameter ToParameter(this UpdateOfficeDocumentRequest request)
+        public static UpdateOfficeDocumentParameter ToParameter(this UpdateOfficeDocumentRequest request, string subject)
         {
             if (request == null)
             {
@@ -34,20 +34,37 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Extensions
 
             return new UpdateOfficeDocumentParameter
             {
+                Subject = subject,
                 Permissions = request == null ? new List<OfficeDocumentPermission>() : request.Permissions.Select(p => p.ToParameter())
             };
         }
 
-        public static OfficeDocumentAggregate ToParameter(this AddOfficeDocumentRequest request)
+        public static DecryptOfficeDocumentParameter ToParameter(this DecryptDocumentRequest request)
         {
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
             }
 
-            return new OfficeDocumentAggregate
+            return new DecryptOfficeDocumentParameter
             {
-                Id = request.Id
+                Credentials = request.Credentials,
+                DocumentId = request.DocumentId,
+                Kid = request.Kid
+            };
+        }
+
+        public static AddDocumentParameter ToParameter(this AddOfficeDocumentRequest request, string subject)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            return new AddDocumentParameter
+            {
+                Id = request.Id,
+                Subject = subject
             };
         }
 

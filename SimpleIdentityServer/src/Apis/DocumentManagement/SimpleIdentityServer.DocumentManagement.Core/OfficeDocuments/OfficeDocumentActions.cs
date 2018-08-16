@@ -8,10 +8,10 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
 {
     public interface IOfficeDocumentActions
     {
-        Task<bool> Add(string openidWellKnownConfiguration, OfficeDocumentAggregate document, AuthenticateParameter authenticateParameter);
+        Task<bool> Add(string openidWellKnownConfiguration, AddDocumentParameter document, AuthenticateParameter authenticateParameter);
         Task<OfficeDocumentAggregate> Get(string documentId, string accessToken, AuthenticateParameter authenticateParameter);
-        Task<bool> Update(string subject, string documentId, UpdateOfficeDocumentParameter parameter, AuthenticateParameter authenticateParameter);
-        Task<DecryptedResponse> Decrypt(string kid, string credentials, string accessToken);
+        Task<bool> Update(string wellKnownConfiguration, string documentId, UpdateOfficeDocumentParameter parameter, AuthenticateParameter authenticateParameter);
+        Task<DecryptedResponse> Decrypt(DecryptOfficeDocumentParameter decryptOfficeDocumentParameter, string accessToken, AuthenticateParameter authenticateParameter);
     }
 
     internal sealed class OfficeDocumentActions : IOfficeDocumentActions
@@ -30,7 +30,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
             _decryptOfficeDocumentAction = decryptOfficeDocumentAction;
         }
 
-        public Task<bool> Add(string openidWellKnownConfiguration, OfficeDocumentAggregate document, AuthenticateParameter authenticateParameter)
+        public Task<bool> Add(string openidWellKnownConfiguration, AddDocumentParameter document, AuthenticateParameter authenticateParameter)
         {
             return _addOfficeDocumentAction.Execute(openidWellKnownConfiguration, document, authenticateParameter);
         }
@@ -40,14 +40,14 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
             return _getOfficeDocumentAction.Execute(documentId, accessToken, authenticateParameter);
         }
 
-        public Task<bool> Update(string subject, string documentId, UpdateOfficeDocumentParameter parameter, AuthenticateParameter authenticateParameter)
+        public Task<bool> Update(string wellKnownConfiguration, string documentId, UpdateOfficeDocumentParameter parameter, AuthenticateParameter authenticateParameter)
         {
-            return _updateOfficeDocumentAction.Execute(subject, documentId, parameter, authenticateParameter);
+            return _updateOfficeDocumentAction.Execute(wellKnownConfiguration, documentId, parameter, authenticateParameter);
         }
 
-        public Task<DecryptedResponse> Decrypt(string kid, string credentials, string accessToken)
+        public Task<DecryptedResponse> Decrypt(DecryptOfficeDocumentParameter decryptOfficeDocumentParameter, string accessToken, AuthenticateParameter authenticateParameter)
         {
-            return _decryptOfficeDocumentAction.Execute(kid, credentials);
+            return _decryptOfficeDocumentAction.Execute(decryptOfficeDocumentParameter, accessToken, authenticateParameter);
         }
     }
 }

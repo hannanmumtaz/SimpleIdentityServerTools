@@ -3,6 +3,7 @@ using SimpleIdentityServer.Client;
 using SimpleIdentityServer.DocumentManagement.Core.Exceptions;
 using SimpleIdentityServer.DocumentManagement.Core.Parameters;
 using SimpleIdentityServer.DocumentManagement.Core.Repositories;
+using SimpleIdentityServer.DocumentManagement.Core.Validators;
 using SimpleIdentityServer.Uma.Common.DTOs;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
 {
     public interface IUpdateOfficeDocumentAction
     {
-        Task<bool> Execute(string subject, string documentId, UpdateOfficeDocumentParameter parameter, AuthenticateParameter authenticateParameter);
+        Task<bool> Execute(string wellKnownConfiguration, string documentId, UpdateOfficeDocumentParameter parameter, AuthenticateParameter authenticateParameter);
     }
 
     internal sealed class UpdateOfficeDocumentAction : IUpdateOfficeDocumentAction
@@ -21,19 +22,22 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
         private readonly IOfficeDocumentRepository _officeDocumentRepository;
         private readonly IIdentityServerUmaClientFactory _identityServerUmaClientFactory;
         private readonly IAccessTokenStore _tokenStore;
+        private readonly IUpdateOfficeDocumentParameterValidator _updateOfficeDocumentParameterValidator;
 
-        public UpdateOfficeDocumentAction(IOfficeDocumentRepository officeDocumentRepository, IIdentityServerUmaClientFactory identityServerUmaClientFactory, IAccessTokenStore tokenStore)
+        public UpdateOfficeDocumentAction(IOfficeDocumentRepository officeDocumentRepository, IIdentityServerUmaClientFactory identityServerUmaClientFactory, IAccessTokenStore tokenStore,
+            IUpdateOfficeDocumentParameterValidator updateOfficeDocumentParameterValidator)
         {
             _officeDocumentRepository = officeDocumentRepository;
             _identityServerUmaClientFactory = identityServerUmaClientFactory;
             _tokenStore = tokenStore;
+            _updateOfficeDocumentParameterValidator = updateOfficeDocumentParameterValidator;
         }
 
-        public async Task<bool> Execute(string subject, string documentId, UpdateOfficeDocumentParameter parameter, AuthenticateParameter authenticateParameter)
+        public async Task<bool> Execute(string wellKnownConfiguration, string documentId, UpdateOfficeDocumentParameter parameter, AuthenticateParameter authenticateParameter)
         {
-            if (string.IsNullOrWhiteSpace(subject))
+            if (string.IsNullOrWhiteSpace(wellKnownConfiguration))
             {
-                throw new ArgumentNullException(nameof(subject));
+                throw new ArgumentNullException(nameof(wellKnownConfiguration));
             }
 
             if (string.IsNullOrWhiteSpace(documentId))
@@ -41,16 +45,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
                 throw new ArgumentNullException(nameof(documentId));
             }
 
-            if(parameter == null)
-            {
-                throw new ArgumentNullException(nameof(parameter));
-            }
-
-            if (parameter.Permissions == null)
-            {
-                throw new ArgumentNullException(nameof(parameter.Permissions));
-            }
-
+            _updateOfficeDocumentParameterValidator.Check(parameter);
             if (authenticateParameter == null)
             {
                 throw new ArgumentNullException(nameof(authenticateParameter));
@@ -60,32 +55,32 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
             {
                 if (!permission.Scopes.Any(s => Constants.DEFAULT_SCOPES.Contains(s)))
                 {
-                    throw new InternalDocumentException("internal", "invalid_scopes");
+                    throw new BaseDocumentManagementApiException(ErrorCodes.InvalidRequest, ErrorDescriptions.ScopesAreNotValid);
                 }
 
                 if (string.IsNullOrWhiteSpace(permission.Subject))
                 {
-                    throw new InternalDocumentException("internal", "permission_subject_must_be_specified");
+                    throw new BaseDocumentManagementApiException(ErrorCodes.InvalidRequest, ErrorDescriptions.SubjectIsMandatoryInThePermission);
                 }
             }
 
             var officeDocument = await _officeDocumentRepository.Get(documentId);
             if (officeDocument == null)
             {
-                throw new InternalDocumentException("internal", "document_doesnt_exist");
+                throw new DocumentNotFoundException();
             }
             
             if (string.IsNullOrWhiteSpace(officeDocument.UmaResourceId))
             {
-                throw new InternalDocumentException("internal", "no_uma_resource");
+                throw new BaseDocumentManagementApiException(ErrorCodes.InternalError, ErrorDescriptions.NoUmaResource);
             }
 
             if (string.IsNullOrWhiteSpace(officeDocument.UmaPolicyId))
             {
-                throw new InternalDocumentException("internal", "no_uma_policy");
+                throw new BaseDocumentManagementApiException(ErrorCodes.InternalError, ErrorDescriptions.NoUmaPolicy);
             }
 
-            if (officeDocument.Subject != subject)
+            if (officeDocument.Subject != parameter.Subject)
             {
                 throw new NotAuthorizedException();
             }
@@ -93,13 +88,13 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
             var grantedToken = await _tokenStore.GetToken(authenticateParameter.WellKnownConfigurationUrl, authenticateParameter.ClientId, authenticateParameter.ClientSecret, new[] { "uma_protection" });
             if (grantedToken == null || string.IsNullOrWhiteSpace(grantedToken.AccessToken))
             {
-                throw new InvalidConfigurationException("invalid_client_configuration");
+                throw new BaseDocumentManagementApiException(ErrorCodes.InternalError, ErrorDescriptions.CannotRetrieveAccessToken);
             }
 
             var policy = await _identityServerUmaClientFactory.GetPolicyClient().GetByResolution(officeDocument.UmaPolicyId, authenticateParameter.WellKnownConfigurationUrl, grantedToken.AccessToken);
             if (policy.ContainsError)
             {
-                throw new InternalDocumentException("internal", "uma_policy_doesnt_exist");
+                throw new BaseDocumentManagementApiException(ErrorCodes.InternalError, ErrorDescriptions.UmaPolicyDoesntExist);
             }
 
             var putPolicyRules = new List<PutPolicyRule>
@@ -111,11 +106,11 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
                         new PostClaim
                         {
                             Type = "sub",
-                            Value = subject
+                            Value = parameter.Subject
                         }
                     },
                     Scopes = Constants.DEFAULT_SCOPES.ToList(),
-                    OpenIdProvider = "http://localhost:60000/.well-known/openid-configuration"
+                    OpenIdProvider = wellKnownConfiguration
                 }
             };
             foreach(var permission in parameter.Permissions)
@@ -131,7 +126,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
                         }
                     },
                     Scopes = permission.Scopes.ToList(),
-                    OpenIdProvider = "http://localhost:60000/.well-known/openid-configuration"
+                    OpenIdProvider = wellKnownConfiguration
                 });
             }
             var updateResult = await _identityServerUmaClientFactory.GetPolicyClient().UpdateByResolution(new PutPolicy
@@ -141,7 +136,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
             }, authenticateParameter.WellKnownConfigurationUrl, grantedToken.AccessToken);
             if (updateResult.ContainsError)
             {
-                throw new InternalDocumentException("internal", "policy_cannot_be_updated");
+                throw new BaseDocumentManagementApiException(ErrorCodes.InternalError, ErrorDescriptions.UmaPolicyCannotBeUpdated);
             }
 
             return true;

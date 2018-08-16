@@ -4,11 +4,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleIdentityServer.AccessToken.Store.InMemory;
+using SimpleIdentityServer.Core.Jwt;
 using SimpleIdentityServer.DocumentManagement.Api;
 using SimpleIdentityServer.DocumentManagement.Api.Extensions;
 using SimpleIdentityServer.DocumentManagement.EF;
 using SimpleIdentityServer.DocumentManagement.EF.InMemory;
 using SimpleIdentityServer.DocumentManagement.Startup.Extensions;
+using SimpleIdentityServer.Uma.Client;
 using SimpleIdentityServer.UserInfoIntrospection;
 
 namespace SimpleIdentityServer.DocumentManagement.Startup
@@ -29,15 +31,9 @@ namespace SimpleIdentityServer.DocumentManagement.Startup
         
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()));
-            services.AddAuthentication(UserInfoIntrospectionOptions.AuthenticationScheme)
-                .AddUserInfoIntrospection(opts =>
-                {
-                    opts.WellKnownConfigurationUrl = "http://localhost:60000/.well-known/openid-configuration";
-                });
             services.AddInMemoryAccessTokenStore();
+            services.AddUmaClient();
+            services.AddSimpleIdentityServerJwt();
             services.AddDocumentManagementEFInMemory();
             services.AddDocumentManagementHost(new DocumentManagementApiOptions("http://localhost:60000/.well-known/openid-configuration")
             {
@@ -48,6 +44,19 @@ namespace SimpleIdentityServer.DocumentManagement.Startup
                     WellKnownConfiguration = "http://localhost:60004/.well-known/uma2-configuration"
                 }
             });
+
+            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()));
+            services.AddAuthentication(UserInfoIntrospectionOptions.AuthenticationScheme)
+                .AddUserInfoIntrospection(opts =>
+                {
+                    opts.WellKnownConfigurationUrl = "http://localhost:60000/.well-known/openid-configuration";
+                });
+            services.AddAuthorization(opts =>
+            {
+                opts.AddPolicy("connected", policy => policy.RequireAuthenticatedUser());
+            });
             services.AddMvc();
         }
 
@@ -57,6 +66,7 @@ namespace SimpleIdentityServer.DocumentManagement.Startup
             app.UseCors("AllowAll");
             loggerFactory.AddConsole();
             app.UseStatusCodePages();
+            app.UseDocumentManagementApi();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

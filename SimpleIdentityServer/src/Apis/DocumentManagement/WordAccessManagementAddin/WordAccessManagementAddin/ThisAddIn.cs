@@ -133,7 +133,7 @@ namespace WordAccessManagementAddin
 
             var officeDocumentClient = docMgClientFactory.GetOfficeDocumentClient();
             // 1. Try to get the document without access token.
-            var getDocumentResponse = officeDocumentClient.Get(sidDocumentIdValue, Constants.DocumentApiBaseUrl, string.Empty).Result;
+            var getDocumentResponse = officeDocumentClient.GetResolve(sidDocumentIdValue, Constants.DocumentApiConfiguration, string.Empty).Result;
             if (getDocumentResponse.HttpStatus != HttpStatusCode.Unauthorized)
             {
                 return null;
@@ -160,7 +160,7 @@ namespace WordAccessManagementAddin
             }
 
             // 4. Get the document.
-            var getOfficeDocumentResponse = officeDocumentClient.Get(sidDocumentIdValue, Constants.DocumentApiBaseUrl, grantedToken.Content.AccessToken).Result;
+            var getOfficeDocumentResponse = officeDocumentClient.GetResolve(sidDocumentIdValue, Constants.DocumentApiConfiguration, grantedToken.Content.AccessToken).Result;
             if (getOfficeDocumentResponse.ContainsError)
             {
                 return null;
@@ -189,12 +189,12 @@ namespace WordAccessManagementAddin
             var kid = splittedContent[0];
             var credentials = splittedContent[1];
             var encryptedContent = splittedContent[2];
-            var decryptedResult = docMgClientFactory.GetOfficeDocumentClient().Decrypt(new DecryptDocumentRequest
+            var decryptedResult = docMgClientFactory.GetOfficeDocumentClient().DecryptResolve(new DecryptDocumentRequest
             {
                 DocumentId = sidDocumentIdValue,
                 Credentials = credentials,
                 Kid = kid
-            }, Constants.DocumentApiBaseUrl, "token").Result;
+            }, Constants.DocumentApiConfiguration, "token").Result;
             var encryptionHelper = new EncryptionHelper();
             return encryptionHelper.Decrypt(encryptedContent, decryptedResult.Content);
         }

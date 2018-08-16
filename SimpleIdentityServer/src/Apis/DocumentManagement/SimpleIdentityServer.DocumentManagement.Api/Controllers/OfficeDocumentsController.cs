@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SimpleIdentityServer.Common.Dtos.Responses;
 using SimpleIdentityServer.DocumentManagement.Api.Extensions;
 using SimpleIdentityServer.DocumentManagement.Common.DTOs.Requests;
+using SimpleIdentityServer.DocumentManagement.Core;
 using SimpleIdentityServer.DocumentManagement.Core.Exceptions;
 using SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments;
 using SimpleIdentityServer.DocumentManagement.Core.Parameters;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
 {
-    [Route(Constants.RouteNames.OfficeDocumentsController)]
+    [Route(Constants.RouteNames.OfficeDocuments)]
     public class OfficeDocumentsController : Controller
     {
         private readonly IOfficeDocumentActions _officeDocumentActions;
@@ -33,37 +34,24 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                throw new ArgumentNullException(nameof(id));
+                return GetError(ErrorCodes.InvalidRequest, string.Format(ErrorDescriptions.ParameterIsMissing, "id"), HttpStatusCode.BadRequest);
             }
 
             if (request == null)
             {
-                throw new ArgumentNullException(nameof(request));
+                return GetError(ErrorCodes.InvalidRequest, ErrorDescriptions.NoRequest, HttpStatusCode.BadRequest);
             }
 
             var subject = GetSubject();
-            if (string.IsNullOrWhiteSpace(subject))
-            {
-                return new NotFoundResult();
-            }
-
             try
             {
-                var parameter = request.ToParameter();
-                await _officeDocumentActions.Update(subject, id, request.ToParameter(), GetAuthenticateParameter(_options));
+                var parameter = request.ToParameter(subject);
+                await _officeDocumentActions.Update(_options.OpenIdWellKnownConfiguration, id, parameter, GetAuthenticateParameter(_options));
                 return new OkResult();
             }
-            catch(NotAuthorizedException)
+            catch(NotAuthorizedException ex)
             {
-                return new UnauthorizedResult();
-            }
-            catch (BaseDocumentManagementApiException ex)
-            {
-                return GetError(ex.Code, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return GetError("internal", ex.Message);
+                return GetError(ex.Code, ex.Message, HttpStatusCode.Unauthorized);
             }
         }
 
@@ -73,30 +61,13 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
         {
             if (request == null)
             {
-                throw new ArgumentNullException(nameof(request));
+                return GetError(ErrorCodes.InvalidRequest, ErrorDescriptions.NoRequest, HttpStatusCode.BadRequest);
             }
 
             var subject = GetSubject();
-            if (string.IsNullOrWhiteSpace(subject))
-            {
-                return new NotFoundResult();
-            }
-
-            try
-            {
-                var parameter = request.ToParameter();
-                parameter.Subject = subject;
-                await _officeDocumentActions.Add(_options.OpenIdWellKnownConfiguration, parameter, GetAuthenticateParameter(_options));
-                return new OkResult();
-            }
-            catch (BaseDocumentManagementApiException ex)
-            {
-                return GetError(ex.Code, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return GetError("internal", ex.Message);
-            }
+            var parameter = request.ToParameter(subject);
+            await _officeDocumentActions.Add(_options.OpenIdWellKnownConfiguration, parameter, GetAuthenticateParameter(_options));
+            return new OkResult();
         }
 
         [HttpGet("{id}")]
@@ -104,7 +75,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                throw new ArgumentNullException(nameof(id));
+                return GetError(ErrorCodes.InvalidRequest, string.Format(ErrorDescriptions.ParameterIsMissing, "id"), HttpStatusCode.BadRequest);
             }
 
             string accessToken;
@@ -118,7 +89,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             {
                 Response.Headers.Add("UmaResource", ex.UmaResourceId);
                 Response.Headers.Add("UmaWellKnownUrl", ex.WellKnownConfiguration);
-                return new UnauthorizedResult();
+                return GetError(ex.Code, ex.Message, HttpStatusCode.Unauthorized);
             }
             catch(NotAuthorizedException ex)
             {
@@ -126,15 +97,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             }
             catch(DocumentNotFoundException)
             {
-                return new NotFoundResult();
-            }
-            catch (BaseDocumentManagementApiException ex)
-            {
-                return GetError(ex.Code, ex.Message);
-            }
-            catch(Exception ex)
-            {
-                return GetError("internal", ex.Message);
+                return GetError(ErrorCodes.InvalidRequest, "the document doesn't exist", HttpStatusCode.NotFound);
             }
         }
 
@@ -143,23 +106,31 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
         {
             if (request == null)
             {
-                return GetError("invalid_request", "no request", HttpStatusCode.BadRequest);
+                return GetError(ErrorCodes.InvalidRequest, ErrorDescriptions.NoRequest, HttpStatusCode.BadRequest);
             }
 
-            if (string.IsNullOrWhiteSpace(request.Credentials))
-            {
-                return GetError("invalid_request", "the parameter 'kid' must be passed", HttpStatusCode.BadRequest);
-            }
-
-            if (string.IsNullOrWhiteSpace(request.Credentials))
-            {
-                return GetError("invalid_request", "the parameter 'credentials' must be passed", HttpStatusCode.BadRequest);
-            }
-
+            var parameter = request.ToParameter();
             string accessToken;
             TryGetAccessToken(out accessToken);
-            var result = await _officeDocumentActions.Decrypt(request.Kid, request.Credentials, accessToken);
-            return new OkObjectResult(result);
+            try
+            {
+                var result = await _officeDocumentActions.Decrypt(parameter, accessToken, GetAuthenticateParameter(_options));
+                return new OkObjectResult(result);
+            }
+            catch (NoUmaAccessTokenException ex)
+            {
+                Response.Headers.Add("UmaResource", ex.UmaResourceId);
+                Response.Headers.Add("UmaWellKnownUrl", ex.WellKnownConfiguration);
+                return GetError(ex.Code, ex.Message, HttpStatusCode.Unauthorized);
+            }
+            catch (NotAuthorizedException ex)
+            {
+                return GetError(ex.Code, ex.Message, HttpStatusCode.Unauthorized);
+            }
+            catch (DocumentNotFoundException)
+            {
+                return GetError(ErrorCodes.InvalidRequest, "the document doesn't exist", HttpStatusCode.NotFound);
+            }
         }
 
         #endregion

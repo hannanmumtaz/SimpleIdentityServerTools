@@ -57,21 +57,9 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
             }
             catch (Exception ex)
             {
-                if (!string.IsNullOrWhiteSpace(json))
-                {
-                    return new BaseResponse
-                    {
-                        ContainsError = true,
-                        Error = new ErrorResponse
-                        {
-                            Error = "internal",
-                            ErrorDescription = ex.Message
-                        }
-                    };
-                }
-
                 return new BaseResponse
                 {
+                    HttpStatus = httpResponse.StatusCode,
                     ContainsError = true,
                     Error = JsonConvert.DeserializeObject<ErrorResponse>(json)
                 };

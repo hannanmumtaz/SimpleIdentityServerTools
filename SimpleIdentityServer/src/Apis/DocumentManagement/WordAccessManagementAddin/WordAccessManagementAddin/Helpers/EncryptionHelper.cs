@@ -48,7 +48,7 @@ namespace WordAccessManagementAddin.Helpers
 
             // Encrypt the credentials with asym key.
             var docMgClientFactory = new DocumentManagementFactory();
-            var jwksKeys = await docMgClientFactory.GetJwksClient().ExecuteAsync(new Uri($"{Constants.DocumentApiBaseUrl}/jwks")).ConfigureAwait(false);
+            var jwksKeys = await docMgClientFactory.GetJwksClient().ResolveAsync(new Uri(Constants.DocumentApiConfiguration)).ConfigureAwait(false);
             var jwks = jwksKeys.Keys.First();
             var modulus = jwks["n"].ToString().Base64DecodeBytes();
             var exponent = jwks["e"].ToString().Base64DecodeBytes();

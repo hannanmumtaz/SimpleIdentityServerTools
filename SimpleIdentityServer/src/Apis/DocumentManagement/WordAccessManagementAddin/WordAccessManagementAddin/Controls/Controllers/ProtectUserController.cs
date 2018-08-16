@@ -46,10 +46,10 @@ namespace WordAccessManagementAddin.Controls.Controllers
             if (!activeDocument.TryGetVariable(Constants.VariableName, out sidDocumentIdValue))
             {
                 sidDocumentIdValue = Guid.NewGuid().ToString();
-                var addResponse = await officeDocumentClient.Add(new AddOfficeDocumentRequest
+                var addResponse = await officeDocumentClient.AddResolve(new AddOfficeDocumentRequest
                 {
                     Id = sidDocumentIdValue
-                }, Constants.DocumentApiBaseUrl, authenticateStore.AccessToken);
+                }, Constants.DocumentApiConfiguration, authenticateStore.AccessToken);
                 if (addResponse.ContainsError)
                 {
                     return;
@@ -76,10 +76,10 @@ namespace WordAccessManagementAddin.Controls.Controllers
                 return;
             }
 
-            await officeDocumentClient.Update(sidDocumentIdValue, new UpdateOfficeDocumentRequest
+            await officeDocumentClient.UpdateResolve(sidDocumentIdValue, new UpdateOfficeDocumentRequest
             {
                 Permissions = permissions
-            }, Constants.DocumentApiBaseUrl, authenticateStore.AccessToken);
+            }, Constants.DocumentApiConfiguration, authenticateStore.AccessToken);
             ViewModel.CanExecuteRemovePermissions = true;
         }
 

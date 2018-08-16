@@ -58,19 +58,19 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
                 .ResolveAsync(authenticateParameter.WellKnownConfigurationUrl);
             if (result.ContainsError || !result.Content.Active)
             {
-                throw new NotAuthorizedException("parameter", "not_valid_accesstoken");
+                throw new NotAuthorizedException(ErrorCodes.InvalidRequest, ErrorDescriptions.AccessTokenIsNotValid);
             }
 
             var payload = _jwsParser.GetPayload(accessToken);
             if (!payload.ContainsKey("ticket"))
             {
-                throw new NotAuthorizedException("authorization", "no_ticket");
+                throw new NotAuthorizedException(ErrorCodes.Authorization, ErrorDescriptions.NoTicket);
             }
 
             var tickets = payload["ticket"] as JArray;
             if (tickets == null)
             {
-                throw new NotAuthorizedException("authorization", "no_ticket");
+                throw new NotAuthorizedException(ErrorCodes.Authorization, ErrorDescriptions.NoTicket);
             }
 
             var accessibleScopes = new List<string>();
@@ -83,14 +83,10 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
                 }
             }
 
+            accessibleScopes = accessibleScopes.Where(s => Constants.DEFAULT_SCOPES.Contains(s)).ToList();
             if (!accessibleScopes.Any())
             {
-                throw new NotAuthorizedException("authorization", "no_authorized");
-            }
-
-            if (!accessibleScopes.Contains("read"))
-            {
-
+                throw new NotAuthorizedException(ErrorCodes.Authorization, ErrorDescriptions.NotAuthorized);
             }
             
             return officeDocument;

@@ -15,6 +15,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.Parameters
             Permissions = new List<OfficeDocumentPermission>();
         }
 
+        public string Subject { get; set; }
         public IEnumerable<OfficeDocumentPermission> Permissions { get; set; }
     }
 }
