@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -44,7 +43,6 @@ namespace WordAccessManagementAddin.Controls.ViewModels
     internal sealed class UserViewModel : BaseViewModel
     {
         private string _name;
-        private IEnumerable<string> _permissions;
         private bool _isSelected;
 
         public string Name
@@ -61,7 +59,6 @@ namespace WordAccessManagementAddin.Controls.ViewModels
                 }
             }
         }
-
         public bool IsSelected
         {
             get
@@ -76,34 +73,39 @@ namespace WordAccessManagementAddin.Controls.ViewModels
                 }
             }
         }
-
-        public IEnumerable<string> Permissions
-        {
-            get
-            {
-                return _permissions;
-            }
-            set
-            {
-                if(_permissions != value)
-                {
-                    _permissions = value;
-                }
-            }
-        }
     }
 
     internal sealed class ProtectUserViewModel : BaseViewModel
     {
         private string _userIdentifier;
+        private bool _isLoading;
+        private bool _isMessageDisplayed;
+        private string _message;
+        private bool _isErrorMessage;
 
         public ProtectUserViewModel()
         {
-            Permissions = new ObservableCollection<PermissionViewModel>();
             Users = new ObservableCollection<UserViewModel>();
             AddCommand = new RelayCommand(HandleAddPermission, p => CanExecuteAddPermission());
             RemoveCommand = new RelayCommand(HandleRemovePermissions, p => HandleCanExecuteRemovePermissions());
             SaveCommand = new RelayCommand(HandleSavePermissions, p => CanSavePermissions());
+            CloseMessageCommand = new RelayCommand(HandleCloseMessage, p => true);
+        }
+
+        public bool IsLoading
+        {
+            get
+            {
+                return _isLoading;
+            }
+            set
+            {
+                if(_isLoading != value)
+                {
+                    _isLoading = value;
+                    OnPropertyChanged(nameof(IsLoading));
+                }
+            }
         }
 
         public string UserIdentifier
@@ -117,19 +119,63 @@ namespace WordAccessManagementAddin.Controls.ViewModels
                 if (_userIdentifier != value)
                 {
                     _userIdentifier = value;
-                    OnPropertyChanged("UserIdentifier");
+                    OnPropertyChanged(nameof(UserIdentifier));
                 }
             }
         }
-        public ObservableCollection<PermissionViewModel> Permissions { get; set; }
+        public bool IsMessageDisplayed
+        {
+            get
+            {
+                return _isMessageDisplayed;
+            }
+            set
+            {
+                if(_isMessageDisplayed != value)
+                {
+                    _isMessageDisplayed = value;
+                    OnPropertyChanged(nameof(IsMessageDisplayed));
+                }
+            }
+        }
+        public string Message
+        {
+            get
+            {
+                return _message;
+            }
+            set
+            {
+                if (_message != value)
+                {
+                    _message = value;
+                    OnPropertyChanged(nameof(Message));
+                }
+            }
+        }
+        public bool IsErrorMessage
+        {
+            get
+            {
+                return _isErrorMessage;
+            }
+            set
+            {
+                if(_isErrorMessage != value)
+                {
+                    _isErrorMessage = value;
+                    OnPropertyChanged(nameof(IsErrorMessage));
+                }
+            }
+        }
         public ObservableCollection<UserViewModel> Users { get; set; }
         public ICommand AddCommand { get; private set; }
         public ICommand RemoveCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
+        public ICommand CloseMessageCommand { get; private set; }
         public event EventHandler PermissionAdded;
         public event EventHandler PermissionsRemoved;
         public event EventHandler PermissionsSaved;
-        public bool CanExecuteRemovePermissions { get; set; }
 
         private void HandleAddPermission(object o)
         {
@@ -154,7 +200,7 @@ namespace WordAccessManagementAddin.Controls.ViewModels
 
         private bool HandleCanExecuteRemovePermissions()
         {
-            return CanExecuteRemovePermissions;
+            return true;
         }
 
         private void HandleSavePermissions(object o)
@@ -168,6 +214,12 @@ namespace WordAccessManagementAddin.Controls.ViewModels
         private bool CanSavePermissions()
         {
             return true;
+        }
+
+        private void HandleCloseMessage(object o)
+        {
+            Message = null;
+            IsMessageDisplayed = false;
         }
     }
 }

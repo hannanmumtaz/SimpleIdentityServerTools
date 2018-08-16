@@ -5,13 +5,18 @@ namespace WordAccessManagementAddin.Controls
 {
     public partial class ProtectUserControl : Window
     {
-        private readonly ProtectUserController _controller;
+        private ProtectUserController _controller;
 
         public ProtectUserControl()
         {
             InitializeComponent();
-            _controller = new ProtectUserController();
-            DataContext = _controller.ViewModel;
+            Loaded += HandleLoaded;
+        }
+
+        private void HandleLoaded(object sender, RoutedEventArgs e)
+        {
+            var controller = new ProtectUserController();
+            DataContext = controller.ViewModel;
         }
     }
 }

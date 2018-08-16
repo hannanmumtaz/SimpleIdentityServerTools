@@ -7,65 +7,122 @@
              mc:Ignorable="d" 
              Title="Protect document"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="30" />
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <!-- Add the permission -->
-            <GroupBox Header="Assign permission" Grid.Column="0">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <!-- Identifier of the user -->
-                    <Label Grid.Row="0" Grid.Column="0">The identifier of the user</Label>
-                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=UserIdentifier, Mode=TwoWay}"></TextBox>
-                    <!-- Select the permissions -->
-                    <Label Grid.Row="1" Grid.Column="0">Select the permissions</Label>
-                    <ListBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Path=Permissions}" DisplayMemberPath="Name" SelectionMode="Multiple">
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListBoxItem}">
-                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                    </ListBox>
-                    <Button Grid.Row="2" Grid.Column="0" Command="{Binding Path=AddCommand}">Add</Button>
-                </Grid>
-            </GroupBox>
-            <!-- List of users assigned to the document -->
-            <GroupBox Header="Permissions assigned" Grid.Column="1">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <ListBox Grid.Row="0" ItemsSource="{Binding Path=Users}" DisplayMemberPath="Name" SelectionMode="Multiple">
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListBoxItem}">
-                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                    </ListBox>
-                    <StackPanel Grid.Row="1" Orientation="Horizontal">
-                        <Button Command="{Binding Path=RemoveCommand}">Remove</Button>
-                    </StackPanel>
-                </Grid>
-            </GroupBox>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="CommonStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Margin="5">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <!-- Error message -->
+            <Grid Grid.ColumnSpan="2" Grid.Row="0">
+                <Border BorderThickness="2" Padding="5">
+                    <DockPanel>
+                        <TextBlock Text="{Binding Path=Message}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="Red" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=IsErrorMessage}" Value="False">
+                                            <Setter Property="Foreground" Value="Green" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <Button HorizontalAlignment="Right" Command="{Binding Path=CloseMessageCommand}">Close</Button>
+                    </DockPanel>
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="BorderBrush" Value="Red" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsErrorMessage}" Value="False">
+                                    <Setter Property="BorderBrush" Value="Green" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsMessageDisplayed}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+            </Grid>
+            <!-- Manage the users -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <!-- Add the permission -->
+                <GroupBox Header="Grant access to a user" Grid.Column="0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <!-- Identifier of the user -->
+                        <Label Grid.Row="0" Grid.Column="0" Margin="5">Enter the identifier of the user</Label>
+                        <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding Path=UserIdentifier, Mode=TwoWay}"></TextBox>
+                        <Button Grid.Row="2" Grid.Column="0" Command="{Binding Path=AddCommand}" Margin="5">Add</Button>
+                    </Grid>
+                </GroupBox>
+                <!-- List of users assigned to the document -->
+                <GroupBox Header="List of granted users" Grid.Column="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <ListBox Grid.Row="0" ItemsSource="{Binding Path=Users}" DisplayMemberPath="Name" SelectionMode="Multiple">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}">
+                                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                                    <Setter Property="Padding" Value="5" />
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <Button Command="{Binding Path=RemoveCommand}" Margin="5">Remove the selected users</Button>
+                        </StackPanel>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+            <!-- Save the permissions -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Button Command="{Binding Path=SaveCommand}" Margin="5">Save the permissions</Button>
+            </StackPanel>
         </Grid>
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <Button Command="{Binding Path=SaveCommand}">Save</Button>
-        </StackPanel>
+        <Grid>
+            <!-- Loading spinner -->
+            <Control Name="spinner" Style="{StaticResource BusyAnimationStyle}" />
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsLoading}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+        </Grid>
     </Grid>
 </Window>

@@ -15,11 +15,6 @@ namespace WordAccessManagementAddin.Controls.Controllers
         public ProtectUserController()
         {
             ViewModel = new ProtectUserViewModel();
-            ViewModel.Permissions.Add(new PermissionViewModel
-            {
-                IsSelected = false,
-                Name = "read"
-            });
             ViewModel.PermissionAdded += HandleAddPermission;
             ViewModel.PermissionsRemoved += HandlePermissionsRemoved;
             ViewModel.PermissionsSaved += (s, e) => HandlePermissionsSaved();
@@ -32,13 +27,13 @@ namespace WordAccessManagementAddin.Controls.Controllers
         /// <param name="e"></param>
         private async Task HandlePermissionsSaved()
         {
-            ViewModel.CanExecuteRemovePermissions = false;
             var activeDocument = Globals.ThisAddIn.Application.ActiveDocument;
             if (activeDocument == null)
             {
                 return;
             }
 
+            DisplayLoading(true);
             var docMgClientFactory = new DocumentManagementFactory();
             var officeDocumentClient = docMgClientFactory.GetOfficeDocumentClient();
             var authenticateStore = AuthenticationStore.Instance();
@@ -46,12 +41,23 @@ namespace WordAccessManagementAddin.Controls.Controllers
             if (!activeDocument.TryGetVariable(Constants.VariableName, out sidDocumentIdValue))
             {
                 sidDocumentIdValue = Guid.NewGuid().ToString();
-                var addResponse = await officeDocumentClient.AddResolve(new AddOfficeDocumentRequest
+                try
                 {
-                    Id = sidDocumentIdValue
-                }, Constants.DocumentApiConfiguration, authenticateStore.AccessToken);
-                if (addResponse.ContainsError)
+                    var addResponse = await officeDocumentClient.AddResolve(new AddOfficeDocumentRequest
+                    {
+                        Id = sidDocumentIdValue
+                    }, Constants.DocumentApiConfiguration, authenticateStore.AccessToken);
+                    if (addResponse.ContainsError)
+                    {
+                        DisplayErrorMessage("An error occured while trying to interact with the DocumentApi");
+                        DisplayLoading(false);
+                        return;
+                    }
+                }
+                catch(Exception)
                 {
+                    DisplayErrorMessage("An error occured while trying to interact with the DocumentApi");
+                    DisplayLoading(false);
                     return;
                 }
 
@@ -65,7 +71,10 @@ namespace WordAccessManagementAddin.Controls.Controllers
                 {
                     permissions.Add(new OfficeDocumentPermissionRequest
                     {
-                        Scopes = user.Permissions,
+                        Scopes = new List<string>
+                        {
+                            "read"
+                        },
                         Subject = user.Name
                     });
                 }
@@ -73,14 +82,33 @@ namespace WordAccessManagementAddin.Controls.Controllers
 
             if (!permissions.Any())
             {
+                DisplayErrorMessage("At least one permission must be inserted");
+                DisplayLoading(false);
                 return;
             }
 
-            await officeDocumentClient.UpdateResolve(sidDocumentIdValue, new UpdateOfficeDocumentRequest
+            try
             {
-                Permissions = permissions
-            }, Constants.DocumentApiConfiguration, authenticateStore.AccessToken);
-            ViewModel.CanExecuteRemovePermissions = true;
+                var updateResult = await officeDocumentClient.UpdateResolve(sidDocumentIdValue, new UpdateOfficeDocumentRequest
+                {
+                    Permissions = permissions
+                }, Constants.DocumentApiConfiguration, authenticateStore.AccessToken);
+                if (updateResult.ContainsError)
+                {
+                    DisplayErrorMessage("An error occured while trying to update the permissions");
+                    DisplayLoading(false);
+                    return;
+                }
+            }
+            catch(Exception)
+            {
+                DisplayErrorMessage("An error occured while trying to update the permissions");
+                DisplayLoading(false);
+                return;
+            }
+
+            DisplayInformationMessage("the permissions are saved");
+            DisplayLoading(false);
         }
 
         /// <summary>
@@ -93,6 +121,7 @@ namespace WordAccessManagementAddin.Controls.Controllers
             var selectedUsers = ViewModel.Users.Where(p => p.IsSelected);
             if (!selectedUsers.Any())
             {
+                DisplayErrorMessage("At least one user must be selected");
                 return;
             }
 
@@ -111,9 +140,9 @@ namespace WordAccessManagementAddin.Controls.Controllers
         private void HandleAddPermission(object sender, System.EventArgs e)
         {
             var userIdentifier = ViewModel.UserIdentifier;
-            var selectedPermissions = ViewModel.Permissions.Where(p => p.IsSelected);
-            if (string.IsNullOrWhiteSpace(userIdentifier) || !selectedPermissions.Any() || ViewModel.Users.Any(u => u.Name == userIdentifier))
+            if (string.IsNullOrWhiteSpace(userIdentifier))
             {
+                DisplayErrorMessage("The user identifier is mandatory");
                 return;
             }
 
@@ -121,13 +150,27 @@ namespace WordAccessManagementAddin.Controls.Controllers
             ViewModel.Users.Add(new UserViewModel
             {
                 IsSelected = false,
-                Name = userIdentifier,
-                Permissions = selectedPermissions.Select(s => s.Name)
+                Name = userIdentifier
             });
-            foreach(var permission in ViewModel.Permissions)
-            {
-                permission.IsSelected = false;
-            }
+        }
+
+        private void DisplayErrorMessage(string errorMessage)
+        {
+            ViewModel.Message = errorMessage;
+            ViewModel.IsMessageDisplayed = true;
+            ViewModel.IsErrorMessage = true;
+        }
+
+        private void DisplayInformationMessage(string infoMessage)
+        {
+            ViewModel.Message = infoMessage;
+            ViewModel.IsMessageDisplayed = true;
+            ViewModel.IsErrorMessage = false;
+        }
+        
+        private void DisplayLoading(bool isDisplayed)
+        {
+            ViewModel.IsLoading = isDisplayed;
         }
 
         public ProtectUserViewModel ViewModel { get; set; }
