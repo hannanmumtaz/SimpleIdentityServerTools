@@ -15,13 +15,14 @@ namespace WordAccessManagementAddin
 {
     public partial class Ribbon
     {
-        private const int INTERNET_OPTION_END_BROWSER_SESSION = 42;
         private AuthenticationStore _authenticationStore;
+        private OfficeDocumentStore _officeDocumentStore;
 
         private void HandleRibbonLoad(object sender, RibbonUIEventArgs e)
         {
             DisplayLogin(true);
             _authenticationStore = AuthenticationStore.Instance();
+            _officeDocumentStore = OfficeDocumentStore.Instance();
             _authenticationStore.Authenticated += HandleAuthenticate;
         }
 
@@ -38,7 +39,6 @@ namespace WordAccessManagementAddin
 
         private void HandleDisconnect(object sender, RibbonControlEventArgs e)
         {
-            ClearCookie();
             _authenticationStore.Disconnect();
             DisplayLogin(true);
         }
@@ -51,7 +51,7 @@ namespace WordAccessManagementAddin
 
         private void HandleUnprotect(object sender, RibbonControlEventArgs e)
         {
-            OfficeDocumentStore.Instance().Decrypt();
+            OfficeDocumentStore.Instance().LaunchDecryption();
         }
 
         private void HandleProtectOffline(object sender, RibbonControlEventArgs e)
@@ -109,13 +109,5 @@ namespace WordAccessManagementAddin
             bmp.UnlockBits(data);
             return bmp;
         }
-
-        private static void ClearCookie()
-        {
-            InternetSetOption(IntPtr.Zero, INTERNET_OPTION_END_BROWSER_SESSION, IntPtr.Zero, 0);
-        }
-
-        [DllImport("wininet.dll", SetLastError = true)]
-        private static extern bool InternetSetOption(IntPtr hInternet, int dwOption, IntPtr lpBuffer, int lpdwBufferLength);
     }
 }

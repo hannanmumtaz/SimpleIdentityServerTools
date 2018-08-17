@@ -8,12 +8,20 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using WordAccessManagementAddin.Stores;
 
 namespace WordAccessManagementAddin.Helpers
 {
     internal class EncryptionHelper
     {
-        public async Task<string> Encrypt(Document document)
+        public class EncryptedDocument
+        {
+            public string Content { get; set; }
+            public string Salt { get; set; }
+            public string Password { get; set; }
+        }
+
+        public async Task<EncryptedDocument> Encrypt(Document document, string documentId)
         {
             var range = document.Range();
             var xml = range.XML;
@@ -66,7 +74,12 @@ namespace WordAccessManagementAddin.Helpers
             }
 
             // Returns concatenated result.
-            return $"{kid}.{encryptedBase64}.{encryptedPayloadBase64}";
+            return new EncryptedDocument
+            {
+                Content = $"{kid}.{encryptedBase64}.{encryptedPayloadBase64}",
+                Password = password,
+                Salt = salt
+            };
         }
 
         public string Decrypt(string toBeDecrypted, DecryptedResponse decryptedResponse)

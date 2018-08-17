@@ -10,5 +10,6 @@
         public const string UmaWellKnownConfiguration = "http://localhost:60004/.well-known/uma2-configuration";
         public const string ClientId = "OfficeAddin";
         public const string ClientSecret = "Cr8cfLttLabTvezn";
+        public const string FilePatternName = "WordAccessManagementAddin_{0}.txt";
     }
 }

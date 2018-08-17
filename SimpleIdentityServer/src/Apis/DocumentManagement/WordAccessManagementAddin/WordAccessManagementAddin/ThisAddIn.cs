@@ -5,6 +5,7 @@ using SimpleIdentityServer.DocumentManagement.Common.DTOs.Requests;
 using SimpleIdentityServer.DocumentManagement.Common.DTOs.Responses;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using WordAccessManagementAddin.Extensions;
 using WordAccessManagementAddin.Helpers;
 using WordAccessManagementAddin.Stores;
@@ -13,6 +14,9 @@ namespace WordAccessManagementAddin
 {
     public partial class ThisAddIn
     {
+        private const int INTERNET_OPTION_END_BROWSER_SESSION = 42;
+        private bool _isDecrypted = false;
+
         /// <summary>
         /// Encrypt the document.
         /// </summary>
@@ -20,27 +24,29 @@ namespace WordAccessManagementAddin
         /// <param name="Cancel"></param>
         private void HandleDocumentBeforeClose(Document Doc, ref bool Cancel)
         {
-            var authenticateStore = AuthenticationStore.Instance();
-            if (string.IsNullOrWhiteSpace(authenticateStore.IdentityToken))
-            {
-                return;
-            }
-
             string sidDocumentIdValue;
             if (!Doc.TryGetVariable(Constants.VariableName, out sidDocumentIdValue))
             {
                 return;
             }
 
-            var officeDocument = GetOfficeDocument(sidDocumentIdValue, authenticateStore.IdentityToken);
-            if (officeDocument == null)
+            if (!_isDecrypted)
             {
                 return;
             }
 
             // Encrypt the content.
             var encryptionHelper = new EncryptionHelper();
-            var encryptedData = encryptionHelper.Encrypt(Doc).Result;
+            var encryptedResult = encryptionHelper.Encrypt(Doc, sidDocumentIdValue).Result;
+            if (!string.IsNullOrWhiteSpace(AuthenticationStore.Instance().IdentityToken))
+            {
+                var officeDocumentStore = OfficeDocumentStore.Instance();
+                officeDocumentStore.StoreDecryption(sidDocumentIdValue, new DecryptedResponse
+                {
+                    Password = encryptedResult.Password,
+                    Salt = encryptedResult.Salt
+                });
+            }
 
             // Insert the image.
             var range = Doc.Range();
@@ -50,7 +56,7 @@ namespace WordAccessManagementAddin
             bm.Save(filePath);
             range.Text = string.Empty;
             var shape = range.InlineShapes.AddPicture(filePath, false, true);
-            shape.AlternativeText = encryptedData;
+            shape.AlternativeText = encryptedResult.Content;
             File.Delete(filePath);
             Doc.Save();
         }
@@ -88,6 +94,7 @@ namespace WordAccessManagementAddin
                 }
 
                 shape.Range.InsertXML(xml);
+                _isDecrypted = true;
             }
         }
 
@@ -124,11 +131,26 @@ namespace WordAccessManagementAddin
                 return null;
             }
 
+            var encryptionHelper = new EncryptionHelper();
+            var kid = splittedContent[0];
+            var credentials = splittedContent[1];
+            var encryptedContent = splittedContent[2];
+            var officeDocumentStore = OfficeDocumentStore.Instance();
+            var decryptionResponse = officeDocumentStore.RestoreDecryption(sidDocumentIdValue);
+            if (decryptionResponse != null)
+            {
+                try
+                {
+                    var result = encryptionHelper.Decrypt(encryptedContent, decryptionResponse);
+                    return result;
+                }
+                catch(Exception) { }
+            }
+
+
             var identityServerClientFactory = new IdentityServerClientFactory();
             var identityServerUmaClientFactory = new IdentityServerUmaClientFactory();
             var documentManagementFactory = new DocumentManagementFactory();
-            var officeDocumentStore = OfficeDocumentStore.Instance();
-            var encryptionHelper = new EncryptionHelper();
             var umaResourceId = officeDocumentStore.GetUmaResourceId(sidDocumentIdValue).Result;
             if (string.IsNullOrWhiteSpace(umaResourceId))
             {
@@ -141,23 +163,47 @@ namespace WordAccessManagementAddin
                 return null;
             }
 
-            var kid = splittedContent[0];
-            var credentials = splittedContent[1];
-            var encryptedContent = splittedContent[2];
             var decryptedResult = documentManagementFactory.GetOfficeDocumentClient().DecryptResolve(new DecryptDocumentRequest
             {
                 DocumentId = sidDocumentIdValue,
                 Credentials = credentials,
                 Kid = kid
             }, Constants.DocumentApiConfiguration, grantedToken.AccessToken).Result;
+            if (decryptedResult.ContainsError)
+            {
+                return null;
+            }
+
             return encryptionHelper.Decrypt(encryptedContent, decryptedResult.Content);
+        }
+
+        private void HandleDisconnect(object sender, EventArgs e)
+        {
+            ClearCookie();
+            var activeDocument = Globals.ThisAddIn.Application.ActiveDocument;
+            string sidDocumentIdValue;
+            if (!activeDocument.TryGetVariable(Constants.VariableName, out sidDocumentIdValue))
+            {
+                return;
+            }
+
+            OfficeDocumentStore.Instance().ResetDecryption(sidDocumentIdValue);
         }
 
         private void InternalStartup()
         {            
             Application.DocumentBeforeClose += HandleDocumentBeforeClose;
             OfficeDocumentStore.Instance().Decrypted += HandleDecryptDocument;
+            AuthenticationStore.Instance().Disconnected += HandleDisconnect;
             AuthenticationStore.Instance().Restore();
         }
+
+        private static void ClearCookie()
+        {
+            InternetSetOption(IntPtr.Zero, INTERNET_OPTION_END_BROWSER_SESSION, IntPtr.Zero, 0);
+        }
+
+        [DllImport("wininet.dll", SetLastError = true)]
+        private static extern bool InternetSetOption(IntPtr hInternet, int dwOption, IntPtr lpBuffer, int lpdwBufferLength);
     }
 }

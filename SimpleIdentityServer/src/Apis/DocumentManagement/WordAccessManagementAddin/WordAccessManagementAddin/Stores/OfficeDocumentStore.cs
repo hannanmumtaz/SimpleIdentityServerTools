@@ -1,9 +1,12 @@
-﻿using SimpleIdentityServer.Client;
+﻿using Newtonsoft.Json;
+using SimpleIdentityServer.Client;
 using SimpleIdentityServer.Core.Common.DTOs.Responses;
 using SimpleIdentityServer.DocumentManagement.Client;
+using SimpleIdentityServer.DocumentManagement.Common.DTOs.Responses;
 using SimpleIdentityServer.Uma.Common.DTOs;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -25,6 +28,7 @@ namespace WordAccessManagementAddin.Stores
             public string UmaResourceId { get; set; }
         }
 
+        private static string _fileName = string.Format(Constants.FilePatternName, "{0}_officeDocumentStore");
         private static OfficeDocumentStore _instance;
         private readonly IdentityServerUmaClientFactory _identityServerUmaClientFactory;
         private readonly IdentityServerClientFactory _identityServerClientFactory;
@@ -57,7 +61,43 @@ namespace WordAccessManagementAddin.Stores
             return _instance;
         }
 
-        public void Decrypt()
+        public void StoreDecryption(string documentId, DecryptedResponse decryptedResponse)
+        {
+            if(decryptedResponse == null)
+            {
+                throw new ArgumentNullException(nameof(decryptedResponse));
+            }
+
+            var fullPath = GetFullPath(documentId);
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
+
+            File.WriteAllText(fullPath, JsonConvert.SerializeObject(decryptedResponse));
+        }
+
+        public DecryptedResponse RestoreDecryption(string documentId)
+        {
+            var fullPath = GetFullPath(documentId);
+            if (!File.Exists(fullPath))
+            {
+                return null;
+            }
+
+            return JsonConvert.DeserializeObject<DecryptedResponse>(File.ReadAllText(fullPath));
+        }
+
+        public void ResetDecryption(string documentId)
+        {
+            var fullPath = GetFullPath(documentId);
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
+        }
+
+        public void LaunchDecryption()
         {
             if(Decrypted != null)
             {
@@ -133,6 +173,11 @@ namespace WordAccessManagementAddin.Stores
             };
             _tokens.Add(result);
             return grantedToken.Content;
+        }
+
+        private static string GetFullPath(string documentId)
+        {
+            return Path.Combine(Path.GetTempPath(), string.Format(_fileName, documentId));
         }
     }
 }

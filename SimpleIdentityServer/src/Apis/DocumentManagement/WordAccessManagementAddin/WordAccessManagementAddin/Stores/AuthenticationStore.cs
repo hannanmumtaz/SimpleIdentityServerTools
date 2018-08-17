@@ -16,7 +16,7 @@ namespace WordAccessManagementAddin.Stores
             public string IdentityToken { get; set; }
         }
 
-        private const string _fileName = "WordAccessManagementAddin_authenticationStore.txt";
+        private static string _fileName = string.Format(Constants.FilePatternName, "authenticationStore");
         private static AuthenticationStore _instance;
         private IJwsParser _jwsParser;
 

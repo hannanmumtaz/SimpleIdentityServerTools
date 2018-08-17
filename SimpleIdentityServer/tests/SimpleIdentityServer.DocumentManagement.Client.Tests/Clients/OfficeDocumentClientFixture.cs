@@ -94,8 +94,9 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
             var addOfficeDocumentOperation = new AddOfficeDocumentOperation(_httpClientFactoryStub.Object);
             var decryptOfficeDocumentOperation = new DecryptOfficeDocumentOperation(_httpClientFactoryStub.Object);
             var getConfigurationOperation = new GetConfigurationOperation(_httpClientFactoryStub.Object);
+            var getPermissionsOperation = new GetPermissionsOperation(_httpClientFactoryStub.Object);
             _officeDocumentClient = new OfficeDocumentClient(updateOfficeDocumentOperation, getOfficeDocumentOperation,
-                addOfficeDocumentOperation, decryptOfficeDocumentOperation, getConfigurationOperation);
+                addOfficeDocumentOperation, decryptOfficeDocumentOperation, getConfigurationOperation, getPermissionsOperation);
         }
     }
 }
