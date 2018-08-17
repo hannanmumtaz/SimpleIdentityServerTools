@@ -1,9 +1,14 @@
-﻿using SimpleIdentityServer.DocumentManagement.Client;
+﻿using SimpleIdentityServer.Client;
+using SimpleIdentityServer.Core.Common;
+using SimpleIdentityServer.DocumentManagement.Client;
+using SimpleIdentityServer.DocumentManagement.Client.Responses;
 using SimpleIdentityServer.DocumentManagement.Common.DTOs.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 using WordAccessManagementAddin.Controls.ViewModels;
 using WordAccessManagementAddin.Extensions;
 using WordAccessManagementAddin.Stores;
@@ -12,12 +17,89 @@ namespace WordAccessManagementAddin.Controls.Controllers
 {
     internal sealed class ProtectUserController
     {
-        public ProtectUserController()
+        private readonly DocumentManagementFactory _documentManagementFactory;
+        private readonly IdentityServerUmaClientFactory _identityServerUmaClientFactory;
+        private readonly IdentityServerClientFactory _identityServerClientFactory;
+        private readonly AuthenticationStore _authenticationStore;
+        private readonly OfficeDocumentStore _officeDocumentStore;
+        private readonly Window _window;
+
+        public ProtectUserController(Window window)
         {
+            _window = window;
+            _documentManagementFactory = new DocumentManagementFactory();
+            _identityServerUmaClientFactory = new IdentityServerUmaClientFactory();
+            _identityServerClientFactory = new IdentityServerClientFactory();
+            _authenticationStore = AuthenticationStore.Instance();
+            _officeDocumentStore = OfficeDocumentStore.Instance();
             ViewModel = new ProtectUserViewModel();
             ViewModel.PermissionAdded += HandleAddPermission;
             ViewModel.PermissionsRemoved += HandlePermissionsRemoved;
             ViewModel.PermissionsSaved += (s, e) => HandlePermissionsSaved();
+            Init();
+        }
+
+        /// <summary>
+        /// Display the list of permissions.
+        /// </summary>
+        private void Init()
+        {
+            var activeDocument = Globals.ThisAddIn.Application.ActiveDocument;
+            if (activeDocument == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(_authenticationStore.IdentityToken))
+            {
+                return;
+            }
+
+            string sidDocumentIdValue;
+            if (!activeDocument.TryGetVariable(Constants.VariableName, out sidDocumentIdValue))
+            {
+                return;
+            }
+
+            DisplayLoading(true);
+            GetPermissions(sidDocumentIdValue).ContinueWith((r) =>
+            {
+                var permissions = r.Result;
+                DisplayLoading(false);
+                if (permissions == null || permissions.ContainsError)
+                {
+                    return;
+                }
+
+                var sub = TryGetKey(_authenticationStore.JwsPayload, SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.Subject);
+                foreach(var permission in permissions.Content.Where(c => c.UserSubject != sub))
+                {
+                    _window.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                        ViewModel.Users.Add(new UserViewModel
+                        {
+                            IsSelected = false,
+                            Name = permission.UserSubject
+                        })
+                    ));
+                }
+            });
+        }
+
+        private async Task<GetOfficeDocumentPermissionsResponse> GetPermissions(string documentId)
+        {
+            var umaResourceId = await _officeDocumentStore.GetUmaResourceId(documentId).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(umaResourceId))
+            {
+                return null;
+            }
+
+            var grantedToken = await _officeDocumentStore.GetOfficeDocumentAccessTokenViaUmaGrantType(umaResourceId);
+            if (grantedToken == null)
+            {
+                return null;
+            }
+
+            return await _documentManagementFactory.GetOfficeDocumentClient().GetPermissionsResolve(documentId, Constants.DocumentApiConfiguration, grantedToken.AccessToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -34,9 +116,7 @@ namespace WordAccessManagementAddin.Controls.Controllers
             }
 
             DisplayLoading(true);
-            var docMgClientFactory = new DocumentManagementFactory();
-            var officeDocumentClient = docMgClientFactory.GetOfficeDocumentClient();
-            var authenticateStore = AuthenticationStore.Instance();
+            var officeDocumentClient = _documentManagementFactory.GetOfficeDocumentClient();
             string sidDocumentIdValue;
             if (!activeDocument.TryGetVariable(Constants.VariableName, out sidDocumentIdValue))
             {
@@ -46,7 +126,7 @@ namespace WordAccessManagementAddin.Controls.Controllers
                     var addResponse = await officeDocumentClient.AddResolve(new AddOfficeDocumentRequest
                     {
                         Id = sidDocumentIdValue
-                    }, Constants.DocumentApiConfiguration, authenticateStore.AccessToken);
+                    }, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken);
                     if (addResponse.ContainsError)
                     {
                         DisplayErrorMessage("An error occured while trying to interact with the DocumentApi");
@@ -92,7 +172,7 @@ namespace WordAccessManagementAddin.Controls.Controllers
                 var updateResult = await officeDocumentClient.UpdateResolve(sidDocumentIdValue, new UpdateOfficeDocumentRequest
                 {
                     Permissions = permissions
-                }, Constants.DocumentApiConfiguration, authenticateStore.AccessToken);
+                }, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken);
                 if (updateResult.ContainsError)
                 {
                     DisplayErrorMessage("An error occured while trying to update the permissions");
@@ -171,6 +251,22 @@ namespace WordAccessManagementAddin.Controls.Controllers
         private void DisplayLoading(bool isDisplayed)
         {
             ViewModel.IsLoading = isDisplayed;
+        }
+
+        /// <summary>
+        /// Try to get the value from the PAYLOAD.
+        /// </summary>
+        /// <param name="jwsPayload"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        private static string TryGetKey(JwsPayload jwsPayload, string key)
+        {
+            if (!jwsPayload.ContainsKey(key))
+            {
+                return string.Empty;
+            }
+
+            return jwsPayload[key].ToString();
         }
 
         public ProtectUserViewModel ViewModel { get; set; }

@@ -16,6 +16,8 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         Task<BaseResponse> Add(AddOfficeDocumentRequest request, string url, string accessToken);
         Task<GetDecryptedDocumentResponse> DecryptResolve(DecryptDocumentRequest request, string configurationUrl, string accessToken);
         Task<GetDecryptedDocumentResponse> Decrypt(DecryptDocumentRequest request, string url, string accessToken);
+        Task<GetOfficeDocumentPermissionsResponse> GetPermissionsResolve(string documentId, string configurationUrl, string accessToken);
+        Task<GetOfficeDocumentPermissionsResponse> GetPermissions(string documentId, string url, string accessToken);
     }
 
     internal sealed class OfficeDocumentClient : IOfficeDocumentClient
@@ -25,16 +27,18 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         private readonly IAddOfficeDocumentOperation _addOfficeDocumentOperation;
         private readonly IDecryptOfficeDocumentOperation _decryptOfficeDocumentOperation;
         private readonly IGetConfigurationOperation _getConfigurationOperation;
+        private readonly IGetPermissionsOperation _getPermissionsOperation;
 
         public OfficeDocumentClient(IUpdateOfficeDocumentOperation updateOfficeDocumentOperation, IGetOfficeDocumentOperation getOfficeDocumentOperation,
             IAddOfficeDocumentOperation addOfficeDocumentOperation, IDecryptOfficeDocumentOperation decryptOfficeDocumentOperation,
-            IGetConfigurationOperation getConfigurationOperation)
+            IGetConfigurationOperation getConfigurationOperation, IGetPermissionsOperation getPermissionsOperation)
         {
             _updateOfficeDocumentOperation = updateOfficeDocumentOperation;
             _getOfficeDocumentOperation = getOfficeDocumentOperation;
             _addOfficeDocumentOperation = addOfficeDocumentOperation;
             _decryptOfficeDocumentOperation = decryptOfficeDocumentOperation;
             _getConfigurationOperation = getConfigurationOperation;
+            _getPermissionsOperation = getPermissionsOperation;
         }
 
         public async Task<BaseResponse> UpdateResolve(string documentId, UpdateOfficeDocumentRequest request, string configurationUrl, string accessToken)
@@ -79,6 +83,17 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         public Task<GetDecryptedDocumentResponse> Decrypt(DecryptDocumentRequest request, string url, string accessToken)
         {
             return _decryptOfficeDocumentOperation.Execute(request, url, accessToken);
+        }
+
+        public async Task<GetOfficeDocumentPermissionsResponse> GetPermissionsResolve(string documentId, string configurationUrl, string accessToken)
+        {
+            var configuration = await _getConfigurationOperation.Execute(new Uri(configurationUrl)).ConfigureAwait(false);
+            return await _getPermissionsOperation.Execute(documentId, configuration.OfficeDocumentsEndpoint + $"/{documentId}/permissions", accessToken).ConfigureAwait(false);
+        }
+
+        public Task<GetOfficeDocumentPermissionsResponse> GetPermissions(string documentId, string url, string accessToken)
+        {
+            return _getPermissionsOperation.Execute(documentId, url, accessToken);
         }
     }
 }

@@ -27,7 +27,7 @@
     <RootNamespace>WordAccessManagementAddin</RootNamespace>
     <AssemblyName>WordAccessManagementAddin</AssemblyName>
     <LoadBehavior>3</LoadBehavior>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <DefineConstants>VSTO40</DefineConstants>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <BootstrapperComponentsLocation>HomeSite</BootstrapperComponentsLocation>
@@ -224,7 +224,9 @@
     <Compile Include="Ribbon.Designer.cs">
       <DependentUpon>Ribbon.cs</DependentUpon>
     </Compile>
+    <Compile Include="Stores\AccessTokenStore.cs" />
     <Compile Include="Stores\AuthenticationStore.cs" />
+    <Compile Include="Stores\OfficeDocumentStore.cs" />
     <Compile Include="ThisAddIn.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -319,7 +321,14 @@
     <ManifestKeyFile>WordAccessManagementAddin_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>350B6B6BDDB07D8FE7B14597B1AF86A764D657DD</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>795CB7DA717BD58464DA7D8A033629CB0BBD2D44</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

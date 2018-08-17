@@ -101,7 +101,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             }
         }
 
-        [HttpGet("permissions/{id}")]
+        [HttpGet("{id}/permissions")]
         public async Task<IActionResult> GetPermissions(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -109,13 +109,26 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
                 return GetError(ErrorCodes.InvalidRequest, string.Format(ErrorDescriptions.ParameterIsMissing, "id"), HttpStatusCode.BadRequest);
             }
 
+            string accessToken;
+            TryGetAccessToken(out accessToken);
             try
             {
-
+                var result = await _officeDocumentActions.GetPermissions(id, accessToken, GetAuthenticateParameter(_options));
+                return new OkObjectResult(result);
             }
-            catch()
+            catch (NoUmaAccessTokenException ex)
             {
-
+                Response.Headers.Add("UmaResource", ex.UmaResourceId);
+                Response.Headers.Add("UmaWellKnownUrl", ex.WellKnownConfiguration);
+                return GetError(ex.Code, ex.Message, HttpStatusCode.Unauthorized);
+            }
+            catch (NotAuthorizedException ex)
+            {
+                return GetError(ex.Code, ex.Message, HttpStatusCode.Unauthorized);
+            }
+            catch (DocumentNotFoundException)
+            {
+                return GetError(ErrorCodes.InvalidRequest, "the document doesn't exist", HttpStatusCode.NotFound);
             }
         }
 
