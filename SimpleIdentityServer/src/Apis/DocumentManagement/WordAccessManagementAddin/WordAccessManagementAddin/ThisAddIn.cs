@@ -82,6 +82,11 @@ namespace WordAccessManagementAddin
                 // DECRYPT
                 var b64Encoded = shape.AlternativeText;
                 var xml = DecryptOfficeDocument(sidDocumentIdValue, authenticateStore.IdentityToken, b64Encoded);
+                if (string.IsNullOrWhiteSpace(xml))
+                {
+                    return;
+                }
+
                 shape.Range.InsertXML(xml);
             }
         }
@@ -151,7 +156,8 @@ namespace WordAccessManagementAddin
         private void InternalStartup()
         {            
             Application.DocumentBeforeClose += HandleDocumentBeforeClose;
-            AuthenticationStore.Instance().Authenticated += HandleDecryptDocument;
+            OfficeDocumentStore.Instance().Decrypted += HandleDecryptDocument;
+            AuthenticationStore.Instance().Restore();
         }
     }
 }

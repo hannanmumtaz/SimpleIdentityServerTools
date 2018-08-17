@@ -45,6 +45,8 @@ namespace WordAccessManagementAddin.Stores
             _documents = new List<StoredOfficeDocument>();
         }
 
+        public event EventHandler Decrypted;
+
         public static OfficeDocumentStore Instance()
         {
             if (_instance == null)
@@ -53,6 +55,14 @@ namespace WordAccessManagementAddin.Stores
             }
 
             return _instance;
+        }
+
+        public void Decrypt()
+        {
+            if(Decrypted != null)
+            {
+                Decrypted(this, EventArgs.Empty);
+            }
         }
 
         public async Task<string> GetUmaResourceId(string documentId)
