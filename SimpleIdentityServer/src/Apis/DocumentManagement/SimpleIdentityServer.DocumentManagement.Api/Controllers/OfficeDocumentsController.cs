@@ -101,6 +101,24 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             }
         }
 
+        [HttpGet("permissions/{id}")]
+        public async Task<IActionResult> GetPermissions(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return GetError(ErrorCodes.InvalidRequest, string.Format(ErrorDescriptions.ParameterIsMissing, "id"), HttpStatusCode.BadRequest);
+            }
+
+            try
+            {
+
+            }
+            catch()
+            {
+
+            }
+        }
+
         [HttpPost("decrypt")]
         public async Task<IActionResult> Decrypt([FromBody] DecryptDocumentRequest request)
         {

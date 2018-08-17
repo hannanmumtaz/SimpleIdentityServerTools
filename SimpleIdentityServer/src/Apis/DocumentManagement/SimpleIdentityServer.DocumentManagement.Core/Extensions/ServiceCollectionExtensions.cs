@@ -22,6 +22,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.Extensions
             services.AddTransient<IGetOfficeDocumentAction, GetOfficeDocumentAction>();
             services.AddTransient<IUpdateOfficeDocumentAction, UpdateOfficeDocumentAction>();
             services.AddTransient<IDecryptOfficeDocumentAction, DecryptOfficeDocumentAction>();
+            services.AddTransient<IGetOfficeDocumentPermissionsAction, GetOfficeDocumentPermissionsAction>();
             services.AddTransient<IJwksActions, JwksActions>();
             services.AddTransient<IGetJwksAction, GetJwksAction>();
             services.AddTransient<IJsonWebKeyEnricher, JsonWebKeyEnricher>();

@@ -19,6 +19,7 @@
         public const string CannotRetrieveAccessToken = "an error occured while trying to get an access token";
         public const string CannotAddUmaResource = "an error occured while trying to add the UMA resource";
         public const string CannotAddUmaPolicy = "an error occured while trying to add the UMA policy";
+        public const string CannotGetUmaPolicy = "an error occured while trying to get the UMA policy";
         public const string CannotAddOfficeDocument = "an error occured while trying to add the office document";
     }
 }

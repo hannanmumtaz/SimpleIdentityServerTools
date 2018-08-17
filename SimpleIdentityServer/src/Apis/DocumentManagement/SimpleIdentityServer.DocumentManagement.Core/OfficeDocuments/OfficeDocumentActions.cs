@@ -2,6 +2,7 @@
 using SimpleIdentityServer.DocumentManagement.Core.Aggregates;
 using SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions;
 using SimpleIdentityServer.DocumentManagement.Core.Parameters;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
@@ -12,6 +13,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
         Task<OfficeDocumentAggregate> Get(string documentId, string accessToken, AuthenticateParameter authenticateParameter);
         Task<bool> Update(string wellKnownConfiguration, string documentId, UpdateOfficeDocumentParameter parameter, AuthenticateParameter authenticateParameter);
         Task<DecryptedResponse> Decrypt(DecryptOfficeDocumentParameter decryptOfficeDocumentParameter, string accessToken, AuthenticateParameter authenticateParameter);
+        Task<IEnumerable<OfficeDocumentPermissionResponse>> GetPermissions(string documentId, string accessToken, AuthenticateParameter authenticateParameter);
     }
 
     internal sealed class OfficeDocumentActions : IOfficeDocumentActions
@@ -20,14 +22,17 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
         private readonly IGetOfficeDocumentAction _getOfficeDocumentAction;
         private readonly IUpdateOfficeDocumentAction _updateOfficeDocumentAction;
         private readonly IDecryptOfficeDocumentAction _decryptOfficeDocumentAction;
+        private readonly IGetOfficeDocumentPermissionsAction _getOfficeDocumentPermissionsAction;
 
         public OfficeDocumentActions(IAddOfficeDocumentAction addOfficeDocumentAction, IGetOfficeDocumentAction getOfficeDocumentAction, 
-            IUpdateOfficeDocumentAction updateOfficeDocumentAction, IDecryptOfficeDocumentAction decryptOfficeDocumentAction)
+            IUpdateOfficeDocumentAction updateOfficeDocumentAction, IDecryptOfficeDocumentAction decryptOfficeDocumentAction,
+            IGetOfficeDocumentPermissionsAction getOfficeDocumentPermissionsAction)
         {
             _addOfficeDocumentAction = addOfficeDocumentAction;
             _getOfficeDocumentAction = getOfficeDocumentAction;
             _updateOfficeDocumentAction = updateOfficeDocumentAction;
             _decryptOfficeDocumentAction = decryptOfficeDocumentAction;
+            _getOfficeDocumentPermissionsAction = getOfficeDocumentPermissionsAction;
         }
 
         public Task<bool> Add(string openidWellKnownConfiguration, AddDocumentParameter document, AuthenticateParameter authenticateParameter)
@@ -48,6 +53,11 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
         public Task<DecryptedResponse> Decrypt(DecryptOfficeDocumentParameter decryptOfficeDocumentParameter, string accessToken, AuthenticateParameter authenticateParameter)
         {
             return _decryptOfficeDocumentAction.Execute(decryptOfficeDocumentParameter, accessToken, authenticateParameter);
+        }
+
+        public Task<IEnumerable<OfficeDocumentPermissionResponse>> GetPermissions(string documentId, string accessToken, AuthenticateParameter authenticateParameter)
+        {
+            return _getOfficeDocumentPermissionsAction.Execute(documentId, accessToken, authenticateParameter);
         }
     }
 }
