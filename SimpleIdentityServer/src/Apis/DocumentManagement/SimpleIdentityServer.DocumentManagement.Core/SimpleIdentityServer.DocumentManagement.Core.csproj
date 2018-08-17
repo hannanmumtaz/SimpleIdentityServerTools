@@ -24,5 +24,6 @@
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.Core.Jwt\SimpleIdentityServer.Core.Jwt.csproj" />
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\Uma\SimpleIdentityServer.Uma.Client\SimpleIdentityServer.Uma.Client.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.DocumentManagement.Common\SimpleIdentityServer.DocumentManagement.Common.csproj" />
+    <ProjectReference Include="..\SimpleIdentityServer.DocumentManagement.Store\SimpleIdentityServer.DocumentManagement.Store.csproj" />
   </ItemGroup>
 </Project>

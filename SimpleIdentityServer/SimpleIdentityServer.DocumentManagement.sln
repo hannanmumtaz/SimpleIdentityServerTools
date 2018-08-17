@@ -57,6 +57,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Security.Cryptograph
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Module", "..\IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Module\SimpleIdentityServer.Module.csproj", "{A0A677B7-1CC9-42FB-8963-01D4D1EE3FED}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.DocumentManagement.Store", "src\Apis\DocumentManagement\SimpleIdentityServer.DocumentManagement.Store\SimpleIdentityServer.DocumentManagement.Store.csproj", "{A93110EC-9A57-43B7-BBA8-4643146D8CE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -147,6 +149,10 @@ Global
 		{A0A677B7-1CC9-42FB-8963-01D4D1EE3FED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0A677B7-1CC9-42FB-8963-01D4D1EE3FED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0A677B7-1CC9-42FB-8963-01D4D1EE3FED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A93110EC-9A57-43B7-BBA8-4643146D8CE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A93110EC-9A57-43B7-BBA8-4643146D8CE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A93110EC-9A57-43B7-BBA8-4643146D8CE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A93110EC-9A57-43B7-BBA8-4643146D8CE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -174,6 +180,7 @@ Global
 		{31BEB8C7-DAC7-4BCD-AC5A-95E4E7CF1E08} = {C543E3A7-12FE-40D2-B6EC-88764D7BF0AA}
 		{005A60E3-2CCF-44FB-BB57-5E4457055608} = {C543E3A7-12FE-40D2-B6EC-88764D7BF0AA}
 		{A0A677B7-1CC9-42FB-8963-01D4D1EE3FED} = {C543E3A7-12FE-40D2-B6EC-88764D7BF0AA}
+		{A93110EC-9A57-43B7-BBA8-4643146D8CE2} = {F7EDF26F-9971-4772-8CDF-5A900A370498}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8D2966C7-42AE-44DA-8F5E-9BADBEB674A8}

@@ -1,7 +1,13 @@
 ﻿using Moq;
+using SimpleIdentityServer.Client.Policy;
+using SimpleIdentityServer.Client.ResourceSet;
 using SimpleIdentityServer.Common.Client.Factories;
+using SimpleIdentityServer.Core.Common.DTOs.Responses;
 using SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments;
 using SimpleIdentityServer.DocumentManagement.Client.Tests.Middlewares;
+using SimpleIdentityServer.Uma.Client.Results;
+using SimpleIdentityServer.Uma.Common.DTOs;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -82,7 +88,149 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
             Assert.Equal("office document already exists", result.Error.ErrorDescription);
         }
 
+        [Fact]
+        public async Task When_Add_OfficeDocument_And_AccessToken_Cannot_Be_Retrieved_Then_Error_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+            _server.SharedCtx.AccessTokenStore.Setup(a => a.GetToken(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>()))
+                .Returns(Task.FromResult((GrantedTokenResponse)null));
+
+            // ACT
+            UserStore.Instance().Subject = "sub";
+            var result = await _officeDocumentClient.AddResolve(new Common.DTOs.Requests.AddOfficeDocumentRequest
+            {
+                Id = "newdocumentid"
+            }, $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ASSERT
+            Assert.True(result.ContainsError);
+            Assert.Equal("internal_error", result.Error.Error);
+            Assert.Equal("an error occured while trying to get an access token", result.Error.ErrorDescription);
+        }
+
+        [Fact]
+        public async Task When_Add_OfficeDocument_And_UmaResource_Cannot_Be_Added_Then_Error_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+            _server.SharedCtx.AccessTokenStore.Setup(a => a.GetToken(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>()))
+                .Returns(Task.FromResult(new GrantedTokenResponse
+                {
+                    AccessToken = "access_token"
+                }));
+            var resourceSetClient = new Mock<IResourceSetClient>();
+            resourceSetClient.Setup(r => r.AddByResolution(It.IsAny<PostResourceSet>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new AddResourceSetResult
+            {
+                ContainsError = true
+            }));
+            _server.SharedCtx.IdentityServerUmaClientFactory.Setup(a => a.GetResourceSetClient()).Returns(resourceSetClient.Object);
+            // ACT
+            UserStore.Instance().Subject = "sub";
+            var result = await _officeDocumentClient.AddResolve(new Common.DTOs.Requests.AddOfficeDocumentRequest
+            {
+                Id = "newdocumentid"
+            }, $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ASSERT
+            Assert.True(result.ContainsError);
+            Assert.Equal("internal_error", result.Error.Error);
+            Assert.Equal("an error occured while trying to add the UMA resource", result.Error.ErrorDescription);
+        }
+
+        [Fact]
+        public async Task When_Add_Office_Document_And_UmaPolicy_Cannot_Be_Added_Then_Error_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+            _server.SharedCtx.AccessTokenStore.Setup(a => a.GetToken(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>()))
+                .Returns(Task.FromResult(new GrantedTokenResponse
+                {
+                    AccessToken = "access_token"
+                }));
+            var resourceSetClient = new Mock<IResourceSetClient>();
+            var policyClient = new Mock<IPolicyClient>();
+            resourceSetClient.Setup(r => r.AddByResolution(It.IsAny<PostResourceSet>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new AddResourceSetResult
+            {
+                ContainsError = false,
+                Content = new AddResourceSetResponse
+                {
+                    Id = "id"
+                }
+            }));
+            policyClient.Setup(r => r.AddByResolution(It.IsAny<PostPolicy>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new AddPolicyResult
+            {
+                ContainsError = true
+            }));
+            _server.SharedCtx.IdentityServerUmaClientFactory.Setup(a => a.GetResourceSetClient()).Returns(resourceSetClient.Object);
+            _server.SharedCtx.IdentityServerUmaClientFactory.Setup(a => a.GetPolicyClient()).Returns(policyClient.Object);
+            // ACT
+            UserStore.Instance().Subject = "sub";
+            var result = await _officeDocumentClient.AddResolve(new Common.DTOs.Requests.AddOfficeDocumentRequest
+            {
+                Id = "newdocumentid"
+            }, $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ASSERT
+            Assert.True(result.ContainsError);
+            Assert.Equal("internal_error", result.Error.Error);
+            Assert.Equal("an error occured while trying to add the UMA policy", result.Error.ErrorDescription);
+        }
+
         #endregion
+
+        #endregion
+
+        #region Happy path
+
+        [Fact]
+        public async Task When_Add_Office_Document_Then_Ok_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+            _server.SharedCtx.AccessTokenStore.Setup(a => a.GetToken(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>()))
+                .Returns(Task.FromResult(new GrantedTokenResponse
+                {
+                    AccessToken = "access_token"
+                }));
+            var resourceSetClient = new Mock<IResourceSetClient>();
+            var policyClient = new Mock<IPolicyClient>();
+            resourceSetClient.Setup(r => r.AddByResolution(It.IsAny<PostResourceSet>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new AddResourceSetResult
+            {
+                ContainsError = false,
+                Content = new AddResourceSetResponse
+                {
+                    Id = "id"
+                }
+            }));
+            policyClient.Setup(r => r.AddByResolution(It.IsAny<PostPolicy>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new AddPolicyResult
+            {
+                ContainsError = false,
+                Content = new AddPolicyResponse
+                {
+                    PolicyId = "policyid"
+                }
+            }));
+            _server.SharedCtx.IdentityServerUmaClientFactory.Setup(a => a.GetResourceSetClient()).Returns(resourceSetClient.Object);
+            _server.SharedCtx.IdentityServerUmaClientFactory.Setup(a => a.GetPolicyClient()).Returns(policyClient.Object);
+            // ACT
+            UserStore.Instance().Subject = "sub";
+            var result = await _officeDocumentClient.AddResolve(new Common.DTOs.Requests.AddOfficeDocumentRequest
+            {
+                Id = "newdocumentid"
+            }, $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ASSERT
+            Assert.False(result.ContainsError);
+        }
 
         #endregion
 

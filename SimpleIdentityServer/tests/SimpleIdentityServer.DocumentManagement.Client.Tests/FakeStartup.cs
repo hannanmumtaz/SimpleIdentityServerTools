@@ -33,9 +33,9 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests
         {
             var factory = new IdentityServerClientFactory(_context.HttpClientFactory);
             services.AddSingleton<IIdentityServerClientFactory>(factory);
-            services.AddTransient<IAccessTokenStore, InMemoryTokenStore>();
+            services.AddSingleton<IAccessTokenStore>(_context.AccessTokenStore.Object);
+            services.AddSingleton<IIdentityServerUmaClientFactory>(_context.IdentityServerUmaClientFactory.Object);
             services.AddDocumentManagementEFInMemory();
-            services.AddUmaClient();
             services.AddSimpleIdentityServerJwt();
             services.AddDocumentManagementHost(new DocumentManagementApiOptions("wellknown")
             {

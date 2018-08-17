@@ -7,7 +7,6 @@ using SimpleIdentityServer.DocumentManagement.Core;
 using SimpleIdentityServer.DocumentManagement.Core.Exceptions;
 using SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments;
 using SimpleIdentityServer.DocumentManagement.Core.Parameters;
-using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -162,6 +161,18 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             {
                 return GetError(ErrorCodes.InvalidRequest, "the document doesn't exist", HttpStatusCode.NotFound);
             }
+        }
+
+        [HttpGet("invitation")]
+        public async Task<IActionResult> GetInvitationLink()
+        {
+            return null;
+        }
+
+        [HttpPost("invitation")]
+        public async Task<IActionResult> ConfirmInvitation()
+        {
+            return null;
         }
 
         #endregion
