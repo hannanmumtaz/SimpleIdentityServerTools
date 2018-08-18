@@ -56,7 +56,10 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Extensions
                 {
                     new OfficeDocument
                     {
-                        Id = "id"
+                        Id = "id",
+                        Subject = "subject",
+                        UmaPolicyId = "policyid",
+                        UmaResourceId = "umaid"
                     }
                 });
             }

@@ -11,22 +11,27 @@ using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
 {
-    public interface IDecryptOfficeDocumentOperation
+    public interface IGetInvitationLinkOperation
     {
-        Task<GetDecryptedDocumentResponse> Execute(DecryptDocumentRequest request, string url, string accessToken);
+        Task<GetInvitationLinkResponse> Execute(string documentId, GenerateConfirmationCodeRequest request, string url, string accessToken);
     }
 
-    internal sealed class DecryptOfficeDocumentOperation : IDecryptOfficeDocumentOperation
+    internal sealed class GetInvitationLinkOperation : IGetInvitationLinkOperation
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public DecryptOfficeDocumentOperation(IHttpClientFactory httpClientFactory)
+        public GetInvitationLinkOperation(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<GetDecryptedDocumentResponse> Execute(DecryptDocumentRequest request, string url, string accessToken)
+        public async Task<GetInvitationLinkResponse> Execute(string documentId, GenerateConfirmationCodeRequest request, string url, string accessToken)
         {
+            if (string.IsNullOrWhiteSpace(documentId))
+            {
+                throw new ArgumentNullException(nameof(documentId));
+            }
+
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
@@ -44,45 +49,51 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
             {
                 Method = HttpMethod.Post,
                 Content = body,
-                RequestUri = new Uri($"{url}/decrypt")
+                RequestUri = new Uri($"{url}/{documentId}/invitation")
             };
             if (!string.IsNullOrWhiteSpace(accessToken))
             {
                 httpRequest.Headers.Add("Authorization", "Bearer " + accessToken);
             }
+
             var httpResponse = await httpClient.SendAsync(httpRequest).ConfigureAwait(false);
             var json = await httpResponse.Content.ReadAsStringAsync();
             try
             {
                 httpResponse.EnsureSuccessStatusCode();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                if (!string.IsNullOrWhiteSpace(json))
+                return new GetInvitationLinkResponse
                 {
-                    return new GetDecryptedDocumentResponse
-                    {
-                        ContainsError = true,
-                        Error = new ErrorResponse
-                        {
-                            Error = "internal",
-                            ErrorDescription = ex.Message
-                        }
-                    };
-                }
-
-                return new GetDecryptedDocumentResponse
-                {
+                    HttpStatus = httpResponse.StatusCode,
                     ContainsError = true,
-                    Error = JsonConvert.DeserializeObject<ErrorResponse>(json)
+                    Error = TryGetError(json)
                 };
             }
 
-            return new GetDecryptedDocumentResponse
+            return new GetInvitationLinkResponse
             {
                 ContainsError = false,
-                Content = JsonConvert.DeserializeObject<DecryptedResponse>(json)
+                Content = JsonConvert.DeserializeObject<OfficeDocumentConfirmationLinkResponse>(json)
             };
+        }
+
+        private static ErrorResponse TryGetError(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return null;
+            }
+
+            try
+            {
+                return JsonConvert.DeserializeObject<ErrorResponse>(json);
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

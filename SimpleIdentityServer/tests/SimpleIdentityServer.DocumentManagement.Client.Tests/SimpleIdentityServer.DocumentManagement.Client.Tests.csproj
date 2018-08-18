@@ -33,6 +33,7 @@
     <ProjectReference Include="..\..\src\Apis\DocumentManagement\SimpleIdentityServer.DocumentManagement.Api\SimpleIdentityServer.DocumentManagement.Api.csproj" />
     <ProjectReference Include="..\..\src\Apis\DocumentManagement\SimpleIdentityServer.DocumentManagement.Client\SimpleIdentityServer.DocumentManagement.Client.csproj" />
     <ProjectReference Include="..\..\src\Apis\DocumentManagement\SimpleIdentityServer.DocumentManagement.EF.InMemory\SimpleIdentityServer.DocumentManagement.EF.InMemory.csproj" />
+    <ProjectReference Include="..\..\src\Apis\DocumentManagement\SimpleIdentityServer.DocumentManagement.Store.InMemory\SimpleIdentityServer.DocumentManagement.Store.InMemory.csproj" />
   </ItemGroup>
 
   <ItemGroup>

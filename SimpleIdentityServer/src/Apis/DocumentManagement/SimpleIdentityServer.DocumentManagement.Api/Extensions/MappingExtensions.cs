@@ -10,6 +10,20 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Extensions
 {
     internal static class MappingExtensions
     {
+        public static GenerateConfirmationLinkParameter ToParameter(this GenerateConfirmationCodeRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            return new GenerateConfirmationLinkParameter
+            {
+                ExpiresIn = request.ExpiresIn,
+                NumberOfConfirmations = request.NumberOfConfirmations
+            };
+        }
+
         public static OfficeDocumentResponse ToDto(this OfficeDocumentAggregate document)
         {
             if (document == null)

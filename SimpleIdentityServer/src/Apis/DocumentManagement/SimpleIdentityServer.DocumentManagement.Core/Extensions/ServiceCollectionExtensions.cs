@@ -22,10 +22,14 @@ namespace SimpleIdentityServer.DocumentManagement.Core.Extensions
             services.AddTransient<IGetOfficeDocumentAction, GetOfficeDocumentAction>();
             services.AddTransient<IUpdateOfficeDocumentAction, UpdateOfficeDocumentAction>();
             services.AddTransient<IDecryptOfficeDocumentAction, DecryptOfficeDocumentAction>();
+            services.AddTransient<IGenerateConfirmationLinkAction, GenerateConfirmationLinkAction>();
+            services.AddTransient<IValidateConfirmationLinkAction, ValidateConfirmationLinkAction>();
             services.AddTransient<IGetOfficeDocumentPermissionsAction, GetOfficeDocumentPermissionsAction>();
             services.AddTransient<IJwksActions, JwksActions>();
             services.AddTransient<IGetJwksAction, GetJwksAction>();
             services.AddTransient<IJsonWebKeyEnricher, JsonWebKeyEnricher>();
+            services.AddTransient<IGenerateConfirmationLinkParameterValidator, GenerateConfirmationLinkParameterValidator>();
+            services.AddTransient<IValidateConfirmationLinkParameterValidator, ValidateConfirmationLinkParameterValidator>();
             services.AddTransient<IAddDocumentParameterValidator, AddDocumentParameterValidator>();
             services.AddTransient<IUpdateOfficeDocumentParameterValidator, UpdateOfficeDocumentParameterValidator>();
             services.AddTransient<IDecryptOfficeDocumentParameterValidator, DecryptOfficeDocumentParameterValidator>();

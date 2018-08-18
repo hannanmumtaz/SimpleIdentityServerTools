@@ -37,6 +37,7 @@
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\SimpleIdServer\SimpleIdentityServer.UserInfoIntrospection\SimpleIdentityServer.UserInfoIntrospection.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.DocumentManagement.Api\SimpleIdentityServer.DocumentManagement.Api.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.DocumentManagement.EF.InMemory\SimpleIdentityServer.DocumentManagement.EF.InMemory.csproj" />
+    <ProjectReference Include="..\SimpleIdentityServer.DocumentManagement.Store.InMemory\SimpleIdentityServer.DocumentManagement.Store.InMemory.csproj" />
   </ItemGroup>
   
   <ItemGroup>

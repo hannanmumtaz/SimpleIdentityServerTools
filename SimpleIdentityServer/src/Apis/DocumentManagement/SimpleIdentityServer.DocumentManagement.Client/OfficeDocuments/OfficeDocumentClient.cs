@@ -18,6 +18,10 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         Task<GetDecryptedDocumentResponse> Decrypt(DecryptDocumentRequest request, string url, string accessToken);
         Task<GetOfficeDocumentPermissionsResponse> GetPermissionsResolve(string documentId, string configurationUrl, string accessToken);
         Task<GetOfficeDocumentPermissionsResponse> GetPermissions(string documentId, string url, string accessToken);
+        Task<GetInvitationLinkResponse> GetInvitationLinkResolve(string documentId, GenerateConfirmationCodeRequest request, string configurationUrl, string accessToken);
+        Task<GetInvitationLinkResponse> GetInvitationLink(string documentId, GenerateConfirmationCodeRequest request, string url, string accessToken);
+        Task<BaseResponse> ValidateInvitationLinkResolve(string confirmationCode, string configurationUrl, string accessToken);
+        Task<BaseResponse> ValidateInvitationLink(string confirmationCode, string url, string accessToken);
     }
 
     internal sealed class OfficeDocumentClient : IOfficeDocumentClient
@@ -28,10 +32,13 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         private readonly IDecryptOfficeDocumentOperation _decryptOfficeDocumentOperation;
         private readonly IGetConfigurationOperation _getConfigurationOperation;
         private readonly IGetPermissionsOperation _getPermissionsOperation;
+        private readonly IGetInvitationLinkOperation _getInvitationLinkOperation;
+        private readonly IValidateConfirmationLinkOperation _validateConfirmationLinkOperation;
 
         public OfficeDocumentClient(IUpdateOfficeDocumentOperation updateOfficeDocumentOperation, IGetOfficeDocumentOperation getOfficeDocumentOperation,
             IAddOfficeDocumentOperation addOfficeDocumentOperation, IDecryptOfficeDocumentOperation decryptOfficeDocumentOperation,
-            IGetConfigurationOperation getConfigurationOperation, IGetPermissionsOperation getPermissionsOperation)
+            IGetConfigurationOperation getConfigurationOperation, IGetPermissionsOperation getPermissionsOperation,
+            IGetInvitationLinkOperation getInvitationLinkOperation, IValidateConfirmationLinkOperation validateConfirmationLinkOperation)
         {
             _updateOfficeDocumentOperation = updateOfficeDocumentOperation;
             _getOfficeDocumentOperation = getOfficeDocumentOperation;
@@ -39,6 +46,8 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
             _decryptOfficeDocumentOperation = decryptOfficeDocumentOperation;
             _getConfigurationOperation = getConfigurationOperation;
             _getPermissionsOperation = getPermissionsOperation;
+            _getInvitationLinkOperation = getInvitationLinkOperation;
+            _validateConfirmationLinkOperation = validateConfirmationLinkOperation;
         }
 
         public async Task<BaseResponse> UpdateResolve(string documentId, UpdateOfficeDocumentRequest request, string configurationUrl, string accessToken)
@@ -77,7 +86,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         public async Task<GetDecryptedDocumentResponse> DecryptResolve(DecryptDocumentRequest request, string configurationUrl, string accessToken)
         {
             var configuration = await _getConfigurationOperation.Execute(new Uri(configurationUrl)).ConfigureAwait(false);
-            return await _decryptOfficeDocumentOperation.Execute(request, configuration.OfficeDocumentsEndpoint + "/decrypt", accessToken).ConfigureAwait(false);
+            return await _decryptOfficeDocumentOperation.Execute(request, configuration.OfficeDocumentsEndpoint, accessToken).ConfigureAwait(false);
         }
 
         public Task<GetDecryptedDocumentResponse> Decrypt(DecryptDocumentRequest request, string url, string accessToken)
@@ -88,12 +97,34 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         public async Task<GetOfficeDocumentPermissionsResponse> GetPermissionsResolve(string documentId, string configurationUrl, string accessToken)
         {
             var configuration = await _getConfigurationOperation.Execute(new Uri(configurationUrl)).ConfigureAwait(false);
-            return await _getPermissionsOperation.Execute(documentId, configuration.OfficeDocumentsEndpoint + $"/{documentId}/permissions", accessToken).ConfigureAwait(false);
+            return await _getPermissionsOperation.Execute(documentId, configuration.OfficeDocumentsEndpoint, accessToken).ConfigureAwait(false);
         }
 
         public Task<GetOfficeDocumentPermissionsResponse> GetPermissions(string documentId, string url, string accessToken)
         {
             return _getPermissionsOperation.Execute(documentId, url, accessToken);
+        }
+
+        public async Task<GetInvitationLinkResponse> GetInvitationLinkResolve(string documentId, GenerateConfirmationCodeRequest request, string configurationUrl, string accessToken)
+        {
+            var configuration = await _getConfigurationOperation.Execute(new Uri(configurationUrl)).ConfigureAwait(false);
+            return await _getInvitationLinkOperation.Execute(documentId, request, configuration.OfficeDocumentsEndpoint, accessToken).ConfigureAwait(false);
+        }
+
+        public Task<GetInvitationLinkResponse> GetInvitationLink(string documentId, GenerateConfirmationCodeRequest request, string url, string accessToken)
+        {
+            return _getInvitationLinkOperation.Execute(documentId, request, url, accessToken);
+        }
+
+        public async Task<BaseResponse> ValidateInvitationLinkResolve(string confirmationCode, string configurationUrl, string accessToken)
+        {
+            var configuration = await _getConfigurationOperation.Execute(new Uri(configurationUrl)).ConfigureAwait(false);
+            return await _validateConfirmationLinkOperation.Execute(confirmationCode, configuration.OfficeDocumentsEndpoint, accessToken).ConfigureAwait(false);
+        }
+
+        public Task<BaseResponse> ValidateInvitationLink(string confirmationCode, string url, string accessToken)
+        {
+            return _validateConfirmationLinkOperation.Execute(confirmationCode, url, accessToken);
         }
     }
 }

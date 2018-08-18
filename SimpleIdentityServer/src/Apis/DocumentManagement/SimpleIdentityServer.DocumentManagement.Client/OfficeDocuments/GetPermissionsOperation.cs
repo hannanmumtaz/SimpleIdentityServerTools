@@ -43,7 +43,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
             var httpRequest = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri(url)
+                RequestUri = new Uri($"{url}/{documentId}/permissions")
             };
             if (!string.IsNullOrWhiteSpace(accessToken))
             {

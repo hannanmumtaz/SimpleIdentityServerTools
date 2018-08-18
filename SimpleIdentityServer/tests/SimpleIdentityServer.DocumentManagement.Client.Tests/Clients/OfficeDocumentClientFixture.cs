@@ -8,6 +8,7 @@ using SimpleIdentityServer.DocumentManagement.Client.Tests.Middlewares;
 using SimpleIdentityServer.Uma.Client.Results;
 using SimpleIdentityServer.Uma.Common.DTOs;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -185,9 +186,82 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
 
         #endregion
 
+        #region Get link
+
+        [Fact]
+        public async Task When_Get_Confirmation_Link_And_Subject_Doesnt_Exist_Then_Error_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+
+            // ACT
+            UserStore.Instance().Subject = null;
+            var result = await _officeDocumentClient.GetInvitationLinkResolve("invalid_document_id", new Common.DTOs.Requests.GenerateConfirmationCodeRequest
+            {
+                
+            }, $"{baseUrl}/configuration", "token");
+
+            // ASSERT
+            Assert.True(result.ContainsError);
+            Assert.Equal("invalid_request", result.Error.Error);
+            Assert.Equal("the subject is missing", result.Error.ErrorDescription);
+        }
+
+        [Fact]
+        public async Task When_Get_Confirmation_Link_And_Document_Doesnt_Exist_Then_Error_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+
+            // ACT
+            UserStore.Instance().Subject = "subject";
+            var result = await _officeDocumentClient.GetInvitationLinkResolve("invalid_document_id", new Common.DTOs.Requests.GenerateConfirmationCodeRequest
+            {
+
+            }, $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ASSERT
+            Assert.True(result.ContainsError);
+            Assert.Equal("invalid_request", result.Error.Error);
+            Assert.Equal("the document doesn't exist", result.Error.ErrorDescription);
+        }
+
+        [Fact]
+        public async Task When_Get_Confirmation_Link_And_Subject_Is_Different_Then_Error_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+
+            // ACT
+            UserStore.Instance().Subject = "invalid_subject";
+            var result = await _officeDocumentClient.GetInvitationLinkResolve("id", new Common.DTOs.Requests.GenerateConfirmationCodeRequest
+            {
+
+            }, $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ASSERT
+            Assert.True(result.ContainsError);
+            Assert.Equal(HttpStatusCode.Unauthorized, result.HttpStatus);
+        }
+
+        #endregion
+
+        #region Validate link
+
+
+
+        #endregion
+
         #endregion
 
         #region Happy path
+
+        #region Add
 
         [Fact]
         public async Task When_Add_Office_Document_Then_Ok_Is_Returned()
@@ -234,6 +308,32 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
 
         #endregion
 
+        #region Get link
+
+        [Fact]
+        public async Task When_Get_Confirmation_Link_Then_Ok_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+
+            // ACT
+            UserStore.Instance().Subject = "subject";
+            var result = await _officeDocumentClient.GetInvitationLinkResolve("id", new Common.DTOs.Requests.GenerateConfirmationCodeRequest
+            {
+
+            }, $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ASSERT
+            Assert.False(result.ContainsError);
+            Assert.NotNull(result.Content.ConfirmationCode);
+        }
+
+        #endregion
+
+        #endregion
+
         private void InitializeFakeObjects()
         {
             _httpClientFactoryStub = new Mock<IHttpClientFactory>();
@@ -243,8 +343,11 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
             var decryptOfficeDocumentOperation = new DecryptOfficeDocumentOperation(_httpClientFactoryStub.Object);
             var getConfigurationOperation = new GetConfigurationOperation(_httpClientFactoryStub.Object);
             var getPermissionsOperation = new GetPermissionsOperation(_httpClientFactoryStub.Object);
+            var getInvitationLinkOperation = new GetInvitationLinkOperation(_httpClientFactoryStub.Object);
+            var validateConfirmationLinkOperation = new ValidateConfirmationLinkOperation(_httpClientFactoryStub.Object);
             _officeDocumentClient = new OfficeDocumentClient(updateOfficeDocumentOperation, getOfficeDocumentOperation,
-                addOfficeDocumentOperation, decryptOfficeDocumentOperation, getConfigurationOperation, getPermissionsOperation);
+                addOfficeDocumentOperation, decryptOfficeDocumentOperation, getConfigurationOperation, getPermissionsOperation,
+                getInvitationLinkOperation, validateConfirmationLinkOperation);
         }
     }
 }

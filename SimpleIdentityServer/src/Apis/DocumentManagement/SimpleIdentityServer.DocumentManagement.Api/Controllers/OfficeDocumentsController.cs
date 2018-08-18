@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SimpleIdentityServer.Common.Dtos.Responses;
 using SimpleIdentityServer.DocumentManagement.Api.Extensions;
 using SimpleIdentityServer.DocumentManagement.Common.DTOs.Requests;
+using SimpleIdentityServer.DocumentManagement.Common.DTOs.Responses;
 using SimpleIdentityServer.DocumentManagement.Core;
 using SimpleIdentityServer.DocumentManagement.Core.Exceptions;
 using SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments;
@@ -67,6 +68,68 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             var parameter = request.ToParameter(subject);
             await _officeDocumentActions.Add(_options.OpenIdWellKnownConfiguration, parameter, GetAuthenticateParameter(_options));
             return new OkResult();
+        }
+
+        [HttpPost("{id}/invitation")]
+        [Authorize("connected")]
+        public async Task<IActionResult> GetInvitationLink(string id, [FromBody] GenerateConfirmationCodeRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return GetError(ErrorCodes.InvalidRequest, string.Format(ErrorDescriptions.ParameterIsMissing, "id"), HttpStatusCode.BadRequest);
+            }
+
+            if (request == null)
+            {
+                return GetError(ErrorCodes.InvalidRequest, ErrorDescriptions.NoRequest, HttpStatusCode.BadRequest);
+            }
+
+            var subject = GetSubject();
+            try
+            {
+                var parameter = request.ToParameter();
+                parameter.Subject = subject;
+                var confirmationCode = await _officeDocumentActions.GenerateConfirmationLink(id, parameter);
+                var result = new OfficeDocumentConfirmationLinkResponse
+                {
+                    ConfirmationCode = confirmationCode,
+                    Url = Url.Action("ConfirmInvitation", new { code = confirmationCode })
+                };
+                return new OkObjectResult(result);
+            }
+            catch (NotAuthorizedException ex)
+            {
+                return GetError(ex.Code, ex.Message, HttpStatusCode.Unauthorized);
+            }
+            catch (DocumentNotFoundException)
+            {
+                return GetError(ErrorCodes.InvalidRequest, "the document doesn't exist", HttpStatusCode.NotFound);
+            }
+        }
+
+        [HttpGet("invitation/{code}")]
+        [Authorize("connected")]
+        public async Task<IActionResult> ConfirmInvitation(string code)
+        {
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                return GetError(ErrorCodes.InvalidRequest, string.Format(ErrorDescriptions.ParameterIsMissing, "code"), HttpStatusCode.BadRequest);
+            }
+            
+            var subject = GetSubject();
+            try
+            {
+                await _officeDocumentActions.ValidateConfirmationLink(_options.OpenIdWellKnownConfiguration, new ValidateConfirmationLinkParameter
+                {
+                    ConfirmationCode = code,
+                    Subject = subject
+                }, GetAuthenticateParameter(_options));
+                return new NoContentResult();
+            }
+            catch (DocumentNotFoundException)
+            {
+                return GetError(ErrorCodes.InvalidRequest, "the document doesn't exist", HttpStatusCode.NotFound);
+            }
         }
 
         [HttpGet("{id}")]
@@ -162,18 +225,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
                 return GetError(ErrorCodes.InvalidRequest, "the document doesn't exist", HttpStatusCode.NotFound);
             }
         }
-
-        [HttpGet("invitation")]
-        public async Task<IActionResult> GetInvitationLink()
-        {
-            return null;
-        }
-
-        [HttpPost("invitation")]
-        public async Task<IActionResult> ConfirmInvitation()
-        {
-            return null;
-        }
+        
 
         #endregion
 

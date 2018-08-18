@@ -1,10 +1,8 @@
-﻿using Castle.Core.Logging;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.AccessToken.Store;
-using SimpleIdentityServer.AccessToken.Store.InMemory;
 using SimpleIdentityServer.Client;
 using SimpleIdentityServer.Core.Jwt;
 using SimpleIdentityServer.DocumentManagement.Api;
@@ -14,7 +12,7 @@ using SimpleIdentityServer.DocumentManagement.Client.Tests.Extensions;
 using SimpleIdentityServer.DocumentManagement.Client.Tests.Middlewares;
 using SimpleIdentityServer.DocumentManagement.EF;
 using SimpleIdentityServer.DocumentManagement.EF.InMemory;
-using SimpleIdentityServer.Uma.Client;
+using SimpleIdentityServer.DocumentManagement.Store.InMemory;
 using System;
 using System.Reflection;
 
@@ -37,6 +35,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests
             services.AddSingleton<IIdentityServerUmaClientFactory>(_context.IdentityServerUmaClientFactory.Object);
             services.AddDocumentManagementEFInMemory();
             services.AddSimpleIdentityServerJwt();
+            services.AddDocumentManagementInMemoryStore();
             services.AddDocumentManagementHost(new DocumentManagementApiOptions("wellknown")
             {
                 OAuth = new OAuthOptions

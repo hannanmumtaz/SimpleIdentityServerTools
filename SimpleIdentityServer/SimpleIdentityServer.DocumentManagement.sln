@@ -59,6 +59,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.Module
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.DocumentManagement.Store", "src\Apis\DocumentManagement\SimpleIdentityServer.DocumentManagement.Store\SimpleIdentityServer.DocumentManagement.Store.csproj", "{A93110EC-9A57-43B7-BBA8-4643146D8CE2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIdentityServer.DocumentManagement.Store.InMemory", "src\Apis\DocumentManagement\SimpleIdentityServer.DocumentManagement.Store.InMemory\SimpleIdentityServer.DocumentManagement.Store.InMemory.csproj", "{DACD3708-E5D5-4184-80F5-1A7B30E1080D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,10 @@ Global
 		{A93110EC-9A57-43B7-BBA8-4643146D8CE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A93110EC-9A57-43B7-BBA8-4643146D8CE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A93110EC-9A57-43B7-BBA8-4643146D8CE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DACD3708-E5D5-4184-80F5-1A7B30E1080D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DACD3708-E5D5-4184-80F5-1A7B30E1080D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DACD3708-E5D5-4184-80F5-1A7B30E1080D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DACD3708-E5D5-4184-80F5-1A7B30E1080D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -181,6 +187,7 @@ Global
 		{005A60E3-2CCF-44FB-BB57-5E4457055608} = {C543E3A7-12FE-40D2-B6EC-88764D7BF0AA}
 		{A0A677B7-1CC9-42FB-8963-01D4D1EE3FED} = {C543E3A7-12FE-40D2-B6EC-88764D7BF0AA}
 		{A93110EC-9A57-43B7-BBA8-4643146D8CE2} = {F7EDF26F-9971-4772-8CDF-5A900A370498}
+		{DACD3708-E5D5-4184-80F5-1A7B30E1080D} = {F7EDF26F-9971-4772-8CDF-5A900A370498}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8D2966C7-42AE-44DA-8F5E-9BADBEB674A8}

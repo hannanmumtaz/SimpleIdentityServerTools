@@ -14,6 +14,8 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
         Task<bool> Update(string wellKnownConfiguration, string documentId, UpdateOfficeDocumentParameter parameter, AuthenticateParameter authenticateParameter);
         Task<DecryptedResponse> Decrypt(DecryptOfficeDocumentParameter decryptOfficeDocumentParameter, string accessToken, AuthenticateParameter authenticateParameter);
         Task<IEnumerable<OfficeDocumentPermissionResponse>> GetPermissions(string documentId, string accessToken, AuthenticateParameter authenticateParameter);
+        Task<string> GenerateConfirmationLink(string documentId, GenerateConfirmationLinkParameter generateConfirmationCodeParameter);
+        Task<bool> ValidateConfirmationLink(string wellKnownConfiguration, ValidateConfirmationLinkParameter validateConfirmationLinkParameter, AuthenticateParameter authenticateParameter);
     }
 
     internal sealed class OfficeDocumentActions : IOfficeDocumentActions
@@ -23,16 +25,21 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
         private readonly IUpdateOfficeDocumentAction _updateOfficeDocumentAction;
         private readonly IDecryptOfficeDocumentAction _decryptOfficeDocumentAction;
         private readonly IGetOfficeDocumentPermissionsAction _getOfficeDocumentPermissionsAction;
+        private readonly IGenerateConfirmationLinkAction _generateConfirmationLinkAction;
+        private readonly IValidateConfirmationLinkAction _validateConfirmationLinkAction;
 
         public OfficeDocumentActions(IAddOfficeDocumentAction addOfficeDocumentAction, IGetOfficeDocumentAction getOfficeDocumentAction, 
             IUpdateOfficeDocumentAction updateOfficeDocumentAction, IDecryptOfficeDocumentAction decryptOfficeDocumentAction,
-            IGetOfficeDocumentPermissionsAction getOfficeDocumentPermissionsAction)
+            IGetOfficeDocumentPermissionsAction getOfficeDocumentPermissionsAction, IGenerateConfirmationLinkAction generateConfirmationLinkAction,
+            IValidateConfirmationLinkAction validateConfirmationLinkAction)
         {
             _addOfficeDocumentAction = addOfficeDocumentAction;
             _getOfficeDocumentAction = getOfficeDocumentAction;
             _updateOfficeDocumentAction = updateOfficeDocumentAction;
             _decryptOfficeDocumentAction = decryptOfficeDocumentAction;
             _getOfficeDocumentPermissionsAction = getOfficeDocumentPermissionsAction;
+            _generateConfirmationLinkAction = generateConfirmationLinkAction;
+            _validateConfirmationLinkAction = validateConfirmationLinkAction;
         }
 
         public Task<bool> Add(string openidWellKnownConfiguration, AddDocumentParameter document, AuthenticateParameter authenticateParameter)
@@ -58,6 +65,16 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
         public Task<IEnumerable<OfficeDocumentPermissionResponse>> GetPermissions(string documentId, string accessToken, AuthenticateParameter authenticateParameter)
         {
             return _getOfficeDocumentPermissionsAction.Execute(documentId, accessToken, authenticateParameter);
+        }
+
+        public Task<string> GenerateConfirmationLink(string documentId, GenerateConfirmationLinkParameter generateConfirmationCodeParameter)
+        {
+            return _generateConfirmationLinkAction.Execute(documentId, generateConfirmationCodeParameter);
+        }
+
+        public Task<bool> ValidateConfirmationLink(string wellKnownConfiguration, ValidateConfirmationLinkParameter validateConfirmationLinkParameter, AuthenticateParameter authenticateParameter)
+        {
+            return _validateConfirmationLinkAction.Execute(wellKnownConfiguration, validateConfirmationLinkParameter, authenticateParameter);
         }
     }
 }

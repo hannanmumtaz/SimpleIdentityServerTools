@@ -1,4 +1,4 @@
-﻿namespace SimpleIdentityServer.DocumentManagement.Core.Validators
+﻿namespace SimpleIdentityServer.DocumentManagement.Core.Parameters
 {
     public class ValidateConfirmationLinkParameter
     {

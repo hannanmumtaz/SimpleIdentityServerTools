@@ -10,6 +10,7 @@ using SimpleIdentityServer.DocumentManagement.Api.Extensions;
 using SimpleIdentityServer.DocumentManagement.EF;
 using SimpleIdentityServer.DocumentManagement.EF.InMemory;
 using SimpleIdentityServer.DocumentManagement.Startup.Extensions;
+using SimpleIdentityServer.DocumentManagement.Store.InMemory;
 using SimpleIdentityServer.Uma.Client;
 using SimpleIdentityServer.UserInfoIntrospection;
 
@@ -35,6 +36,7 @@ namespace SimpleIdentityServer.DocumentManagement.Startup
             services.AddUmaClient();
             services.AddSimpleIdentityServerJwt();
             services.AddDocumentManagementEFInMemory();
+            services.AddDocumentManagementInMemoryStore();
             services.AddDocumentManagementHost(new DocumentManagementApiOptions("http://localhost:60000/.well-known/openid-configuration")
             {
                 OAuth = new OAuthOptions

@@ -58,6 +58,8 @@ namespace SimpleIdentityServer.DocumentManagement.Client
             serviceCollection.AddTransient<IGetPermissionsOperation, GetPermissionsOperation>();
             serviceCollection.AddTransient<IJwksClient, JwksClient>();
             serviceCollection.AddTransient<IGetJwksOperation, GetJwksOperation>();
+            serviceCollection.AddTransient<IGetInvitationLinkOperation, GetInvitationLinkOperation>();
+            serviceCollection.AddTransient<IValidateConfirmationLinkOperation, ValidateConfirmationLinkOperation>();
             serviceCollection.AddTransient<IGetConfigurationOperation, GetConfigurationOperation>();
             return serviceCollection;
         }

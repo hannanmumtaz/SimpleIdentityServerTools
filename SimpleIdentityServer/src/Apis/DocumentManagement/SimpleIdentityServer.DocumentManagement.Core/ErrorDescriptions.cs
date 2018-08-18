@@ -4,6 +4,9 @@
     {
         public const string AccessTokenIsNotValid = "access token is not valid";
         public const string NoTicket = "no ticket";
+        public const string TheConfirmationCodeIsNotValid = "the confirmation code is not valid";
+        public const string ConfirmationCodeIsExpired = "the confirmation code has expired";
+        public const string NotEnoughConfirmationCode = "there is not enough confirmation code";
         public const string NoUmaResource = "no uma resource";
         public const string NoUmaPolicy = "no uma policy";
         public const string SubjectIsMissing = "the subject is missing";
