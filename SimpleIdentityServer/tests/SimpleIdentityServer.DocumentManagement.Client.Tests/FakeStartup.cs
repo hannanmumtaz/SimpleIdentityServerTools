@@ -12,6 +12,7 @@ using SimpleIdentityServer.DocumentManagement.Client.Tests.Extensions;
 using SimpleIdentityServer.DocumentManagement.Client.Tests.Middlewares;
 using SimpleIdentityServer.DocumentManagement.EF;
 using SimpleIdentityServer.DocumentManagement.EF.InMemory;
+using SimpleIdentityServer.DocumentManagement.Store;
 using SimpleIdentityServer.DocumentManagement.Store.InMemory;
 using System;
 using System.Reflection;
@@ -60,6 +61,8 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests
 
         public void Configure(IApplicationBuilder app)
         {
+            var store = app.ApplicationServices.GetService<IOfficeDocumentConfirmationLinkStore>();
+            _context.OfficeDocumentConfirmationLinkStore = store;
             app.UseAuthentication();
             app.UseDocumentManagementApi();
             app.UseMvc(routes =>

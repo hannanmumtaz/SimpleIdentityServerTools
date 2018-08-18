@@ -1,6 +1,7 @@
 ﻿using Moq;
 using SimpleIdentityServer.Client.Policy;
 using SimpleIdentityServer.Client.ResourceSet;
+using SimpleIdentityServer.Common.Client;
 using SimpleIdentityServer.Common.Client.Factories;
 using SimpleIdentityServer.Core.Common.DTOs.Responses;
 using SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments;
@@ -253,7 +254,40 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
 
         #region Validate link
 
+        [Fact]
+        public async Task When_Validate_ConfirmationCode_And_No_Subject_Is_Passed_Then_Error_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
 
+            // ACT
+            UserStore.Instance().Subject = null;
+            var result = await _officeDocumentClient.ValidateInvitationLinkResolve("confirmationCode", $"{baseUrl}/configuration", "token");
+
+            // ASSERT
+            Assert.True(result.ContainsError);
+            Assert.Equal("invalid_request", result.Error.Error);
+            Assert.Equal("the subject is missing", result.Error.ErrorDescription);
+        }
+        
+        [Fact]
+        public async Task When_Validate_Confirmation_Code_And_Doesnt_Exist_Then_Error_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+
+            // ACT
+            UserStore.Instance().Subject = "subject";
+            var result = await _officeDocumentClient.ValidateInvitationLinkResolve("confirmationCode", $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ASSERT
+            Assert.True(result.ContainsError);
+            Assert.Equal("internal_error", result.Error.Error);
+            Assert.Equal("the confirmation code is not valid", result.Error.ErrorDescription);
+        }
 
         #endregion
 
@@ -328,6 +362,142 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
             // ASSERT
             Assert.False(result.ContainsError);
             Assert.NotNull(result.Content.ConfirmationCode);
+        }
+
+        #endregion
+
+        #region Validate link
+                
+        [Fact]
+        public async Task When_Validate_Confirmation_Code_Then_Ok_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+            UserStore.Instance().Subject = "subject";
+            var result = await _officeDocumentClient.GetInvitationLinkResolve("id", new Common.DTOs.Requests.GenerateConfirmationCodeRequest
+            {
+
+            }, $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = "other_subject";
+            _server.SharedCtx.AccessTokenStore.Setup(a => a.GetToken(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>()))
+                .Returns(Task.FromResult(new GrantedTokenResponse
+                {
+                    AccessToken = "access_token"
+                }));
+            var resourceSetClient = new Mock<IResourceSetClient>();
+            var policyClient = new Mock<IPolicyClient>();
+            resourceSetClient.Setup(r => r.AddByResolution(It.IsAny<PostResourceSet>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new AddResourceSetResult
+            {
+                ContainsError = false,
+                Content = new AddResourceSetResponse
+                {
+                    Id = "id"
+                }
+            }));
+            policyClient.Setup(r => r.GetByResolution(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new GetPolicyResult
+            {
+                ContainsError = false,
+                Content = new PolicyResponse
+                {
+                    Rules = new List<PolicyRuleResponse>
+                    {
+                        new PolicyRuleResponse
+                        {
+                            Claims = new List<PostClaim>
+                            {
+                                new PostClaim
+                                {
+                                    Type = "type",
+                                    Value = "val"
+                                }
+                            }
+                        }
+                    }
+                }
+            }));
+            policyClient.Setup(r => r.UpdateByResolution(It.IsAny<PutPolicy>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new BaseResponse
+            {
+                ContainsError = false
+            }));
+            _server.SharedCtx.IdentityServerUmaClientFactory.Setup(a => a.GetResourceSetClient()).Returns(resourceSetClient.Object);
+            _server.SharedCtx.IdentityServerUmaClientFactory.Setup(a => a.GetPolicyClient()).Returns(policyClient.Object);
+
+            // ACT
+            var validationResult = await _officeDocumentClient.ValidateInvitationLinkResolve(result.Content.ConfirmationCode, $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ASSERT
+            Assert.False(validationResult.ContainsError);
+            var confirmationCode = await _server.SharedCtx.OfficeDocumentConfirmationLinkStore.Get(result.Content.ConfirmationCode);
+            Assert.Null(confirmationCode);
+        }
+
+        [Fact]
+        public async Task When_Validate_One_Confirmation_Code_And_There_Are_Three_Then_Ok_Is_Returned()
+        {
+
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+            UserStore.Instance().Subject = "subject";
+            var result = await _officeDocumentClient.GetInvitationLinkResolve("id", new Common.DTOs.Requests.GenerateConfirmationCodeRequest
+            {
+                NumberOfConfirmations = 3
+            }, $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = "other_subject";
+            _server.SharedCtx.AccessTokenStore.Setup(a => a.GetToken(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>()))
+                .Returns(Task.FromResult(new GrantedTokenResponse
+                {
+                    AccessToken = "access_token"
+                }));
+            var resourceSetClient = new Mock<IResourceSetClient>();
+            var policyClient = new Mock<IPolicyClient>();
+            resourceSetClient.Setup(r => r.AddByResolution(It.IsAny<PostResourceSet>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new AddResourceSetResult
+            {
+                ContainsError = false,
+                Content = new AddResourceSetResponse
+                {
+                    Id = "id"
+                }
+            }));
+            policyClient.Setup(r => r.GetByResolution(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new GetPolicyResult
+            {
+                ContainsError = false,
+                Content = new PolicyResponse
+                {
+                    Rules = new List<PolicyRuleResponse>
+                    {
+                        new PolicyRuleResponse
+                        {
+                            Claims = new List<PostClaim>
+                            {
+                                new PostClaim
+                                {
+                                    Type = "type",
+                                    Value = "val"
+                                }
+                            }
+                        }
+                    }
+                }
+            }));
+            policyClient.Setup(r => r.UpdateByResolution(It.IsAny<PutPolicy>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new BaseResponse
+            {
+                ContainsError = false
+            }));
+            _server.SharedCtx.IdentityServerUmaClientFactory.Setup(a => a.GetResourceSetClient()).Returns(resourceSetClient.Object);
+            _server.SharedCtx.IdentityServerUmaClientFactory.Setup(a => a.GetPolicyClient()).Returns(policyClient.Object);
+
+            // ACT
+            var validationResult = await _officeDocumentClient.ValidateInvitationLinkResolve(result.Content.ConfirmationCode, $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ASSERT
+            Assert.False(validationResult.ContainsError);
+            var confirmationCode = await _server.SharedCtx.OfficeDocumentConfirmationLinkStore.Get(result.Content.ConfirmationCode);
+            Assert.NotNull(confirmationCode);
+            Assert.Equal(2, confirmationCode.NumberOfConfirmations.Value);
         }
 
         #endregion

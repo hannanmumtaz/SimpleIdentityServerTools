@@ -1,6 +1,7 @@
 ﻿using Moq;
 using SimpleIdentityServer.AccessToken.Store;
 using SimpleIdentityServer.Client;
+using SimpleIdentityServer.DocumentManagement.Store;
 
 namespace SimpleIdentityServer.DocumentManagement.Client.Tests
 {
@@ -16,5 +17,6 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests
         public FakeHttpClientFactory HttpClientFactory { get; }
         public Mock<IAccessTokenStore> AccessTokenStore { get; }
         public Mock<IIdentityServerUmaClientFactory> IdentityServerUmaClientFactory { get; }
+        public IOfficeDocumentConfirmationLinkStore OfficeDocumentConfirmationLinkStore;
     }
 }

@@ -96,7 +96,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
                 }
             }
 
-            if (!putPolicyRules.Any(p => p.Claims.Any(c => c.Type == "sub" && c.Value == validateConfirmationLinkParameter.Subject)))
+            if (!putPolicyRules.Any(p => p.Claims != null && p.Claims.Any(c => c.Type == "sub" && c.Value == validateConfirmationLinkParameter.Subject)))
             {
                 putPolicyRules.Add(new PutPolicyRule
                 {
