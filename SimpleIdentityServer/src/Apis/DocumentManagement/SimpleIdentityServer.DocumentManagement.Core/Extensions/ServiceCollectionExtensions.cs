@@ -25,6 +25,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.Extensions
             services.AddTransient<IGenerateConfirmationLinkAction, GenerateConfirmationLinkAction>();
             services.AddTransient<IValidateConfirmationLinkAction, ValidateConfirmationLinkAction>();
             services.AddTransient<IGetOfficeDocumentPermissionsAction, GetOfficeDocumentPermissionsAction>();
+            services.AddTransient<IGetAllConfirmationLinksAction, GetAllConfirmationLinksAction>();
             services.AddTransient<IJwksActions, JwksActions>();
             services.AddTransient<IGetJwksAction, GetJwksAction>();
             services.AddTransient<IJsonWebKeyEnricher, JsonWebKeyEnricher>();
@@ -32,6 +33,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.Extensions
             services.AddTransient<IValidateConfirmationLinkParameterValidator, ValidateConfirmationLinkParameterValidator>();
             services.AddTransient<IAddDocumentParameterValidator, AddDocumentParameterValidator>();
             services.AddTransient<IUpdateOfficeDocumentParameterValidator, UpdateOfficeDocumentParameterValidator>();
+            services.AddTransient<IGetAllConfirmationLinksValidator, GetAllConfirmationLinksValidator>();
             services.AddTransient<IDecryptOfficeDocumentParameterValidator, DecryptOfficeDocumentParameterValidator>();
             return services;
         }

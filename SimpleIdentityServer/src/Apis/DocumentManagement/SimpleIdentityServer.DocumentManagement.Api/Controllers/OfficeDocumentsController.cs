@@ -93,7 +93,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
                 var result = new OfficeDocumentConfirmationLinkResponse
                 {
                     ConfirmationCode = confirmationCode,
-                    Url = Url.Action("ConfirmInvitation", new { code = confirmationCode })
+                    Url = $"{Request.Scheme}://{Request.Host}{Request.Path}{Url.Action("ConfirmInvitation", new { code = confirmationCode })}"
                 };
                 return new OkObjectResult(result);
             }
@@ -107,7 +107,37 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             }
         }
 
-        [HttpGet("invitation/{code}")]
+        [HttpGet("{id}/invitation")]
+        [Authorize("connected")]
+        public async Task<IActionResult> GetAllConfirmationLinks(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return GetError(ErrorCodes.InvalidRequest, string.Format(ErrorDescriptions.ParameterIsMissing, "id"), HttpStatusCode.BadRequest);
+            }
+            
+            var subject = GetSubject();
+            try
+            {
+                var parameter = new GetAllConfirmationLinksParameter
+                {
+                    DocumentId = id,
+                    Subject = subject
+                };
+                var confirmationLinks = await _officeDocumentActions.GetAllConfirmationLinks(parameter);
+                return new OkObjectResult(confirmationLinks.ToDtos());
+            }
+            catch (NotAuthorizedException ex)
+            {
+                return GetError(ex.Code, ex.Message, HttpStatusCode.Unauthorized);
+            }
+            catch (DocumentNotFoundException)
+            {
+                return GetError(ErrorCodes.InvalidRequest, "the document doesn't exist", HttpStatusCode.NotFound);
+            }
+        }
+
+        [HttpGet("{code}/invitation/confirm")]
         [Authorize("connected")]
         public async Task<IActionResult> ConfirmInvitation(string code)
         {

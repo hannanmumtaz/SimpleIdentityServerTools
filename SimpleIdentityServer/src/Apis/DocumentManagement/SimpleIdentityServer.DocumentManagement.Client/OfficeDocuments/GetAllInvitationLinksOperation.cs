@@ -1,34 +1,36 @@
 ﻿using Newtonsoft.Json;
-using SimpleIdentityServer.Common.Client;
 using SimpleIdentityServer.Common.Client.Factories;
 using SimpleIdentityServer.Common.Dtos.Responses;
+using SimpleIdentityServer.DocumentManagement.Client.Responses;
+using SimpleIdentityServer.DocumentManagement.Common.DTOs.Responses;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
 {
-    public interface IValidateConfirmationLinkOperation
+    public interface IGetAllInvitationLinksOperation
     {
-        Task<BaseResponse> Execute(string confirmationCode, string url, string accessToken);
+        Task<GetAllInvitationLinksResponse> Execute(string documentId, string url, string accessToken);
     }
 
-    internal sealed class ValidateConfirmationLinkOperation : IValidateConfirmationLinkOperation
+    internal sealed class GetAllInvitationLinksOperation : IGetAllInvitationLinksOperation
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ValidateConfirmationLinkOperation(IHttpClientFactory httpClientFactory)
+        public GetAllInvitationLinksOperation(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<BaseResponse> Execute(string confirmationCode, string url, string accessToken)
+        public async Task<GetAllInvitationLinksResponse> Execute(string documentId, string url, string accessToken)
         {
-            if (string.IsNullOrWhiteSpace(confirmationCode))
+            if (string.IsNullOrWhiteSpace(documentId))
             {
-                throw new ArgumentNullException(nameof(confirmationCode));
+                throw new ArgumentNullException(nameof(documentId));
             }
-
+            
             if (string.IsNullOrWhiteSpace(url))
             {
                 throw new ArgumentNullException(nameof(url));
@@ -38,7 +40,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
             var httpRequest = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"{url}/{confirmationCode}/invitation/confirm")
+                RequestUri = new Uri($"{url}/{documentId}/invitation")
             };
             if (!string.IsNullOrWhiteSpace(accessToken))
             {
@@ -53,7 +55,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
             }
             catch (Exception)
             {
-                return new BaseResponse
+                return new GetAllInvitationLinksResponse
                 {
                     HttpStatus = httpResponse.StatusCode,
                     ContainsError = true,
@@ -61,9 +63,10 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
                 };
             }
 
-            return new BaseResponse
+            return new GetAllInvitationLinksResponse
             {
-                ContainsError = false
+                ContainsError = false,
+                Content = JsonConvert.DeserializeObject<IEnumerable<OfficeDocumentInvitationLinkResponse>>(json)
             };
         }
 

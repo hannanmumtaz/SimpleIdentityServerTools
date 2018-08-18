@@ -72,5 +72,21 @@ namespace SimpleIdentityServer.DocumentManagement.Store.InMemory
             _confirmationLinks.Remove(confirmationLink);
             return Task.FromResult(true);
         }
+
+        public Task<IEnumerable<OfficeDocumentConfirmationLink>> Search(SearchOfficeDocumentConfirmationLinkParameter parameter)
+        {
+            if(parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
+
+            IEnumerable<OfficeDocumentConfirmationLink> result = _confirmationLinks;
+            if(parameter.DocumentIds != null)
+            {
+                result = result.Where(r => parameter.DocumentIds.Contains(r.DocumentId));
+            }
+
+            return Task.FromResult(result);
+        }
     }
 }

@@ -22,6 +22,8 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         Task<GetInvitationLinkResponse> GetInvitationLink(string documentId, GenerateConfirmationCodeRequest request, string url, string accessToken);
         Task<BaseResponse> ValidateInvitationLinkResolve(string confirmationCode, string configurationUrl, string accessToken);
         Task<BaseResponse> ValidateInvitationLink(string confirmationCode, string url, string accessToken);
+        Task<GetAllInvitationLinksResponse> GetAllInvitationLinksResolve(string documentId, string configurationUrl, string accessToken);
+        Task<GetAllInvitationLinksResponse> GetAllInvitationLinks(string documentId, string url, string accessToken);
     }
 
     internal sealed class OfficeDocumentClient : IOfficeDocumentClient
@@ -34,11 +36,13 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         private readonly IGetPermissionsOperation _getPermissionsOperation;
         private readonly IGetInvitationLinkOperation _getInvitationLinkOperation;
         private readonly IValidateConfirmationLinkOperation _validateConfirmationLinkOperation;
+        private readonly IGetAllInvitationLinksOperation _getAllInvitationLinksOperation;
 
         public OfficeDocumentClient(IUpdateOfficeDocumentOperation updateOfficeDocumentOperation, IGetOfficeDocumentOperation getOfficeDocumentOperation,
             IAddOfficeDocumentOperation addOfficeDocumentOperation, IDecryptOfficeDocumentOperation decryptOfficeDocumentOperation,
             IGetConfigurationOperation getConfigurationOperation, IGetPermissionsOperation getPermissionsOperation,
-            IGetInvitationLinkOperation getInvitationLinkOperation, IValidateConfirmationLinkOperation validateConfirmationLinkOperation)
+            IGetInvitationLinkOperation getInvitationLinkOperation, IValidateConfirmationLinkOperation validateConfirmationLinkOperation,
+            IGetAllInvitationLinksOperation getAllInvitationLinksOperation)
         {
             _updateOfficeDocumentOperation = updateOfficeDocumentOperation;
             _getOfficeDocumentOperation = getOfficeDocumentOperation;
@@ -48,6 +52,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
             _getPermissionsOperation = getPermissionsOperation;
             _getInvitationLinkOperation = getInvitationLinkOperation;
             _validateConfirmationLinkOperation = validateConfirmationLinkOperation;
+            _getAllInvitationLinksOperation = getAllInvitationLinksOperation;
         }
 
         public async Task<BaseResponse> UpdateResolve(string documentId, UpdateOfficeDocumentRequest request, string configurationUrl, string accessToken)
@@ -125,6 +130,17 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         public Task<BaseResponse> ValidateInvitationLink(string confirmationCode, string url, string accessToken)
         {
             return _validateConfirmationLinkOperation.Execute(confirmationCode, url, accessToken);
+        }
+
+        public async Task<GetAllInvitationLinksResponse> GetAllInvitationLinksResolve(string documentId, string configurationUrl, string accessToken)
+        {
+            var configuration = await _getConfigurationOperation.Execute(new Uri(configurationUrl)).ConfigureAwait(false);
+            return await _getAllInvitationLinksOperation.Execute(documentId, configuration.OfficeDocumentsEndpoint, accessToken).ConfigureAwait(false);
+        }
+
+        public Task<GetAllInvitationLinksResponse> GetAllInvitationLinks(string documentId, string url, string accessToken)
+        {
+            return _getAllInvitationLinksOperation.Execute(documentId, url, accessToken);
         }
     }
 }

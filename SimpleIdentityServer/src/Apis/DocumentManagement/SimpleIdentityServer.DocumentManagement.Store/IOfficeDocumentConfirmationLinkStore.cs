@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.DocumentManagement.Store
 {
@@ -8,5 +9,6 @@ namespace SimpleIdentityServer.DocumentManagement.Store
         Task<bool> Update(OfficeDocumentConfirmationLink officeDocumentConfirmationLink);
         Task<OfficeDocumentConfirmationLink> Get(string confirmationCode);
         Task<bool> Remove(string confirmationCode);
+        Task<IEnumerable<OfficeDocumentConfirmationLink>> Search(SearchOfficeDocumentConfirmationLinkParameter parameter);
     }
 }

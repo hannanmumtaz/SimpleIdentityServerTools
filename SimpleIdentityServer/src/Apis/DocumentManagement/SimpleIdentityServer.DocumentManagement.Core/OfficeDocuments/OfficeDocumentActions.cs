@@ -2,6 +2,7 @@
 using SimpleIdentityServer.DocumentManagement.Core.Aggregates;
 using SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions;
 using SimpleIdentityServer.DocumentManagement.Core.Parameters;
+using SimpleIdentityServer.DocumentManagement.Store;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,6 +17,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
         Task<IEnumerable<OfficeDocumentPermissionResponse>> GetPermissions(string documentId, string accessToken, AuthenticateParameter authenticateParameter);
         Task<string> GenerateConfirmationLink(string documentId, GenerateConfirmationLinkParameter generateConfirmationCodeParameter);
         Task<bool> ValidateConfirmationLink(string wellKnownConfiguration, ValidateConfirmationLinkParameter validateConfirmationLinkParameter, AuthenticateParameter authenticateParameter);
+        Task<IEnumerable<OfficeDocumentConfirmationLink>> GetAllConfirmationLinks(GetAllConfirmationLinksParameter parameter);
     }
 
     internal sealed class OfficeDocumentActions : IOfficeDocumentActions
@@ -27,11 +29,12 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
         private readonly IGetOfficeDocumentPermissionsAction _getOfficeDocumentPermissionsAction;
         private readonly IGenerateConfirmationLinkAction _generateConfirmationLinkAction;
         private readonly IValidateConfirmationLinkAction _validateConfirmationLinkAction;
+        private readonly IGetAllConfirmationLinksAction _getAllConfirmationLinksAction;
 
         public OfficeDocumentActions(IAddOfficeDocumentAction addOfficeDocumentAction, IGetOfficeDocumentAction getOfficeDocumentAction, 
             IUpdateOfficeDocumentAction updateOfficeDocumentAction, IDecryptOfficeDocumentAction decryptOfficeDocumentAction,
             IGetOfficeDocumentPermissionsAction getOfficeDocumentPermissionsAction, IGenerateConfirmationLinkAction generateConfirmationLinkAction,
-            IValidateConfirmationLinkAction validateConfirmationLinkAction)
+            IValidateConfirmationLinkAction validateConfirmationLinkAction, IGetAllConfirmationLinksAction getAllConfirmationLinksAction)
         {
             _addOfficeDocumentAction = addOfficeDocumentAction;
             _getOfficeDocumentAction = getOfficeDocumentAction;
@@ -40,6 +43,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
             _getOfficeDocumentPermissionsAction = getOfficeDocumentPermissionsAction;
             _generateConfirmationLinkAction = generateConfirmationLinkAction;
             _validateConfirmationLinkAction = validateConfirmationLinkAction;
+            _getAllConfirmationLinksAction = getAllConfirmationLinksAction;
         }
 
         public Task<bool> Add(string openidWellKnownConfiguration, AddDocumentParameter document, AuthenticateParameter authenticateParameter)
@@ -75,6 +79,11 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
         public Task<bool> ValidateConfirmationLink(string wellKnownConfiguration, ValidateConfirmationLinkParameter validateConfirmationLinkParameter, AuthenticateParameter authenticateParameter)
         {
             return _validateConfirmationLinkAction.Execute(wellKnownConfiguration, validateConfirmationLinkParameter, authenticateParameter);
+        }
+
+        public Task<IEnumerable<OfficeDocumentConfirmationLink>> GetAllConfirmationLinks(GetAllConfirmationLinksParameter parameter)
+        {
+            return _getAllConfirmationLinksAction.Execute(parameter);
         }
     }
 }

@@ -52,6 +52,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client
 
             serviceCollection.AddTransient<IOfficeDocumentClient, OfficeDocumentClient>();
             serviceCollection.AddTransient<IUpdateOfficeDocumentOperation, UpdateOfficeDocumentOperation>();
+            serviceCollection.AddTransient<IGetAllInvitationLinksOperation, GetAllInvitationLinksOperation>();
             serviceCollection.AddTransient<IGetOfficeDocumentOperation, GetOfficeDocumentOperation>();
             serviceCollection.AddTransient<IAddOfficeDocumentOperation, AddOfficeDocumentOperation>();
             serviceCollection.AddTransient<IDecryptOfficeDocumentOperation, DecryptOfficeDocumentOperation>();
