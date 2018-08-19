@@ -1,14 +1,11 @@
 ﻿using SimpleIdentityServer.Client;
+using SimpleIdentityServer.Common.Client;
 using SimpleIdentityServer.Core.Common;
 using SimpleIdentityServer.DocumentManagement.Client;
-using SimpleIdentityServer.DocumentManagement.Client.Responses;
 using SimpleIdentityServer.DocumentManagement.Common.DTOs.Requests;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 using WordAccessManagementAddin.Controls.ViewModels;
 using WordAccessManagementAddin.Extensions;
 using WordAccessManagementAddin.Stores;
@@ -33,14 +30,12 @@ namespace WordAccessManagementAddin.Controls.Controllers
             _authenticationStore = AuthenticationStore.Instance();
             _officeDocumentStore = OfficeDocumentStore.Instance();
             ViewModel = new ProtectUserViewModel();
-            ViewModel.PermissionAdded += HandleAddPermission;
-            ViewModel.PermissionsRemoved += HandlePermissionsRemoved;
-            ViewModel.PermissionsSaved += (s, e) => HandlePermissionsSaved();
             Init();
+            ViewModel.DocumentProtected += HandleProtectDocument;
         }
 
         /// <summary>
-        /// Display the list of permissions.
+        /// Initialize the module.
         /// </summary>
         private void Init()
         {
@@ -55,13 +50,20 @@ namespace WordAccessManagementAddin.Controls.Controllers
                 return;
             }
 
+            DisplayLoading(true);
             string sidDocumentIdValue;
             if (!activeDocument.TryGetVariable(Constants.VariableName, out sidDocumentIdValue))
             {
+                ViewModel.IsDocumentProtected = false;
+                DisplayLoading(false);
                 return;
             }
 
-            DisplayLoading(true);
+            DisplayLoading(false);
+            ViewModel.IsDocumentProtected = true;
+            // TODO : DISPLAY THE PERMISSIONS
+            // TODO : DISPLAY THE SHARED LINKS
+            /*
             GetPermissions(sidDocumentIdValue).ContinueWith((r) =>
             {
                 var permissions = r.Result;
@@ -83,8 +85,60 @@ namespace WordAccessManagementAddin.Controls.Controllers
                     ));
                 }
             });
+            */
         }
 
+        /// <summary>
+        /// Protect the document
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HandleProtectDocument(object sender, EventArgs e)
+        {
+            var activeDocument = Globals.ThisAddIn.Application.ActiveDocument;
+            if (activeDocument == null)
+            {
+                return;
+            }
+
+            string sidDocumentIdValue;
+            if (!activeDocument.TryGetVariable(Constants.VariableName, out sidDocumentIdValue))
+            {
+                DisplayLoading(true);
+                sidDocumentIdValue = Guid.NewGuid().ToString();
+                ProtectDocument(sidDocumentIdValue).ContinueWith((br) =>
+                {
+                    var result = br.Result;
+                    DisplayLoading(false);
+                    if (result.ContainsError)
+                    {
+                        DisplayErrorMessage("An error occured while trying to protect the document");
+                        return;
+                    }
+
+                    DisplayInformationMessage("The document is now protected");
+                    ViewModel.IsDocumentProtected = true;
+                    activeDocument.Variables.Add(Constants.VariableName, sidDocumentIdValue);
+                    activeDocument.Save();
+                }, TaskContinuationOptions.OnlyOnRanToCompletion)
+                .ContinueWith((br) =>
+                {
+                    DisplayErrorMessage("An error occured while trying to interact with the DocumentApi");
+                    DisplayLoading(false);
+                }, TaskContinuationOptions.OnlyOnFaulted);
+            }
+        }
+
+        private Task<BaseResponse> ProtectDocument(string documentId)
+        {
+            var officeDocumentClient = _documentManagementFactory.GetOfficeDocumentClient();
+            return officeDocumentClient.AddResolve(new AddOfficeDocumentRequest
+            {
+                Id = documentId
+            }, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken);
+        }
+
+        /*
         private async Task<GetOfficeDocumentPermissionsResponse> GetPermissions(string documentId)
         {
             var umaResourceId = await _officeDocumentStore.GetUmaResourceId(documentId).ConfigureAwait(false);
@@ -101,12 +155,14 @@ namespace WordAccessManagementAddin.Controls.Controllers
 
             return await _documentManagementFactory.GetOfficeDocumentClient().GetPermissionsResolve(documentId, Constants.DocumentApiConfiguration, grantedToken.AccessToken).ConfigureAwait(false);
         }
+        */
 
         /// <summary>
         /// Save the permissions.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        /*
         private async Task HandlePermissionsSaved()
         {
             var activeDocument = Globals.ThisAddIn.Application.ActiveDocument;
@@ -140,7 +196,7 @@ namespace WordAccessManagementAddin.Controls.Controllers
                     DisplayLoading(false);
                     return;
                 }
-
+                
                 activeDocument.Variables.Add(Constants.VariableName, sidDocumentIdValue);
             }
 
@@ -190,12 +246,14 @@ namespace WordAccessManagementAddin.Controls.Controllers
             DisplayInformationMessage("the permissions are saved");
             DisplayLoading(false);
         }
+        */
 
         /// <summary>
         /// Remove the selected users.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        /*
         private void HandlePermissionsRemoved(object sender, System.EventArgs e)
         {
             var selectedUsers = ViewModel.Users.Where(p => p.IsSelected);
@@ -211,12 +269,14 @@ namespace WordAccessManagementAddin.Controls.Controllers
                 ViewModel.Users.Remove(ViewModel.Users.First(u => u.Name == name));
             }
         }
+        */
 
         /// <summary>
         /// Add a permission.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        /*
         private void HandleAddPermission(object sender, System.EventArgs e)
         {
             var userIdentifier = ViewModel.UserIdentifier;
@@ -233,6 +293,7 @@ namespace WordAccessManagementAddin.Controls.Controllers
                 Name = userIdentifier
             });
         }
+        */
 
         private void DisplayErrorMessage(string errorMessage)
         {

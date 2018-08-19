@@ -77,21 +77,35 @@ namespace WordAccessManagementAddin.Controls.ViewModels
 
     internal sealed class ProtectUserViewModel : BaseViewModel
     {
-        private string _userIdentifier;
+        private bool _isDocumentProtected;
         private bool _isLoading;
         private bool _isMessageDisplayed;
         private string _message;
         private bool _isErrorMessage;
+        private string _displayName;
 
         public ProtectUserViewModel()
         {
             Users = new ObservableCollection<UserViewModel>();
-            AddCommand = new RelayCommand(HandleAddPermission, p => CanExecuteAddPermission());
-            RemoveCommand = new RelayCommand(HandleRemovePermissions, p => HandleCanExecuteRemovePermissions());
-            SaveCommand = new RelayCommand(HandleSavePermissions, p => CanSavePermissions());
+            ProtectDocumentCommand = new RelayCommand(HandleProtectDocument, p => CanExecuteProtectDocumentCommand());
             CloseMessageCommand = new RelayCommand(HandleCloseMessage, p => true);
         }
 
+        public bool IsDocumentProtected
+        {
+            get
+            {
+                return _isDocumentProtected;
+            }
+            set
+            {
+                if(_isDocumentProtected != value)
+                {
+                    _isDocumentProtected = value;
+                    OnPropertyChanged(nameof(IsDocumentProtected));
+                }
+            }
+        }
         public bool IsLoading
         {
             get
@@ -104,22 +118,6 @@ namespace WordAccessManagementAddin.Controls.ViewModels
                 {
                     _isLoading = value;
                     OnPropertyChanged(nameof(IsLoading));
-                }
-            }
-        }
-
-        public string UserIdentifier
-        {
-            get
-            {
-                return _userIdentifier;
-            }
-            set
-            {
-                if (_userIdentifier != value)
-                {
-                    _userIdentifier = value;
-                    OnPropertyChanged(nameof(UserIdentifier));
                 }
             }
         }
@@ -138,6 +136,21 @@ namespace WordAccessManagementAddin.Controls.ViewModels
                 }
             }
         }
+        public bool IsErrorMessage
+        {
+            get
+            {
+                return _isErrorMessage;
+            }
+            set
+            {
+                if (_isErrorMessage != value)
+                {
+                    _isErrorMessage = value;
+                    OnPropertyChanged(nameof(IsErrorMessage));
+                }
+            }
+        }
         public string Message
         {
             get
@@ -153,67 +166,37 @@ namespace WordAccessManagementAddin.Controls.ViewModels
                 }
             }
         }
-        public bool IsErrorMessage
+        public string DisplayName
         {
             get
             {
-                return _isErrorMessage;
+                return _displayName;
             }
             set
             {
-                if(_isErrorMessage != value)
+                if(_displayName != value)
                 {
-                    _isErrorMessage = value;
-                    OnPropertyChanged(nameof(IsErrorMessage));
+                    _displayName = value;
+                    OnPropertyChanged(nameof(DisplayName));
                 }
             }
         }
         public ObservableCollection<UserViewModel> Users { get; set; }
-        public ICommand AddCommand { get; private set; }
-        public ICommand RemoveCommand { get; private set; }
-        public ICommand SaveCommand { get; private set; }
+        public ICommand ProtectDocumentCommand { get; private set; }
         public ICommand CloseMessageCommand { get; private set; }
-        public event EventHandler PermissionAdded;
-        public event EventHandler PermissionsRemoved;
-        public event EventHandler PermissionsSaved;
+        public event EventHandler DocumentProtected;
 
-        private void HandleAddPermission(object o)
+        private void HandleProtectDocument(object o)
         {
-            if (PermissionAdded != null)
+            if (DocumentProtected != null)
             {
-                PermissionAdded(this, EventArgs.Empty);
+                DocumentProtected(this, EventArgs.Empty);
             }
         }
 
-        private bool CanExecuteAddPermission()
+        private bool CanExecuteProtectDocumentCommand()
         {
-            return true;
-        }
-
-        private void HandleRemovePermissions(object o)
-        {
-            if (PermissionsRemoved != null)
-            {
-                PermissionsRemoved(this, EventArgs.Empty);
-            }
-        }
-
-        private bool HandleCanExecuteRemovePermissions()
-        {
-            return true;
-        }
-
-        private void HandleSavePermissions(object o)
-        {
-            if (PermissionsSaved != null)
-            {
-                PermissionsSaved(this, EventArgs.Empty);
-            }
-        }
-
-        private bool CanSavePermissions()
-        {
-            return true;
+            return !IsDocumentProtected;
         }
 
         private void HandleCloseMessage(object o)

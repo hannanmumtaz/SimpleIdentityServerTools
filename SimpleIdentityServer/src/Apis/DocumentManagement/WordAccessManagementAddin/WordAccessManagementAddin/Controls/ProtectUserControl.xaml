@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WordAccessManagementAddin.Controls"
              mc:Ignorable="d" 
-             Title="Protect document"
+             Title="Manage document protection"
              ResizeMode="NoResize"
              Width="800"
              Height="450"
@@ -21,8 +21,9 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <!-- Error message -->
             <Grid Grid.ColumnSpan="2" Grid.Row="0">
@@ -64,37 +65,77 @@
                     </Style>
                 </Grid.Style>
             </Grid>
-            <!-- Manage the users -->
+            <!-- Protect the document -->
             <Grid Grid.Row="1">
+                <GroupBox Header="Protect the document" Grid.Column="0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Margin="5">Display name</Label>
+                        <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding Path=DisplayName, Mode=TwoWay}"></TextBox>
+                        <Button Grid.Row="1" Grid.Column="0" Margin="5" Command="{Binding Path=ProtectDocumentCommand}">Protect the document</Button>
+                    </Grid>
+                </GroupBox>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="IsEnabled" Value="True" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsDocumentProtected}" Value="True">
+                                <Setter Property="IsEnabled" Value="False" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+            </Grid>
+            <!-- Manage the shared links -->
+            <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <!-- Add the permission -->
-                <GroupBox Header="Grant access to a user" Grid.Column="0">
+                <!-- Create a shared link -->
+                <GroupBox Header="Share the document" Grid.Column="0">
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <!-- Identifier of the user -->
-                        <Label Grid.Row="0" Grid.Column="0" Margin="5">Enter the identifier of the user</Label>
-                        <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding Path=UserIdentifier, Mode=TwoWay}"></TextBox>
-                        <Button Grid.Row="2" Grid.Column="0" Command="{Binding Path=AddCommand}" Margin="5">Add</Button>
+                        <!-- Expires in -->
+                        <Label Grid.Row="0" Grid.Column="0" Margin="5">Expires in</Label>
+                        <TextBox Grid.Row="0" Grid.Column="1" Margin="5" />
+                        <CheckBox Grid.Row="0" Grid.Column="2" Margin="5" />
+                        <!-- Download limits off -->
+                        <Label Grid.Row="1" Grid.Column="0" Margin="5">Number of downloads</Label>
+                        <TextBox Grid.Row="1" Grid.Column="1" Margin="5" />
+                        <CheckBox Grid.Row="1" Grid.Column="2" Margin="5" />
+                        <!-- Create a confirmation link -->
+                        <Button Grid.Row="2" Grid.Column="0" Command="{Binding Path=AddCommand}" Margin="5">Create a shared link</Button>
                     </Grid>
                 </GroupBox>
-                <!-- List of users assigned to the document -->
-                <GroupBox Header="List of granted users" Grid.Column="1">
+                <!-- List of shared link -->
+                <GroupBox Header="List of active shared links" Grid.Column="1">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="30"/>
                         </Grid.RowDefinitions>
-                        <ListBox Grid.Row="0" ItemsSource="{Binding Path=Users}" DisplayMemberPath="Name" SelectionMode="Multiple">
+                        <ListBox Margin="5" Grid.Row="0">
+                            
+                        </ListBox>
+                        <!--
+                        <ListBox Margin="5" Grid.Row="0" ItemsSource="{Binding Path=Users}" DisplayMemberPath="Name" SelectionMode="Multiple">
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListBoxItem}">
                                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
@@ -102,19 +143,55 @@
                                 </Style>
                             </ListBox.ItemContainerStyle>
                         </ListBox>
+                        -->
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
-                            <Button Command="{Binding Path=RemoveCommand}" Margin="5">Remove the selected users</Button>
+                            <Button Margin="5">Remove the selected links</Button>
                         </StackPanel>
                     </Grid>
                 </GroupBox>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="IsEnabled" Value="False" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsDocumentProtected}" Value="True">
+                                <Setter Property="IsEnabled" Value="True" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
             </Grid>
-            <!-- Save the permissions -->
-            <StackPanel Grid.Row="2" Orientation="Horizontal">
-                <Button Command="{Binding Path=SaveCommand}" Margin="5">Save the permissions</Button>
-            </StackPanel>
+            <!-- Manage the users who can access to the document -->
+            <Grid Grid.Row="3">
+                <GroupBox Header="List of users who have access to the document">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ListBox Margin="5" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+
+                        </ListBox>
+                        <Button Margin="5" Grid.Row="1" Grid.Column="0">Remove the selected users</Button>
+                    </Grid>
+                </GroupBox>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="IsEnabled" Value="False" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsDocumentProtected}" Value="True">
+                                <Setter Property="IsEnabled" Value="True" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+            </Grid>
         </Grid>
+        <!-- Loading spinner -->
         <Grid>
-            <!-- Loading spinner -->
             <Control Name="spinner" Style="{StaticResource BusyAnimationStyle}" />
             <Grid.Style>
                 <Style TargetType="Grid">

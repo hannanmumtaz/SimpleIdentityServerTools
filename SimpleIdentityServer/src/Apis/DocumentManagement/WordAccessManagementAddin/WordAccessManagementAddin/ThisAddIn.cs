@@ -195,7 +195,6 @@ namespace WordAccessManagementAddin
             Application.DocumentBeforeClose += HandleDocumentBeforeClose;
             OfficeDocumentStore.Instance().Decrypted += HandleDecryptDocument;
             AuthenticationStore.Instance().Disconnected += HandleDisconnect;
-            AuthenticationStore.Instance().Restore();
         }
 
         private static void ClearCookie()

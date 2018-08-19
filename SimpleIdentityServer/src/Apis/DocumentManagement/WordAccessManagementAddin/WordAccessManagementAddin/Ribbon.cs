@@ -4,7 +4,6 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using WordAccessManagementAddin.Controls;
@@ -24,6 +23,7 @@ namespace WordAccessManagementAddin
             _authenticationStore = AuthenticationStore.Instance();
             _officeDocumentStore = OfficeDocumentStore.Instance();
             _authenticationStore.Authenticated += HandleAuthenticate;
+            AuthenticationStore.Instance().Restore();
         }
 
         private void HandleAuthenticate(object sender, EventArgs e)
