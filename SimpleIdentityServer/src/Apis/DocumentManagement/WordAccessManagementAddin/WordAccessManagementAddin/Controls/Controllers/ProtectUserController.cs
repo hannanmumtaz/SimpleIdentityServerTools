@@ -2,6 +2,7 @@
 using SimpleIdentityServer.Common.Client;
 using SimpleIdentityServer.Core.Common;
 using SimpleIdentityServer.DocumentManagement.Client;
+using SimpleIdentityServer.DocumentManagement.Client.Responses;
 using SimpleIdentityServer.DocumentManagement.Common.DTOs.Requests;
 using System;
 using System.Threading.Tasks;
@@ -32,6 +33,7 @@ namespace WordAccessManagementAddin.Controls.Controllers
             ViewModel = new ProtectUserViewModel();
             Init();
             ViewModel.DocumentProtected += HandleProtectDocument;
+            ViewModel.SharedLinkAdded += HandleAddSharedLink;
         }
 
         /// <summary>
@@ -129,6 +131,47 @@ namespace WordAccessManagementAddin.Controls.Controllers
             }
         }
 
+        /// <summary>
+        /// Create a shared link.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HandleAddSharedLink(object sender, EventArgs e)
+        {
+            var activeDocument = Globals.ThisAddIn.Application.ActiveDocument;
+            if (activeDocument == null)
+            {
+                return;
+            }
+
+            string sidDocumentIdValue;
+            if (activeDocument.TryGetVariable(Constants.VariableName, out sidDocumentIdValue))
+            {
+                var request = new GenerateConfirmationCodeRequest
+                {
+                    ExpiresIn = ViewModel.IsExpiresInEnabled ? (int?)ViewModel.ExpiresIn : null,
+                    NumberOfConfirmations = ViewModel.IsNumberOfDownloadsEnabled ? (int?)ViewModel.NumberOfDownloads : null
+                };
+                DisplayLoading(true);
+                AddSharedLink(sidDocumentIdValue, request).ContinueWith((gi) =>
+                {
+                    var result = gi.Result;
+                    DisplayLoading(false);
+                    if (result.ContainsError)
+                    {
+                        DisplayErrorMessage("An error occured while trying to generate the shared link");
+                        return;
+                    }
+
+                    DisplayInformationMessage("The shared link has been generated");
+                }, TaskContinuationOptions.OnlyOnRanToCompletion).ContinueWith((gi) =>
+                {
+                    DisplayErrorMessage("An error occured while trying to interact with the DocumentApi");
+                    DisplayLoading(false);
+                }, TaskContinuationOptions.OnlyOnFaulted);
+            }
+        }
+
         private Task<BaseResponse> ProtectDocument(string documentId)
         {
             var officeDocumentClient = _documentManagementFactory.GetOfficeDocumentClient();
@@ -136,6 +179,12 @@ namespace WordAccessManagementAddin.Controls.Controllers
             {
                 Id = documentId
             }, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken);
+        }
+
+        private Task<GetInvitationLinkResponse> AddSharedLink(string documentId, GenerateConfirmationCodeRequest request)
+        {
+            var officeDocumentClient = _documentManagementFactory.GetOfficeDocumentClient();
+            return officeDocumentClient.GetInvitationLinkResolve(documentId, request, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken);
         }
 
         /*

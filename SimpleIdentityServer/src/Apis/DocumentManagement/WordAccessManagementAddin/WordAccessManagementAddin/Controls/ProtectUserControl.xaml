@@ -114,14 +114,14 @@
                         </Grid.ColumnDefinitions>
                         <!-- Expires in -->
                         <Label Grid.Row="0" Grid.Column="0" Margin="5">Expires in</Label>
-                        <TextBox Grid.Row="0" Grid.Column="1" Margin="5" />
-                        <CheckBox Grid.Row="0" Grid.Column="2" Margin="5" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding Path=ExpiresIn, Mode=TwoWay}" PreviewTextInput="HandleNumericField" IsEnabled="{Binding Path=IsExpiresInEnabled}"/>
+                        <CheckBox Grid.Row="0" Grid.Column="2" Margin="5" IsChecked="{Binding Path=IsExpiresInEnabled, Mode=TwoWay}" />
                         <!-- Download limits off -->
                         <Label Grid.Row="1" Grid.Column="0" Margin="5">Number of downloads</Label>
-                        <TextBox Grid.Row="1" Grid.Column="1" Margin="5" />
-                        <CheckBox Grid.Row="1" Grid.Column="2" Margin="5" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding Path=NumberOfDownloads, Mode=TwoWay}" PreviewTextInput="HandleNumericField" IsEnabled="{Binding Path=IsNumberOfDownloadsEnabled}" />
+                        <CheckBox Grid.Row="1" Grid.Column="2" Margin="5" IsChecked="{Binding Path=IsNumberOfDownloadsEnabled, Mode=TwoWay}" />
                         <!-- Create a confirmation link -->
-                        <Button Grid.Row="2" Grid.Column="0" Command="{Binding Path=AddCommand}" Margin="5">Create a shared link</Button>
+                        <Button Grid.Row="2" Grid.Column="0" Command="{Binding Path=AddSharedLinkCommand}" Margin="5">Create a shared link</Button>
                     </Grid>
                 </GroupBox>
                 <!-- List of shared link -->

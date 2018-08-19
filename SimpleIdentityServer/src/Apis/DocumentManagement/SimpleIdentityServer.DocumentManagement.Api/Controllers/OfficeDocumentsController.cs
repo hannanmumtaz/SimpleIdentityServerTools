@@ -93,7 +93,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
                 var result = new OfficeDocumentConfirmationLinkResponse
                 {
                     ConfirmationCode = confirmationCode,
-                    Url = $"{Request.Scheme}://{Request.Host}{Request.Path}{Url.Action("ConfirmInvitation", new { code = confirmationCode })}"
+                    Url = $"{Request.Scheme}://{Request.Host}{Url.Action("ConfirmInvitation", new { code = confirmationCode })}"
                 };
                 return new OkObjectResult(result);
             }
