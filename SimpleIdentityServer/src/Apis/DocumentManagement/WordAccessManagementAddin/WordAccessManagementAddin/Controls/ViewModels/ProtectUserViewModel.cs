@@ -4,42 +4,6 @@ using System.Windows.Input;
 
 namespace WordAccessManagementAddin.Controls.ViewModels
 {
-    internal sealed class PermissionViewModel : BaseViewModel
-    {
-        private string _name;
-        private bool _isSelected;
-
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                }
-            }
-        }
-
-        public bool IsSelected
-        {
-            get
-            {
-                return _isSelected;
-            }
-            set
-            {
-                if (_isSelected != value)
-                {
-                    _isSelected = true;
-                }
-            }
-        }
-    }
-
     internal sealed class UserViewModel : BaseViewModel
     {
         private string _name;
@@ -75,6 +39,60 @@ namespace WordAccessManagementAddin.Controls.ViewModels
         }
     }
 
+    internal sealed class SharedLinkViewModel : BaseViewModel
+    {
+        private string _confirmationCode;
+        private bool _isSelected;
+
+        public SharedLinkViewModel()
+        {
+            CopyLinkCommand = new RelayCommand(HandleCopyLink, p => CanExecuteCopyLinkCommand());
+        }
+
+        public string ConfirmationCode
+        {
+            get
+            {
+                return _confirmationCode;
+            }
+            set
+            {
+                if(_confirmationCode != value)
+                {
+                    _confirmationCode = value;
+                    OnPropertyChanged(nameof(ConfirmationCode));
+                }
+            }
+        }
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                if(_isSelected != value)
+                {
+                    _isSelected = value;
+                    OnPropertyChanged(nameof(IsSelected));
+                }
+            }
+        }
+        public string RedirectUrl { get; set; }
+        public ICommand CopyLinkCommand { get; }
+
+        private void HandleCopyLink(object o)
+        {
+            System.Windows.Clipboard.SetText(RedirectUrl);
+        }
+
+        private bool CanExecuteCopyLinkCommand()
+        {
+            return true;
+        }
+    }
+
     internal sealed class ProtectUserViewModel : BaseViewModel
     {
         private bool _isDocumentProtected;
@@ -91,6 +109,7 @@ namespace WordAccessManagementAddin.Controls.ViewModels
         public ProtectUserViewModel()
         {
             Users = new ObservableCollection<UserViewModel>();
+            SharedLinks = new ObservableCollection<SharedLinkViewModel>();
             ProtectDocumentCommand = new RelayCommand(HandleProtectDocument, p => CanExecuteProtectDocumentCommand());
             AddSharedLinkCommand = new RelayCommand(HandleAddSharedLink, p => CanExecuteAddSharedLinkCommand());
             CloseMessageCommand = new RelayCommand(HandleCloseMessage, p => true);
@@ -249,6 +268,7 @@ namespace WordAccessManagementAddin.Controls.ViewModels
             }
         }
         public ObservableCollection<UserViewModel> Users { get; set; }
+        public ObservableCollection<SharedLinkViewModel> SharedLinks { get; set; }
         public ICommand ProtectDocumentCommand { get; private set; }
         public ICommand AddSharedLinkCommand { get; private set; }
         public ICommand CloseMessageCommand { get; private set; }

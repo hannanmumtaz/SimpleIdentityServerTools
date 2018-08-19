@@ -131,19 +131,23 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="30"/>
                         </Grid.RowDefinitions>
-                        <ListBox Margin="5" Grid.Row="0">
-                            
-                        </ListBox>
-                        <!--
-                        <ListBox Margin="5" Grid.Row="0" ItemsSource="{Binding Path=Users}" DisplayMemberPath="Name" SelectionMode="Multiple">
+                        <ListBox Margin="5" Grid.Row="0" ItemsSource="{Binding Path=SharedLinks}">
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListBoxItem}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
                                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                                     <Setter Property="Padding" Value="5" />
                                 </Style>
                             </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel HorizontalAlignment="Stretch">
+                                        <TextBlock  HorizontalAlignment="Stretch" Text="{Binding Path=ConfirmationCode}" />
+                                        <Button Width="Auto" DockPanel.Dock="Right" Command="{Binding Path=CopyLinkCommand}">Copy link</Button>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
                         </ListBox>
-                        -->
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <Button Margin="5">Remove the selected links</Button>
                         </StackPanel>

@@ -125,7 +125,13 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
                     Subject = subject
                 };
                 var confirmationLinks = await _officeDocumentActions.GetAllConfirmationLinks(parameter);
-                return new OkObjectResult(confirmationLinks.ToDtos());
+                var result = confirmationLinks.ToDtos();
+                foreach(var record in result)
+                {
+                    record.RedirectUrl = $"{Request.Scheme}://{Request.Host}{Url.Action("ConfirmInvitation", new { code = record.ConfirmationCode })}";
+                }
+
+                return new OkObjectResult(result);
             }
             catch (NotAuthorizedException ex)
             {

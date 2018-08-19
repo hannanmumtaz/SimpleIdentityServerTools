@@ -6,6 +6,8 @@ namespace SimpleIdentityServer.DocumentManagement.Common.DTOs.Responses
     [DataContract]
     public class OfficeDocumentInvitationLinkResponse
     {
+        [DataMember(Name = "redirect_url")]
+        public string RedirectUrl { get; set; }
         [DataMember(Name = "confirmation_code")]
         public string ConfirmationCode { get; set; }
         [DataMember(Name = "documentid")]

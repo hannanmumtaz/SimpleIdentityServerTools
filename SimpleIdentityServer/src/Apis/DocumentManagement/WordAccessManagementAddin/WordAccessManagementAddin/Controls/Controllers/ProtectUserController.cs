@@ -61,8 +61,37 @@ namespace WordAccessManagementAddin.Controls.Controllers
                 return;
             }
 
-            DisplayLoading(false);
             ViewModel.IsDocumentProtected = true;
+            GetAllConfirmationLinks(sidDocumentIdValue).ContinueWith((il) =>
+            {
+                var result = il.Result;
+                DisplayLoading(false);
+                if (result.ContainsError)
+                {
+                    DisplayErrorMessage("An error occured while trying to get the confirmation links");
+                    return;
+                }
+
+                if(result.Content != null)
+                {
+                    foreach(var record in result.Content)
+                    {
+                        _window.Dispatcher.Invoke(new Action(() =>
+                        {
+                            ViewModel.SharedLinks.Add(new SharedLinkViewModel
+                            {
+                                ConfirmationCode = record.ConfirmationCode,
+                                IsSelected = false,
+                                RedirectUrl = record.RedirectUrl
+                            });
+                        }));
+                    }
+                }
+            }, TaskContinuationOptions.OnlyOnRanToCompletion).ContinueWith((il) =>
+            {
+                DisplayErrorMessage("An error occured while trying to get the confirmation links");
+                DisplayLoading(false);
+            }, TaskContinuationOptions.OnlyOnFaulted);
             // TODO : DISPLAY THE PERMISSIONS
             // TODO : DISPLAY THE SHARED LINKS
             /*
@@ -163,6 +192,15 @@ namespace WordAccessManagementAddin.Controls.Controllers
                         return;
                     }
 
+                    _window.Dispatcher.Invoke(new Action(() =>
+                    {
+                        ViewModel.SharedLinks.Add(new SharedLinkViewModel
+                        {
+                            ConfirmationCode = result.Content.ConfirmationCode,
+                            IsSelected = false,
+                            RedirectUrl = result.Content.Url
+                        });
+                    }));
                     DisplayInformationMessage("The shared link has been generated");
                 }, TaskContinuationOptions.OnlyOnRanToCompletion).ContinueWith((gi) =>
                 {
@@ -185,6 +223,12 @@ namespace WordAccessManagementAddin.Controls.Controllers
         {
             var officeDocumentClient = _documentManagementFactory.GetOfficeDocumentClient();
             return officeDocumentClient.GetInvitationLinkResolve(documentId, request, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken);
+        }
+
+        private Task<GetAllInvitationLinksResponse> GetAllConfirmationLinks(string documentId)
+        {
+            var officeDocumentClient = _documentManagementFactory.GetOfficeDocumentClient();
+            return officeDocumentClient.GetAllInvitationLinksResolve(documentId, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken);
         }
 
         /*
