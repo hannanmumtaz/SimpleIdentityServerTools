@@ -168,6 +168,39 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             }
         }
 
+        [HttpDelete("{code}/invitation")]
+        public async Task<IActionResult> DeleteConfirmationLink(string code)
+        {
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                return GetError(ErrorCodes.InvalidRequest, string.Format(ErrorDescriptions.ParameterIsMissing, "code"), HttpStatusCode.BadRequest);
+            }
+
+            var subject = GetSubject();
+            try
+            {
+                var parameter = new DeleteConfirmationCodeParameter
+                {
+                    ConfirmationCode = code,
+                    Subject = subject
+                };
+                await _officeDocumentActions.DeleteConfirmationCode(parameter);
+                return new NoContentResult();
+            }
+            catch(ConfirmationCodeNotFoundException)
+            {
+                return GetError(ErrorCodes.InvalidRequest, "the confirmation code doesn't exist", HttpStatusCode.NotFound);
+            }
+            catch (DocumentNotFoundException)
+            {
+                return GetError(ErrorCodes.InvalidRequest, "the document doesn't exist", HttpStatusCode.NotFound);
+            }
+            catch(NotAuthorizedException ex)
+            {
+                return GetError(ex.Code, ex.Message, HttpStatusCode.Unauthorized);
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {

@@ -24,5 +24,6 @@
         public const string CannotAddUmaPolicy = "an error occured while trying to add the UMA policy";
         public const string CannotGetUmaPolicy = "an error occured while trying to get the UMA policy";
         public const string CannotAddOfficeDocument = "an error occured while trying to add the office document";
+        public const string CannotRemoveConfirmationCode = "an error occured while trying to remove the confirmation code";
     }
 }
