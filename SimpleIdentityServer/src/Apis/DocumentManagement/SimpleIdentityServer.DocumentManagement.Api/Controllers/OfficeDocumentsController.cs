@@ -93,7 +93,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
                 var result = new OfficeDocumentConfirmationLinkResponse
                 {
                     ConfirmationCode = confirmationCode,
-                    Url = $"{Request.Scheme}://{Request.Host}{Url.Action("ConfirmInvitation", new { code = confirmationCode })}"
+                    Url = $"{_options.DocumentManagementWebsiteBaseUrl}/confirm/{confirmationCode}"
                 };
                 return new OkObjectResult(result);
             }
@@ -128,7 +128,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
                 var result = confirmationLinks.ToDtos();
                 foreach(var record in result)
                 {
-                    record.RedirectUrl = $"{Request.Scheme}://{Request.Host}{Url.Action("ConfirmInvitation", new { code = record.ConfirmationCode })}";
+                    record.RedirectUrl = $"{_options.DocumentManagementWebsiteBaseUrl}/confirm/{record.ConfirmationCode}";
                 }
 
                 return new OkObjectResult(result);

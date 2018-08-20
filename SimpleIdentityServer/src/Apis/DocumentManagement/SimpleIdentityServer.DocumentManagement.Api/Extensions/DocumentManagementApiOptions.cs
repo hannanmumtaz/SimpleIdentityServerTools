@@ -17,5 +17,6 @@
 
         public OAuthOptions OAuth { get; set; }
         public string OpenIdWellKnownConfiguration { get; private set; }
+        public string DocumentManagementWebsiteBaseUrl { get; set; }
     }
 }

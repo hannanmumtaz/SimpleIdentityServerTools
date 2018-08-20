@@ -1,2 +1,18 @@
 ﻿{
+	"confirmActivationCodeTitle": "Activation code",
+	"confirmActivationCode": "Confirm the activation code",
+	"confirmActivationCodeShortDescription": "Confirm the activation code to get access to the document",
+	"websiteTitle": "Document management",
+	"confirmCode": "Confirm the code",
+	"codeHasBeenConfirmed": "Code has been confirmed",
+	"codeCannotBeConfirmed": "An error occured while trying to confirm the code",
+	"aboutTitle": "About",
+	"aboutShortDescription": "About the document management website",
+	"aboutContent": "This website is used to manage the access to your documents",
+	"connect": "Connect",
+	"about": "About",
+	"aboutMenuItem": "About",
+	"connectMenuItem": "Connect",
+	"disconnectMenuItem": "Disconnect",
+	"loginTitle": "Authenticate"
 }

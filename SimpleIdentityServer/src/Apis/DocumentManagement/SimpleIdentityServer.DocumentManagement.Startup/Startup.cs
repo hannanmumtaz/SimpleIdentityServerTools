@@ -44,7 +44,8 @@ namespace SimpleIdentityServer.DocumentManagement.Startup
                     ClientId = "DocumentManagementApi",
                     ClientSecret = "QZhq68aE44BmYEX9",
                     WellKnownConfiguration = "http://localhost:60004/.well-known/uma2-configuration"
-                }
+                },
+                DocumentManagementWebsiteBaseUrl = "http://localhost:64951"
             });
 
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()

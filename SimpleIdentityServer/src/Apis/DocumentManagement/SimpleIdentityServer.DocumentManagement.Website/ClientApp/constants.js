@@ -9,8 +9,5 @@
     },
     adminuiUrl: 'http://localhost:64951',
     openidUrl: 'http://localhost:60000',
-    openidManagerBaseUrl: 'http://localhost:60003',
-    profileBaseUrl: 'http://localhost:60005',
-    hierarchicalResourcesBaseUrl: 'http://localhost:60006',
-    eventSourceUrl: 'http://localhost:60002',
+    documentManagementApiUrl : 'http://localhost:60010'
 };
