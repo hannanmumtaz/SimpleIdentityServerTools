@@ -103,6 +103,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
             {
                 Id = document.Id,
                 Subject = document.Subject,
+                DisplayName = document.DisplayName,
                 UmaResourceId = resource.Content.Id,
                 UmaPolicyId = policy.Content.PolicyId,
             };

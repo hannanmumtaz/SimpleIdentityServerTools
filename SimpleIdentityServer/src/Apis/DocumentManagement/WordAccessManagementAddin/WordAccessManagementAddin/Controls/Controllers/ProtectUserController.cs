@@ -64,61 +64,63 @@ namespace WordAccessManagementAddin.Controls.Controllers
             }
 
             ViewModel.IsDocumentProtected = true;
-            GetAllConfirmationLinks(sidDocumentIdValue).ContinueWith((il) =>
+            var officeDocumentClient = _documentManagementFactory.GetOfficeDocumentClient();
+            officeDocumentClient.GetResolve(sidDocumentIdValue, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken).ContinueWith((dr) =>
             {
-                var result = il.Result;
-                DisplayLoading(false);
-                if (result.ContainsError)
+                var getDocumentResult = dr.Result;
+                if (getDocumentResult.ContainsError)
                 {
-                    DisplayErrorMessage("An error occured while trying to get the confirmation links");
+                    DisplayLoading(false);
                     return;
                 }
 
-                if(result.Content != null)
+                _window.Dispatcher.Invoke(new Action(() =>
                 {
-                    foreach(var record in result.Content)
-                    {
-                        _window.Dispatcher.Invoke(new Action(() =>
-                        {
-                            ViewModel.SharedLinks.Add(new SharedLinkViewModel
-                            {
-                                ConfirmationCode = record.ConfirmationCode,
-                                IsSelected = false,
-                                RedirectUrl = record.RedirectUrl
-                            });
-                        }));
-                    }
+                    ViewModel.DisplayName = getDocumentResult.OfficeDocument.DisplayName;
+                }));
+                var subject = _authenticationStore.JwsPayload["sub"].ToString();
+                if(getDocumentResult.OfficeDocument.Subject != subject)
+                {
+                    DisplayLoading(false);
+                    return;
                 }
-            }, TaskContinuationOptions.OnlyOnRanToCompletion).ContinueWith((il) =>
+
+                officeDocumentClient.GetAllInvitationLinksResolve(sidDocumentIdValue, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken).ContinueWith((lr) =>
+                {
+                    var invitationLinksResult = lr.Result;
+                    DisplayLoading(false);
+                    if (invitationLinksResult.ContainsError)
+                    {
+                        DisplayErrorMessage("An error occured while trying to get the confirmation links");
+                        return;
+                    }
+
+                    if (invitationLinksResult.Content != null)
+                    {
+                        foreach (var record in invitationLinksResult.Content)
+                        {
+                            _window.Dispatcher.Invoke(new Action(() =>
+                            {
+                                ViewModel.SharedLinks.Add(new SharedLinkViewModel
+                                {
+                                    ConfirmationCode = record.ConfirmationCode,
+                                    IsSelected = false,
+                                    RedirectUrl = record.RedirectUrl
+                                });
+                            }));
+                        }
+                    }
+                }, TaskContinuationOptions.OnlyOnRanToCompletion)
+                .ContinueWith((lr) =>
+                {
+                    DisplayLoading(false);
+                });
+                // TODO : DISPLAY ALL THE USERS
+            }, TaskContinuationOptions.OnlyOnRanToCompletion)
+            .ContinueWith((dr) =>
             {
-                DisplayErrorMessage("An error occured while trying to get the confirmation links");
                 DisplayLoading(false);
             }, TaskContinuationOptions.OnlyOnFaulted);
-            // TODO : DISPLAY THE PERMISSIONS
-            // TODO : DISPLAY THE SHARED LINKS
-            /*
-            GetPermissions(sidDocumentIdValue).ContinueWith((r) =>
-            {
-                var permissions = r.Result;
-                DisplayLoading(false);
-                if (permissions == null || permissions.ContainsError)
-                {
-                    return;
-                }
-
-                var sub = TryGetKey(_authenticationStore.JwsPayload, SimpleIdentityServer.Core.Jwt.Constants.StandardResourceOwnerClaimNames.Subject);
-                foreach(var permission in permissions.Content.Where(c => c.UserSubject != sub))
-                {
-                    _window.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-                        ViewModel.Users.Add(new UserViewModel
-                        {
-                            IsSelected = false,
-                            Name = permission.UserSubject
-                        })
-                    ));
-                }
-            });
-            */
         }
 
         /// <summary>
@@ -134,12 +136,17 @@ namespace WordAccessManagementAddin.Controls.Controllers
                 return;
             }
 
+            if(string.IsNullOrWhiteSpace(ViewModel.DisplayName))
+            {
+
+            }
+
             string sidDocumentIdValue;
             if (!activeDocument.TryGetVariable(Constants.VariableName, out sidDocumentIdValue))
             {
                 DisplayLoading(true);
                 sidDocumentIdValue = Guid.NewGuid().ToString();
-                ProtectDocument(sidDocumentIdValue).ContinueWith((br) =>
+                ProtectDocument(sidDocumentIdValue, ViewModel.DisplayName).ContinueWith((br) =>
                 {
                     var result = br.Result;
                     DisplayLoading(false);
@@ -249,12 +256,13 @@ namespace WordAccessManagementAddin.Controls.Controllers
             }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
-        private Task<BaseResponse> ProtectDocument(string documentId)
+        private Task<BaseResponse> ProtectDocument(string documentId, string displayName)
         {
             var officeDocumentClient = _documentManagementFactory.GetOfficeDocumentClient();
             return officeDocumentClient.AddResolve(new AddOfficeDocumentRequest
             {
-                Id = documentId
+                Id = documentId,
+                DisplayName = displayName
             }, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken);
         }
 
@@ -262,12 +270,6 @@ namespace WordAccessManagementAddin.Controls.Controllers
         {
             var officeDocumentClient = _documentManagementFactory.GetOfficeDocumentClient();
             return officeDocumentClient.GetInvitationLinkResolve(documentId, request, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken);
-        }
-
-        private Task<GetAllInvitationLinksResponse> GetAllConfirmationLinks(string documentId)
-        {
-            var officeDocumentClient = _documentManagementFactory.GetOfficeDocumentClient();
-            return officeDocumentClient.GetAllInvitationLinksResolve(documentId, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken);
         }
 
         /*

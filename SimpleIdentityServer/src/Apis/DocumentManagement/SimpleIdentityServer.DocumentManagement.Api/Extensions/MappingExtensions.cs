@@ -58,6 +58,8 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Extensions
             return new OfficeDocumentResponse
             {
                 Id = document.Id,
+                DisplayName = document.DisplayName,
+                Subject = document.Subject,
                 CreateDateTime = document.CreateDateTime,
                 UpdateDateTime = document.UpdateDateTime
             };
@@ -102,7 +104,8 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Extensions
             return new AddDocumentParameter
             {
                 Id = request.Id,
-                Subject = subject
+                Subject = subject,
+                DisplayName = request.DisplayName
             };
         }
 

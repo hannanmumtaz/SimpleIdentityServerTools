@@ -49,6 +49,26 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
             Assert.Equal("invalid_request", result.Error.Error);
             Assert.Equal("parameter 'id' is missing", result.Error.ErrorDescription);
         }
+        
+        [Fact]
+        public async Task When_Add_OfficeDocument_And_Pass_No_DisplayName_Then_Error_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+
+            // ACT
+            var result = await _officeDocumentClient.AddResolve(new Common.DTOs.Requests.AddOfficeDocumentRequest
+            {
+                Id = "id"
+            }, $"{baseUrl}/configuration", "token");
+
+            // ASSERT
+            Assert.True(result.ContainsError);
+            Assert.Equal("invalid_request", result.Error.Error);
+            Assert.Equal("parameter 'display_name' is missing", result.Error.ErrorDescription);
+        }
+
 
         [Fact]
         public async Task When_Add_OfficeDocument_And_Pass_No_Subject_Then_Error_Is_Returned()
@@ -60,7 +80,8 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
             // ACT
             var result = await _officeDocumentClient.AddResolve(new Common.DTOs.Requests.AddOfficeDocumentRequest
             {
-                Id = "id"
+                Id = "id",
+                DisplayName = "display_name"
             }, $"{baseUrl}/configuration", "token");
 
             // ASSERT
@@ -80,7 +101,8 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
             UserStore.Instance().Subject = "sub";
             var result = await _officeDocumentClient.AddResolve(new Common.DTOs.Requests.AddOfficeDocumentRequest
             {
-                Id = "id"
+                Id = "id",
+                DisplayName = "display_name"
             }, $"{baseUrl}/configuration", "token");
             UserStore.Instance().Subject = null;
 
@@ -103,7 +125,8 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
             UserStore.Instance().Subject = "sub";
             var result = await _officeDocumentClient.AddResolve(new Common.DTOs.Requests.AddOfficeDocumentRequest
             {
-                Id = "newdocumentid"
+                Id = "newdocumentid",
+                DisplayName = "displayname"
             }, $"{baseUrl}/configuration", "token");
             UserStore.Instance().Subject = null;
 
@@ -134,7 +157,8 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
             UserStore.Instance().Subject = "sub";
             var result = await _officeDocumentClient.AddResolve(new Common.DTOs.Requests.AddOfficeDocumentRequest
             {
-                Id = "newdocumentid"
+                Id = "newdocumentid",
+                DisplayName = "displayname"
             }, $"{baseUrl}/configuration", "token");
             UserStore.Instance().Subject = null;
 
@@ -175,7 +199,8 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
             UserStore.Instance().Subject = "sub";
             var result = await _officeDocumentClient.AddResolve(new Common.DTOs.Requests.AddOfficeDocumentRequest
             {
-                Id = "newdocumentid"
+                Id = "newdocumentid",
+                DisplayName = "displayname"
             }, $"{baseUrl}/configuration", "token");
             UserStore.Instance().Subject = null;
 
@@ -449,7 +474,8 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
             UserStore.Instance().Subject = "sub";
             var result = await _officeDocumentClient.AddResolve(new Common.DTOs.Requests.AddOfficeDocumentRequest
             {
-                Id = "newdocumentid"
+                Id = "newdocumentid",
+                DisplayName = "displayname"
             }, $"{baseUrl}/configuration", "token");
             UserStore.Instance().Subject = null;
 
@@ -668,7 +694,6 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
         private void InitializeFakeObjects()
         {
             _httpClientFactoryStub = new Mock<IHttpClientFactory>();
-            var updateOfficeDocumentOperation = new UpdateOfficeDocumentOperation(_httpClientFactoryStub.Object);
             var getOfficeDocumentOperation = new GetOfficeDocumentOperation(_httpClientFactoryStub.Object);
             var addOfficeDocumentOperation = new AddOfficeDocumentOperation(_httpClientFactoryStub.Object);
             var decryptOfficeDocumentOperation = new DecryptOfficeDocumentOperation(_httpClientFactoryStub.Object);
@@ -678,7 +703,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
             var getAllInvitationLinksOperation = new GetAllInvitationLinksOperation(_httpClientFactoryStub.Object);
             var validateConfirmationLinkOperation = new ValidateConfirmationLinkOperation(_httpClientFactoryStub.Object);
             var deleteOfficeDocumentConfirmationCodeOperation = new DeleteOfficeDocumentConfirmationCodeOperation(_httpClientFactoryStub.Object);
-            _officeDocumentClient = new OfficeDocumentClient(updateOfficeDocumentOperation, getOfficeDocumentOperation,
+            _officeDocumentClient = new OfficeDocumentClient(getOfficeDocumentOperation,
                 addOfficeDocumentOperation, decryptOfficeDocumentOperation, getConfigurationOperation, getPermissionsOperation,
                 getInvitationLinkOperation, validateConfirmationLinkOperation, getAllInvitationLinksOperation, deleteOfficeDocumentConfirmationCodeOperation);
         }

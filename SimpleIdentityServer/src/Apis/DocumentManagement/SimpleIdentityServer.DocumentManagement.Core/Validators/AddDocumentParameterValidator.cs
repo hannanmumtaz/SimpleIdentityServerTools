@@ -23,6 +23,11 @@ namespace SimpleIdentityServer.DocumentManagement.Core.Validators
                 throw new BaseDocumentManagementApiException(ErrorCodes.InvalidRequest, string.Format(ErrorDescriptions.ParameterIsMissing, "id"));
             }
 
+            if(string.IsNullOrWhiteSpace(parameter.DisplayName))
+            {
+                throw new BaseDocumentManagementApiException(ErrorCodes.InvalidRequest, string.Format(ErrorDescriptions.ParameterIsMissing, "display_name"));
+            }
+
             if (string.IsNullOrWhiteSpace(parameter.Subject))
             {
                 throw new BaseDocumentManagementApiException(ErrorCodes.InvalidRequest, ErrorDescriptions.SubjectIsMissing);

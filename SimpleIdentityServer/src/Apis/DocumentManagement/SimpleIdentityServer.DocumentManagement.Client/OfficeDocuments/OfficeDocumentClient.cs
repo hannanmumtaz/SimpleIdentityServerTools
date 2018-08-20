@@ -8,8 +8,6 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
 {
     public interface IOfficeDocumentClient
     {
-        Task<BaseResponse> UpdateResolve(string documentId, UpdateOfficeDocumentRequest request, string configurationUrl, string accessToken);
-        Task<BaseResponse> Update(string documentId, UpdateOfficeDocumentRequest request, string url, string accessToken);
         Task<GetOfficeDocumentResponse> GetResolve(string documentId, string configurationUrl, string accessToken);
         Task<GetOfficeDocumentResponse> Get(string documentId, string url, string accessToken);
         Task<BaseResponse> AddResolve(AddOfficeDocumentRequest request, string configurationUrl, string accessToken);
@@ -30,7 +28,6 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
 
     internal sealed class OfficeDocumentClient : IOfficeDocumentClient
     {
-        private readonly IUpdateOfficeDocumentOperation _updateOfficeDocumentOperation;
         private readonly IGetOfficeDocumentOperation _getOfficeDocumentOperation;
         private readonly IAddOfficeDocumentOperation _addOfficeDocumentOperation;
         private readonly IDecryptOfficeDocumentOperation _decryptOfficeDocumentOperation;
@@ -41,13 +38,12 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         private readonly IGetAllInvitationLinksOperation _getAllInvitationLinksOperation;
         private readonly IDeleteOfficeDocumentConfirmationCodeOperation _deleteOfficeDocumentConfirmationCodeOperation;
 
-        public OfficeDocumentClient(IUpdateOfficeDocumentOperation updateOfficeDocumentOperation, IGetOfficeDocumentOperation getOfficeDocumentOperation,
+        public OfficeDocumentClient(IGetOfficeDocumentOperation getOfficeDocumentOperation,
             IAddOfficeDocumentOperation addOfficeDocumentOperation, IDecryptOfficeDocumentOperation decryptOfficeDocumentOperation,
             IGetConfigurationOperation getConfigurationOperation, IGetPermissionsOperation getPermissionsOperation,
             IGetInvitationLinkOperation getInvitationLinkOperation, IValidateConfirmationLinkOperation validateConfirmationLinkOperation,
             IGetAllInvitationLinksOperation getAllInvitationLinksOperation, IDeleteOfficeDocumentConfirmationCodeOperation deleteOfficeDocumentConfirmationCodeOperation)
         {
-            _updateOfficeDocumentOperation = updateOfficeDocumentOperation;
             _getOfficeDocumentOperation = getOfficeDocumentOperation;
             _addOfficeDocumentOperation = addOfficeDocumentOperation;
             _decryptOfficeDocumentOperation = decryptOfficeDocumentOperation;
@@ -57,17 +53,6 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
             _validateConfirmationLinkOperation = validateConfirmationLinkOperation;
             _getAllInvitationLinksOperation = getAllInvitationLinksOperation;
             _deleteOfficeDocumentConfirmationCodeOperation = deleteOfficeDocumentConfirmationCodeOperation;
-        }
-
-        public async Task<BaseResponse> UpdateResolve(string documentId, UpdateOfficeDocumentRequest request, string configurationUrl, string accessToken)
-        {
-            var configuration = await _getConfigurationOperation.Execute(new Uri(configurationUrl)).ConfigureAwait(false);
-            return await _updateOfficeDocumentOperation.Execute(documentId, request, configuration.OfficeDocumentsEndpoint, accessToken).ConfigureAwait(false);
-        }
-
-        public Task<BaseResponse> Update(string documentId, UpdateOfficeDocumentRequest request, string url, string accessToken)
-        {
-            return _updateOfficeDocumentOperation.Execute(documentId, request, $"{url}/officedocuments", accessToken);
         }
 
         public async Task<GetOfficeDocumentResponse> GetResolve(string documentId, string configurationUrl, string accessToken)

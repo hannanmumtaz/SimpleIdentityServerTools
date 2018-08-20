@@ -46,7 +46,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
             }
 
             _decryptOfficeDocumentParameterValidator.Check(decryptOfficeDocumentParameter);
-            await _getOfficeDocumentAction.Execute(decryptOfficeDocumentParameter.DocumentId, accessToken, authenticateParameter);
+            await _getOfficeDocumentAction.Execute(decryptOfficeDocumentParameter.DocumentId);
             var jsonWebKey = await _jsonWebKeyRepository.Get(decryptOfficeDocumentParameter.Kid);
             if (jsonWebKey == null)
             {

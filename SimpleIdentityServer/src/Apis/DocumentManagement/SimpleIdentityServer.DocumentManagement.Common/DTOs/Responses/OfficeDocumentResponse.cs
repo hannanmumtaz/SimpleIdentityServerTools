@@ -8,6 +8,10 @@ namespace SimpleIdentityServer.DocumentManagement.Common.DTOs.Responses
     {
         [DataMember(Name = "id")]
         public string Id { get; set; }
+        [DataMember(Name = "display_name")]
+        public string DisplayName { get; set; }
+        [DataMember(Name = "subject")]
+        public string Subject { get; set; }
         [DataMember(Name = "create_datetime")]
         public DateTime CreateDateTime { get; set; }
         [DataMember(Name = "update_datetime")]

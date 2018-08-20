@@ -27,34 +27,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
         }
 
         #region Operations
-
-        [HttpPut("{id}")]
-        [Authorize("connected")]
-        public async Task<IActionResult> Update(string id, [FromBody] UpdateOfficeDocumentRequest request)
-        {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                return GetError(ErrorCodes.InvalidRequest, string.Format(ErrorDescriptions.ParameterIsMissing, "id"), HttpStatusCode.BadRequest);
-            }
-
-            if (request == null)
-            {
-                return GetError(ErrorCodes.InvalidRequest, ErrorDescriptions.NoRequest, HttpStatusCode.BadRequest);
-            }
-
-            var subject = GetSubject();
-            try
-            {
-                var parameter = request.ToParameter(subject);
-                await _officeDocumentActions.Update(_options.OpenIdWellKnownConfiguration, id, parameter, GetAuthenticateParameter(_options));
-                return new OkResult();
-            }
-            catch(NotAuthorizedException ex)
-            {
-                return GetError(ex.Code, ex.Message, HttpStatusCode.Unauthorized);
-            }
-        }
-
+        
         [HttpPost]
         [Authorize("connected")]
         public async Task<IActionResult> Add([FromBody] AddOfficeDocumentRequest request)
@@ -208,23 +181,11 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             {
                 return GetError(ErrorCodes.InvalidRequest, string.Format(ErrorDescriptions.ParameterIsMissing, "id"), HttpStatusCode.BadRequest);
             }
-
-            string accessToken;
-            TryGetAccessToken(out accessToken);
+            
             try
             {
-                var result = await _officeDocumentActions.Get(id, accessToken, GetAuthenticateParameter(_options));
+                var result = await _officeDocumentActions.Get(id);
                 return new OkObjectResult(result.ToDto());
-            }
-            catch(NoUmaAccessTokenException ex)
-            {
-                Response.Headers.Add("UmaResource", ex.UmaResourceId);
-                Response.Headers.Add("UmaWellKnownUrl", ex.WellKnownConfiguration);
-                return GetError(ex.Code, ex.Message, HttpStatusCode.Unauthorized);
-            }
-            catch(NotAuthorizedException ex)
-            {
-                return GetError(ex.Code, ex.Message, HttpStatusCode.Unauthorized);
             }
             catch(DocumentNotFoundException)
             {
@@ -239,19 +200,12 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             {
                 return GetError(ErrorCodes.InvalidRequest, string.Format(ErrorDescriptions.ParameterIsMissing, "id"), HttpStatusCode.BadRequest);
             }
-
-            string accessToken;
-            TryGetAccessToken(out accessToken);
+            
+            var subject = GetSubject();
             try
             {
-                var result = await _officeDocumentActions.GetPermissions(id, accessToken, GetAuthenticateParameter(_options));
+                var result = await _officeDocumentActions.GetPermissions(id, subject, GetAuthenticateParameter(_options));
                 return new OkObjectResult(result);
-            }
-            catch (NoUmaAccessTokenException ex)
-            {
-                Response.Headers.Add("UmaResource", ex.UmaResourceId);
-                Response.Headers.Add("UmaWellKnownUrl", ex.WellKnownConfiguration);
-                return GetError(ex.Code, ex.Message, HttpStatusCode.Unauthorized);
             }
             catch (NotAuthorizedException ex)
             {

@@ -11,7 +11,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
 {
     public interface IGetOfficeDocumentPermissionsAction
     {
-        Task<IEnumerable<OfficeDocumentPermissionResponse>> Execute(string documentId, string accessToken, AuthenticateParameter authenticateParameter);
+        Task<IEnumerable<OfficeDocumentPermissionResponse>> Execute(string documentId, string subject, AuthenticateParameter authenticateParameter);
     }
 
     internal sealed class GetOfficeDocumentPermissionsAction : IGetOfficeDocumentPermissionsAction
@@ -27,9 +27,19 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
             _accessTokenStore = accessTokenStore;
         }
 
-        public async Task<IEnumerable<OfficeDocumentPermissionResponse>> Execute(string documentId, string accessToken, AuthenticateParameter authenticateParameter)
+        public async Task<IEnumerable<OfficeDocumentPermissionResponse>> Execute(string documentId, string subject, AuthenticateParameter authenticateParameter)
         {
-            var officeDocument = await _getOfficeDocumentAction.Execute(documentId, accessToken, authenticateParameter);
+            if(string.IsNullOrWhiteSpace(subject))
+            {
+                throw new BaseDocumentManagementApiException(ErrorCodes.InvalidRequest, ErrorDescriptions.SubjectIsMissing);
+            }
+
+            var officeDocument = await _getOfficeDocumentAction.Execute(documentId);
+            if(officeDocument.Subject != subject)
+            {
+                throw new NotAuthorizedException(ErrorCodes.Authorization, ErrorDescriptions.NotAuthorized);
+            }
+
             var grantedToken = await _accessTokenStore.GetToken(authenticateParameter.WellKnownConfigurationUrl, authenticateParameter.ClientId, authenticateParameter.ClientSecret, new[] { "uma_protection" });
             if (grantedToken == null || string.IsNullOrWhiteSpace(grantedToken.AccessToken))
             {

@@ -11,10 +11,9 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
     public interface IOfficeDocumentActions
     {
         Task<bool> Add(string openidWellKnownConfiguration, AddDocumentParameter document, AuthenticateParameter authenticateParameter);
-        Task<OfficeDocumentAggregate> Get(string documentId, string accessToken, AuthenticateParameter authenticateParameter);
-        Task<bool> Update(string wellKnownConfiguration, string documentId, UpdateOfficeDocumentParameter parameter, AuthenticateParameter authenticateParameter);
+        Task<OfficeDocumentAggregate> Get(string documentId);
         Task<DecryptedResponse> Decrypt(DecryptOfficeDocumentParameter decryptOfficeDocumentParameter, string accessToken, AuthenticateParameter authenticateParameter);
-        Task<IEnumerable<OfficeDocumentPermissionResponse>> GetPermissions(string documentId, string accessToken, AuthenticateParameter authenticateParameter);
+        Task<IEnumerable<OfficeDocumentPermissionResponse>> GetPermissions(string documentId, string subject, AuthenticateParameter authenticateParameter);
         Task<string> GenerateConfirmationLink(string documentId, GenerateConfirmationLinkParameter generateConfirmationCodeParameter);
         Task<bool> ValidateConfirmationLink(string wellKnownConfiguration, ValidateConfirmationLinkParameter validateConfirmationLinkParameter, AuthenticateParameter authenticateParameter);
         Task<IEnumerable<OfficeDocumentConfirmationLink>> GetAllConfirmationLinks(GetAllConfirmationLinksParameter parameter);
@@ -25,7 +24,6 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
     {
         private readonly IAddOfficeDocumentAction _addOfficeDocumentAction;
         private readonly IGetOfficeDocumentAction _getOfficeDocumentAction;
-        private readonly IUpdateOfficeDocumentAction _updateOfficeDocumentAction;
         private readonly IDecryptOfficeDocumentAction _decryptOfficeDocumentAction;
         private readonly IGetOfficeDocumentPermissionsAction _getOfficeDocumentPermissionsAction;
         private readonly IGenerateConfirmationLinkAction _generateConfirmationLinkAction;
@@ -34,14 +32,13 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
         private readonly IDeleteOfficeDocumentConfirmationCodeAction _deleteOfficeDocumentConfirmationCodeAction;
 
         public OfficeDocumentActions(IAddOfficeDocumentAction addOfficeDocumentAction, IGetOfficeDocumentAction getOfficeDocumentAction, 
-            IUpdateOfficeDocumentAction updateOfficeDocumentAction, IDecryptOfficeDocumentAction decryptOfficeDocumentAction,
+            IDecryptOfficeDocumentAction decryptOfficeDocumentAction,
             IGetOfficeDocumentPermissionsAction getOfficeDocumentPermissionsAction, IGenerateConfirmationLinkAction generateConfirmationLinkAction,
             IValidateConfirmationLinkAction validateConfirmationLinkAction, IGetAllConfirmationLinksAction getAllConfirmationLinksAction,
             IDeleteOfficeDocumentConfirmationCodeAction deleteOfficeDocumentConfirmationCodeAction)
         {
             _addOfficeDocumentAction = addOfficeDocumentAction;
             _getOfficeDocumentAction = getOfficeDocumentAction;
-            _updateOfficeDocumentAction = updateOfficeDocumentAction;
             _decryptOfficeDocumentAction = decryptOfficeDocumentAction;
             _getOfficeDocumentPermissionsAction = getOfficeDocumentPermissionsAction;
             _generateConfirmationLinkAction = generateConfirmationLinkAction;
@@ -55,14 +52,9 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
             return _addOfficeDocumentAction.Execute(openidWellKnownConfiguration, document, authenticateParameter);
         }
 
-        public Task<OfficeDocumentAggregate> Get(string documentId, string accessToken, AuthenticateParameter authenticateParameter)
+        public Task<OfficeDocumentAggregate> Get(string documentId)
         {
-            return _getOfficeDocumentAction.Execute(documentId, accessToken, authenticateParameter);
-        }
-
-        public Task<bool> Update(string wellKnownConfiguration, string documentId, UpdateOfficeDocumentParameter parameter, AuthenticateParameter authenticateParameter)
-        {
-            return _updateOfficeDocumentAction.Execute(wellKnownConfiguration, documentId, parameter, authenticateParameter);
+            return _getOfficeDocumentAction.Execute(documentId);
         }
 
         public Task<DecryptedResponse> Decrypt(DecryptOfficeDocumentParameter decryptOfficeDocumentParameter, string accessToken, AuthenticateParameter authenticateParameter)
@@ -70,9 +62,9 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
             return _decryptOfficeDocumentAction.Execute(decryptOfficeDocumentParameter, accessToken, authenticateParameter);
         }
 
-        public Task<IEnumerable<OfficeDocumentPermissionResponse>> GetPermissions(string documentId, string accessToken, AuthenticateParameter authenticateParameter)
+        public Task<IEnumerable<OfficeDocumentPermissionResponse>> GetPermissions(string documentId, string subject, AuthenticateParameter authenticateParameter)
         {
-            return _getOfficeDocumentPermissionsAction.Execute(documentId, accessToken, authenticateParameter);
+            return _getOfficeDocumentPermissionsAction.Execute(documentId, subject, authenticateParameter);
         }
 
         public Task<string> GenerateConfirmationLink(string documentId, GenerateConfirmationLinkParameter generateConfirmationCodeParameter)

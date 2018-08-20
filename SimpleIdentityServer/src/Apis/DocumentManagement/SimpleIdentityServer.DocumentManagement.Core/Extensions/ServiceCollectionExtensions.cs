@@ -20,7 +20,6 @@ namespace SimpleIdentityServer.DocumentManagement.Core.Extensions
             services.AddTransient<IOfficeDocumentActions, OfficeDocumentActions>();
             services.AddTransient<IAddOfficeDocumentAction, AddOfficeDocumentAction>();
             services.AddTransient<IGetOfficeDocumentAction, GetOfficeDocumentAction>();
-            services.AddTransient<IUpdateOfficeDocumentAction, UpdateOfficeDocumentAction>();
             services.AddTransient<IDecryptOfficeDocumentAction, DecryptOfficeDocumentAction>();
             services.AddTransient<IGenerateConfirmationLinkAction, GenerateConfirmationLinkAction>();
             services.AddTransient<IValidateConfirmationLinkAction, ValidateConfirmationLinkAction>();

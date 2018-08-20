@@ -38,6 +38,7 @@ namespace SimpleIdentityServer.DocumentManagement.EF.Extensions
             {
                 Id = document.Id,
                 Subject = document.Subject,
+                DisplayName = document.DisplayName,
                 UmaResourceId = document.UmaResourceId,
                 UmaPolicyId = document.UmaPolicyId,
                 UpdateDateTime = document.UpdateDateTime,
@@ -56,6 +57,7 @@ namespace SimpleIdentityServer.DocumentManagement.EF.Extensions
             {
                 Id = document.Id,
                 Subject = document.Subject,
+                DisplayName = document.DisplayName,
                 UmaResourceId = document.UmaResourceId,
                 UmaPolicyId = document.UmaPolicyId,
                 UpdateDateTime = document.UpdateDateTime,
