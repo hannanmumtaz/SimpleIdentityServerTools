@@ -3,6 +3,7 @@
     internal static class Constants
     {
         public const string VariableName = "sidDocumentId";
+        public const string IsEncryptedVariableName = "IsEncrypted";
         public const string CallbackUrl = "http://localhost:61000/callback";
         public const string OpenIdBaseUrl = "http://localhost:60000";
         public const string DocumentApiConfiguration = "http://localhost:60010/configuration";

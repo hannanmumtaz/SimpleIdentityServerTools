@@ -9,13 +9,13 @@ using System.Runtime.InteropServices;
 using WordAccessManagementAddin.Extensions;
 using WordAccessManagementAddin.Helpers;
 using WordAccessManagementAddin.Stores;
+using System.Linq;
 
 namespace WordAccessManagementAddin
 {
     public partial class ThisAddIn
     {
         private const int INTERNET_OPTION_END_BROWSER_SESSION = 42;
-        private bool _isDecrypted = false;
 
         /// <summary>
         /// Encrypt the document.
@@ -30,7 +30,14 @@ namespace WordAccessManagementAddin
                 return;
             }
 
-            if (!_isDecrypted)
+            string isEncryptedStr;
+            bool isEncrypted = false;
+            if(Doc.TryGetVariable(Constants.IsEncryptedVariableName, out isEncryptedStr))
+            {
+                bool.TryParse(isEncryptedStr, out isEncrypted);
+            }
+
+            if (isEncrypted)
             {
                 return;
             }
@@ -58,6 +65,7 @@ namespace WordAccessManagementAddin
             var shape = range.InlineShapes.AddPicture(filePath, false, true);
             shape.AlternativeText = encryptedResult.Content;
             File.Delete(filePath);
+            SetEncrypted(Doc, "true");
             Doc.Save();
         }
 
@@ -94,7 +102,8 @@ namespace WordAccessManagementAddin
                 }
 
                 shape.Range.InsertXML(xml);
-                _isDecrypted = true;
+                SetEncrypted(activeDocument, "false");
+                activeDocument.Save();
             }
         }
 
@@ -200,6 +209,19 @@ namespace WordAccessManagementAddin
         private static void ClearCookie()
         {
             InternetSetOption(IntPtr.Zero, INTERNET_OPTION_END_BROWSER_SESSION, IntPtr.Zero, 0);
+        }
+
+        private static void SetEncrypted(Document doc, string val)
+        {
+            string str;
+            if (doc.TryGetVariable(Constants.IsEncryptedVariableName, out str))
+            {
+                var variable = doc.Variables[Constants.IsEncryptedVariableName];
+                variable.Value = val;
+                return;
+            }
+
+            doc.Variables.Add(Constants.IsEncryptedVariableName, val);
         }
 
         [DllImport("wininet.dll", SetLastError = true)]
