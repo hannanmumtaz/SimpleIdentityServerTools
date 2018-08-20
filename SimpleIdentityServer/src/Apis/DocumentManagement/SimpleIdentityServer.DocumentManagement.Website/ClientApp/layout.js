@@ -160,7 +160,7 @@ class Layout extends Component {
         var originUrl = window.location.protocol + "//" + window.location.host;
         self._checkSessionInterval = setInterval(function() { 
             var session = SessionService.getSession();
-            var message = "ResourceManagerClientId ";
+            var message = Constants.clientId + " ";
             if (session) {
                 message += session.sessionState;
             } else {
