@@ -5,6 +5,7 @@ using SimpleIdentityServer.DocumentManagement.Client;
 using SimpleIdentityServer.DocumentManagement.Client.Responses;
 using SimpleIdentityServer.DocumentManagement.Common.DTOs.Requests;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WordAccessManagementAddin.Controls.ViewModels;
@@ -34,6 +35,7 @@ namespace WordAccessManagementAddin.Controls.Controllers
             Init();
             ViewModel.DocumentProtected += HandleProtectDocument;
             ViewModel.SharedLinkAdded += HandleAddSharedLink;
+            ViewModel.SelectedSharedLinkRemoved += HandleRemoveSharedLink;
         }
 
         /// <summary>
@@ -208,6 +210,43 @@ namespace WordAccessManagementAddin.Controls.Controllers
                     DisplayLoading(false);
                 }, TaskContinuationOptions.OnlyOnFaulted);
             }
+        }
+
+        /// <summary>
+        /// Remove the shared link.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HandleRemoveSharedLink(object sender, EventArgs e)
+        {
+            var selectedSharedLink = ViewModel.SharedLinks.FirstOrDefault(s => s.IsSelected);
+            if(selectedSharedLink == null)
+            {
+                return;
+            }
+            
+            DisplayLoading(true);
+            var officeDocumentClient = _documentManagementFactory.GetOfficeDocumentClient();
+            officeDocumentClient.DeleteConfirmationLinkResolve(selectedSharedLink.ConfirmationCode, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken).ContinueWith((br) =>
+            {
+                var result = br.Result;
+                DisplayLoading(false);
+                if(result.ContainsError)
+                {
+                    DisplayErrorMessage("An error occured while trying to remove the shared link");
+                }
+
+                _window.Dispatcher.Invoke(new Action(() =>
+                {
+                    ViewModel.SharedLinks.Remove(selectedSharedLink);
+                }));
+                DisplayInformationMessage("The selected shared link has been removed");
+            }, TaskContinuationOptions.OnlyOnRanToCompletion)
+            .ContinueWith((br) =>
+            {
+                DisplayErrorMessage("An error occured while trying to interact with the DocumentApi");
+                DisplayLoading(false);
+            }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
         private Task<BaseResponse> ProtectDocument(string documentId)

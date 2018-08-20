@@ -112,6 +112,7 @@ namespace WordAccessManagementAddin.Controls.ViewModels
             SharedLinks = new ObservableCollection<SharedLinkViewModel>();
             ProtectDocumentCommand = new RelayCommand(HandleProtectDocument, p => CanExecuteProtectDocumentCommand());
             AddSharedLinkCommand = new RelayCommand(HandleAddSharedLink, p => CanExecuteAddSharedLinkCommand());
+            RemoveSelectedSharedLinkCommand = new RelayCommand(HandleRemoveSelectedSharedLink, p => CanExecuteRemoveSelectedSharedLink());
             CloseMessageCommand = new RelayCommand(HandleCloseMessage, p => true);
             IsExpiresInEnabled = false;
             IsNumberOfDownloadsEnabled = false;
@@ -271,9 +272,24 @@ namespace WordAccessManagementAddin.Controls.ViewModels
         public ObservableCollection<SharedLinkViewModel> SharedLinks { get; set; }
         public ICommand ProtectDocumentCommand { get; private set; }
         public ICommand AddSharedLinkCommand { get; private set; }
+        public ICommand RemoveSelectedSharedLinkCommand { get; private set; }
         public ICommand CloseMessageCommand { get; private set; }
         public event EventHandler DocumentProtected;
         public event EventHandler SharedLinkAdded;
+        public event EventHandler SelectedSharedLinkRemoved;
+
+        private void HandleRemoveSelectedSharedLink(object o)
+        {
+            if(SelectedSharedLinkRemoved != null)
+            {
+                SelectedSharedLinkRemoved(this, EventArgs.Empty);
+            }
+        }
+
+        private bool CanExecuteRemoveSelectedSharedLink()
+        {
+            return true;
+        }
 
         private void HandleProtectDocument(object o)
         {

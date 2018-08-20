@@ -9,7 +9,6 @@ using SimpleIdentityServer.DocumentManagement.Client.Tests.Middlewares;
 using SimpleIdentityServer.Uma.Client.Results;
 using SimpleIdentityServer.Uma.Common.DTOs;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
@@ -348,6 +347,67 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
 
         #endregion
 
+        #region Delete confirmation link
+
+        [Fact]
+        public async Task When_Delete_Confirmation_Link_And_Pass_No_Subject_Then_Error_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+
+            // ACT
+            UserStore.Instance().Subject = null;
+            var result = await _officeDocumentClient.DeleteConfirmationLinkResolve("confirmationcode", $"{baseUrl}/configuration", "token");
+
+            // ASSERT
+            Assert.True(result.ContainsError);
+            Assert.Equal("invalid_request", result.Error.Error);
+            Assert.Equal("the subject is missing", result.Error.ErrorDescription);
+        }
+
+        [Fact]
+        public async Task When_Delete_Confirmation_Link_And_Code_Doesnt_Exist_Then_Error_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+
+            // ACT
+            UserStore.Instance().Subject = "sub";
+            var result = await _officeDocumentClient.DeleteConfirmationLinkResolve("confirmationcode", $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ASSERTS
+            Assert.True(result.ContainsError);
+            Assert.Equal("invalid_request", result.Error.Error);
+            Assert.Equal("the confirmation code doesn't exist", result.Error.ErrorDescription);
+        }
+
+        [Fact]
+        public async Task When_Delete_Confirmation_Link_And_User_Not_Authorized_Then_Error_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+            UserStore.Instance().Subject = "subject";
+            var result = await _officeDocumentClient.GetInvitationLinkResolve("id", new Common.DTOs.Requests.GenerateConfirmationCodeRequest
+            {
+
+            }, $"{baseUrl}/configuration", "token");
+
+            // ACT
+            UserStore.Instance().Subject = "invalid_sub";
+            var deleteResult = await _officeDocumentClient.DeleteConfirmationLinkResolve(result.Content.ConfirmationCode, $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ASSERTS
+            Assert.True(deleteResult.ContainsError);
+            Assert.Equal(HttpStatusCode.Unauthorized, deleteResult.HttpStatus);
+        }
+
+        #endregion
+
         #endregion
 
         #region Happy path
@@ -579,6 +639,30 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
 
         #endregion
 
+        #region Delete confirmation link
+
+        [Fact]
+        public async Task When_Delete_Confirmation_Link_Then_Ok_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+            UserStore.Instance().Subject = "subject";
+            var result = await _officeDocumentClient.GetInvitationLinkResolve("id", new Common.DTOs.Requests.GenerateConfirmationCodeRequest
+            {
+
+            }, $"{baseUrl}/configuration", "token");
+
+            // ACT
+            var deleteResult = await _officeDocumentClient.DeleteConfirmationLinkResolve(result.Content.ConfirmationCode, $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ASSERTS
+            Assert.False(result.ContainsError);
+        }
+
+        #endregion
+
         #endregion
 
         private void InitializeFakeObjects()
@@ -593,9 +677,10 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
             var getInvitationLinkOperation = new GetInvitationLinkOperation(_httpClientFactoryStub.Object);
             var getAllInvitationLinksOperation = new GetAllInvitationLinksOperation(_httpClientFactoryStub.Object);
             var validateConfirmationLinkOperation = new ValidateConfirmationLinkOperation(_httpClientFactoryStub.Object);
+            var deleteOfficeDocumentConfirmationCodeOperation = new DeleteOfficeDocumentConfirmationCodeOperation(_httpClientFactoryStub.Object);
             _officeDocumentClient = new OfficeDocumentClient(updateOfficeDocumentOperation, getOfficeDocumentOperation,
                 addOfficeDocumentOperation, decryptOfficeDocumentOperation, getConfigurationOperation, getPermissionsOperation,
-                getInvitationLinkOperation, validateConfirmationLinkOperation, getAllInvitationLinksOperation);
+                getInvitationLinkOperation, validateConfirmationLinkOperation, getAllInvitationLinksOperation, deleteOfficeDocumentConfirmationCodeOperation);
         }
     }
 }

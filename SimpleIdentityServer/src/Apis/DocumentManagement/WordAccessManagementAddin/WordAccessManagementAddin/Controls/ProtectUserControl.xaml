@@ -149,7 +149,7 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
-                            <Button Margin="5">Remove the selected links</Button>
+                            <Button Margin="5" Command="{Binding Path=RemoveSelectedSharedLinkCommand}">Remove the selected links</Button>
                         </StackPanel>
                     </Grid>
                 </GroupBox>
