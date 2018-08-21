@@ -5,6 +5,7 @@ using SimpleIdentityServer.DocumentManagement.Client;
 using SimpleIdentityServer.DocumentManagement.Client.Responses;
 using SimpleIdentityServer.DocumentManagement.Common.DTOs.Requests;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -85,37 +86,55 @@ namespace WordAccessManagementAddin.Controls.Controllers
                     return;
                 }
 
-                officeDocumentClient.GetAllInvitationLinksResolve(sidDocumentIdValue, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken).ContinueWith((lr) =>
-                {
-                    var invitationLinksResult = lr.Result;
-                    DisplayLoading(false);
-                    if (invitationLinksResult.ContainsError)
+                var getAllInvitationLinksResolve = officeDocumentClient.GetAllInvitationLinksResolve(sidDocumentIdValue, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken);
+                var getPermissionsResolve = officeDocumentClient.GetPermissionsResolve(sidDocumentIdValue, Constants.DocumentApiConfiguration, _authenticationStore.AccessToken);
+                Task.WhenAll(getAllInvitationLinksResolve, getPermissionsResolve).ContinueWith((values) =>
                     {
-                        DisplayErrorMessage("An error occured while trying to get the confirmation links");
-                        return;
-                    }
-
-                    if (invitationLinksResult.Content != null)
-                    {
-                        foreach (var record in invitationLinksResult.Content)
+                        var allInvitationLinks = getAllInvitationLinksResolve.Result;
+                        var permissions = getPermissionsResolve.Result;
+                        DisplayLoading(false);
+                        if(allInvitationLinks.ContainsError || permissions.ContainsError)
                         {
-                            _window.Dispatcher.Invoke(new Action(() =>
-                            {
-                                ViewModel.SharedLinks.Add(new SharedLinkViewModel
-                                {
-                                    ConfirmationCode = record.ConfirmationCode,
-                                    IsSelected = false,
-                                    RedirectUrl = record.RedirectUrl
-                                });
-                            }));
+                            DisplayErrorMessage("An error occured while trying to get the informations");
+                            return;
                         }
-                    }
-                }, TaskContinuationOptions.OnlyOnRanToCompletion)
-                .ContinueWith((lr) =>
-                {
-                    DisplayLoading(false);
-                });
-                // TODO : DISPLAY ALL THE USERS
+
+
+                        if (allInvitationLinks.Content != null)
+                        {
+                            foreach (var record in allInvitationLinks.Content)
+                            {
+                                _window.Dispatcher.Invoke(new Action(() =>
+                                {
+                                    ViewModel.SharedLinks.Add(new SharedLinkViewModel
+                                    {
+                                        ConfirmationCode = record.ConfirmationCode,
+                                        IsSelected = false,
+                                        RedirectUrl = record.RedirectUrl
+                                    });
+                                }));
+                            }
+                        }
+
+                        if(permissions.Content != null)
+                        {
+                            foreach(var record in permissions.Content)
+                            {
+                                _window.Dispatcher.Invoke(new Action(() =>
+                                {
+                                    ViewModel.Users.Add(new UserViewModel
+                                    {
+                                        IsSelected = false,
+                                        Name = record.UserSubject
+                                    });
+                                }));
+                            }
+                        }
+                    }, TaskContinuationOptions.OnlyOnRanToCompletion)
+                    .ContinueWith((values) =>
+                    {
+                        DisplayLoading(false);
+                    });                
             }, TaskContinuationOptions.OnlyOnRanToCompletion)
             .ContinueWith((dr) =>
             {

@@ -20,6 +20,7 @@ namespace WordAccessManagementAddin.Controls.ViewModels
                 if (_name != value)
                 {
                     _name = value;
+                    OnPropertyChanged(nameof(Name));
                 }
             }
         }
@@ -33,7 +34,8 @@ namespace WordAccessManagementAddin.Controls.ViewModels
             {
                 if (_isSelected != value)
                 {
-                    _isSelected = true;
+                    _isSelected = value;
+                    OnPropertyChanged(nameof(IsSelected));
                 }
             }
         }
