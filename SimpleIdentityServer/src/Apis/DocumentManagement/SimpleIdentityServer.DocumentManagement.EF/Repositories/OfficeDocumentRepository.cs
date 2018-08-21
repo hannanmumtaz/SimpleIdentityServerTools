@@ -1,9 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.DocumentManagement.Core.Aggregates;
+using SimpleIdentityServer.DocumentManagement.Core.Parameters;
 using SimpleIdentityServer.DocumentManagement.Core.Repositories;
+using SimpleIdentityServer.DocumentManagement.Core.Results;
 using SimpleIdentityServer.DocumentManagement.EF.Extensions;
+using SimpleIdentityServer.DocumentManagement.EF.Models;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SimpleIdentityServer.DocumentManagement.EF.Repositories
@@ -15,6 +19,35 @@ namespace SimpleIdentityServer.DocumentManagement.EF.Repositories
         public OfficeDocumentRepository(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
+        }
+
+        public async Task<SearchOfficeDocumentsResult> Search(SearchDocumentsParameter parameter)
+        {
+            if (parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
+
+
+            using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<DocumentManagementDbContext>())
+                {
+                    IQueryable<OfficeDocument> officeDocuments = context.OfficeDocuments;
+                    if(!string.IsNullOrWhiteSpace(parameter.Subject))
+                    {
+                        officeDocuments = officeDocuments.Where(o => o.Subject == parameter.Subject);
+                    }
+
+                    var count = await officeDocuments.CountAsync().ConfigureAwait(false);
+                    var content = await officeDocuments.OrderByDescending(d => d.UpdateDateTime).Skip(parameter.StartIndex).Take(parameter.Count).Select(s => s.ToDomain()).ToListAsync().ConfigureAwait(false);
+                    return new SearchOfficeDocumentsResult
+                    {
+                        Content = content,
+                        Count = count
+                    };
+                }
+            }
         }
 
         public async Task<bool> Add(OfficeDocumentAggregate document)

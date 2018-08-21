@@ -27,6 +27,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.Extensions
             services.AddTransient<IGetAllConfirmationLinksAction, GetAllConfirmationLinksAction>();
             services.AddTransient<IDeleteOfficeDocumentConfirmationCodeAction, DeleteOfficeDocumentConfirmationCodeAction>();
             services.AddTransient<IGetOfficeDocumentInvitationLinkAction, GetOfficeDocumentInvitationLinkAction>();
+            services.AddTransient<ISearchOfficeDocumentsAction, SearchOfficeDocumentsAction>();
             services.AddTransient<IJwksActions, JwksActions>();
             services.AddTransient<IGetJwksAction, GetJwksAction>();
             services.AddTransient<IJsonWebKeyEnricher, JsonWebKeyEnricher>();

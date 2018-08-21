@@ -6,6 +6,7 @@ using SimpleIdentityServer.Common.Client.Factories;
 using SimpleIdentityServer.Core.Common.DTOs.Responses;
 using SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments;
 using SimpleIdentityServer.DocumentManagement.Client.Tests.Middlewares;
+using SimpleIdentityServer.DocumentManagement.Common.DTOs.Requests;
 using SimpleIdentityServer.Uma.Client.Results;
 using SimpleIdentityServer.Uma.Common.DTOs;
 using System.Collections.Generic;
@@ -733,6 +734,30 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
 
         #endregion
 
+        #region Search documents
+
+        [Fact]
+        public async Task When_Search_OfficeDocuments_Then_Ok_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+
+            // ACT
+            UserStore.Instance().Subject = "subject";
+            var result = await _officeDocumentClient.SearchResolve(new SearchOfficeDocumentRequest
+            {
+                Count = 100,
+                StartIndex = 0
+            }, $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ASSERT
+            Assert.False(result.ContainsError);
+        }
+
+        #endregion
+
         #endregion
 
         private void InitializeFakeObjects()
@@ -748,10 +773,11 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
             var validateConfirmationLinkOperation = new ValidateConfirmationLinkOperation(_httpClientFactoryStub.Object);
             var deleteOfficeDocumentConfirmationCodeOperation = new DeleteOfficeDocumentConfirmationCodeOperation(_httpClientFactoryStub.Object);
             var getInvitationLinkInformationOperation = new GetInvitationLinkInformationOperation(_httpClientFactoryStub.Object);
+            var searchOfficeDocumentsOperation = new SearchOfficeDocumentsOperation(_httpClientFactoryStub.Object);
             _officeDocumentClient = new OfficeDocumentClient(getOfficeDocumentOperation,
                 addOfficeDocumentOperation, decryptOfficeDocumentOperation, getConfigurationOperation, getPermissionsOperation,
                 getInvitationLinkOperation, validateConfirmationLinkOperation, getAllInvitationLinksOperation, deleteOfficeDocumentConfirmationCodeOperation,
-                getInvitationLinkInformationOperation);
+                getInvitationLinkInformationOperation, searchOfficeDocumentsOperation);
         }
     }
 }

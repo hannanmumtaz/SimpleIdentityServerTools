@@ -26,6 +26,8 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         Task<BaseResponse> DeleteConfirmationLink(string confirmationCode, string url, string accessToken);
         Task<GetInvitationLinkInformationResponse> GetInvitationLinkInformationResolve(string confirmationCode, string configurationUrl, string accessToken);
         Task<GetInvitationLinkInformationResponse> GetInvitationLinkInformation(string confirmationCode, string url, string accessToken);
+        Task<SearchOfficeDocumentsResponse> SearchResolve(SearchOfficeDocumentRequest request, string configurationUrl, string accessToken);
+        Task<SearchOfficeDocumentsResponse> Search(SearchOfficeDocumentRequest request, string url, string accessToken);
     }
 
     internal sealed class OfficeDocumentClient : IOfficeDocumentClient
@@ -40,13 +42,14 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         private readonly IGetAllInvitationLinksOperation _getAllInvitationLinksOperation;
         private readonly IDeleteOfficeDocumentConfirmationCodeOperation _deleteOfficeDocumentConfirmationCodeOperation;
         private readonly IGetInvitationLinkInformationOperation _getInvitationLinkInformationOperation;
+        private readonly ISearchOfficeDocumentsOperation _searchOfficeDocumentsOperation;
 
         public OfficeDocumentClient(IGetOfficeDocumentOperation getOfficeDocumentOperation,
             IAddOfficeDocumentOperation addOfficeDocumentOperation, IDecryptOfficeDocumentOperation decryptOfficeDocumentOperation,
             IGetConfigurationOperation getConfigurationOperation, IGetPermissionsOperation getPermissionsOperation,
             IGetInvitationLinkOperation getInvitationLinkOperation, IValidateConfirmationLinkOperation validateConfirmationLinkOperation,
             IGetAllInvitationLinksOperation getAllInvitationLinksOperation, IDeleteOfficeDocumentConfirmationCodeOperation deleteOfficeDocumentConfirmationCodeOperation,
-            IGetInvitationLinkInformationOperation getInvitationLinkInformationOperation)
+            IGetInvitationLinkInformationOperation getInvitationLinkInformationOperation, ISearchOfficeDocumentsOperation searchOfficeDocumentsOperation)
         {
             _getOfficeDocumentOperation = getOfficeDocumentOperation;
             _addOfficeDocumentOperation = addOfficeDocumentOperation;
@@ -58,6 +61,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
             _getAllInvitationLinksOperation = getAllInvitationLinksOperation;
             _deleteOfficeDocumentConfirmationCodeOperation = deleteOfficeDocumentConfirmationCodeOperation;
             _getInvitationLinkInformationOperation = getInvitationLinkInformationOperation;
+            _searchOfficeDocumentsOperation = searchOfficeDocumentsOperation;
         }
 
         public async Task<GetOfficeDocumentResponse> GetResolve(string documentId, string configurationUrl, string accessToken)
@@ -157,6 +161,17 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         public Task<GetInvitationLinkInformationResponse> GetInvitationLinkInformation(string confirmationCode, string url, string accessToken)
         {
             return _getInvitationLinkInformationOperation.Execute(confirmationCode, url, accessToken);
+        }
+
+        public async Task<SearchOfficeDocumentsResponse> SearchResolve(SearchOfficeDocumentRequest request, string configurationUrl, string accessToken)
+        {
+            var configuration = await _getConfigurationOperation.Execute(new Uri(configurationUrl)).ConfigureAwait(false);
+            return await _searchOfficeDocumentsOperation.Execute(request, configuration.OfficeDocumentsEndpoint, accessToken).ConfigureAwait(false);
+        }
+
+        public Task<SearchOfficeDocumentsResponse> Search(SearchOfficeDocumentRequest request, string url, string accessToken)
+        {
+            return _searchOfficeDocumentsOperation.Execute(request, url, accessToken);
         }
     }
 }

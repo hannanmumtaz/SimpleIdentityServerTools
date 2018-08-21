@@ -63,6 +63,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client
             serviceCollection.AddTransient<IGetConfigurationOperation, GetConfigurationOperation>();
             serviceCollection.AddTransient<IDeleteOfficeDocumentConfirmationCodeOperation, DeleteOfficeDocumentConfirmationCodeOperation>();
             serviceCollection.AddTransient<IGetInvitationLinkInformationOperation, GetInvitationLinkInformationOperation>();
+            serviceCollection.AddTransient<ISearchOfficeDocumentsOperation, SearchOfficeDocumentsOperation>();
             return serviceCollection;
         }
     }

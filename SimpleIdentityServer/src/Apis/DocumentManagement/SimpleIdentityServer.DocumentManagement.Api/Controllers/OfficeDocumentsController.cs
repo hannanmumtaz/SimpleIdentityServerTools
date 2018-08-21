@@ -42,6 +42,21 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             await _officeDocumentActions.Add(_options.OpenIdWellKnownConfiguration, parameter, GetAuthenticateParameter(_options));
             return new OkResult();
         }
+        
+        [HttpPost(".search")]
+        [Authorize("connected")]
+        public async Task<IActionResult> Search([FromBody] SearchOfficeDocumentRequest request)
+        {
+            if (request == null)
+            {
+                return GetError(ErrorCodes.InvalidRequest, ErrorDescriptions.NoRequest, HttpStatusCode.BadRequest);
+            }
+
+            var subject = GetSubject();
+            var parameter = request.ToParameter(subject);
+            var result = await _officeDocumentActions.Search(parameter);
+            return new OkObjectResult(result.ToDto());
+        }
 
         [HttpPost("{id}/invitation")]
         [Authorize("connected")]

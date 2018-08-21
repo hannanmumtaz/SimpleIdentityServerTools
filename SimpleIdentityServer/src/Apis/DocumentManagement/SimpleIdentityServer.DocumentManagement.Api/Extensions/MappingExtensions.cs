@@ -2,6 +2,7 @@
 using SimpleIdentityServer.DocumentManagement.Common.DTOs.Responses;
 using SimpleIdentityServer.DocumentManagement.Core.Aggregates;
 using SimpleIdentityServer.DocumentManagement.Core.Parameters;
+using SimpleIdentityServer.DocumentManagement.Core.Results;
 using SimpleIdentityServer.DocumentManagement.Store;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,20 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Extensions
 {
     internal static class MappingExtensions
     {
+        public static SearchOfficeDocumentsResponse ToDto(this SearchOfficeDocumentsResult result)
+        {
+            if(result == null)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
+
+            return new SearchOfficeDocumentsResponse
+            {
+                Content = result.Content.Select(c => c.ToDto()),
+                TotalResults = result.Count
+            };
+        }
+
         public static OfficeDocumentInvitationLinkResponse ToDto(this OfficeDocumentConfirmationLink officeDocumentConfirmationLink)
         {
             if(officeDocumentConfirmationLink == null)
@@ -91,6 +106,21 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Extensions
                 Credentials = request.Credentials,
                 DocumentId = request.DocumentId,
                 Kid = request.Kid
+            };
+        }
+
+        public static SearchDocumentsParameter ToParameter(this SearchOfficeDocumentRequest request, string subject)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            return new SearchDocumentsParameter
+            {
+                Subject = subject,
+                Count = request.Count,
+                StartIndex = request.StartIndex
             };
         }
 
