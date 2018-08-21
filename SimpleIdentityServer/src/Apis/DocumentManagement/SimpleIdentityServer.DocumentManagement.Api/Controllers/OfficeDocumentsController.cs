@@ -80,9 +80,9 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             }
         }
 
-        [HttpGet("{id}/invitation")]
+        [HttpGet("{id}/invitations")]
         [Authorize("connected")]
-        public async Task<IActionResult> GetAllConfirmationLinks(string id)
+        public async Task<IActionResult> GetAllInvitationLinks(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -116,6 +116,25 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
             }
         }
 
+        [HttpGet("{code}/invitation")]
+        public async Task<IActionResult> GetInvitationLink(string code)
+        {
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                return GetError(ErrorCodes.InvalidRequest, string.Format(ErrorDescriptions.ParameterIsMissing, "code"), HttpStatusCode.BadRequest);
+            }
+
+            try
+            {
+                var confirmationCode = await _officeDocumentActions.GetConfirmationCode(code);
+                return new OkObjectResult(confirmationCode.ToDto());
+            }
+            catch (ConfirmationCodeNotFoundException)
+            {
+                return GetError(ErrorCodes.InvalidRequest, "the confirmation code doesn't exist", HttpStatusCode.NotFound);
+            }
+        }
+
         [HttpGet("{code}/invitation/confirm")]
         [Authorize("connected")]
         public async Task<IActionResult> ConfirmInvitation(string code)
@@ -142,7 +161,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Controllers
         }
 
         [HttpDelete("{code}/invitation")]
-        public async Task<IActionResult> DeleteConfirmationLink(string code)
+        public async Task<IActionResult> DeleteInvitationLink(string code)
         {
             if (string.IsNullOrWhiteSpace(code))
             {

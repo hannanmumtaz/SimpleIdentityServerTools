@@ -4,7 +4,7 @@ import { Grid } from 'material-ui';
 import { NavLink } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import { Button, CircularProgress } from 'material-ui';
-import { FormControl, FormHelperText } from 'material-ui/Form';
+import { FormControl, FormHelperText, TextField  } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
 import { OfficeDocumentService } from '../services';
 import AppDispatcher from '../appDispatcher';
@@ -20,10 +20,57 @@ class ConfirmActivationCode extends Component {
     constructor(props) {
     	super(props);
         this.confirmCode = this.confirmCode.bind(this);
+        this.refreshData = this.refreshData.bind(this);
     	this.state = {
-    		code : null,
-            isLoading: false
+    		code : '',
+            isLoading: false,
+            documentInformation: {
+                display_name: ''
+            }
     	};
+    }
+
+    /**
+    * Display the document information.
+    */
+    refreshData() {
+        var self = this;
+        self.setState({
+            isLoading: true
+        });
+        const { t } = self.props;
+        OfficeDocumentService.getInvitationLinkInformation(self.state.code).then(function(confirmationCodeInformation) {
+            OfficeDocumentService.getOfficeDocumentInformation(confirmationCodeInformation['documentid']).then(function(doc) {
+                self.setState({
+                    isLoading: false,
+                    documentInformation: doc
+                });
+            }).catch(function() {
+                self.setState({
+                    isLoading: false,
+                    documentInformation: {
+                        display_name: ''
+                    },
+                    code: ''
+                });
+                AppDispatcher.dispatch({
+                    actionName: Constants.events.DISPLAY_MESSAGE,
+                    data: t('codeIsNotValid')
+                });
+            });
+        }).catch(function() {
+            self.setState({
+                isLoading: false,
+                documentInformation: {
+                    display_name: ''
+                },
+                code: ''
+            });
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('codeIsNotValid')
+            });
+        });
     }
 
     /**
@@ -83,6 +130,11 @@ class ConfirmActivationCode extends Component {
                     { self.state.isLoading ? ( <CircularProgress /> ) : (
                         <div>
                             <FormControl fullWidth={true} className={classes.margin} disabled={true}>
+                                <InputLabel>{t('documentName')}</InputLabel>
+                                <Input value={self.state.documentInformation.display_name}/>
+                            </FormControl>
+                            <FormControl fullWidth={true} className={classes.margin} disabled={true}>
+                                <InputLabel>{t('confirmationCode')}</InputLabel>
                                 <Input value={self.state.code} />
                             </FormControl>
                             <Button variant="raised" color="primary" onClick={self.confirmCode}>{t('confirmCode')}</Button>
@@ -96,7 +148,9 @@ class ConfirmActivationCode extends Component {
     componentDidMount() {
 	   var self = this;
 	   self.setState({
-	     code: self.props.match.params.code
+	       code: self.props.match.params.code
+       }, function() {
+           self.refreshData();
        });
     }
 }

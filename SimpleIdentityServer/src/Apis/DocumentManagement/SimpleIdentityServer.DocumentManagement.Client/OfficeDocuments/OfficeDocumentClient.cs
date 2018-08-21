@@ -24,6 +24,8 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         Task<GetAllInvitationLinksResponse> GetAllInvitationLinks(string documentId, string url, string accessToken);
         Task<BaseResponse> DeleteConfirmationLinkResolve(string confirmationCode, string configurationUrl, string accessToken);
         Task<BaseResponse> DeleteConfirmationLink(string confirmationCode, string url, string accessToken);
+        Task<GetInvitationLinkInformationResponse> GetInvitationLinkInformationResolve(string confirmationCode, string configurationUrl, string accessToken);
+        Task<GetInvitationLinkInformationResponse> GetInvitationLinkInformation(string confirmationCode, string url, string accessToken);
     }
 
     internal sealed class OfficeDocumentClient : IOfficeDocumentClient
@@ -37,12 +39,14 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         private readonly IValidateConfirmationLinkOperation _validateConfirmationLinkOperation;
         private readonly IGetAllInvitationLinksOperation _getAllInvitationLinksOperation;
         private readonly IDeleteOfficeDocumentConfirmationCodeOperation _deleteOfficeDocumentConfirmationCodeOperation;
+        private readonly IGetInvitationLinkInformationOperation _getInvitationLinkInformationOperation;
 
         public OfficeDocumentClient(IGetOfficeDocumentOperation getOfficeDocumentOperation,
             IAddOfficeDocumentOperation addOfficeDocumentOperation, IDecryptOfficeDocumentOperation decryptOfficeDocumentOperation,
             IGetConfigurationOperation getConfigurationOperation, IGetPermissionsOperation getPermissionsOperation,
             IGetInvitationLinkOperation getInvitationLinkOperation, IValidateConfirmationLinkOperation validateConfirmationLinkOperation,
-            IGetAllInvitationLinksOperation getAllInvitationLinksOperation, IDeleteOfficeDocumentConfirmationCodeOperation deleteOfficeDocumentConfirmationCodeOperation)
+            IGetAllInvitationLinksOperation getAllInvitationLinksOperation, IDeleteOfficeDocumentConfirmationCodeOperation deleteOfficeDocumentConfirmationCodeOperation,
+            IGetInvitationLinkInformationOperation getInvitationLinkInformationOperation)
         {
             _getOfficeDocumentOperation = getOfficeDocumentOperation;
             _addOfficeDocumentOperation = addOfficeDocumentOperation;
@@ -53,6 +57,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
             _validateConfirmationLinkOperation = validateConfirmationLinkOperation;
             _getAllInvitationLinksOperation = getAllInvitationLinksOperation;
             _deleteOfficeDocumentConfirmationCodeOperation = deleteOfficeDocumentConfirmationCodeOperation;
+            _getInvitationLinkInformationOperation = getInvitationLinkInformationOperation;
         }
 
         public async Task<GetOfficeDocumentResponse> GetResolve(string documentId, string configurationUrl, string accessToken)
@@ -141,6 +146,17 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         public Task<BaseResponse> DeleteConfirmationLink(string confirmationCode, string url, string accessToken)
         {
             return _deleteOfficeDocumentConfirmationCodeOperation.Execute(confirmationCode, url, accessToken);
+        }
+
+        public async Task<GetInvitationLinkInformationResponse> GetInvitationLinkInformationResolve(string confirmationCode, string configurationUrl, string accessToken)
+        {
+            var configuration = await _getConfigurationOperation.Execute(new Uri(configurationUrl)).ConfigureAwait(false);
+            return await _getInvitationLinkInformationOperation.Execute(confirmationCode, configuration.OfficeDocumentsEndpoint, accessToken).ConfigureAwait(false);
+        }
+
+        public Task<GetInvitationLinkInformationResponse> GetInvitationLinkInformation(string confirmationCode, string url, string accessToken)
+        {
+            return _getInvitationLinkInformationOperation.Execute(confirmationCode, url, accessToken);
         }
     }
 }

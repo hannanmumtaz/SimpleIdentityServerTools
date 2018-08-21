@@ -433,6 +433,26 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
 
         #endregion
 
+        #region Get invitation link information
+
+        [Fact]
+        public async Task When_Get_InvitationLinkInformation_And_Confirmation_Code_Doesnt_Exist_Then_Error_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+
+            // ACT
+            var result = await _officeDocumentClient.GetInvitationLinkInformationResolve("code", $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ASSERT
+            Assert.True(result.ContainsError);
+            Assert.Equal(HttpStatusCode.NotFound, result.HttpStatus);
+        }
+
+        #endregion
+
         #endregion
 
         #region Happy path
@@ -689,6 +709,30 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
 
         #endregion
 
+        #region Get invitation link information
+
+        [Fact]
+        public async Task When_Get_InvitationLinkInformation_Then_Ok_Is_Returned()
+        {
+            // ARRANGE
+            InitializeFakeObjects();
+            _httpClientFactoryStub.Setup(h => h.GetHttpClient()).Returns(_server.Client);
+            UserStore.Instance().Subject = "subject";
+            var result = await _officeDocumentClient.GetInvitationLinkResolve("id", new Common.DTOs.Requests.GenerateConfirmationCodeRequest
+            {
+
+            }, $"{baseUrl}/configuration", "token");
+            UserStore.Instance().Subject = null;
+
+            // ACT
+            var getInvitationLinkInformationResponse = await _officeDocumentClient.GetInvitationLinkInformationResolve(result.Content.ConfirmationCode, $"{baseUrl}/configuration", "token");
+
+            // ASSERT
+            Assert.False(getInvitationLinkInformationResponse.ContainsError);
+        }
+
+        #endregion
+
         #endregion
 
         private void InitializeFakeObjects()
@@ -703,9 +747,11 @@ namespace SimpleIdentityServer.DocumentManagement.Client.Tests.Clients
             var getAllInvitationLinksOperation = new GetAllInvitationLinksOperation(_httpClientFactoryStub.Object);
             var validateConfirmationLinkOperation = new ValidateConfirmationLinkOperation(_httpClientFactoryStub.Object);
             var deleteOfficeDocumentConfirmationCodeOperation = new DeleteOfficeDocumentConfirmationCodeOperation(_httpClientFactoryStub.Object);
+            var getInvitationLinkInformationOperation = new GetInvitationLinkInformationOperation(_httpClientFactoryStub.Object);
             _officeDocumentClient = new OfficeDocumentClient(getOfficeDocumentOperation,
                 addOfficeDocumentOperation, decryptOfficeDocumentOperation, getConfigurationOperation, getPermissionsOperation,
-                getInvitationLinkOperation, validateConfirmationLinkOperation, getAllInvitationLinksOperation, deleteOfficeDocumentConfirmationCodeOperation);
+                getInvitationLinkOperation, validateConfirmationLinkOperation, getAllInvitationLinksOperation, deleteOfficeDocumentConfirmationCodeOperation,
+                getInvitationLinkInformationOperation);
         }
     }
 }

@@ -14,5 +14,8 @@
 	"aboutMenuItem": "About",
 	"connectMenuItem": "Connect",
 	"disconnectMenuItem": "Disconnect",
-	"loginTitle": "Authenticate"
+	"loginTitle": "Authenticate",
+	"documentName": "Name of the document",
+	"confirmationCode": "Activation code",
+	"codeIsNotValid": "The activation code is not valid"
 }

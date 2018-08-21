@@ -18,6 +18,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
         Task<bool> ValidateConfirmationLink(string wellKnownConfiguration, ValidateConfirmationLinkParameter validateConfirmationLinkParameter, AuthenticateParameter authenticateParameter);
         Task<IEnumerable<OfficeDocumentConfirmationLink>> GetAllConfirmationLinks(GetAllConfirmationLinksParameter parameter);
         Task<bool> DeleteConfirmationCode(DeleteConfirmationCodeParameter parameter);
+        Task<OfficeDocumentConfirmationLink> GetConfirmationCode(string code);
     }
 
     internal sealed class OfficeDocumentActions : IOfficeDocumentActions
@@ -30,12 +31,13 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
         private readonly IValidateConfirmationLinkAction _validateConfirmationLinkAction;
         private readonly IGetAllConfirmationLinksAction _getAllConfirmationLinksAction;
         private readonly IDeleteOfficeDocumentConfirmationCodeAction _deleteOfficeDocumentConfirmationCodeAction;
+        private readonly IGetOfficeDocumentInvitationLinkAction _getOfficeDocumentInvitationLinkAction;
 
         public OfficeDocumentActions(IAddOfficeDocumentAction addOfficeDocumentAction, IGetOfficeDocumentAction getOfficeDocumentAction, 
             IDecryptOfficeDocumentAction decryptOfficeDocumentAction,
             IGetOfficeDocumentPermissionsAction getOfficeDocumentPermissionsAction, IGenerateConfirmationLinkAction generateConfirmationLinkAction,
             IValidateConfirmationLinkAction validateConfirmationLinkAction, IGetAllConfirmationLinksAction getAllConfirmationLinksAction,
-            IDeleteOfficeDocumentConfirmationCodeAction deleteOfficeDocumentConfirmationCodeAction)
+            IDeleteOfficeDocumentConfirmationCodeAction deleteOfficeDocumentConfirmationCodeAction, IGetOfficeDocumentInvitationLinkAction getOfficeDocumentInvitationLinkAction)
         {
             _addOfficeDocumentAction = addOfficeDocumentAction;
             _getOfficeDocumentAction = getOfficeDocumentAction;
@@ -45,6 +47,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
             _validateConfirmationLinkAction = validateConfirmationLinkAction;
             _getAllConfirmationLinksAction = getAllConfirmationLinksAction;
             _deleteOfficeDocumentConfirmationCodeAction = deleteOfficeDocumentConfirmationCodeAction;
+            _getOfficeDocumentInvitationLinkAction = getOfficeDocumentInvitationLinkAction;
         }
 
         public Task<bool> Add(string openidWellKnownConfiguration, AddDocumentParameter document, AuthenticateParameter authenticateParameter)
@@ -85,6 +88,11 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments
         public Task<bool> DeleteConfirmationCode(DeleteConfirmationCodeParameter parameter)
         {
             return _deleteOfficeDocumentConfirmationCodeAction.Execute(parameter);
+        }
+
+        public Task<OfficeDocumentConfirmationLink> GetConfirmationCode(string code)
+        {
+            return _getOfficeDocumentInvitationLinkAction.Execute(code);
         }
     }
 }

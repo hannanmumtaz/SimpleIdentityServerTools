@@ -17098,19 +17098,70 @@ var ConfirmActivationCode = function (_Component) {
         var _this = _possibleConstructorReturn(this, (ConfirmActivationCode.__proto__ || Object.getPrototypeOf(ConfirmActivationCode)).call(this, props));
 
         _this.confirmCode = _this.confirmCode.bind(_this);
+        _this.refreshData = _this.refreshData.bind(_this);
         _this.state = {
-            code: null,
-            isLoading: false
+            code: '',
+            isLoading: false,
+            documentInformation: {
+                display_name: ''
+            }
         };
         return _this;
     }
 
     /**
-    * Confirm the code.
+    * Display the document information.
     */
 
 
     _createClass(ConfirmActivationCode, [{
+        key: 'refreshData',
+        value: function refreshData() {
+            var self = this;
+            self.setState({
+                isLoading: true
+            });
+            var t = self.props.t;
+
+            _services.OfficeDocumentService.getInvitationLinkInformation(self.state.code).then(function (confirmationCodeInformation) {
+                _services.OfficeDocumentService.getOfficeDocumentInformation(confirmationCodeInformation['documentid']).then(function (doc) {
+                    self.setState({
+                        isLoading: false,
+                        documentInformation: doc
+                    });
+                }).catch(function () {
+                    self.setState({
+                        isLoading: false,
+                        documentInformation: {
+                            display_name: ''
+                        },
+                        code: ''
+                    });
+                    _appDispatcher2.default.dispatch({
+                        actionName: _constants2.default.events.DISPLAY_MESSAGE,
+                        data: t('codeIsNotValid')
+                    });
+                });
+            }).catch(function () {
+                self.setState({
+                    isLoading: false,
+                    documentInformation: {
+                        display_name: ''
+                    },
+                    code: ''
+                });
+                _appDispatcher2.default.dispatch({
+                    actionName: _constants2.default.events.DISPLAY_MESSAGE,
+                    data: t('codeIsNotValid')
+                });
+            });
+        }
+
+        /**
+        * Confirm the code.
+        */
+
+    }, {
         key: 'confirmCode',
         value: function confirmCode() {
             var self = this;
@@ -17133,7 +17184,7 @@ var ConfirmActivationCode = function (_Component) {
                 });
                 _appDispatcher2.default.dispatch({
                     actionName: _constants2.default.events.DISPLAY_MESSAGE,
-                    data: t('codeHasNotBeenConfirmed')
+                    data: t('codeCannotBeConfirmed')
                 });
             });
         }
@@ -17218,6 +17269,21 @@ var ConfirmActivationCode = function (_Component) {
                             _react2.default.createElement(
                                 _Form.FormControl,
                                 { fullWidth: true, className: classes.margin, disabled: true },
+                                _react2.default.createElement(
+                                    _Input.InputLabel,
+                                    null,
+                                    t('documentName')
+                                ),
+                                _react2.default.createElement(_Input2.default, { value: self.state.documentInformation.display_name })
+                            ),
+                            _react2.default.createElement(
+                                _Form.FormControl,
+                                { fullWidth: true, className: classes.margin, disabled: true },
+                                _react2.default.createElement(
+                                    _Input.InputLabel,
+                                    null,
+                                    t('confirmationCode')
+                                ),
                                 _react2.default.createElement(_Input2.default, { value: self.state.code })
                             ),
                             _react2.default.createElement(
@@ -17236,6 +17302,8 @@ var ConfirmActivationCode = function (_Component) {
             var self = this;
             self.setState({
                 code: self.props.match.params.code
+            }, function () {
+                self.refreshData();
             });
         }
     }]);
@@ -18058,6 +18126,36 @@ module.exports = {
                 }
             }).then(function () {
                 resolve();
+            }).catch(function () {
+                reject();
+            });
+        });
+    },
+    /**
+    * Get the invitation link information.
+    */
+    getInvitationLinkInformation: function getInvitationLinkInformation(confirmationCode) {
+        return new Promise(function (resolve, reject) {
+            _jquery2.default.ajax({
+                url: _constants2.default.documentManagementApiUrl + '/officedocuments/' + confirmationCode + '/invitation',
+                method: 'GET'
+            }).then(function (result) {
+                resolve(result);
+            }).catch(function () {
+                reject();
+            });
+        });
+    },
+    /**
+    * Get the office document information.
+    */
+    getOfficeDocumentInformation: function getOfficeDocumentInformation(documentId) {
+        return new Promise(function (resolve, reject) {
+            _jquery2.default.ajax({
+                url: _constants2.default.documentManagementApiUrl + '/officedocuments/' + documentId,
+                method: 'GET'
+            }).then(function (result) {
+                resolve(result);
             }).catch(function () {
                 reject();
             });
