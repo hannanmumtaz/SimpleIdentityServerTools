@@ -74,6 +74,7 @@ namespace SimpleIdentityServer.DocumentManagement.Api.Extensions
             {
                 Id = document.Id,
                 DisplayName = document.DisplayName,
+                UmaResourceId = document.UmaResourceId,
                 Subject = document.Subject,
                 CreateDateTime = document.CreateDateTime,
                 UpdateDateTime = document.UpdateDateTime

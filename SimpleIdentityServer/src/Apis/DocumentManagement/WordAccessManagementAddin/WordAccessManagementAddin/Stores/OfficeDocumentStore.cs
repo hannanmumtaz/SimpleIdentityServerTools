@@ -112,20 +112,15 @@ namespace WordAccessManagementAddin.Stores
             {
                 return document.UmaResourceId;
             }
-            
-            var getDocumentResponse = await _documentManagementFactory.GetOfficeDocumentClient().GetPermissionsResolve(documentId, Constants.DocumentApiConfiguration, string.Empty).ConfigureAwait(false);
-            if (getDocumentResponse.HttpStatus != HttpStatusCode.Unauthorized)
-            {
-                return null;
-            }
 
+            var getDocumentResponse = await _documentManagementFactory.GetOfficeDocumentClient().GetResolve(documentId, Constants.DocumentApiConfiguration, AuthenticationStore.Instance().AccessToken).ConfigureAwait(false);           
             _documents.Add(new StoredOfficeDocument
             {
                 DocumentId = documentId,
-                UmaResourceId = getDocumentResponse.UmaResourceId
+                UmaResourceId = getDocumentResponse.OfficeDocument.UmaResourceId
             });
 
-            return getDocumentResponse.UmaResourceId;
+            return getDocumentResponse.OfficeDocument.UmaResourceId;
         }
 
         public async Task<GrantedTokenResponse> GetOfficeDocumentAccessTokenViaUmaGrantType(string umaResourceId)
