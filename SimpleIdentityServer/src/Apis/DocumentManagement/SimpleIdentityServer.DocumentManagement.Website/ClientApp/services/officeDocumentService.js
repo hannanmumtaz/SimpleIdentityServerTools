@@ -73,5 +73,24 @@ module.exports = {
                 reject();
             });
         });
+    },
+    /**
+    * Get the permissions of the office document.
+    */
+    getPermissions: function(documentId) {
+        return new Promise(function (resolve, reject) {
+            var session = SessionService.getSession();
+            $.ajax({
+                url: Constants.documentManagementApiUrl + '/officedocuments/' + documentId + '/permissions' ,
+                method: 'GET',
+                headers: {
+                    "Authorization": "Bearer "+ session.token
+                }
+            }).then(function(r) {
+                resolve(r);
+            }).catch(function() {
+                reject();
+            });
+        });
     }
 };

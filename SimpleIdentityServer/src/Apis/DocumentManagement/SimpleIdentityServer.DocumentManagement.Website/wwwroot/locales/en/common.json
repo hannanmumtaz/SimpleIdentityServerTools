@@ -21,5 +21,12 @@
 	"officeDocumentsTitle": "Office documents",
 	"officeDocumentsShortDescription": "View your office documents",
 	"listOfOfficeDocuments": "List of office documents",
-	"documentsMenuItem": "Office documents"
+	"documentsMenuItem": "Office documents",
+	"officeDocumentTitle": "Office document",
+	"officeDocumentShortDescription": "View the properties of the office document",
+	"officeDocument": "Information of the office document",
+	"documentId": "Document identifier",
+	"documentSubject": "Owner of the document",
+	"listOfAuthorizedUsers": "List of authorized users",
+	"cannotRetrieveOfficeDocument": "An error occured while trying to get the office document"
 }
