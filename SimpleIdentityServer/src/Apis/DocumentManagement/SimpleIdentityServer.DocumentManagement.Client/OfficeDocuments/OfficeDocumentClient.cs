@@ -26,8 +26,8 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
         Task<BaseResponse> DeleteConfirmationLink(string confirmationCode, string url, string accessToken);
         Task<GetInvitationLinkInformationResponse> GetInvitationLinkInformationResolve(string confirmationCode, string configurationUrl, string accessToken);
         Task<GetInvitationLinkInformationResponse> GetInvitationLinkInformation(string confirmationCode, string url, string accessToken);
-        Task<SearchOfficeDocumentsResponse> SearchResolve(SearchOfficeDocumentRequest request, string configurationUrl, string accessToken);
-        Task<SearchOfficeDocumentsResponse> Search(SearchOfficeDocumentRequest request, string url, string accessToken);
+        Task<GetSearchOfficeDocumentsResponse> SearchResolve(SearchOfficeDocumentRequest request, string configurationUrl, string accessToken);
+        Task<GetSearchOfficeDocumentsResponse> Search(SearchOfficeDocumentRequest request, string url, string accessToken);
     }
 
     internal sealed class OfficeDocumentClient : IOfficeDocumentClient
@@ -163,13 +163,13 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
             return _getInvitationLinkInformationOperation.Execute(confirmationCode, url, accessToken);
         }
 
-        public async Task<SearchOfficeDocumentsResponse> SearchResolve(SearchOfficeDocumentRequest request, string configurationUrl, string accessToken)
+        public async Task<GetSearchOfficeDocumentsResponse> SearchResolve(SearchOfficeDocumentRequest request, string configurationUrl, string accessToken)
         {
             var configuration = await _getConfigurationOperation.Execute(new Uri(configurationUrl)).ConfigureAwait(false);
             return await _searchOfficeDocumentsOperation.Execute(request, configuration.OfficeDocumentsEndpoint, accessToken).ConfigureAwait(false);
         }
 
-        public Task<SearchOfficeDocumentsResponse> Search(SearchOfficeDocumentRequest request, string url, string accessToken)
+        public Task<GetSearchOfficeDocumentsResponse> Search(SearchOfficeDocumentRequest request, string url, string accessToken)
         {
             return _searchOfficeDocumentsOperation.Execute(request, url, accessToken);
         }

@@ -3,6 +3,7 @@ using SimpleIdentityServer.Common.Client.Factories;
 using SimpleIdentityServer.Common.Dtos.Responses;
 using SimpleIdentityServer.DocumentManagement.Client.Responses;
 using SimpleIdentityServer.DocumentManagement.Common.DTOs.Requests;
+using SimpleIdentityServer.DocumentManagement.Common.DTOs.Responses;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -12,7 +13,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
 {
     public interface ISearchOfficeDocumentsOperation
     {
-        Task<SearchOfficeDocumentsResponse> Execute(SearchOfficeDocumentRequest request, string url, string accessToken);
+        Task<GetSearchOfficeDocumentsResponse> Execute(SearchOfficeDocumentRequest request, string url, string accessToken);
     }
 
     internal sealed class SearchOfficeDocumentsOperation : ISearchOfficeDocumentsOperation
@@ -24,7 +25,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<SearchOfficeDocumentsResponse> Execute(SearchOfficeDocumentRequest request, string url, string accessToken)
+        public async Task<GetSearchOfficeDocumentsResponse> Execute(SearchOfficeDocumentRequest request, string url, string accessToken)
         {
             if (request == null)
             {
@@ -57,7 +58,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
             }
             catch (Exception)
             {
-                return new SearchOfficeDocumentsResponse
+                return new GetSearchOfficeDocumentsResponse
                 {
                     HttpStatus = httpResponse.StatusCode,
                     ContainsError = true,
@@ -65,7 +66,7 @@ namespace SimpleIdentityServer.DocumentManagement.Client.OfficeDocuments
                 };
             }
 
-            return new SearchOfficeDocumentsResponse
+            return new GetSearchOfficeDocumentsResponse
             {
                 Content = JsonConvert.DeserializeObject<SearchOfficeDocumentsResponse>(json)
             };

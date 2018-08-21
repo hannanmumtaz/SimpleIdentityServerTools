@@ -51,5 +51,27 @@ module.exports = {
                 reject();
             });
         });
+    },
+    /**
+    * Search the office documents.
+    */
+    search: function(request) {
+        return new Promise(function (resolve, reject) {
+            var session = SessionService.getSession();
+            var data = JSON.stringify(request);
+            $.ajax({
+                url: Constants.documentManagementApiUrl + '/officedocuments/.search' ,
+                method: 'POST',       
+                contentType: 'application/json',     
+                data: data,  
+                headers: {
+                    "Authorization": "Bearer "+ session.token
+                }
+            }).then(function(r) {
+                resolve(r);
+            }).catch(function() {
+                reject();
+            });
+        });
     }
 };

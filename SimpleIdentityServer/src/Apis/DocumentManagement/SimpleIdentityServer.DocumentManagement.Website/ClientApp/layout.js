@@ -223,6 +223,9 @@ class Layout extends Component {
                     ))}
                     {/* About menu item */}
                     <MenuItem key="/about" selected={pathName === '/about' || pathName === '/'} onClick={() => self.navigate('/about')}>{t('aboutMenuItem')}</MenuItem>
+                    { this.state.isLoggedIn && (
+                        <MenuItem key="documents" selected={ pathName === '/documents' } onClick={() => self.navigate('/documents')}>{t('documentsMenuItem')}</MenuItem>
+                    )}
                     {/* Connect or disconnect */}
                     {(this.state.isLoggedIn ? (
                         <MenuItem onClick={() => self.disconnect()}>

@@ -17,5 +17,9 @@
 	"loginTitle": "Authenticate",
 	"documentName": "Name of the document",
 	"confirmationCode": "Activation code",
-	"codeIsNotValid": "The activation code is not valid"
+	"codeIsNotValid": "The activation code is not valid",
+	"officeDocumentsTitle": "Office documents",
+	"officeDocumentsShortDescription": "View your office documents",
+	"listOfOfficeDocuments": "List of office documents",
+	"documentsMenuItem": "Office documents"
 }
