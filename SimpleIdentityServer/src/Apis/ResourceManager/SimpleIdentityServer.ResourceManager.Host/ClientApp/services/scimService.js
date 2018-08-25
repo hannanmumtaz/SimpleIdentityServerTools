@@ -24,6 +24,25 @@ module.exports = {
         });        
     },
     /**
+    * Get the schemas.
+    */
+    getSchema: function (schemaId) {
+        return new Promise(function (resolve, reject) {
+            var session = SessionService.getSession();
+            $.ajax({
+                url: SessionStore.getSession().selectedScim.url + '/schemas/' + schemaId,
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });
+    },
+    /**
     * Search the users.
     */
     searchUsers: function(request) {        
@@ -124,4 +143,44 @@ module.exports = {
             });
         });        
     },
+    /**
+    * Get all the mappings.
+    */
+    getAllMappings: function () {
+        return new Promise(function (resolve, reject) {
+            console.log(SessionStore.getSession());
+            var session = SessionService.getSession();
+            $.ajax({
+                url: SessionStore.getSession().selectedScim.url + '/mappings',
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });
+    },
+    /**
+    * Get all the AD properties
+    */
+    getAllAdProperties: function (schemaId) {
+        return new Promise(function (resolve, reject) {
+            console.log(SessionStore.getSession());
+            var session = SessionService.getSession();
+            $.ajax({
+                url: SessionStore.getSession().selectedScim.url + '/mappings/properties/' + schemaId,
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });
+    }
 };

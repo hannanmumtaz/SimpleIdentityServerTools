@@ -27,6 +27,7 @@ import Connectors from './connectors';
 import TwoFactors from './twoFactors';
 import AccountFilters from './accountFilters';
 import ViewAccountFilter from './viewAccountFilter';
+import ScimMappings from './scimMappings';
 
 exports.Dashboard = Dashboard;
 exports.About = About;
@@ -57,3 +58,4 @@ exports.Connectors = Connectors;
 exports.TwoFactors = TwoFactors;
 exports.AccountFilters = AccountFilters;
 exports.ViewAccountFilter = ViewAccountFilter;
+exports.ScimMappings = ScimMappings;

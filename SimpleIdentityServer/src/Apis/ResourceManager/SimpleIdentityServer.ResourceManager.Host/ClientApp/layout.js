@@ -468,6 +468,9 @@ class Layout extends Component {
                                 <MenuItem key='/scim/resources' selected={pathName.indexOf('/scim/resources') !== -1} className={classes.nested} onClick={() => self.navigate('/scim/resources')}>
                                     {t('scimResources')}
                                 </MenuItem>
+                                <MenuItem key='/scim/mappings' selected={pathName.indexOf('/scim/mappings') !== -1} className={classes.nested} onClick={() => self.navigate('/scim/mappings')}>
+                                    {t('scimMappings')}
+                                </MenuItem>
                             </List>
                         </Collapse>
                     )}

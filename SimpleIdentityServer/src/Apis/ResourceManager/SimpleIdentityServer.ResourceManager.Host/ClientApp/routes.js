@@ -6,7 +6,8 @@ import Layout from './layout';
 import { Login, About, Logs, Resources, ViewAggregate, ViewLog,
  OpenidClients, AuthClients, OpenidScopes, AuthScopes, ResourceOwners, ViewResource, ViewClient, ViewScope,
  AddScope, Dashboard, ViewResourceOwner, Claims, ViewClaim, ScimSchemas, ScimResources, ViewScimSchema, ViewScimAttribute,
- ViewScimResource, Settings, ViewSetting, Connectors, TwoFactors, AccountFilters, ViewAccountFilter } from './components';
+ ViewScimResource, Settings, ViewSetting, Connectors, TwoFactors, AccountFilters, ViewAccountFilter,
+ ScimMappings } from './components';
 
 export const routes = (<Layout>
     <Route exact path='/' component={About} />
@@ -37,7 +38,8 @@ export const routes = (<Layout>
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/scim/schemas/:id' exact path='/scim/schemas/:id' component={ViewScimSchema} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/scim/schemas/:id/:attr' exact path='/scim/schemas/:id/:attr' component={ViewScimAttribute} />)}    
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/scim/resources' exact path='/scim/resources' component={ScimResources} />)}
-    { !process.env.IS_MANAGE_DISABLED && (<Route key='/scim/resources/:type/:id' exact path='/scim/resources/:type/:id' component={ViewScimResource} />)}
+    {!process.env.IS_MANAGE_DISABLED && (<Route key='/scim/resources/:type/:id' exact path='/scim/resources/:type/:id' component={ViewScimResource} />)}
+    {!process.env.IS_MANAGE_DISABLED && (<Route key='/scim/mappings' exact path='/scim/mappings' component={ScimMappings} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/units' exact path='/units' component={Settings} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/units/:id' exact path='/units/:id' component={ViewSetting} />)}
     { !process.env.IS_MANAGE_DISABLED && (<Route key='/twofactors' exact path='/twofactors' component={TwoFactors} />)}
