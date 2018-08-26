@@ -182,5 +182,45 @@ module.exports = {
                 reject(e);
             });
         });
+    },
+    /**
+    * Add scim mapping
+    */
+    addScimMapping: function (request) {
+        return new Promise(function (resolve, reject) {
+            var session = SessionService.getSession();
+            $.ajax({
+                url: SessionStore.getSession().selectedScim.url + '/mappings',
+                method: "POST",
+                data: JSON.stringify(request),
+                contentType: 'application/json',
+                headers: {
+                    "Authorization": "Bearer " + session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });
+    },
+    /**
+    * Remove scim mapping.
+    */
+    removeScimMapping: function (attributeId) {
+        return new Promise(function (resolve, reject) {
+            var session = SessionService.getSession();
+            $.ajax({
+                url: SessionStore.getSession().selectedScim.url + '/mappings/' + attributeId,
+                method: "DELETE",
+                headers: {
+                    "Authorization": "Bearer " + session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });
     }
 };

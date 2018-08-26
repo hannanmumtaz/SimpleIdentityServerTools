@@ -26,7 +26,7 @@ class ViewScimResource extends Component {
         this.state = {
             id: null,
             type: 'user',
-            isLoading: false,
+            isLoading: true,
             resource: {}
         };
     }
