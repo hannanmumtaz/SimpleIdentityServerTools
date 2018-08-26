@@ -148,7 +148,6 @@ module.exports = {
     */
     getAllMappings: function () {
         return new Promise(function (resolve, reject) {
-            console.log(SessionStore.getSession());
             var session = SessionService.getSession();
             $.ajax({
                 url: SessionStore.getSession().selectedScim.url + '/mappings',
@@ -213,6 +212,25 @@ module.exports = {
             $.ajax({
                 url: SessionStore.getSession().selectedScim.url + '/mappings/' + attributeId,
                 method: "DELETE",
+                headers: {
+                    "Authorization": "Bearer " + session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });
+    },
+    /**
+     * Get AD configuration.
+     */
+    getAdConfiguration: function () {
+        return new Promise(function (resolve, reject) {
+            var session = SessionService.getSession();
+            $.ajax({
+                url: SessionStore.getSession().selectedScim.url + '/adconfiguration',
+                method: "GET",
                 headers: {
                     "Authorization": "Bearer " + session.token
                 }
