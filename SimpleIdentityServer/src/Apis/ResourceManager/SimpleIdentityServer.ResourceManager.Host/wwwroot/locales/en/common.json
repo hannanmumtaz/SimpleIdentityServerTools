@@ -320,5 +320,8 @@
 	"adDistinguishedNameDescription": "Enter the Active Directory distinguished name",
 	"scimMappings": "SCIM mappings",
 	"removeScimMapping": "The SCIM mapping has been removed",
-	"cannotRemoveScimMapping": "An error occured while trying to remove the SCIM mapping"
+	"cannotRemoveScimMapping": "An error occured while trying to remove the SCIM mapping",
+	"scimSchemas": "SCIM schemas",
+	"scimUsers": "SCIM users",
+	"scimGroups": "SCIM groups"
 }

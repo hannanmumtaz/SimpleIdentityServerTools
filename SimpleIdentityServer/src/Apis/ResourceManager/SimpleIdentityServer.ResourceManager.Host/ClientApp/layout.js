@@ -20,6 +20,8 @@ import Lock from '@material-ui/icons/Lock';
 import Assignment from '@material-ui/icons/Assignment';
 import MenuIcon from '@material-ui/icons/Menu';
 import FilterList from '@material-ui/icons/FilterList';
+import Layers from '@material-ui/icons/Layers';
+import Description from '@material-ui/icons/Description';
 import Collapse from 'material-ui/transitions/Collapse';
 
 const drawerWidth = 300;
@@ -463,13 +465,16 @@ class Layout extends Component {
                         <Collapse in={this.state.isScimOpened}>
                             <List>
                                 <MenuItem key='/scim/schemas' selected={pathName.indexOf('/scim/schemas') !== -1} className={classes.nested} onClick={() => self.navigate('/scim/schemas')}>
-                                    {t('scimSchemas')}
+                                    <ListItemIcon><Layers /></ListItemIcon>
+									{t('scimSchemas')}
                                 </MenuItem>
                                 <MenuItem key='/scim/resources' selected={pathName.indexOf('/scim/resources') !== -1} className={classes.nested} onClick={() => self.navigate('/scim/resources')}>
-                                    {t('scimResources')}
+                                    <ListItemIcon><Description /></ListItemIcon>
+									{t('scimResources')}
                                 </MenuItem>
                                 <MenuItem key='/scim/mappings' selected={pathName.indexOf('/scim/mappings') !== -1} className={classes.nested} onClick={() => self.navigate('/scim/mappings')}>
-                                    {t('scimMappings')}
+                                    <ListItemIcon><Assignment /></ListItemIcon>
+									{t('scimMappings')}
                                 </MenuItem>
                             </List>
                         </Collapse>

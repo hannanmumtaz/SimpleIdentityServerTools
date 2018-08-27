@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { translate } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { Grid, Typography, CircularProgress, List, ListItem, ListItemText, IconButton } from 'material-ui';
-import { ClientService, ScopeService, ResourceOwnerService, ClaimService, ResourceService } from '../services';
+import { ClientService, ScopeService, ResourceOwnerService, ClaimService, ResourceService, ScimService } from '../services';
 import { SessionStore } from '../stores';
 import $ from 'jquery';
 import Constants from '../constants';
@@ -14,15 +14,18 @@ class Dashboard extends Component {
         super(props);
         this.refreshData = this.refreshData.bind(this);
         this.state = {
-            isOpenidClientsLoading: false,
-            isOpenidScopesLoading: false,
-            isAuthClientsLoading: false,
-            isAuthScopesLoading: false,
-            isClaimsLoading: false,
-            isUsersLoading: false,
-            isLatestErrorsLoading: false,
-            isLatestLogsLoading: false,
-            isUmaResourcesLoading: false,
+            isOpenidClientsLoading: true,
+            isOpenidScopesLoading: true,
+            isAuthClientsLoading: true,
+            isAuthScopesLoading: true,
+            isClaimsLoading: true,
+            isUsersLoading: true,
+            isLatestErrorsLoading: true,
+            isLatestLogsLoading: true,
+            isUmaResourcesLoading: true,
+			isNbScimSchemasLoading: true,
+			isNbScimUsersLoading: true,
+			isNbScimGroupsLoading: true,
             nbOpenidClients: 0,
             nbAuthClients: 0,
             nbOpenidScopes: 0,
@@ -30,6 +33,9 @@ class Dashboard extends Component {
             nbClaims: 0,
             nbUsers: 0,
             nbUmaResources: 0,
+			nbScimSchemas:0,
+			nbScimUsers: 0,
+			nbScimGroups: 0,
             latestErrors: [],
             latestLogs: []
         };
@@ -46,7 +52,10 @@ class Dashboard extends Component {
             isUsersLoading: true,
             isLatestErrorsLoading: true,
             isLatestLogsLoading: true,
-            isUmaResourcesLoading: true
+            isUmaResourcesLoading: true,
+			isNbScimSchemasLoading: true,
+			isNbScimUsersLoading: true,
+			isNbScimGroupsLoading: true
         });
         // Openid clients
         ClientService.getAll('openid').then(function(result) {            
@@ -132,6 +141,42 @@ class Dashboard extends Component {
                 nbUmaResources: 0
             });
         });
+		// SCIM schemas
+		ScimService.getSchemas().then(function(result) {
+            self.setState({
+                isNbScimSchemasLoading: false,
+                nbScimSchemas: result.length
+            });			
+		}).catch(function() {
+            self.setState({
+                isNbScimSchemasLoading: false,
+                nbScimSchemas: 0
+            });			
+		});
+		// Get all the users
+		ScimService.getUsers().then(function(result) {
+            self.setState({
+                isNbScimUsersLoading: false,
+                nbScimUsers: result.Resources.length
+            });				
+		}).catch(function() {
+            self.setState({
+                isNbScimUsersLoading: false,
+                nbScimUsers: 0
+            });						
+		});
+		// Get all the groups.
+		ScimService.getGroups().then(function(result) {
+            self.setState({
+                isNbScimGroupsLoading: false,
+                nbScimGroups: result.Resources.length
+            });			
+		}).catch(function() {
+            self.setState({
+                isNbScimGroupsLoading: false,
+                nbScimGroups: 0
+            });			
+		})
         var eventSourceUrl  = Constants.eventSourceUrl;
         var getLatestErrorUrl = eventSourceUrl + "/events/.search?filter=where$(Verbosity eq '1') "+
             "orderby$on(CreatedOn),order(desc)&count=5";
@@ -285,6 +330,39 @@ class Dashboard extends Component {
                             <div className="body">
                                 <Typography variant="display1">{self.state.nbUmaResources}</Typography>
                                 <Typography variant="caption" gutterBottom>{t('resources')}</Typography>
+                            </div>
+                        )}
+                    </div>
+                </Grid>
+                {/* SCIM SCHEMAS */}
+                <Grid item sm={12} md={4}>
+                    <div className="card">
+                        {self.state.isNbScimSchemasLoading ? (<div className="body"><CircularProgress /></div>) : (
+                            <div className="body">
+                                <Typography variant="display1">{self.state.nbScimSchemas}</Typography>
+                                <Typography variant="caption" gutterBottom>{t('scimSchemas')}</Typography>
+                            </div>
+                        )}
+                    </div>
+                </Grid>
+                {/* SCIM USERS */}
+                <Grid item sm={12} md={4}>
+                    <div className="card">
+                        {self.state.isNbScimUsersLoading ? (<div className="body"><CircularProgress /></div>) : (
+                            <div className="body">
+                                <Typography variant="display1">{self.state.nbScimUsers}</Typography>
+                                <Typography variant="caption" gutterBottom>{t('scimUsers')}</Typography>
+                            </div>
+                        )}
+                    </div>
+                </Grid>
+                {/* SCIM GROUPS */}
+                <Grid item sm={12} md={4}>
+                    <div className="card">
+                        {self.state.isNbScimGroupsLoading ? (<div className="body"><CircularProgress /></div>) : (
+                            <div className="body">
+                                <Typography variant="display1">{self.state.nbScimGroups}</Typography>
+                                <Typography variant="caption" gutterBottom>{t('scimGroups')}</Typography>
                             </div>
                         )}
                     </div>
