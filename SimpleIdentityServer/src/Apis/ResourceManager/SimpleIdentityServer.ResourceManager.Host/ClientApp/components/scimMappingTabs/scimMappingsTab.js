@@ -2,7 +2,7 @@
 import { translate } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
-import { CircularProgress, Checkbox, Grid, IconButton, Button, Menu, MenuItem, InputLabel, Input, Select } from 'material-ui';
+import { CircularProgress, Checkbox, Grid, IconButton, Button, Menu, MenuItem, InputLabel, Input, Select, Hidden, List, ListItem, ListItemText } from 'material-ui';
 import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter } from 'material-ui/Table';
 import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import { FormControl, FormHelperText } from 'material-ui/Form';
@@ -32,7 +32,8 @@ class ScimMappingsTab extends Component {
         this.handleAddScimMapping = this.handleAddScimMapping.bind(this);
         this.handleSelectScimAttribute = this.handleSelectScimAttribute.bind(this);
         this.handleAllSelections = this.handleAllSelections.bind(this);
-        this.handleRemoveClients = this.handleRemoveClients.bind(this);
+        this.handleRemoveMappings = this.handleRemoveMappings.bind(this);
+        this.handleRemoveMapping = this.handleRemoveMapping.bind(this);
         this.handleRowClick = this.handleRowClick.bind(this);
         this.refreshData = this.refreshData.bind(this);
         this.refreshSchema = this.refreshSchema.bind(this);
@@ -205,11 +206,12 @@ class ScimMappingsTab extends Component {
     /**
     * Remove the selected clients 
     */
-    handleRemoveClients() {
+    handleRemoveMappings() {
         var self = this;
         const { t } = self.props;
         self.setState({
-            isLoading: true
+            isLoading: true,
+            isRemoveDisplayed: false
         });
         var operations = [];
         self.state.mappings.filter(function (m) { return m.isSelected; }).forEach(function (m) {
@@ -231,6 +233,36 @@ class ScimMappingsTab extends Component {
             AppDispatcher.dispatch({
                 actionName: Constants.events.DISPLAY_MESSAGE,
                 data: t('cannotRemoveScimMappings')
+            });
+        });
+    }
+
+    /**
+    * Remove the mapping.
+    */
+    handleRemoveMapping(attributeId) {
+        var self = this;
+        const { t } = self.props;
+        self.setState({
+            isLoading: true,
+            isRemoveDisplayed: false
+        });
+        ScimService.removeScimMapping(attributeId).then(function () {
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('removeScimMapping')
+            });
+            self.setState({
+                isRemoveDisplayed: false
+            });
+            self.refreshData();
+        }).catch(function () {
+            self.setState({
+                isLoading: false
+            });
+            AppDispatcher.dispatch({
+                actionName: Constants.events.DISPLAY_MESSAGE,
+                data: t('cannotRemoveScimMapping')
             });
         });
     }
@@ -361,6 +393,7 @@ class ScimMappingsTab extends Component {
         var scimAttributes = [];
         var subScimAttributes = [];
         var adProperties = [];
+        var listItems = [];
         if (self.state.schemas) {
             self.state.schemas.forEach(function (schema) {
                 schemaOpts.push(
@@ -401,8 +434,15 @@ class ScimMappingsTab extends Component {
                         <TableCell>{m.schemaName}</TableCell>
                         <TableCell>{m.attributeName}</TableCell>
                         <TableCell>{m.adPropertyName}</TableCell>
-                        <TableCell></TableCell>
                     </TableRow>
+                );
+                listItems.push(
+                    <ListItem dense button style={{overflow: 'hidden'}}>
+                        <IconButton onClick={() => self.handleRemoveMapping(m.attributeId)}>
+                            <Delete />
+                        </IconButton>
+                        <ListItemText>{m.schemaName} {m.attributeName} = {m.adPropertyName}</ListItemText>
+                    </ListItem>
                 );
             });
         }
@@ -416,11 +456,11 @@ class ScimMappingsTab extends Component {
                             <div>
                                 {/* Select schema */}
                                 <FormControl fullWidth={true} className={classes.margin}>
-                                    <InputLabel>{t('schemaType')}</InputLabel>
+                                    <InputLabel>{t('schemaId')}</InputLabel>
                                     <Select value={self.state.selectedSchema} onChange={self.handleChangeSchemaId}>
                                         {schemaOpts}
                                     </Select>
-                                    <FormHelperText>{t('schemaTypeDescription')}</FormHelperText>
+                                    <FormHelperText>{t('schemaIdDescription')}</FormHelperText>
                                 </FormControl>
                                 {/* Select property name */}
                                 {self.state.isScimAttributesLoading ? (<CircularProgress />) : (
@@ -468,7 +508,7 @@ class ScimMappingsTab extends Component {
             <div>
                 <div style={{ float: "right" }}>
                     {self.state.isRemoveDisplayed && (
-                        <IconButton onClick={self.handleRemoveClients}>
+                        <IconButton onClick={self.handleRemoveMappings}>
                             <Delete />
                         </IconButton>
                     )}
@@ -476,26 +516,34 @@ class ScimMappingsTab extends Component {
                         <MoreVert />
                     </IconButton>
                     <Menu anchorEl={self.state.anchorEl} open={Boolean(self.state.anchorEl)} onClose={self.handleClose}>
-                        <MenuItem onClick={self.handleOpenModal}>{t('addAdMapping')}</MenuItem>
+                        <MenuItem onClick={self.handleOpenModal}>{t('addScimMapping')}</MenuItem>
                     </Menu>
                 </div>
             </div>
             <div>
                 {self.state.isLoading ? (<CircularProgress />) : (
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
-                                <TableCell>{t('schemaName')}</TableCell>
-                                <TableCell>{t('scimProperty')}</TableCell>
-                                <TableCell>{t('adPropertyName')}</TableCell>
-                                <TableCell></TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows}
-                        </TableBody>
-                    </Table>
+                    <div>
+                        <Hidden only={['xs', 'sm']}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
+                                        <TableCell>{t('scimSchemaName')}</TableCell>
+                                        <TableCell>{t('scimProperty')}</TableCell>
+                                        <TableCell>{t('adPropertyName')}</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {rows}
+                                </TableBody>
+                            </Table>
+                        </Hidden>
+                        <Hidden only={['lg', 'xl', 'md']}>
+                            <List>
+                                {listItems}
+                            </List>
+                        </Hidden>
+                    </div>
                 )}
             </div>
         </div>);

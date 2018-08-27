@@ -240,5 +240,26 @@ module.exports = {
                 reject(e);
             });
         });
+    },
+    /**
+    * Update AD configuration
+    */
+    updateAdConfiguration: function(request) {
+        return new Promise(function (resolve, reject) {
+            var session = SessionService.getSession();
+            $.ajax({
+                url: SessionStore.getSession().selectedScim.url + '/adconfiguration',
+                method: "PUT",
+                data: JSON.stringify(request),
+                contentType: 'application/json',
+                headers: {
+                    "Authorization": "Bearer " + session.token
+                }
+            }).then(function (data) {
+                resolve(data);
+            }).fail(function (e) {
+                reject(e);
+            });
+        });
     }
 };

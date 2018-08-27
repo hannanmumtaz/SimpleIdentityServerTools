@@ -2,7 +2,7 @@
 import { translate } from 'react-i18next';
 import { ScimService } from '../services';
 import { withStyles } from 'material-ui/styles';
-import { NavLink, Link } from 'react-router-dom';
+import { withRouter, NavLink, Link } from 'react-router-dom';
 import { CircularProgress, IconButton, Grid } from 'material-ui';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import { SessionStore } from '../stores';
@@ -17,6 +17,7 @@ const styles = theme => ({
 class ScimMappings extends Component {
     constructor(props) {
         super(props);
+        this.handleTabChange = this.handleTabChange.bind(this);
         this.state = {
             tabIndex: 0
         };
@@ -29,6 +30,11 @@ class ScimMappings extends Component {
         this.setState({
             tabIndex: val
         });
+        if (val === 0) {
+            this.props.history.push('/scim/mappings');
+        } else {
+            this.props.history.push('/scim/mappings/settings');
+        }
     }
 
     render() {
@@ -55,8 +61,8 @@ class ScimMappings extends Component {
                 </div>
                 <div className="body">
                     <Tabs indicatorColor="primary" value={self.state.tabIndex} onChange={self.handleTabChange}>
-                        <Tab label={t('listScimMappings')} component={NavLink} to="/scim/mappings" />
-                        <Tab label={t('scimMappingSettings')} component={NavLink} to="/scim/mappings/settings" />
+                        <Tab label={t('listScimMappings')} />
+                        <Tab label={t('scimMappingSettings')} />
                     </Tabs>
                     {self.state.tabIndex === 0 && (<ScimMappingsTab />)}
                     {self.state.tabIndex === 1 && (<ScimMappingSettingsTab  />)}
@@ -78,4 +84,4 @@ class ScimMappings extends Component {
     }
 }
 
-export default translate('common', { wait: process && !process.release })(withStyles(styles)(ScimMappings));
+export default translate('common', { wait: process && !process.release })(withRouter(withStyles(styles)(ScimMappings)));
