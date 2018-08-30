@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SimpleIdentityServer.HierarchicalResource.Core;
-using SimpleIdentityServer.License;
-using SimpleIdentityServer.License.Exceptions;
 using System;
 
 namespace SimpleIdentityServer.HierarchicalResource.Host.Extensions
@@ -18,13 +16,6 @@ namespace SimpleIdentityServer.HierarchicalResource.Host.Extensions
             if (options == null)
             {
                 throw new ArgumentNullException(nameof(options));
-            }
-
-            var loader = new LicenseLoader();
-            var license = loader.TryGetLicense();
-            if (license.ExpirationDateTime < DateTime.UtcNow)
-            {
-                throw new LicenseExpiredException();
             }
 
             services.AddHierarchicalResourceCore();

@@ -39,6 +39,7 @@ class ViewScimResource extends Component {
         self.setState({
             isLoading: true
         });
+		const { t } = self.props;
         var opt = {};
         if (self.state.type === 'user') {
             opt = ScimService.getUser(self.state.id);

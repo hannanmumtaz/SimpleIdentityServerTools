@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SimpleIdentityServer.License;
-using SimpleIdentityServer.License.Exceptions;
 using SimpleIdentityServer.Profile.Core;
 using System;
 
@@ -13,13 +11,6 @@ namespace SimpleIdentityServer.Profile.Host.Extensions
             if (services== null)
             {
                 throw new ArgumentNullException(nameof(services));
-            }
-
-            var loader = new LicenseLoader();
-            var license = loader.TryGetLicense();
-            if (license.ExpirationDateTime < DateTime.UtcNow)
-            {
-                throw new LicenseExpiredException();
             }
 
             services.AddAuthorization(options =>

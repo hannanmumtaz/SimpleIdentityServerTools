@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\License\SimpleIdentityServer.License\SimpleIdentityServer.License.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.HierarchicalResource.Common\SimpleIdentityServer.HierarchicalResource.Common.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.HierarchicalResource.Core\SimpleIdentityServer.HierarchicalResource.Core.csproj" />
   </ItemGroup>

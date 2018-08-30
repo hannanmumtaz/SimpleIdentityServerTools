@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\IdServer\SimpleIdentityServer\src\Apis\Common\SimpleIdentityServer.Common.Dtos\SimpleIdentityServer.Common.Dtos.csproj" />
+	<ProjectReference Include="..\..\License\SimpleIdentityServer.License\SimpleIdentityServer.License.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.DocumentManagement.Common\SimpleIdentityServer.DocumentManagement.Common.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.DocumentManagement.Core\SimpleIdentityServer.DocumentManagement.Core.csproj" />
     <ProjectReference Include="..\SimpleIdentityServer.DocumentManagement.EF.InMemory\SimpleIdentityServer.DocumentManagement.EF.InMemory.csproj" />
