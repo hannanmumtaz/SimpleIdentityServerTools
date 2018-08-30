@@ -1,6 +1,7 @@
 ﻿using SimpleIdentityServer.Client;
 using SimpleIdentityServer.DocumentManagement.Common.DTOs.Responses;
 using SimpleIdentityServer.DocumentManagement.Core.Exceptions;
+using SimpleIdentityServer.DocumentManagement.Core.Extensions;
 using SimpleIdentityServer.DocumentManagement.Core.Parameters;
 using SimpleIdentityServer.DocumentManagement.Core.Repositories;
 using SimpleIdentityServer.DocumentManagement.Core.Validators;
@@ -59,7 +60,7 @@ namespace SimpleIdentityServer.DocumentManagement.Core.OfficeDocuments.Actions
             {
                 using (var provider = new RSACryptoServiceProvider())
                 {
-                    provider.FromXmlString(jsonWebKey.SerializedKey);
+                    provider.FromXmlStringCore(jsonWebKey.SerializedKey);
                     decryptedPayload = provider.Decrypt(payload, true);
                 }
             }
