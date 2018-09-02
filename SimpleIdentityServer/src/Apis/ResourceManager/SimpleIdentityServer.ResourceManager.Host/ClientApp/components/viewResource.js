@@ -61,7 +61,7 @@ class ViewResource extends Component {
         this.refreshClaims = this.refreshClaims.bind(this);
         this.state = {
             id: null,
-            isLoading: false,
+            isLoading: true,
             isRemoveDisplayed: false,
             addAuthRulePolicy: false,
             isAuthPolicyModalOpened: false,
@@ -92,7 +92,13 @@ class ViewResource extends Component {
         this.setState({
             isAuthPolicyModalOpened: true,
             currentAuthPolicy: e,
-            addAuthRulePolicy: true
+            addAuthRulePolicy: true,
+            currentAuthRulePolicy: {
+                provider: '',
+                clients: [],
+                scopes: [],
+                claims: []
+            }
         });
     }
 
@@ -573,28 +579,28 @@ class ViewResource extends Component {
             <Grid container spacing={40}>
                 <Grid item md={12}>
                     <div className="card">
-                        { self.state.isLoading ? ( <CircularProgress /> ) : (
-                            <div>
-                                <div className="header">
-                                    <h4 style={{display: "inline-block"}}>{t('resourceInformation')}</h4>
-                                    <div style={{float: "right"}}>
-                                        <IconButton onClick={self.handleSave}>
-                                            <Save />
-                                        </IconButton>
-                                    </div>
+                        <div>
+                            <div className="header">
+                                <h4 style={{display: "inline-block"}}>{t('resourceInformation')}</h4>
+                                <div style={{float: "right"}}>
+                                    <IconButton onClick={self.handleSave}>
+                                        <Save />
+                                    </IconButton>
                                 </div>
-                                <div className="body">
+                            </div>
+                            <div className="body">
+                                {self.state.isLoading ? (<CircularProgress />) : (
                                     <Grid container spacing={40}>
                                         <Grid item md={6} sm={12}>
                                             {/* Id */}
                                             <FormControl className={classes.margin} fullWidth={true}>
                                                 <InputLabel>{t('resourceId')}</InputLabel>
-                                                <Input value={self.state.resourceId}  disabled={true}  />
+                                                <Input value={self.state.resourceId} disabled={true} />
                                             </FormControl>
                                             {/* Type */}
                                             <FormControl className={classes.margin} fullWidth={true}>
                                                 <InputLabel htmlFor="resourceType">{t('resourceType')}</InputLabel>
-                                                <Input id="resourceType" value={self.state.resourceType} name="resourceType" onChange={self.handleProperty}  />
+                                                <Input id="resourceType" value={self.state.resourceType} name="resourceType" onChange={self.handleProperty} />
                                                 <FormHelperText>{t('resourceTypeDescription')}</FormHelperText>
                                             </FormControl>
                                         </Grid>
@@ -602,7 +608,7 @@ class ViewResource extends Component {
                                             {/* Name */}
                                             <FormControl className={classes.margin} fullWidth={true}>
                                                 <InputLabel htmlFor="resourceName">{t('resourceName')}</InputLabel>
-                                                <Input id="resourceName" value={self.state.resourceName} name="resourceName" onChange={self.handleProperty}  />
+                                                <Input id="resourceName" value={self.state.resourceName} name="resourceName" onChange={self.handleProperty} />
                                                 <FormHelperText>{t('resourceNameDescription')}</FormHelperText>
                                             </FormControl>
                                             {/* Scopes */}
@@ -611,50 +617,52 @@ class ViewResource extends Component {
                                             </div>
                                         </Grid>
                                     </Grid>
-                                </div>
+                                )}
                             </div>
-                        )}
+                        </div>
                     </div>
                 </Grid>
                 <Grid item md={12}>
                     <div className="card">
-                        { self.state.isLoading ? ( <CircularProgress /> ) : (
-                            <div>
-                                <div className="header">
-                                    <h4 style={{display: "inline-block"}}>{t('authorizationPolicies')}</h4>
-                                    <div style={{float: "right"}}>
-                                        <IconButton onClick={self.handleAddAuthorizationPolicy}>
-                                            <Add />
+                        <div>
+                            <div className="header">
+                                <h4 style={{display: "inline-block"}}>{t('authorizationPolicies')}</h4>
+                                <div style={{float: "right"}}>
+                                    <IconButton onClick={self.handleAddAuthorizationPolicy}>
+                                        <Add />
+                                    </IconButton>
+                                    {self.state.isRemoveDisplayed && (
+                                        <IconButton onClick={self.handleRemoveAuthPolicies}>
+                                            <Delete />
                                         </IconButton>
-                                        {self.state.isRemoveDisplayed && (
-                                            <IconButton onClick={self.handleRemoveAuthPolicies}>
-                                                <Delete />
-                                            </IconButton>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="body">
-                                    <Hidden only={['xs', 'sm']}>
-                                        <Table>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
-                                                    <TableCell></TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {rows}
-                                            </TableBody>
-                                        </Table>
-                                    </Hidden>
-                                    <Hidden only={['lg', 'xl', 'md']}>
-                                        <List>
-                                            {items}
-                                        </List>
-                                    </Hidden>
+                                    )}
                                 </div>
                             </div>
-                        ) }
+                            <div className="body">
+                                {self.state.isLoading ? (<CircularProgress />) : (
+                                    <div>
+                                        <Hidden only={['xs', 'sm']}>
+                                            <Table>
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell><Checkbox color="primary" onChange={self.handleAllSelections} /></TableCell>
+                                                        <TableCell></TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {rows}
+                                                </TableBody>
+                                            </Table>
+                                        </Hidden>
+                                        <Hidden only={['lg', 'xl', 'md']}>
+                                            <List>
+                                                {items}
+                                            </List>
+                                        </Hidden>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </Grid>
             </Grid>
