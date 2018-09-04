@@ -1,0 +1,18 @@
+Default ActiveDirectory configuration : 
+
+Username : <domain>\Administrator
+Password : <pass>
+Port : 389
+DistinguishedName: CN=Users,DC=SID,DC=Home
+FilterClass = CN=Users
+Filter : CN=${externalId}
+
+
+Default ApacheDS configuration :
+
+Username : uid=admin,ou=system
+Password : secret
+Port : 10389
+DistinguishedName: ou=system
+FilterClass : (objectClass=person)
+Filter : (uid=${externalId})
