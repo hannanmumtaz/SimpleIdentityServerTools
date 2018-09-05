@@ -1,7 +1,0 @@
-{
-  "name": "SimpleIdentityServer.Eid.OpenId",
-  "version": "0.0.0",
-  "devDependencies": {
-    "@aspnet/signalr": "^1.0.0-preview2-final"
-  }
-}
