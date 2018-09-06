@@ -1,18 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using SimpleIdentityServer.Authenticate.Basic.ViewModels;
 
 namespace SimpleIdentityServer.Authenticate.Eid.ViewModels
 {
-    [DataContract]
-    public class EidAuthorizeViewModel
+    public class EidAuthorizeViewModel : AuthorizeOpenIdViewModel
     {
-        [DataMember(Name = Constants.EidAuthorizeViewModelNames.Code)]
-        public string Code { get; set; }
-        [DataMember(Name = Constants.EidAuthorizeViewModelNames.Xml)]
         public string Xml { get; set; }
-        [DataMember(Name = Constants.EidAuthorizeViewModelNames.IdProviders)]
-        public IEnumerable<IdProviderViewModel> IdProviders { get; set; }
-        [DataMember(Name = Constants.EidAuthorizeViewModelNames.EidUrl)]
-        public string EidUrl { get; set; }
     }
 }

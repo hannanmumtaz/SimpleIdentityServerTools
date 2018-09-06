@@ -164,6 +164,8 @@ namespace SimpleIdentityServer.Eid.OpenId
             app.UseCors("AllowAll");
             // 2. Use static files.
             app.UseShellStaticFiles();
+            app.UseEidStaticFiles();
+            app.UseStaticFiles();
             // 3. Redirect error to custom pages.
             app.UseStatusCodePagesWithRedirects("~/Error/{0}");
             // 4. Enable SimpleIdentityServer

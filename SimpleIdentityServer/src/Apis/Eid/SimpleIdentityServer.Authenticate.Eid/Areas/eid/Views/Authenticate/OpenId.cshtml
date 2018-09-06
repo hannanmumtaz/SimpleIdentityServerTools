@@ -1,11 +1,13 @@
-@using SimpleIdentityServer.Host
+@using SimpleIdentityServer.Authenticate.Eid.Stores
+
 @{
     ViewBag.Title = "Authenticate";
     var userNameState = ViewData.ModelState["UserName"];
     var passwordState = ViewData.ModelState["Password"];
 }
 
-@model SimpleIdentityServer.Authenticate.Eid.ViewModels.EidAuthorizeViewModel
+@model SimpleIdentityServer.Authenticate.Basic.ViewModels.AuthorizeOpenIdViewModel
+
 @section PageTitle
     {
     <h1>
@@ -14,11 +16,12 @@
 }
 
 @section Scripts {
+    <script type="text/javascript" src="@Url.Content("~/lib/signalr.js")"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             var hubConnection = null;
             var connectWithEid = $("#eidLogin");
-            var url = '@Model.EidUrl';
+            var url = '@ConfigurationStore.Instance().EidUrl';
             var launchSignalr = function () {
                 hubConnection = new signalR.HubConnection(url + "/sessionHub", { logger: signalR.LogLevel.Information });
                 hubConnection.start().catch(err => console.error);

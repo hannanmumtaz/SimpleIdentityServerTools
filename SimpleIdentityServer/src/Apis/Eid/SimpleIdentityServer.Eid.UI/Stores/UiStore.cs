@@ -57,7 +57,7 @@ namespace SimpleIdentityServer.Eid.UI.Stores
         {
             if (_browserWindow == null)
             {
-                throw new InvalidOperationException("The window is not displayed");
+                return;
             }
 
             _browserWindow.Show();
@@ -67,7 +67,7 @@ namespace SimpleIdentityServer.Eid.UI.Stores
         {
             if (_browserWindow == null)
             {
-                throw new InvalidOperationException("The window is not displayed");
+                return;
             }
 
             _browserWindow.Hide();

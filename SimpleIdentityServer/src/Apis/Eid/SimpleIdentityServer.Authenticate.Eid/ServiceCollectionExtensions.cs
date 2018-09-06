@@ -5,6 +5,7 @@ using Microsoft.Extensions.FileProviders;
 using SimpleIdentityServer.Authenticate.Eid.Controllers;
 using SimpleIdentityServer.Authenticate.Eid.Core;
 using SimpleIdentityServer.Authenticate.Eid.Services;
+using SimpleIdentityServer.Authenticate.Eid.Stores;
 using SimpleIdentityServer.Core.Services;
 using System;
 
@@ -46,6 +47,7 @@ namespace SimpleIdentityServer.Authenticate.Eid
             services.AddEidOpenidCore();
             services.AddTransient<IAuthenticateResourceOwnerService, EidAuthenticateResourceOwnerService>();
             services.AddMvc().AddApplicationPart(assembly);
+            ConfigurationStore.Instance().SetEidUrl(eidOptions.EidUrl);
             return services;
         }
     }
